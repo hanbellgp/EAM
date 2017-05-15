@@ -1,0 +1,106 @@
+*{
+    padding: 0px;
+}
+
+li{
+    list-style: none;
+}
+
+body .ui-panelgrid .ui-panelgrid-cell {
+    padding: 0px 16px;
+}
+
+.right{
+    float: right;
+}
+
+.left{
+    float: left;
+}
+
+.Mtop10{
+    margin-top: 10px;
+}
+
+.Wid10{
+    width: 10%;
+}
+.Wid20{
+    width: 20%;
+}
+.Wid30{
+    width: 30%;
+}
+.Wid40{
+    width: 40%;
+}
+.Wid50{
+    width: 50%;
+}
+.Wid60{
+    width: 60%;
+}
+.Wid70{
+    width: 70%;
+}
+.Wid80{
+    width: 80%;
+}
+.Wid90{
+    width: 90%;
+}
+.Wid100{
+    width: 100%;
+}
+
+.Wid30 input,.Wid40 input,.Wid50 input,.Wid60 input,.Wid70 input,.Wid80 input,.Wid90 input,.Wid100 input
+{
+    width:100%;
+}
+
+.Wid30 input.inputWithButton,.Wid40 input.inputWithButton,
+.Wid50 input.inputWithButton,.Wid60 input.inputWithButton,
+.Wid70 input.inputWithButton,.Wid80 input.inputWithButton,
+.Wid90 input.inputWithButton,.Wid100 input.inputWithButton{
+    width: 80%;
+}
+
+button.inputWithButton{
+    float: right;
+}
+
+.topToolbar{
+    margin-bottom: 10px;
+}
+
+.detailToolbar{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.plgQuery,.plgHead{
+    margin-bottom: 10px;
+}
+
+.fileUpload{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/*-------------------------------MainFrameStyle*/
+
+.tableList td,.plgHead td,.plgBase td,.plgDetail td,.plgQuery td{
+    height: 42px;
+}
+
+.plgHead .Wid30 img,.plgBase .Wid30 img,.plgDetail .Wid30 img,
+.plgHead .Wid40 img,.plgBase .Wid40 img,.plgDetail .Wid40 img,
+.plgHead .Wid50 img,.plgBase .Wid50 img,.plgDetail .Wid50 img,
+.ui-datagrid-column .plgView img{
+    max-width: 270px;
+    height: 180px;
+}
+
+.ui-datagrid-column .panelView{
+    min-height: 305px;
+}

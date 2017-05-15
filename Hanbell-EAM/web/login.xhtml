@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>汉钟精机 | MiddleWare</title>
+        <h:outputScript name="js/ripple.js" library="ultima-layout" />
+        <h:outputScript name="js/layout.js" library="ultima-layout" />
+    </h:head>
+
+    <h:body styleClass="login-body">
+        <h:form>
+            <p:growl id="growl" showSummary="false" showDetail="true"  autoUpdate="true"/>
+            <div class="card login-panel ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <p:graphicImage name="images/HB-logo.png" library="ultima-layout" />
+                    </div>
+                    <div class="ui-g-12">
+                        <h:panelGroup styleClass="md-inputfield">
+                            <p:inputText  value="#{userManagedBean.userid}" required="true" requiredMessage="请输入账号"/>
+                            <label>账号</label>
+                        </h:panelGroup>
+                    </div>
+                    <div class="ui-g-12">
+                        <h:panelGroup styleClass="md-inputfield">
+                            <p:password value="#{userManagedBean.pwd}" required="true" requiredMessage="请输入密码" feedback="false"/>
+                            <label>密码</label>
+                        </h:panelGroup>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:selectOneMenu id="company" value="#{userManagedBean.company}" title="公司"
+                                         required="true" requiredMessage="请选择公司" >
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{userManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:commandButton value="登录系统" action="#{userManagedBean.login()}" update="@form"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <div class="login-footer">汉钟精机 | MiddleWare</div>
+
+        <h:outputStylesheet name="css/ripple.css" library="ultima-layout" />
+        <h:outputStylesheet name="css/layout-blue.css" library="ultima-layout" />
+    </h:body>
+
+</html>

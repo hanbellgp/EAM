@@ -1,0 +1,54 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pu="http://primefaces.org/ultima">
+
+    <h:form id="formMenu">
+        <div class="layout-menu #{ultimaPreferences.menuClass}">
+            <div class="nano">
+                <div class="nano-content menu-scroll-content">
+                    <ui:fragment rendered="#{ultimaPreferences.profileMode == 'inline' and ultimaPreferences.menuLayout != 'menu-layout-static menu-layout-horizontal'}">
+                        <div class="profile">
+                            <div class="profile-image"></div>
+                            <a id="profile-options" href="#">
+                                <span class="profile-name">#{userManagedBean.currentUser.username}</span>
+                                <i class="material-icons">&#xE313;</i>
+                            </a>
+                        </div>
+                        <ul id="profile-menu" class="ultima-menu">
+                            <li role="menuitem">
+                                <a href="#" class="ripplelink">
+                                    <i class="material-icons">person</i>
+                                    <span>个人简历</span>
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#" class="ripplelink">
+                                    <i class="material-icons">settings_application</i>
+                                    <span>偏好设置</span>
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#" class="ripplelink">
+                                    <i class="material-icons">power_settings_new</i>
+                                    <span onclick="quit();">退出系统</span><p:commandButton id="btnQuit" action="#{userManagedBean.logout()}" style="display: none;" />
+                                </a>
+                            </li>
+                        </ul>
+                    </ui:fragment>
+                    <pu:menu widgetVar="me" model="#{menuManagedBean.model}">
+                    </pu:menu>
+                </div>
+            </div>
+        </div>
+    </h:form>
+    <script type="text/javascript">
+        var quit = function () {
+            var btnQuit = document.getElementById('formMenu:btnQuit');
+            btnQuit.click();
+        };
+    </script>
+</ui:composition>

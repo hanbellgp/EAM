@@ -1,0 +1,115 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pu="http://primefaces.org/ultima">
+
+    <div class="topbar clearfix">
+        <div class="topbar-left">
+            <div class="logo"></div>
+        </div>
+
+        <div class="topbar-right">
+            <a id="menu-button" href="#">
+                <i></i>
+            </a>
+
+            <a id="topbar-menu-button" href="#">
+                <i class="material-icons">menu</i>
+            </a>
+            <ul class="topbar-items fadeInDown animated">
+                <ui:fragment rendered="#{ultimaPreferences.profileMode == 'overlay'||ultimaPreferences.menuLayout == 'menu-layout-static menu-layout-horizontal'}">
+                    <li class="profile-item">
+                        <a href="#">
+                            <div class="profile-image"></div>
+                            <span class="topbar-item-name">#{userManagedBean.currentUser.username}</span>
+                        </a>
+
+                        <ul class="ultima-menu animated">
+                            <li role="menuitem">
+                                <a href="#">
+                                    <i class="material-icons">&#xE7FD;</i>
+                                    <span>Profile</span>
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#">
+                                    <i class="material-icons">&#xE32A;</i>
+                                    <span>Privacy</span>
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#">
+                                    <i class="material-icons">&#xE8B9;</i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#">
+                                    <i class="material-icons">&#xE8AC;</i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ui:fragment>
+                <li>
+                    <a href="#">
+                        <i class="topbar-icon material-icons">&#xE8B8;</i>
+                        <span class="topbar-item-name">Settings</span>
+                    </a>
+                    <ul class="ultima-menu animated">
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="material-icons">&#xE40A;</i>
+                                <span>Change Theme</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="material-icons">&#xE87E;</i>
+                                <span>Favorites</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="material-icons">&#xE897;</i>
+                                <span>Lock Screen</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="material-icons">&#xE1BC;</i>
+                                <span>Wallpaper</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="topbar-icon material-icons animated swing">&#xE0C9;</i>
+                        <span class="topbar-badge animated rubberBand">0</span>
+                        <span class="topbar-item-name">Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="topbar-icon material-icons">&#xE425;</i>
+                        <span class="topbar-badge animated rubberBand">0</span>
+                        <span class="topbar-item-name">Notifications</span>
+                    </a>
+                </li>
+                <li class="search-item">
+                    <h:panelGroup styleClass="md-inputfield">
+                        <p:inputText />
+                        <label>Search</label>
+                        <i class="topbar-icon material-icons">&#xE8B6;</i>
+                    </h:panelGroup>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</ui:composition>
