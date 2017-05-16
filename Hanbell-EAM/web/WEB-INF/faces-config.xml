@@ -112,6 +112,12 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <description>AI110交易类别维护</description>
+            <from-outcome>transactiontype</from-outcome>
+            <to-view-id>/app/ai/transactiontype.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <description>AI150资产库存查询</description>
             <from-outcome>assetinventory</from-outcome>
             <to-view-id>/app/ai/assetinventory.xhtml</to-view-id>
@@ -205,6 +211,16 @@
         <navigation-case>
             <from-outcome>assetpositionSelect</from-outcome>
             <to-view-id>/app/df/assetpositionSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>departmentSelect</from-outcome>
+            <to-view-id>/app/df/departmentSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>sysuserSelect</from-outcome>
+            <to-view-id>/app/df/sysuserSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
