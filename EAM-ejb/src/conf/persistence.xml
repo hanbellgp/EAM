@@ -3,6 +3,7 @@
   <persistence-unit name="PU-SHBEAM" transaction-type="JTA">
     <jta-data-source>jdbc/shbeam</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
     <validation-mode>NONE</validation-mode>
     <properties/>
   </persistence-unit>

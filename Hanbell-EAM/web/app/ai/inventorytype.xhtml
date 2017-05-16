@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{transactionTypeManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{transactionTypeManagedBean.view('inventorytypeView')}"  icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{transactionTypeManagedBean.edit('inventorytypeEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{transactionTypeManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{transactionTypeManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{v.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{transactionTypeManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{transactionTypeManagedBean.doUnCfm}"  update=":formList"/>
+                        <p:menuitem id="btnCreate" value="新增" action="#{transactionTypeManagedBean.create('inventorytypeNew')}" icon="ui-icon-plus"
+                                    rendered="#{transactionTypeManagedBean.doAdd}" process="@this" />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{transactionTypeManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{transactionTypeManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panel id="panelList">
+                <p:dataTable value="#{transactionTypeManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="15,30,45"  lazy="true"
+                             selectionMode="single" selection="#{transactionTypeManagedBean.currentEntity}" rowKey="#{item.id}" >
+                    <f:facet name="header">
+                        交易类别维护
+                    </f:facet>
+                    <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                    <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="交易代号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.trtype}"/>
+                    </p:column>
+                    <p:column styleClass="Wid30">
+                        <f:facet name="header">
+                            <h:outputText value="交易名称"/>
+                        </f:facet>
+                        <h:outputText value="#{item.trname}"/>
+                    </p:column>
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="出入库"/>
+                        </f:facet>
+                        <p:selectOneMenu id="iocode" value="#{item.iocode}" title="Iocode" disabled="true">
+                            <f:selectItem itemLabel="入库" itemValue="1"/>
+                            <f:selectItem itemLabel="出库" itemValue="-1"/>
+                            <f:selectItem itemLabel="不变" itemValue="0"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="记录成本"/>
+                        </f:facet>
+                        <p:selectBooleanCheckbox value="#{item.hascost}"  disabled="true"/>
+                    </p:column>
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="对象类别"/>
+                        </f:facet>
+                        <h:outputText value="#{item.objtype}"/>
+                    </p:column>
+                    <p:column styleClass="Wid20">
+                        <f:facet name="header">
+                            <h:outputText value="来源类别"/>
+                        </f:facet>
+                        <h:outputText value="#{item.srctype}"/>
+                    </p:column>
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="状态"/>
+                        </f:facet>
+                        <h:outputText value="#{item.status}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

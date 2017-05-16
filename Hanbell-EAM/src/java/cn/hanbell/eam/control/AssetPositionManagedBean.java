@@ -9,16 +9,10 @@ import cn.hanbell.eam.ejb.AssetPositionBean;
 import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.lazy.AssetPositionModel;
 import cn.hanbell.eam.web.SuperSingleBean;
-import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -142,6 +136,7 @@ public class AssetPositionManagedBean extends SuperSingleBean<AssetPosition> {
         this.selectedNode = selectedNode;
         if (selectedNode != null) {
             currentEntity = (AssetPosition) selectedNode.getData();
+            setToolBar();
         }
     }
 

@@ -5,7 +5,6 @@
  */
 package cn.hanbell.eam.control;
 
-import cn.hanbell.eap.comm.SystemName;
 import cn.hanbell.eap.ejb.SystemGrantModuleBean;
 import cn.hanbell.eap.ejb.SystemGrantPrgBean;
 import cn.hanbell.eap.ejb.SystemRoleDetailBean;
