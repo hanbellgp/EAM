@@ -5,10 +5,10 @@
  */
 package cn.hanbell.eam.query;
 
-import cn.hanbell.eam.lazy.DepartmentModel;
+import cn.hanbell.eam.ejb.AssetItemBean;
+import cn.hanbell.eam.entity.AssetItem;
+import cn.hanbell.eam.lazy.AssetItemModel;
 import cn.hanbell.eam.web.SuperQueryBean;
-import cn.hanbell.eap.ejb.DepartmentBean;
-import cn.hanbell.eap.entity.Department;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,21 +17,21 @@ import javax.faces.bean.ViewScoped;
  *
  * @author C0160
  */
-@ManagedBean(name = "departmentQueryBean")
+@ManagedBean(name = "assetItemQueryBean")
 @ViewScoped
-public class DepartmentQueryBean extends SuperQueryBean<Department> {
+public class AssetItemQueryBean extends SuperQueryBean<AssetItem> {
 
     @EJB
-    private DepartmentBean departmentBean;
+    private AssetItemBean assetItemBean;
 
-    public DepartmentQueryBean() {
-        super(Department.class);
+    public AssetItemQueryBean() {
+        super(AssetItem.class);
     }
 
     @Override
     public void init() {
-        superEJB = departmentBean;
-        model = new DepartmentModel(departmentBean);
+        superEJB = assetItemBean;
+        model = new AssetItemModel(assetItemBean);
         super.init();
     }
 
@@ -40,10 +40,10 @@ public class DepartmentQueryBean extends SuperQueryBean<Department> {
         if (this.model != null) {
             this.model.getFilterFields().clear();
             if (this.queryFormId != null && !"".equals(this.queryFormId)) {
-                this.model.getFilterFields().put("deptno", this.queryFormId);
+                this.model.getFilterFields().put("itemno", this.queryFormId);
             }
             if (this.queryName != null && !"".equals(this.queryName)) {
-                this.model.getFilterFields().put("dept", this.queryName);
+                this.model.getFilterFields().put("itemdesc", this.queryName);
             }
         }
     }

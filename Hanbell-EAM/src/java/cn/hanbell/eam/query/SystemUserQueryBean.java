@@ -11,7 +11,7 @@ import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.ViewScoped;
 
 /**
  *
