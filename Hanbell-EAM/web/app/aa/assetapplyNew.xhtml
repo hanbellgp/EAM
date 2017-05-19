@@ -152,14 +152,14 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column><p:outputLabel value="资产件号" for="assetItem" /></p:column>
+                            <p:column><p:outputLabel value="件号" for="assetItem" /></p:column>
                             <p:column>
                                 <p:inputText id="assetItem" value="#{assetApplyManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
                                              required="true" requiredMessage="The AssetItem field is required." readonly="true"/>
                                 <p:commandButton id="btnAssetItemSelect" actionListener="#{assetApplyManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnWhenDetailNew}"
-                                            update="assetItem" />
+                                            update="assetItem,itemdesc,itemspec,unit" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="品名" for="itemdesc" /></p:column>
