@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="inventorytype" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{transactionTypeManagedBean.persist()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    交易类别－新增
+                </f:facet>
+                <p:outputLabel value="交易代号" for="trtype" />
+                <p:inputText id="trtype" value="#{transactionTypeManagedBean.newEntity.trtype}" title="Trtype"
+                             required="true" requiredMessage="请输入交易代号"/>
+                <p:outputLabel value="交易名称" for="trname" />
+                <p:inputText id="trname" value="#{transactionTypeManagedBean.newEntity.trname}" title="Trname"
+                             required="true" requiredMessage="请输入交易名称"/>
+                <p:outputLabel value="出入库码" for="iocode" />
+                <p:selectOneMenu id="iocode" value="#{transactionTypeManagedBean.newEntity.iocode}" title="Iocode"
+                                 required="true" requiredMessage="请输入出入库码出入库码">
+                    <f:selectItem itemLabel="入库" itemValue="1"/>
+                    <f:selectItem itemLabel="出库" itemValue="-1"/>
+                    <f:selectItem itemLabel="不变" itemValue="0"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="记录成本" for="hascost" />
+                <p:inputSwitch id="hascost" value="#{transactionTypeManagedBean.newEntity.hascost}" onLabel="是" offLabel="否"
+                               required="true" requiredMessage="请输入记录成本"/>
+                <p:outputLabel value="备注" for="remark" />
+                <p:inputText id="remark" value="#{transactionTypeManagedBean.newEntity.remark}" title="Remark" />
+                <p:outputLabel value="对象类别" for="objtype" />
+                <p:inputText id="objtype" value="#{transactionTypeManagedBean.newEntity.objtype}" title="objtype" />
+                <p:outputLabel value="对象选择" for="objselect" />
+                <p:inputText id="objselect" value="#{transactionTypeManagedBean.newEntity.objselect}" title="objselect" />
+                <p:outputLabel value="来源类别" for="srctype" />
+                <p:inputText id="srctype" value="#{transactionTypeManagedBean.newEntity.srctype}" title="srctype" />
+                <p:outputLabel value="来源选择" for="srcselect" />
+                <p:inputText id="srcselect" value="#{transactionTypeManagedBean.newEntity.srcselect}" title="srcselect" />
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

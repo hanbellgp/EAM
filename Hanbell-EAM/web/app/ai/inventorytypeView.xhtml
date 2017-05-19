@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="inventorytype" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnVerify" value="审核" action="#{transactionTypeManagedBean.verify()}" icon="ui-icon-check"
+                                     rendered="#{transactionTypeManagedBean.doCfm}" update="toolbar"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    交易类别－查看
+                </f:facet>
+                <h:outputText value="交易代号"/>
+                <h:outputText id="trtype" value="#{transactionTypeManagedBean.currentEntity.trtype}" title="Trtype" />
+                <h:outputText value="交易名称"/>
+                <h:outputText id="trname" value="#{transactionTypeManagedBean.currentEntity.trname}" title="Trname" />
+                <h:outputText value="出入库码"/>
+                <p:selectOneMenu id="iocode" value="#{transactionTypeManagedBean.currentEntity.iocode}" title="Iocode"
+                                 required="true" requiredMessage="请输入出入库码出入库码" disabled="true">
+                    <f:selectItem itemLabel="入库" itemValue="1"/>
+                    <f:selectItem itemLabel="出库" itemValue="-1"/>
+                    <f:selectItem itemLabel="不变" itemValue="0"/>
+                </p:selectOneMenu>
+                <h:outputText value="记录成本"/>
+                <p:inputSwitch id="hascost" value="#{transactionTypeManagedBean.currentEntity.hascost}" onLabel="是" offLabel="否"
+                               required="true" requiredMessage="请输入记录成本" disabled="true"/>
+                <h:outputText value="备注"/>
+                <h:outputText id="remark" value="#{transactionTypeManagedBean.currentEntity.remark}" title="Remark" />
+                <h:outputText value="对象类别"/>
+                <h:outputText id="objtype" value="#{transactionTypeManagedBean.currentEntity.objtype}" title="objtype" />
+                <h:outputText value="对象选择"/>
+                <h:outputText id="objselect" value="#{transactionTypeManagedBean.currentEntity.objselect}" title="objselect" />
+                <h:outputText value="来源类别"/>
+                <h:outputText id="srctype" value="#{transactionTypeManagedBean.currentEntity.srctype}" title="srctype" />
+                <h:outputText value="来源选择"/>
+                <h:outputText id="srcselect" value="#{transactionTypeManagedBean.currentEntity.srcselect}" title="srcselect" />
+            </p:panelGrid>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/df.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="4"  columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <h:outputLabel value="部门编号" for="queryFormId" />
+                <p:inputText id="queryFormId" value="#{departmentQueryBean.queryFormId}" title="编号" />
+                <h:outputLabel value="部门名称" for="queryName" />
+                <p:inputText id="queryName" value="#{departmentQueryBean.queryName}" title="名称" />
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{departmentQueryBean.reset()}"  icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{departmentQueryBean.query()}"  icon="ui-icon-search"
+                                     update=":formList"/>
+                    <p:commandButton id="btnSelected" value="确定" actionListener="#{departmentQueryBean.closeDialog()}" icon="ui-icon-plus" />
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{departmentQueryBean.model}" var="item" paginator="true" paginatorPosition="bottom" rows="10"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,20,30"  lazy="true"
+                         selectionMode="single" selection="#{departmentQueryBean.currentEntity}" rowKey="#{item.id}" >
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="">
+                    <f:facet name="header">
+                        <h:outputText value="部门编号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.deptno}"/>
+                </p:column>
+                <p:column styleClass="">
+                    <f:facet name="header">
+                        <h:outputText value="部门名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.dept}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

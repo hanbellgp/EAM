@@ -9,8 +9,6 @@ import cn.hanbell.eam.ejb.AssetPositionBean;
 import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.lazy.AssetPositionModel;
 import cn.hanbell.eam.web.SuperQueryBean;
-import java.util.ArrayList;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
