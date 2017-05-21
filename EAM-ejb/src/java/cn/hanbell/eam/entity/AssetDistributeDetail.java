@@ -29,12 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "AssetDistributeDetail.findAll", query = "SELECT a FROM AssetDistributeDetail a"),
     @NamedQuery(name = "AssetDistributeDetail.findById", query = "SELECT a FROM AssetDistributeDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetDistributeDetail.findByPId", query = "SELECT a FROM AssetDistributeDetail a WHERE a.pid = :pid")})
+    @NamedQuery(name = "AssetDistributeDetail.findByPId", query = "SELECT a FROM AssetDistributeDetail a WHERE a.pid = :pid ORDER BY a.seq")})
 public class AssetDistributeDetail extends FormDetailEntity {
-
-    @JoinColumn(name = "trtype", referencedColumnName = "trtype")
-    @ManyToOne(optional = false)
-    private TransactionType trtype;
 
     @JoinColumn(name = "assetid", referencedColumnName = "id")
     @ManyToOne
@@ -123,14 +119,6 @@ public class AssetDistributeDetail extends FormDetailEntity {
     private String remark;
 
     public AssetDistributeDetail() {
-    }
-
-    public TransactionType getTrtype() {
-        return trtype;
-    }
-
-    public void setTrtype(TransactionType trtype) {
-        this.trtype = trtype;
     }
 
     public AssetCard getAssetCard() {

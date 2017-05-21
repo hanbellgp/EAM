@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "AssetAcceptanceDetail.findAll", query = "SELECT a FROM AssetAcceptanceDetail a"),
     @NamedQuery(name = "AssetAcceptanceDetail.findById", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetAcceptanceDetail.findByPId", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.pid = :pid"),
+    @NamedQuery(name = "AssetAcceptanceDetail.findByPId", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.pid = :pid ORDER BY a.seq"),
     @NamedQuery(name = "AssetAcceptanceDetail.findByPurtype", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.purtype = :purtype"),
     @NamedQuery(name = "AssetAcceptanceDetail.findByPurkind", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.purkind = :purkind"),
     @NamedQuery(name = "AssetAcceptanceDetail.findByStatus", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.status = :status")})

@@ -7,6 +7,10 @@ package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.AssetDistribute;
+import cn.hanbell.eap.ejb.SystemProgramBean;
+import cn.hanbell.eap.entity.SystemProgram;
+import java.util.Date;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 
@@ -18,8 +22,19 @@ import javax.ejb.LocalBean;
 @LocalBean
 public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
 
+    @EJB
+    private SystemProgramBean systemProgramBean;
+
     public AssetDistributeBean() {
         super(AssetDistribute.class);
+    }
+
+    public String getFormId(Date day) {
+        SystemProgram sp = systemProgramBean.findBySystemAndAPI("EAM", "assetdistribute");
+        if (sp == null) {
+            return "";
+        }
+        return super.getFormId(day, sp.getNolead(), sp.getNoformat(), sp.getNoseqlen());
     }
 
 }

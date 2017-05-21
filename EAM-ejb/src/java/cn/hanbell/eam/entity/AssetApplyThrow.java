@@ -5,9 +5,8 @@
  */
 package cn.hanbell.eam.entity;
 
-import com.lightshell.comm.FormDetailEntity;
+import com.lightshell.comm.SuperEntity;
 import java.math.BigDecimal;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -30,13 +27,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "assetapplydetail")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AssetApplyDetail.findAll", query = "SELECT a FROM AssetApplyDetail a"),
-    @NamedQuery(name = "AssetApplyDetail.findById", query = "SELECT a FROM AssetApplyDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetApplyDetail.findByPId", query = "SELECT a FROM AssetApplyDetail a WHERE a.pid = :pid ORDER BY a.seq"),
-    @NamedQuery(name = "AssetApplyDetail.findByDistributed", query = "SELECT a FROM AssetApplyDetail a WHERE a.distributed = :distributed"),
-    @NamedQuery(name = "AssetApplyDetail.findByPurchased", query = "SELECT a FROM AssetApplyDetail a WHERE a.purchased = :purchased"),
-    @NamedQuery(name = "AssetApplyDetail.findByStatus", query = "SELECT a FROM AssetApplyDetail a WHERE a.status = :status")})
-public class AssetApplyDetail extends FormDetailEntity {
+    @NamedQuery(name = "AssetApplyThrow.getRowCount", query = "SELECT COUNT(a) FROM AssetApplyThrow a"),
+    @NamedQuery(name = "AssetApplyThrow.findAll", query = "SELECT a FROM AssetApplyThrow a"),
+    @NamedQuery(name = "AssetApplyThrow.findById", query = "SELECT a FROM AssetApplyThrow a WHERE a.id = :id"),
+    @NamedQuery(name = "AssetApplyThrow.findByDistributed", query = "SELECT a FROM AssetApplyThrow a WHERE a.distributed = :distributed"),
+    @NamedQuery(name = "AssetApplyThrow.findByPurchased", query = "SELECT a FROM AssetApplyThrow a WHERE a.purchased = :purchased"),
+    @NamedQuery(name = "AssetApplyThrow.findByStatus", query = "SELECT a FROM AssetApplyThrow a WHERE a.status = :status")})
+public class AssetApplyThrow extends SuperEntity {
+
+    @JoinColumn(name = "pid", referencedColumnName = "formid")
+    @ManyToOne(optional = false)
+    private AssetApply assetApply;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "seq")
+    private Integer seq;
 
     @Size(max = 20)
     @Column(name = "requireDeptno")
@@ -146,43 +152,46 @@ public class AssetApplyDetail extends FormDetailEntity {
     private Boolean distributed;
     @Column(name = "purchased")
     private Boolean purchased;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2)
-    @Column(name = "status")
-    private String status;
-    @Size(max = 20)
-    @Column(name = "creator")
-    private String creator;
-    @Column(name = "credate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date credate;
-    @Size(max = 20)
-    @Column(name = "optuser")
-    private String optuser;
-    @Column(name = "optdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date optdate;
-    @Size(max = 20)
-    @Column(name = "cfmuser")
-    private String cfmuser;
-    @Column(name = "cfmdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date cfmdate;
 
     @Size(max = 100)
     @Column(name = "remark")
     private String remark;
 
-    public AssetApplyDetail() {
+    public AssetApplyThrow() {
         this.qty = BigDecimal.ONE;
         this.disqty = BigDecimal.ZERO;
         this.purqty = BigDecimal.ZERO;
         this.accqty = BigDecimal.ZERO;
         this.price = BigDecimal.ZERO;
         this.amts = BigDecimal.ZERO;
-        this.distributed = false;
-        this.purchased = false;
+    }
+
+    /**
+     * @return the assetApply
+     */
+    public AssetApply getAssetApply() {
+        return assetApply;
+    }
+
+    /**
+     * @param assetApply the assetApply to set
+     */
+    public void setAssetApply(AssetApply assetApply) {
+        this.assetApply = assetApply;
+    }
+
+    /**
+     * @return the seq
+     */
+    public Integer getSeq() {
+        return seq;
+    }
+
+    /**
+     * @param seq the seq to set
+     */
+    public void setSeq(Integer seq) {
+        this.seq = seq;
     }
 
     public AssetItem getAssetItem() {
@@ -447,62 +456,6 @@ public class AssetApplyDetail extends FormDetailEntity {
         this.purchased = purchased;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    public Date getCredate() {
-        return credate;
-    }
-
-    public void setCredate(Date credate) {
-        this.credate = credate;
-    }
-
-    public String getOptuser() {
-        return optuser;
-    }
-
-    public void setOptuser(String optuser) {
-        this.optuser = optuser;
-    }
-
-    public Date getOptdate() {
-        return optdate;
-    }
-
-    public void setOptdate(Date optdate) {
-        this.optdate = optdate;
-    }
-
-    public String getCfmuser() {
-        return cfmuser;
-    }
-
-    public void setCfmuser(String cfmuser) {
-        this.cfmuser = cfmuser;
-    }
-
-    public Date getCfmdate() {
-        return cfmdate;
-    }
-
-    public void setCfmdate(Date cfmdate) {
-        this.cfmdate = cfmdate;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -513,14 +466,14 @@ public class AssetApplyDetail extends FormDetailEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AssetApplyDetail)) {
+        if (!(object instanceof AssetApplyThrow)) {
             return false;
         }
-        AssetApplyDetail other = (AssetApplyDetail) object;
+        AssetApplyThrow other = (AssetApplyThrow) object;
         if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
-        return this.seq == other.seq;
+        return true;
     }
 
     @Override
