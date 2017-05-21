@@ -32,12 +32,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "AssetAcceptanceDetail.findAll", query = "SELECT a FROM AssetAcceptanceDetail a"),
     @NamedQuery(name = "AssetAcceptanceDetail.findById", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetAcceptanceDetail.findByPId", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.pid = :pid"),
+    @NamedQuery(name = "AssetAcceptanceDetail.findByPId", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.pid = :pid ORDER BY a.seq"),
     @NamedQuery(name = "AssetAcceptanceDetail.findByPurtype", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.purtype = :purtype"),
     @NamedQuery(name = "AssetAcceptanceDetail.findByPurkind", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.purkind = :purkind"),
     @NamedQuery(name = "AssetAcceptanceDetail.findByStatus", query = "SELECT a FROM AssetAcceptanceDetail a WHERE a.status = :status")})
 public class AssetAcceptanceDetail extends FormDetailEntity {
 
+    @JoinColumn(name = "trtype", referencedColumnName = "trtype")
+    @ManyToOne(optional = false)
+    private TransactionType trtype;
+    
     @Column(name = "acceptdate")
     @Temporal(TemporalType.DATE)
     private Date acceptdate;
@@ -88,11 +92,9 @@ public class AssetAcceptanceDetail extends FormDetailEntity {
     @Column(name = "addqty")
     private BigDecimal addqty;
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "warehouseno")
-    private String warehouseno;
+    @JoinColumn(name = "warehouseno", referencedColumnName = "warehouseno")
+    @ManyToOne(optional = false)
+    private Warehouse warehouse;
 
     @Basic(optional = false)
     @NotNull
@@ -180,6 +182,20 @@ public class AssetAcceptanceDetail extends FormDetailEntity {
     public AssetAcceptanceDetail() {
         this.qcpass = false;
         this.addqty = BigDecimal.ZERO;
+    }
+
+    /**
+     * @return the trtype
+     */
+    public TransactionType getTrtype() {
+        return trtype;
+    }
+
+    /**
+     * @param trtype the trtype to set
+     */
+    public void setTrtype(TransactionType trtype) {
+        this.trtype = trtype;
     }
 
     public Date getAcceptdate() {
@@ -294,12 +310,12 @@ public class AssetAcceptanceDetail extends FormDetailEntity {
         this.addqty = addqty;
     }
 
-    public String getWarehouseno() {
-        return warehouseno;
+    public Warehouse getWarehouse() {
+        return warehouse;
     }
 
-    public void setWarehouseno(String warehouseno) {
-        this.warehouseno = warehouseno;
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
     public String getCurrency() {

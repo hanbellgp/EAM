@@ -72,7 +72,7 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
             return;
         }
         if (currentDetail.getAssetItem() == null) {
-            showErrorMsg("Error", "请输入资产件号");
+            showErrorMsg("Error", "请输入件号");
             return;
         }
         super.doConfirmDetail();
@@ -145,10 +145,10 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
     }
 
     public void handleDialogReturnRequireDeptWhenDetailEdit(SelectEvent event) {
-        if (event.getObject() != null && currentEntity != null) {
+        if (event.getObject() != null && currentDetail != null) {
             Department d = (Department) event.getObject();
-            currentEntity.setRequireDeptno(d.getDeptno());
-            currentEntity.setRequireDeptname(d.getDept());
+            currentDetail.setRequireDeptno(d.getDeptno());
+            currentDetail.setRequireDeptname(d.getDept());
         }
     }
 
@@ -157,10 +157,10 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
     }
 
     public void handleDialogReturnRequireUserWhenDetailEdit(SelectEvent event) {
-        if (event.getObject() != null && currentEntity != null) {
+        if (event.getObject() != null && currentDetail != null) {
             SystemUser u = (SystemUser) event.getObject();
-            currentEntity.setRequireUserno(u.getUserid());
-            currentEntity.setRequireUsername(u.getUsername());
+            currentDetail.setRequireUserno(u.getUserid());
+            currentDetail.setRequireUsername(u.getUsername());
         }
     }
 

@@ -14,92 +14,91 @@
                     <p:button id="btnReturn" value="返回" outcome="assetapply" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetApplyManagedBean.persist()}" icon="ui-icon-save"
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetApplyManagedBean.update()}" icon="ui-icon-save"
                                      process="@this,plgHead" update="formOne"/>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产申请－新增</p:column>
+                        <p:column colspan="4">资产申请－修改</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"> <p:outputLabel value="申请单号" for="formid" /></p:column>
+                    <p:column styleClass="Wid20"> <h:outputText value="申请单号" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:inputText id="formid" value="#{assetApplyManagedBean.newEntity.formid}" title="Formid"
-                                     required="true" requiredMessage="请输入申请单号"  disabled="#{assetApplyManagedBean.currentPrgGrant.sysprg.noauto}"/>
+                        <h:outputText id="formid" value="#{assetApplyManagedBean.currentEntity.formid}" title="Formid"/>
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="申请日期" for="formdate" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:calendar id="formdate" value="#{assetApplyManagedBean.newEntity.formdate}" title="Formdate"
+                        <p:calendar id="formdate" value="#{assetApplyManagedBean.currentEntity.formdate}" title="Formdate"
                                     pattern="yyyy/MM/dd" required="true" requiredMessage="请输入申请日期"/>
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="申请部门" for="applyDeptno" /></p:column>
                     <p:column>
-                        <p:inputText id="applyDeptno" value="#{assetApplyManagedBean.newEntity.applyDeptno}" title="ApplyDeptno"  styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="applyDeptno" value="#{assetApplyManagedBean.currentEntity.applyDeptno}" title="ApplyDeptno"  styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnApplyDeptSelect" actionListener="#{assetApplyManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnWhenNew}"
+                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnWhenEdit}"
                                     update="applyDeptno,applyDeptname" />
                         </p:commandButton>
                     </p:column>
                     <p:column><p:outputLabel value="部门名称" for="applyDeptname" /></p:column>
                     <p:column>
-                        <h:outputText id="applyDeptname" value="#{assetApplyManagedBean.newEntity.applyDeptname}" title="ApplyDeptname" />
+                        <h:outputText id="applyDeptname" value="#{assetApplyManagedBean.currentEntity.applyDeptname}" title="ApplyDeptname" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="申请人" for="applyUserno" /></p:column>
                     <p:column>
-                        <p:inputText id="applyUserno" value="#{assetApplyManagedBean.newEntity.applyUserno}" title="ApplyUserno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="applyUserno" value="#{assetApplyManagedBean.currentEntity.applyUserno}" title="ApplyUserno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnApplyUserSelect" actionListener="#{assetApplyManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnApplyUserWhenNew}"
+                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnApplyUserWhenEdit}"
                                     update="applyUserno,applyUsername" />
                         </p:commandButton>
                     </p:column>
                     <p:column><p:outputLabel value="姓名" for="applyUsername" /></p:column>
                     <p:column>
-                        <h:outputText id="applyUsername" value="#{assetApplyManagedBean.newEntity.applyUsername}" title="ApplyUsername" />
+                        <h:outputText id="applyUsername" value="#{assetApplyManagedBean.currentEntity.applyUsername}" title="ApplyUsername" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="需求部门" for="requireDeptno" /></p:column>
                     <p:column>
-                        <p:inputText id="requireDeptno" value="#{assetApplyManagedBean.newEntity.requireDeptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="requireDeptno" value="#{assetApplyManagedBean.currentEntity.requireDeptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnRequireDeptSelect" actionListener="#{assetApplyManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireDeptWhenNew}"
+                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireDeptWhenEdit}"
                                     update="requireDeptno,requireDeptname" />
                         </p:commandButton>
                     </p:column>
                     <p:column><p:outputLabel value="部门名称" for="requireDeptname" /></p:column>
                     <p:column>
-                        <h:outputText id="requireDeptname" value="#{assetApplyManagedBean.newEntity.requireDeptname}" title="RequireDeptname" />
+                        <h:outputText id="requireDeptname" value="#{assetApplyManagedBean.currentEntity.requireDeptname}" title="RequireDeptname" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="需求人" for="requireUserno" /></p:column>
                     <p:column>
-                        <p:inputText id="requireUserno" value="#{assetApplyManagedBean.newEntity.requireUserno}" title="RequireUserno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="requireUserno" value="#{assetApplyManagedBean.currentEntity.requireUserno}" title="RequireUserno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnRequireUserSelect" actionListener="#{assetApplyManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireUserWhenNew}"
+                            <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireUserWhenEdit}"
                                     update="requireUserno,requireUsername" />
                         </p:commandButton>
                     </p:column>
                     <p:column><p:outputLabel value="姓名" for="requireUsername" /></p:column>
                     <p:column>
-                        <h:outputText id="requireUsername" value="#{assetApplyManagedBean.newEntity.requireUsername}" title="RequireUsername" />
+                        <h:outputText id="requireUsername" value="#{assetApplyManagedBean.currentEntity.requireUsername}" title="RequireUsername" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="备注" for="remark" /></p:column>
                     <p:column colspan="3">
-                        <p:inputText id="remark" value="#{assetApplyManagedBean.newEntity.remark}" title="Remark" />
+                        <p:inputText id="remark" value="#{assetApplyManagedBean.currentEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -127,7 +126,7 @@
                                 <p:inputText id="requireDeptno" value="#{assetApplyManagedBean.currentDetail.requireDeptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                                 <p:commandButton id="btnDepartmentSelect" actionListener="#{assetApplyManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireDeptWhenDetailNew}"
+                                    <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireDeptWhenDetailEdit}"
                                             update="requireDeptno,requireDeptname" />
                                 </p:commandButton>
                             </p:column>
@@ -142,7 +141,7 @@
                                 <p:inputText id="requireUserno" value="#{assetApplyManagedBean.currentDetail.requireUserno}" title="RequireUserno" styleClass="inputWithButton" readonly="true"/>
                                 <p:commandButton id="btnSystemUserSelect" actionListener="#{assetApplyManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireUserWhenDetailNew}"
+                                    <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireUserWhenDetailEdit}"
                                             update="requireUserno,requireUsername" />
                                 </p:commandButton>
                             </p:column>
@@ -158,7 +157,7 @@
                                              required="true" requiredMessage="The AssetItem field is required." readonly="true"/>
                                 <p:commandButton id="btnAssetItemSelect" actionListener="#{assetApplyManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnWhenDetailNew}"
+                                    <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnWhenDetailEdit}"
                                             update="assetItem,itemdesc,itemspec,unit" />
                                 </p:commandButton>
                             </p:column>

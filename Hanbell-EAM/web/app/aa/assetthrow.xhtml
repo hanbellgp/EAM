@@ -11,37 +11,37 @@
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetApplyManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
-                    <p:commandButton id="btnView" value="查看" action="#{assetApplyManagedBean.view('assetapplyView')}"  icon="ui-icon-document"/>
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetApplyThrowManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{assetApplyThrowManagedBean.view('assetthrowView')}"  icon="ui-icon-document"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
-                        <p:menuitem id="btnEdit" value="编辑" action="#{assetApplyManagedBean.edit('assetapplyEdit')}" icon="ui-icon-pencil"
-                                    rendered="#{assetApplyManagedBean.doEdit}"/>
-                        <p:menuitem id="btnDelete" value="删除" actionListener="#{assetApplyManagedBean.delete()}" icon="ui-icon-trash"
-                                    rendered="#{assetApplyManagedBean.doDel}" update=":formList">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{assetApplyThrowManagedBean.edit('assetthrowEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{assetApplyThrowManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{assetApplyThrowManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{assetApplyThrowManagedBean.doDel}" update=":formList">
                             <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{assetApplyManagedBean.unverify()}" icon="ui-icon-lock-open"
-                                    rendered="#{assetApplyManagedBean.doUnCfm}"  update=":formList">
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{assetApplyThrowManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{assetApplyThrowManagedBean.doUnCfm}"  update=":formList">
                             <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem id="btnCreate" value="新增" action="#{assetApplyManagedBean.create('assetapplyNew')}" icon="ui-icon-plus"
-                                    rendered="#{assetApplyManagedBean.doAdd}" process="@this" />
+                        <p:menuitem id="btnCreate" value="新增" action="#{assetApplyThrowManagedBean.create('assetthrowNew')}" icon="ui-icon-plus"
+                                    rendered="#{assetApplyThrowManagedBean.doAdd}" process="@this" />
                     </p:splitButton>
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetApplyManagedBean.reset()}" icon="ui-icon-refresh"
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetApplyThrowManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetApplyManagedBean.query()}" icon="ui-icon-search"
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetApplyThrowManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
             <p:panel id="panelList">
-                <p:dataTable value="#{assetApplyManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                <p:dataTable value="#{assetApplyThrowManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="15,30,45"  lazy="true"
-                             selectionMode="single" selection="#{assetApplyManagedBean.currentEntity}" rowKey="#{item.id}" >
+                             selectionMode="single" selection="#{assetApplyThrowManagedBean.currentEntity}" rowKey="#{item.id}" >
                     <f:facet name="header">
-                        资产申请维护
+                        资产申请抛转
                     </f:facet>
                     <p:ajax event="rowSelect"  update=":formList:toolbar" />
                     <p:ajax event="rowUnselect" update=":formList:toolbar" />
@@ -49,29 +49,17 @@
                         <f:facet name="header">
                             <h:outputText value="申请单号"/>
                         </f:facet>
-                        <h:outputText value="#{item.formid}"/>
+                        <h:outputText value="#{item.assetApply.formid}"/>
                     </p:column>
                     <p:column styleClass="Wid10">
                         <f:facet name="header">
                             <h:outputText value="申请日期"/>
                         </f:facet>
-                        <h:outputText value="#{item.formdate}">
+                        <h:outputText value="#{item.assetApply.formdate}">
                             <f:convertDateTime pattern="yyyy/MM/dd" />
                         </h:outputText>
                     </p:column>
-                    <p:column  styleClass="Wid20">
-                        <f:facet name="header">
-                            <h:outputText value="申请部门"/>
-                        </f:facet>
-                        <h:outputText value="#{item.applyDeptname}"/>
-                    </p:column>
                     <p:column  styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="申请人"/>
-                        </f:facet>
-                        <h:outputText value="#{item.applyUsername}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid20">
                         <f:facet name="header">
                             <h:outputText value="需求部门"/>
                         </f:facet>
@@ -83,11 +71,35 @@
                         </f:facet>
                         <h:outputText value="#{item.requireUsername}"/>
                     </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="件号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetItem.itemno}"/>
+                    </p:column>
                     <p:column  styleClass="Wid20">
                         <f:facet name="header">
-                            <h:outputText value="状态"/>
+                            <h:outputText value="品名"/>
                         </f:facet>
-                        <h:outputText value="#{item.status}"/>
+                        <h:outputText value="#{item.itemdesc}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: right;">
+                        <f:facet name="header">
+                            <h:outputText value="数量"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qty}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText value="请购"/>
+                        </f:facet>
+                        <p:selectBooleanCheckbox value="#{item.purchased}" disabled="true"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText value="领用"/>
+                        </f:facet>
+                        <p:selectBooleanCheckbox value="#{item.distributed}" disabled="true"/>
                     </p:column>
                 </p:dataTable>
             </p:panel>
