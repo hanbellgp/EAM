@@ -82,6 +82,10 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
         super.init();
     }
 
+    public void initAssetPurchase() {
+
+    }
+
     public void initAssetDistribute() {
         if (currentEntity == null) {
             showWarnMsg("Warn", "没有可抛转明细");

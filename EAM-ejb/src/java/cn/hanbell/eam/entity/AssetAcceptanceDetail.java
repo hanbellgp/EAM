@@ -41,7 +41,7 @@ public class AssetAcceptanceDetail extends FormDetailEntity {
     @JoinColumn(name = "trtype", referencedColumnName = "trtype")
     @ManyToOne(optional = false)
     private TransactionType trtype;
-    
+
     @Column(name = "acceptdate")
     @Temporal(TemporalType.DATE)
     private Date acceptdate;
@@ -524,10 +524,10 @@ public class AssetAcceptanceDetail extends FormDetailEntity {
             return false;
         }
         AssetAcceptanceDetail other = (AssetAcceptanceDetail) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if (this.id != null && other.id != null) {
+            return this.id.equals(other.id);
         }
-        return true;
+        return this.seq == other.seq;
     }
 
     @Override
