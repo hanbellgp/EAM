@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetApplyThrowManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{assetApplyThrowManagedBean.view('assetthrowView')}"  icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{assetApplyThrowManagedBean.edit('assetthrowEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{assetApplyThrowManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{assetApplyThrowManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{assetApplyThrowManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{assetApplyThrowManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{assetApplyThrowManagedBean.doUnCfm}"  update=":formList">
+                            <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnCreate" value="新增" action="#{assetApplyThrowManagedBean.create('assetthrowNew')}" icon="ui-icon-plus"
+                                    rendered="#{assetApplyThrowManagedBean.doAdd}" process="@this" />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetApplyThrowManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetApplyThrowManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panel id="panelList">
+                <p:dataTable value="#{assetApplyThrowManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="15,30,45"  lazy="true"
+                             selectionMode="single" selection="#{assetApplyThrowManagedBean.currentEntity}" rowKey="#{item.id}" >
+                    <f:facet name="header">
+                        资产申请抛转
+                    </f:facet>
+                    <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                    <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="申请单号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetApply.formid}"/>
+                    </p:column>
+                    <p:column styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="申请日期"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetApply.formdate}">
+                            <f:convertDateTime pattern="yyyy/MM/dd" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="需求部门"/>
+                        </f:facet>
+                        <h:outputText value="#{item.requireDeptname}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="需求人"/>
+                        </f:facet>
+                        <h:outputText value="#{item.requireUsername}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="件号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetItem.itemno}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid20">
+                        <f:facet name="header">
+                            <h:outputText value="品名"/>
+                        </f:facet>
+                        <h:outputText value="#{item.itemdesc}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: right;">
+                        <f:facet name="header">
+                            <h:outputText value="数量"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qty}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText value="请购"/>
+                        </f:facet>
+                        <p:selectBooleanCheckbox value="#{item.purchased}" disabled="true"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText value="领用"/>
+                        </f:facet>
+                        <p:selectBooleanCheckbox value="#{item.distributed}" disabled="true"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

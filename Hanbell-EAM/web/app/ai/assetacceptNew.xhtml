@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetaccept" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetAcceptanceManagedBean.persist()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">资产验收－新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"> <p:outputLabel value="验收单号" for="formid" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="formid" value="#{assetAcceptanceManagedBean.newEntity.formid}" title="Formid"
+                                     required="true" requiredMessage="请输入验收单号"  disabled="#{assetAcceptanceManagedBean.currentPrgGrant.sysprg.noauto}"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="验收日期" for="formdate" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:calendar id="formdate" value="#{assetAcceptanceManagedBean.newEntity.formdate}" title="Formdate"
+                                    pattern="yyyy/MM/dd" required="true" requiredMessage="请输入验收日期"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="验收部门" for="deptno" /></p:column>
+                    <p:column>
+                        <p:inputText id="deptno" value="#{assetAcceptanceManagedBean.newEntity.deptno}" title="Deptno"  styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnApplyDeptSelect" actionListener="#{assetAcceptanceManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetAcceptanceManagedBean.handleDialogReturnWhenNew}"
+                                    update="deptno,deptname" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="部门名称" for="deptname" /></p:column>
+                    <p:column>
+                        <h:outputText id="deptname" value="#{assetAcceptanceManagedBean.newEntity.deptname}" title="Deptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{assetAcceptanceManagedBean.newEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="验收明细">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAcceptanceManagedBean.createDetail()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update=":formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetAcceptanceManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetAcceptanceManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="来源单号" for="srcformid" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="srcformid" value="#{assetAcceptanceManagedBean.currentDetail.srcformid}" title="srcid" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton actionListener="#{assetAcceptanceManagedBean.openDialog('assetapplyacceptanceSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAcceptanceManagedBean.handleDialogReturnWhenDetailEdit}"
+                                            update="plgDetail" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="件号"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="assetItem" value="#{assetAcceptanceManagedBean.currentDetail.assetItem.itemno}" title="Itemno" styleClass="inputWithButton"
+                                             required="true" requiredMessage="请输入件号" readonly="true" />
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetAcceptanceManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAcceptanceManagedBean.handleDialogReturnAssetItemWhenDetailEdit}"
+                                            update="assetItem,itemdesc,itemspec,unit" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="名称" /></p:column>
+                            <p:column>
+                                <h:outputText id="itemdesc" value="#{assetAcceptanceManagedBean.currentDetail.assetItem.itemdesc}" />
+                            </p:column>
+                            <p:column><h:outputText value="规格"/></p:column>
+                            <p:column>
+                                <h:outputText id="itemspec" value="#{assetAcceptanceManagedBean.currentDetail.assetItem.itemspec}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="点收数量" for="qty" /></p:column>
+                            <p:column>
+                                <p:inputText id="qty" value="#{assetAcceptanceManagedBean.currentDetail.qty}" title="Qty"
+                                             required="true" requiredMessage="请输入点收数量"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                            <p:column>
+                                <p:inputText id="unit" value="#{assetAcceptanceManagedBean.currentDetail.unit}" title="Unit" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="验收数量" for="qcqty" /></p:column>
+                            <p:column>
+                                <p:inputText id="qcqty" value="#{assetAcceptanceManagedBean.currentDetail.qcqty}" title="Qcqty"
+                                             required="true" requiredMessage="请输入验收数量"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="仓库" for="warehouseno" /></p:column>
+                            <p:column>
+                                <p:inputText id="warehouseno" value="#{assetAcceptanceManagedBean.currentDetail.warehouse.name}" title="Warehouseno" styleClass="inputWithButton"
+                                             required="true" requiredMessage="请输入仓库" readonly="true" />
+                                <p:commandButton id="btnWarehouseSelect" actionListener="#{assetAcceptanceManagedBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAcceptanceManagedBean.handleDialogReturnWarehouseWhenDetailEdit}"
+                                            update="warehouseno" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="单价" for="price" /></p:column>
+                            <p:column>
+                                <p:inputText id="price" value="#{assetAcceptanceManagedBean.currentDetail.price}" title="Price"
+                                             required="true" requiredMessage="请输入单价"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="金额" for="amts" /></p:column>
+                            <p:column>
+                                <p:inputText id="amts" value="#{assetAcceptanceManagedBean.currentDetail.amts}" title="Amts"
+                                             required="true" requiredMessage="请输入金额"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="不含税" for="extax" /></p:column>
+                            <p:column>
+                                <p:inputText id="extax" value="#{assetAcceptanceManagedBean.currentDetail.extax}" title="Extax"
+                                             required="true" requiredMessage="请输入不含税金额"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="税额" for="taxes" /></p:column>
+                            <p:column>
+                                <p:inputText id="taxes" value="#{assetAcceptanceManagedBean.currentDetail.taxes}" title="Taxes"
+                                             required="true" requiredMessage="请输入税额"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                            <p:column colspan="3">
+                                <p:inputText id="remark" value="#{assetAcceptanceManagedBean.currentDetail.remark}" title="Remark" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{assetAcceptanceManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{assetAcceptanceManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="件号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid30">
+                            <f:facet name="header">
+                                <h:outputText value="名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemdesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="点收数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="合格数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qcqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.unit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.price}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="金额"/>
+                            </f:facet>
+                            <h:outputText value="#{item.amts}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
