@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetthrow" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{assetApplyThrowManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{assetApplyThrowManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{assetApplyThrowManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{assetApplyThrowManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnDistribute" value="领用" actionListener="#{assetApplyThrowManagedBean.initAssetDistribute()}" icon="ui-icon-save"
+                                     process="@this" update="toolbar" rendered="#{assetApplyThrowManagedBean.doDistribute}"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">资产申请－抛转</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"> <h:outputText value="申请单号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="申请日期" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formdate" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.formdate}" title="Formdate">
+                            <f:convertDateTime pattern="yyyy/MM/dd"/>
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="申请部门" /></p:column>
+                    <p:column>
+                        <h:outputText id="applyDeptno" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.applyDeptno}" title="ApplyDeptno"  />
+                    </p:column>
+                    <p:column><h:outputText value="部门名称" /></p:column>
+                    <p:column>
+                        <h:outputText id="applyDeptname" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.applyDeptname}" title="ApplyDeptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="申请人"/></p:column>
+                    <p:column>
+                        <h:outputText id="applyUserno" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.applyUserno}" title="ApplyUserno" />
+                    </p:column>
+                    <p:column><h:outputText value="姓名" /></p:column>
+                    <p:column>
+                        <h:outputText id="applyUsername" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.applyUsername}" title="ApplyUsername" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="需求部门" /></p:column>
+                    <p:column>
+                        <h:outputText id="requireDeptno" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.requireDeptno}" title="RequireDeptno" />
+                    </p:column>
+                    <p:column><h:outputText value="部门名称"/></p:column>
+                    <p:column>
+                        <h:outputText id="requireDeptname" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.requireDeptname}" title="RequireDeptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="需求人"/></p:column>
+                    <p:column>
+                        <h:outputText id="requireUserno" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.requireUserno}" title="RequireUserno"/>
+                    </p:column>
+                    <p:column><h:outputText value="姓名"/></p:column>
+                    <p:column>
+                        <h:outputText id="requireUsername" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.requireUsername}" title="RequireUsername" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="备注"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="remark" value="#{assetApplyThrowManagedBean.currentEntity.assetApply.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="申请明细">
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="需求部门" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="requireDeptno" value="#{assetApplyThrowManagedBean.currentEntity.requireDeptno}" title="RequireDeptno" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><h:outputText value="部门名称" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="requireDeptname" value="#{assetApplyThrowManagedBean.currentEntity.requireDeptname}" title="RequireDeptname" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="需求人"/></p:column>
+                            <p:column>
+                                <h:outputText id="requireUserno" value="#{assetApplyThrowManagedBean.currentEntity.requireUserno}" title="RequireUserno" />
+                            </p:column>
+                            <p:column><h:outputText value="姓名"/></p:column>
+                            <p:column>
+                                <h:outputText id="requireUsername" value="#{assetApplyThrowManagedBean.currentEntity.requireUsername}" title="RequireUsername" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="件号"/></p:column>
+                            <p:column>
+                                <h:outputText id="assetItem" value="#{assetApplyThrowManagedBean.currentEntity.assetItem.itemno}" title="itemno" />
+                            </p:column>
+                            <p:column><h:outputText value="品名"/></p:column>
+                            <p:column>
+                                <h:outputText id="itemdesc" value="#{assetApplyThrowManagedBean.currentEntity.itemdesc}" title="Itemdesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="规格"/></p:column>
+                            <p:column colspan="3">
+                                <h:outputText id="itemspec" value="#{assetApplyThrowManagedBean.currentEntity.itemspec}" title="Itemspec" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="申请数量"/></p:column>
+                            <p:column>
+                                <h:outputText id="qty" value="#{assetApplyThrowManagedBean.currentEntity.qty}" title="Qty"/>
+                            </p:column>
+                            <p:column><h:outputText value="单位"/></p:column>
+                            <p:column>
+                                <h:outputText id="unit" value="#{assetApplyThrowManagedBean.currentEntity.unit}" title="Unit"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="请购数量"/></p:column>
+                            <p:column>
+                                <h:outputText id="purqty" value="#{assetApplyThrowManagedBean.currentEntity.purqty}" title="purqty"/>
+                            </p:column>
+                            <p:column><h:outputText value="领用数量"/></p:column>
+                            <p:column>
+                                <h:outputText id="disqty" value="#{assetApplyThrowManagedBean.currentEntity.disqty}" title="disqty"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="请购"/></p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox id="purchased" value="#{assetApplyThrowManagedBean.currentEntity.purchased}" title="purchased" disabled="true"/>
+                            </p:column>
+                            <p:column><h:outputText value="领用"/></p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox id="distributed" value="#{assetApplyThrowManagedBean.currentEntity.distributed}" title="disqty" disabled="true"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
