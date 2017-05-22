@@ -19,11 +19,13 @@
                         <p:menuitem id="btnEdit" value="编辑" action="#{transactionTypeManagedBean.edit('inventorytypeEdit')}" icon="ui-icon-pencil"
                                     rendered="#{transactionTypeManagedBean.doEdit}"/>
                         <p:menuitem id="btnDelete" value="删除" actionListener="#{transactionTypeManagedBean.delete()}" icon="ui-icon-trash"
-                                    rendered="#{v.doDel}" update=":formList">
+                                    rendered="#{transactionTypeManagedBean.doDel}" update=":formList">
                             <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
                         </p:menuitem>
                         <p:menuitem id="btnUnverify" value="还原" actionListener="#{transactionTypeManagedBean.unverify()}" icon="ui-icon-lock-open"
-                                    rendered="#{transactionTypeManagedBean.doUnCfm}"  update=":formList"/>
+                                    rendered="#{transactionTypeManagedBean.doUnCfm}"  update=":formList">
+                            <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
                         <p:menuitem id="btnCreate" value="新增" action="#{transactionTypeManagedBean.create('inventorytypeNew')}" icon="ui-icon-plus"
                                     rendered="#{transactionTypeManagedBean.doAdd}" process="@this" />
                     </p:splitButton>
@@ -95,6 +97,9 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
         </h:form>
     </ui:define>
 
