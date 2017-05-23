@@ -173,7 +173,28 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
         superEJB = assetApplyBean;
         detailEJB = assetApplyDetailBean;
         model = new AssetApplyModel(assetApplyBean, userManagedBean);
+        model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("formid", "DESC");
         super.init();
+    }
+
+    @Override
+    public void query() {
+        if (this.model != null && this.model.getFilterFields() != null) {
+            this.model.getFilterFields().clear();
+            if (queryFormId != null && !"".equals(queryFormId)) {
+                this.model.getFilterFields().put("formid", queryFormId);
+            }
+            if (queryDateBegin != null) {
+                this.model.getFilterFields().put("formdateBegin", queryDateBegin);
+            }
+            if (queryDateEnd != null) {
+                this.model.getFilterFields().put("formdateEnd", queryDateEnd);
+            }
+            if (queryState != null && !"ALL".equals(queryState)) {
+                this.model.getFilterFields().put("status", queryState);
+            }
+        }
     }
 
 }

@@ -14,7 +14,7 @@
                     <p:button id="btnReturn" value="返回" outcome="assetdistribute" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetDistributeManagedBean.update()}" icon="ui-icon-save"
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetDistributeManagedBean.persist()}" icon="ui-icon-save"
                                      process="@this,plgHead" update="formOne"/>
                 </f:facet>
             </p:toolbar>
@@ -25,20 +25,21 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"> <h:outputText value="领用单号" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="领用单号" for="formid" /></p:column>
                     <p:column styleClass="Wid30">
-                        <h:outputText id="formid" value="#{assetDistributeManagedBean.currentEntity.formid}" title="Formid"/>
+                        <p:inputText id="formid" value="#{assetDistributeManagedBean.newEntity.formid}" title="Formid"
+                                     required="true" requiredMessage="请输入领用单号"  disabled="#{assetDistributeManagedBean.currentPrgGrant.sysprg.noauto}"/>
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="领用日期" for="formdate" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:calendar id="formdate" value="#{assetDistributeManagedBean.currentEntity.formdate}" title="Formdate"
+                        <p:calendar id="formdate" value="#{assetDistributeManagedBean.newEntity.formdate}" title="Formdate"
                                     pattern="yyyy/MM/dd" required="true" requiredMessage="请输入申请日期"/>
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="处理部门" for="deptno" /></p:column>
                     <p:column>
-                        <p:inputText id="deptno" value="#{assetDistributeManagedBean.currentEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="deptno" value="#{assetDistributeManagedBean.newEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnRequireDeptSelect" actionListener="#{assetDistributeManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWhenEdit}"
@@ -47,13 +48,13 @@
                     </p:column>
                     <p:column><p:outputLabel value="部门名称" for="deptname" /></p:column>
                     <p:column>
-                        <h:outputText id="deptname" value="#{assetDistributeManagedBean.currentEntity.deptname}" title="RequireDeptname" />
+                        <h:outputText id="deptname" value="#{assetDistributeManagedBean.newEntity.deptname}" title="RequireDeptname" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="备注" for="remark" /></p:column>
                     <p:column colspan="3">
-                        <p:inputText id="remark" value="#{assetDistributeManagedBean.currentEntity.remark}" title="Remark" />
+                        <p:inputText id="remark" value="#{assetDistributeManagedBean.newEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
             </p:panelGrid>

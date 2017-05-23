@@ -9,6 +9,23 @@
     <ui:define name="content">
         <h:form id="formList">
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <h:outputLabel value="领用编号" for="queryFormId" />
+                <p:inputText id="queryFormId" value="#{assetDistributeManagedBean.queryFormId}" title="编号" />
+                <h:outputLabel value="状态" for="queryState" />
+                <p:selectOneMenu id="queryState" value="#{assetDistributeManagedBean.queryState}" title="状态" >
+                    <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                    <f:selectItem itemLabel="未审核" itemValue="N"/>
+                    <f:selectItem itemLabel="已审核" itemValue="V"/>
+                </p:selectOneMenu>
+                <h:outputLabel value="领用日期" for="queryDateBegin" />
+                <p:calendar id="queryDateBegin" value="#{assetDistributeManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                <h:outputLabel value="截止日期" for="queryDateEnd" />
+                <p:calendar id="queryDateEnd" value="#{assetDistributeManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+            </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetDistributeManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>

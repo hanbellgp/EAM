@@ -82,7 +82,7 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
         if (super.doBeforeUnverify()) {
             for (AssetAcceptanceDetail d : detailList) {
                 //判断是不是自动产生资产卡片
-                if (true) {
+                if (d.getAssetItem().getCategory().getNoauto()) {
                     BigDecimal acqty = BigDecimal.ZERO;
                     List<AssetCard> acs = assetCardBean.findByFiltersAndNotUsed(d.getPid(), d.getSeq());
                     for (AssetCard ac : acs) {
@@ -156,11 +156,32 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
         superEJB = assetAcceptanceBean;
         detailEJB = assetAcceptanceDetailBean;
         model = new AssetAcceptanceModel(assetAcceptanceBean, userManagedBean);
+        model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("formid", "DESC");
         trtype = transactoinTypeBean.findByTrtype("PAA");
         if (trtype == null) {
             showErrorMsg("Error", "PAA验收类别未设置");
         }
         super.init();
+    }
+
+    @Override
+    public void query() {
+        if (this.model != null && this.model.getFilterFields() != null) {
+            this.model.getFilterFields().clear();
+            if (queryFormId != null && !"".equals(queryFormId)) {
+                this.model.getFilterFields().put("formid", queryFormId);
+            }
+            if (queryDateBegin != null) {
+                this.model.getFilterFields().put("formdateBegin", queryDateBegin);
+            }
+            if (queryDateEnd != null) {
+                this.model.getFilterFields().put("formdateEnd", queryDateEnd);
+            }
+            if (queryState != null && !"ALL".equals(queryState)) {
+                this.model.getFilterFields().put("status", queryState);
+            }
+        }
     }
 
 }

@@ -12,6 +12,8 @@ import cn.hanbell.eap.entity.SystemGrantPrg;
 import com.lightshell.comm.SuperDetailEntity;
 import com.lightshell.comm.SuperMulti3ManagedBean;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -37,6 +39,8 @@ public abstract class SuperMulti3Bean<T extends SuperEntity, D1 extends SuperDet
     protected String appDataPath;
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
+
+    protected Map<String, List<String>> openParams;
 
     /**
      * @param entityClass

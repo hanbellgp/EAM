@@ -79,11 +79,12 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
     public void init() {
         superEJB = assetApplyThrowBean;
         model = new AssetApplyThrowModel(assetApplyThrowBean, userManagedBean);
+        model.getSortFields().put("assetApply.formid", "DESC");
         super.init();
     }
 
     public void initAssetPurchase() {
-
+        showWarnMsg("Warn", "暂不支持抛转请购");
     }
 
     public void initAssetDistribute() {
@@ -96,6 +97,25 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
             showInfoMsg("Info", "成功产生领用单" + formid);
         } catch (Exception ex) {
             showErrorMsg("Error", ex.getMessage());
+        }
+    }
+
+    @Override
+    public void query() {
+        if (this.model != null && this.model.getFilterFields() != null) {
+            this.model.getFilterFields().clear();
+            if (queryFormId != null && !"".equals(queryFormId)) {
+                this.model.getFilterFields().put("assetApply.formid", queryFormId);
+            }
+            if (queryName != null && !"".equals(queryName)) {
+                this.model.getFilterFields().put("assetApply.applyDeptno", queryName);
+            }
+            if (queryDateBegin != null) {
+                this.model.getFilterFields().put("assetApply.formdateBegin", queryDateBegin);
+            }
+            if (queryDateEnd != null) {
+                this.model.getFilterFields().put("assetApply.formdateEnd", queryDateEnd);
+            }
         }
     }
 
