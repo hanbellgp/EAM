@@ -21,9 +21,17 @@
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnPurchase" value="请购" actionListener="#{assetApplyThrowManagedBean.initAssetPurchase()}" icon="ui-icon-save"
-                                     process="@this" update="toolbar" rendered="#{assetApplyThrowManagedBean.doPurchase}"/>
+                                     process="@this" update="toolbar" rendered="#{assetApplyThrowManagedBean.doPurchase}">
+                        <p:confirm header="系统提示" message="请购吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                     <p:commandButton id="btnDistribute" value="领用" actionListener="#{assetApplyThrowManagedBean.initAssetDistribute()}" icon="ui-icon-save"
-                                     process="@this" update="toolbar" rendered="#{assetApplyThrowManagedBean.doDistribute}"/>
+                                     process="@this" update="toolbar" rendered="#{assetApplyThrowManagedBean.doDistribute}">
+                        <p:confirm header="系统提示" message="领用吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnAdjust" value="调拨" actionListener="#{assetApplyThrowManagedBean.initAssetAdjust()}" icon="ui-icon-save"
+                                     process="@this" update="toolbar" rendered="#{assetApplyThrowManagedBean.doDistribute}">
+                        <p:confirm header="系统提示" message="调拨吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
