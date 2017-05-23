@@ -223,15 +223,15 @@ public abstract class FormMultiBean<T extends FormEntity, D1 extends FormDetailE
                     currentEntity.setCfmdate(null);
                     superEJB.unverify(currentEntity);
                     doAfterUnverify();
-                    showMsg(FacesMessage.SEVERITY_INFO, "Info", "更新成功");
+                    showInfoMsg("Info", "更新成功");
                 } else {
-                    showMsg(FacesMessage.SEVERITY_WARN, "Warn", "还原前检查失败");
+                    showErrorMsg("Error", "还原前检查失败");
                 }
             } catch (Exception ex) {
-                showMsg(FacesMessage.SEVERITY_ERROR, "Error", ex.toString());
+                showErrorMsg("Error", ex.getMessage());
             }
         } else {
-            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可更新数据");
+            showWarnMsg("Warn", "没有可更新数据");
         }
     }
 
@@ -245,15 +245,15 @@ public abstract class FormMultiBean<T extends FormEntity, D1 extends FormDetailE
                     currentEntity.setCfmdateToNow();
                     superEJB.verify(currentEntity);
                     doAfterVerify();
-                    showMsg(FacesMessage.SEVERITY_INFO, "Info", "更新成功");
+                    showInfoMsg("Info", "更新成功");
                 } else {
-                    showMsg(FacesMessage.SEVERITY_WARN, "Warn", "审核前检查失败");
+                    showErrorMsg("Error", "审核前检查失败");
                 }
             } catch (Exception ex) {
-                showMsg(FacesMessage.SEVERITY_ERROR, "Error", ex.toString());
+                showErrorMsg("Error", ex.getMessage());
             }
         } else {
-            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可更新数据");
+            showWarnMsg("Warn", "没有可更新数据");
         }
     }
 
