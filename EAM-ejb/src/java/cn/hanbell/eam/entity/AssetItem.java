@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -27,15 +29,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "AssetItem.findAll", query = "SELECT a FROM AssetItem a"),
     @NamedQuery(name = "AssetItem.findById", query = "SELECT a FROM AssetItem a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetItem.findByCategoryId", query = "SELECT a FROM AssetItem a WHERE a.category = :categoryid"),
+    @NamedQuery(name = "AssetItem.findByCategoryId", query = "SELECT a FROM AssetItem a WHERE a.category.id = :categoryid"),
     @NamedQuery(name = "AssetItem.findByItemno", query = "SELECT a FROM AssetItem a WHERE a.itemno = :itemno"),
     @NamedQuery(name = "AssetItem.findByStatus", query = "SELECT a FROM AssetItem a WHERE a.status = :status")})
 public class AssetItem extends SuperEntity {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "categoryid")
-    private int category;
+    @JoinColumn(name = "categoryid", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private AssetCategory category;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
@@ -130,11 +132,11 @@ public class AssetItem extends SuperEntity {
     public AssetItem() {
     }
 
-    public int getCategory() {
+    public AssetCategory getCategory() {
         return category;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(AssetCategory category) {
         this.category = category;
     }
 

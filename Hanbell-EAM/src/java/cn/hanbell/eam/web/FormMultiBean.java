@@ -12,6 +12,8 @@ import com.lightshell.comm.FormDetailEntity;
 import com.lightshell.comm.FormEntity;
 import com.lightshell.comm.FormMultiManagedBean;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -35,6 +37,8 @@ public abstract class FormMultiBean<T extends FormEntity, D1 extends FormDetailE
     protected String appDataPath;
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
+
+    protected Map<String, List<String>> openParams;
 
     /**
      * @param entityClass

@@ -66,4 +66,14 @@ public class AssetPositionQueryBean extends SuperQueryBean<AssetPosition> {
         }
     }
 
+    @Override
+    public void reset() {
+        super.reset();
+        if (queryPId == 0) {
+            model.getFilterFields().put("parentPosition IS NULL", "");
+        } else if (queryPId > 0) {
+            model.getFilterFields().put("parentPosition.id", queryPId);
+        }
+    }
+
 }

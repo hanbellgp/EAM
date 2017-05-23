@@ -137,8 +137,8 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
                 i.setQty(d.getQty().multiply(BigDecimal.valueOf(d.getTrtype().getIocode())));//出库就 x(-1)
                 i.setStatusToNew();
                 inventoryList.add(i);
-                if (true) {
-                    //产生资产卡片
+                if (d.getAssetItem().getCategory().getNoauto()) {
+                    //是自动编号的就产生资产卡片
                     Company c = companyBean.findByCompany(e.getCompany());
                     for (int n = 0; n < d.getQcqty().intValue(); n++) {
                         AssetCard ac = new AssetCard();

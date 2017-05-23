@@ -7,6 +7,7 @@ package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.FormDetailEntity;
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -97,6 +98,9 @@ public class AssetDistributeDetail extends FormDetailEntity {
     @JoinColumn(name = "warehouseno", referencedColumnName = "warehouseno")
     @ManyToOne
     private Warehouse warehouse;
+    @JoinColumn(name = "warehouseno2", referencedColumnName = "warehouseno")
+    @ManyToOne
+    private Warehouse warehouse2;
 
     @Size(max = 100)
     @Column(name = "srcapi")
@@ -273,6 +277,20 @@ public class AssetDistributeDetail extends FormDetailEntity {
         this.warehouse = warehouse;
     }
 
+    /**
+     * @return the warehouse2
+     */
+    public Warehouse getWarehouse2() {
+        return warehouse2;
+    }
+
+    /**
+     * @param warehouse2 the warehouse2 to set
+     */
+    public void setWarehouse2(Warehouse warehouse2) {
+        this.warehouse2 = warehouse2;
+    }
+
     public String getSrcapi() {
         return srcapi;
     }
@@ -343,10 +361,10 @@ public class AssetDistributeDetail extends FormDetailEntity {
             return false;
         }
         AssetDistributeDetail other = (AssetDistributeDetail) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if (this.id != null && other.id != null) {
+            return this.id.equals(other.id);
         }
-        return true;
+        return this.seq == other.seq;
     }
 
     @Override
