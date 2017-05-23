@@ -43,7 +43,7 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         query.setParameter("company", company);
         query.setParameter("formid", assetno);
         query.setParameter("itemno", itemno);
-        query.setParameter("detpno", deptno);
+        query.setParameter("deptno", deptno);
         query.setParameter("userno", userno);
         try {
             Object o = query.getSingleResult();
