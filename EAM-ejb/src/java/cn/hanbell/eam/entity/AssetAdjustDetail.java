@@ -24,16 +24,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author C0160
  */
 @Entity
-@Table(name = "assetdistributedetail")
+@Table(name = "assetadjustdetail")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AssetDistributeDetail.findAll", query = "SELECT a FROM AssetDistributeDetail a"),
-    @NamedQuery(name = "AssetDistributeDetail.findById", query = "SELECT a FROM AssetDistributeDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetDistributeDetail.findByPId", query = "SELECT a FROM AssetDistributeDetail a WHERE a.pid = :pid ORDER BY a.seq")})
-public class AssetDistributeDetail extends FormDetailEntity {
+    @NamedQuery(name = "AssetAdjustDetail.findAll", query = "SELECT a FROM AssetAdjustDetail a"),
+    @NamedQuery(name = "AssetAdjustDetail.findById", query = "SELECT a FROM AssetAdjustDetail a WHERE a.id = :id"),
+    @NamedQuery(name = "AssetAdjustDetail.findByPId", query = "SELECT a FROM AssetAdjustDetail a WHERE a.pid = :pid")})
+public class AssetAdjustDetail extends FormDetailEntity {
+
+    @JoinColumn(name = "trtype", referencedColumnName = "trtype")
+    @ManyToOne(optional = false)
+    private TransactionType trtype;
 
     @JoinColumn(name = "assetid", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = true)
     private AssetCard assetCard;
 
     @Size(max = 20)
@@ -45,11 +49,11 @@ public class AssetDistributeDetail extends FormDetailEntity {
     private AssetItem assetItem;
 
     @Size(max = 20)
-    @Column(name = "brand")
-    private String brand;
-    @Size(max = 20)
     @Column(name = "batch")
     private String batch;
+    @Size(max = 20)
+    @Column(name = "brand")
+    private String brand;
     @Size(max = 20)
     @Column(name = "sn")
     private String sn;
@@ -80,7 +84,6 @@ public class AssetDistributeDetail extends FormDetailEntity {
     @JoinColumn(name = "position6", referencedColumnName = "id")
     @ManyToOne
     private AssetPosition position6;
-
     @Size(max = 20)
     @Column(name = "deptno")
     private String deptno;
@@ -93,10 +96,40 @@ public class AssetDistributeDetail extends FormDetailEntity {
     @Size(max = 45)
     @Column(name = "username")
     private String username;
-
     @JoinColumn(name = "warehouseno", referencedColumnName = "warehouseno")
     @ManyToOne
     private Warehouse warehouse;
+
+    @JoinColumn(name = "position12", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position12;
+    @JoinColumn(name = "position22", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position22;
+    @JoinColumn(name = "position32", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position32;
+    @JoinColumn(name = "position42", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position42;
+    @JoinColumn(name = "position52", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position52;
+    @JoinColumn(name = "position62", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position62;
+    @Size(max = 20)
+    @Column(name = "deptno2")
+    private String deptno2;
+    @Size(max = 45)
+    @Column(name = "deptname2")
+    private String deptname2;
+    @Size(max = 20)
+    @Column(name = "userno2")
+    private String userno2;
+    @Size(max = 45)
+    @Column(name = "username2")
+    private String username2;
     @JoinColumn(name = "warehouseno2", referencedColumnName = "warehouseno")
     @ManyToOne
     private Warehouse warehouse2;
@@ -121,7 +154,15 @@ public class AssetDistributeDetail extends FormDetailEntity {
     @Column(name = "remark")
     private String remark;
 
-    public AssetDistributeDetail() {
+    public AssetAdjustDetail() {
+    }
+
+    public TransactionType getTrtype() {
+        return trtype;
+    }
+
+    public void setTrtype(TransactionType trtype) {
+        this.trtype = trtype;
     }
 
     public AssetCard getAssetCard() {
@@ -148,20 +189,20 @@ public class AssetDistributeDetail extends FormDetailEntity {
         this.assetItem = assetItem;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
     public String getBatch() {
         return batch;
     }
 
     public void setBatch(String batch) {
         this.batch = batch;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getSn() {
@@ -276,16 +317,90 @@ public class AssetDistributeDetail extends FormDetailEntity {
         this.warehouse = warehouse;
     }
 
-    /**
-     * @return the warehouse2
-     */
+    public AssetPosition getPosition12() {
+        return position12;
+    }
+
+    public void setPosition12(AssetPosition position12) {
+        this.position12 = position12;
+    }
+
+    public AssetPosition getPosition22() {
+        return position22;
+    }
+
+    public void setPosition22(AssetPosition position22) {
+        this.position22 = position22;
+    }
+
+    public AssetPosition getPosition32() {
+        return position32;
+    }
+
+    public void setPosition32(AssetPosition position32) {
+        this.position32 = position32;
+    }
+
+    public AssetPosition getPosition42() {
+        return position42;
+    }
+
+    public void setPosition42(AssetPosition position42) {
+        this.position42 = position42;
+    }
+
+    public AssetPosition getPosition52() {
+        return position52;
+    }
+
+    public void setPosition52(AssetPosition position52) {
+        this.position52 = position52;
+    }
+
+    public AssetPosition getPosition62() {
+        return position62;
+    }
+
+    public void setPosition62(AssetPosition position62) {
+        this.position62 = position62;
+    }
+
+    public String getDeptno2() {
+        return deptno2;
+    }
+
+    public void setDeptno2(String deptno2) {
+        this.deptno2 = deptno2;
+    }
+
+    public String getDeptname2() {
+        return deptname2;
+    }
+
+    public void setDeptname2(String deptname2) {
+        this.deptname2 = deptname2;
+    }
+
+    public String getUserno2() {
+        return userno2;
+    }
+
+    public void setUserno2(String userno2) {
+        this.userno2 = userno2;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public void setUsername2(String username2) {
+        this.username2 = username2;
+    }
+
     public Warehouse getWarehouse2() {
         return warehouse2;
     }
 
-    /**
-     * @param warehouse2 the warehouse2 to set
-     */
     public void setWarehouse2(Warehouse warehouse2) {
         this.warehouse2 = warehouse2;
     }
@@ -356,19 +471,19 @@ public class AssetDistributeDetail extends FormDetailEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AssetDistributeDetail)) {
+        if (!(object instanceof AssetAdjustDetail)) {
             return false;
         }
-        AssetDistributeDetail other = (AssetDistributeDetail) object;
-        if (this.id != null && other.id != null) {
-            return this.id.equals(other.id);
+        AssetAdjustDetail other = (AssetAdjustDetail) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
         }
-        return this.seq == other.seq;
+        return true;
     }
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.AssetDistributeDetail[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.AssetAdjustdetail[ id=" + id + " ]";
     }
 
 }

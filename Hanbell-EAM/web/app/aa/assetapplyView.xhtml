@@ -23,7 +23,13 @@
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetApplyManagedBean.print()}" icon="ui-icon-print"
                                      process="@this" rendered="#{assetApplyManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" action="#{assetApplyManagedBean.verify()}" icon="ui-icon-check"
-                                     process="@this" rendered="#{assetApplyManagedBean.doCfm}" update="toolbar"/>
+                                     process="@this" rendered="#{assetApplyManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetApplyManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     rendered="#{assetApplyManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">

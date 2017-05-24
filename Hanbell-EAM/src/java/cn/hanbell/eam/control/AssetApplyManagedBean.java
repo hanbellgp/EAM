@@ -58,6 +58,20 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
     }
 
     @Override
+    protected boolean doBeforeUnverify() throws Exception {
+        if (super.doBeforeUnverify()) {
+            for (AssetApplyDetail aad : detailList) {
+                if (aad.getDistributed()) {
+                    showErrorMsg("Error", aad.getAssetItem().getItemno() + "已领用");
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void doConfirmDetail() {
         if (currentDetail == null) {
             showErrorMsg("Error", "没有明细对象");

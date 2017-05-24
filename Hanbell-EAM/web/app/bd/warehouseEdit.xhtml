@@ -27,28 +27,24 @@
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="公司别" for="company" /></p:column>
                     <p:column styleClass="Wid30">
-                        <h:outputText id="company" value="#{warehouseManagedBean.currentEntity.company}" title="company"
-                                      />
+                        <h:outputText id="company" value="#{warehouseManagedBean.currentEntity.company}" title="company"/>
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="状态" for="status" /></p:column>
                     <p:column styleClass="Wid30">
-                        <h:outputText id="status" value="#{warehouseManagedBean.currentEntity.status}" title="status"
-                                    />
+                        <h:outputText id="status" value="#{warehouseManagedBean.currentEntity.status}" title="status"/>
                     </p:column>
-                    
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="资产名称" for="name" /></p:column>
-                    <p:column styleClass="Wid30">
-                        <p:inputText id="name" value="#{warehouseManagedBean.currentEntity.name}" title="name"
-                                     required="true" requiredMessage="请输入资产名称"/>
-                    </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="资产仓库编号" for="warehouseno" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="仓库编号" for="warehouseno" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="warehouseno" value="#{warehouseManagedBean.currentEntity.warehouseno}" title="warehouseno"
-                                     required="true" requiredMessage="请输入资产仓库编号"/>
+                                     required="true" requiredMessage="请输入仓库编号"/>
                     </p:column>
-                    
+                    <p:column styleClass="Wid20"><p:outputLabel value="仓库名称" for="name" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="name" value="#{warehouseManagedBean.currentEntity.name}" title="name"
+                                     required="true" requiredMessage="请输入仓库名称"/>
+                    </p:column>
                 </p:row>
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="ERP库号" for="remark" /></p:column>
@@ -57,11 +53,10 @@
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="是否有成本" for="hascost" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:selectBooleanCheckbox id="hascost" value="#{warehouseManagedBean.currentEntity.hascost}" 
+                        <p:selectBooleanCheckbox id="hascost" value="#{warehouseManagedBean.currentEntity.hascost}"
                                                  required="true" requiredMessage="请输入是否有成本"/>
                     </p:column>
                 </p:row>
-
             </p:panelGrid>
         </h:form>
     </ui:define>

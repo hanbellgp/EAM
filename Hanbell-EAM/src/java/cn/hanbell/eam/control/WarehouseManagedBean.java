@@ -39,6 +39,7 @@ public class WarehouseManagedBean extends SuperSingleBean<Warehouse> {
     public void init() {
         this.superEJB = warehouseBean;
         this.model = new WarehouseModel(warehouseBean, userManagedBean);
+        model.getSortFields().put("status", "ASC");
         super.init();
     }
 

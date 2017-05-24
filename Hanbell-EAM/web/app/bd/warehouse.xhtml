@@ -2,7 +2,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./../../WEB-INF/template.xhtml"
-                    
+
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
@@ -36,54 +36,56 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-                <f:facet name="header">
-                    资产仓库维护
-                </f:facet>
+            <f:facet name="header">
+                资产仓库维护
+            </f:facet>
             <p:panel id="panelList">
                 <p:dataTable value="#{warehouseManagedBean.model}" var="item" paginator="true" paginatorPosition="bottom" rows="15" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="15,30,45" lazy="true" styleClass="tableList" selectionMode="single" selection="#{warehouseManagedBean.currentEntity}" rowKey="#{item.id}">
-            <p:column>
-               <f:facet name="header">
-               <h:outputText value="公司"/>
-               </f:facet>
-               <h:outputText value="#{item.company}"/>
-           </p:column>
-            <p:column>
-              <f:facet name="header">
-              <h:outputText value="资产仓库编号"/>
-              </f:facet>
-              <h:outputText value="#{item.warehouseno}"/>
-            </p:column>
-             <p:column>
-              <f:facet name="header">
-              <h:outputText value="资产名称"/>
-              </f:facet>
-              <h:outputText value="#{item.name}"/>
-            </p:column>
-            <p:column>
-              <f:facet name="header">
-              <h:outputText value="是否有成本"/>
-              </f:facet>
-              <h:outputText value="#{item.hascost}"/>
-            </p:column>
-            <p:column>
-              <f:facet name="header">
-              <h:outputText value="ERP库号"/>
-              </f:facet>
-              <h:outputText value="#{item.remark}"/>
-            </p:column>
-            <p:column>
-              <f:facet name="header">
-              <h:outputText value="状态"/>
-              </f:facet>
-              <h:outputText value="#{item.status}"/>
-            </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="公司"/>
+                        </f:facet>
+                        <h:outputText value="#{item.company}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="仓库编号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.warehouseno}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="仓库名称"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="是否有成本"/>
+                        </f:facet>
+                        <h:outputText value="#{item.hascost}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ERP库号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.remark}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="状态"/>
+                        </f:facet>
+                        <h:outputText value="#{item.status}"/>
+                    </p:column>
                 </p:dataTable>
-        </p:panel>
-         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-          <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
-         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
-        </p:confirmDialog>
-                
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
         </h:form>
     </ui:define>
 

@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetCard.findByFormid", query = "SELECT a FROM AssetCard a WHERE a.formid = :formid"),
     @NamedQuery(name = "AssetCard.findByFilters", query = "SELECT a FROM AssetCard a WHERE a.company = :company AND a.formid = :formid AND a.assetItem.itemno = :itemno AND a.deptno = :deptno AND a.userno = :userno "),
     @NamedQuery(name = "AssetCard.findByFiltersAndNotUsed", query = "SELECT a FROM AssetCard a WHERE a.srcformid = :srcformid AND a.srcseq = :srcseq AND a.used=false "),
+    @NamedQuery(name = "AssetCard.findByFiltersAndUsed", query = "SELECT a FROM AssetCard a WHERE a.relformid = :relformid AND a.relseq = :relseq AND a.used=true "),
     @NamedQuery(name = "AssetCard.findByItemno", query = "SELECT a FROM AssetCard a WHERE a.assetItem.itemno = :itemno"),
     @NamedQuery(name = "AssetCard.findByItemnoAndNotUsed", query = "SELECT a FROM AssetCard a WHERE a.assetItem.itemno = :itemno AND a.used=false "),
     @NamedQuery(name = "AssetCard.findByDeptno", query = "SELECT a FROM AssetCard a WHERE a.deptno = :deptno"),
@@ -186,9 +187,10 @@ public class AssetCard extends FormEntity {
     private String remark;
 
     public AssetCard() {
+        this.amts = BigDecimal.ZERO;
+        this.used = false;
         this.pause = false;
         this.scrap = false;
-        this.used = false;
     }
 
     public String getCompany() {
