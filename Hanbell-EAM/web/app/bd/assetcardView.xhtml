@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetcard" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{assetCardManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{assetCardManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{assetCardManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{assetCardManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCardManagedBean.print()}" icon="ui-icon-print"
+                                       process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
+                    <p:commandButton id="btnVerify" value="审核" action="#{assetCardManagedBean.verify()}" icon="ui-icon-check"
+                                     process="@this" rendered="#{assetCardManagedBean.doCfm}" update="toolbar"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">资产卡片－查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="编号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{assetCardManagedBean.currentEntity.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="建立日期"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formdate" value="#{assetCardManagedBean.currentEntity.formdate}" title="Formdate">
+                            <f:convertDateTime pattern="yyyy/MM/dd"/>
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="名称"/></p:column>
+                    <p:column>
+                        <h:outputText id="assetDesc" value="#{assetCardManagedBean.currentEntity.assetDesc}" title="assetDesc" />
+                    </p:column>
+                    <p:column><h:outputText value="规格"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="assetSpec" value="#{assetCardManagedBean.currentEntity.assetSpec}" title="assetSpec" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="品号"/></p:column>
+                    <p:column>
+                        <h:outputText id="assetItem" value="#{assetCardManagedBean.currentEntity.assetItem.itemno}" title="itemno" />
+                    </p:column>
+                    <p:column><h:outputText value="单位"/></p:column>
+                    <p:column>
+                        <h:outputText id="unit" value="#{assetCardManagedBean.currentEntity.unit}" title="Unit"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="基础信息">
+                    <p:panelGrid id="plgBase"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="使用部门" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptno" value="#{assetCardManagedBean.currentEntity.deptno}" title="RequireDeptno" />
+                            </p:column>
+                            <p:column><h:outputText value="公司" /></p:column>
+                            <p:column>
+                                <h:outputText id="position1" value="#{assetCardManagedBean.currentEntity.position1.name}" title="position1"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="部门名称"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptname" value="#{assetCardManagedBean.currentEntity.deptname}" title="RequireDeptname" />
+                            </p:column>
+                            <p:column><h:outputText value="厂区" /></p:column>
+                            <p:column>
+                                <h:outputText id="position2" value="#{assetCardManagedBean.currentEntity.position2.name}" title="position2" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="使用人"/></p:column>
+                            <p:column>
+                                <h:outputText id="userno" value="#{assetCardManagedBean.currentEntity.userno}" title="RequireUserno" />
+                            </p:column>
+                            <p:column><h:outputText value="厂房"/></p:column>
+                            <p:column>
+                                <h:outputText id="position3" value="#{assetCardManagedBean.currentEntity.position3.name}" title="position3" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="姓名"/></p:column>
+                            <p:column>
+                                <h:outputText id="username" value="#{assetCardManagedBean.currentEntity.username}" title="RequireUsername" />
+                            </p:column>
+                            <p:column><h:outputText value="地点"/></p:column>
+                            <p:column>
+                                <h:outputText id="position4" value="#{assetCardManagedBean.currentEntity.position4.name}" title="position4"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="来源单号"/></p:column>
+                            <p:column>
+                                <h:outputText id="srcformid" value="#{assetCardManagedBean.currentEntity.srcformid}" title="srcformid" />
+                            </p:column>
+                            <p:column><h:outputText value="仓库"/></p:column>
+                            <p:column>
+                                <h:outputText id="warehouse" value="#{assetCardManagedBean.currentEntity.warehouse.name}" title="warehouse"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab title="状态信息">
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="购置金额" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="amts" value="#{assetCardManagedBean.currentEntity.amts}" title="amts" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><h:outputText value="购置日期"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="buyDate" value="#{assetCardManagedBean.currentEntity.buyDate}" title="buyDate">
+                                    <f:convertDateTime pattern="yyyy/MM/dd"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="是否使用" /></p:column>
+                            <p:column>
+                                <p:inputSwitch id="used" value="#{assetCardManagedBean.currentEntity.used}" disabled="true" />
+                            </p:column>
+                            <p:column><h:outputText value="使用日期"/></p:column>
+                            <p:column>
+                                <h:outputText id="usingDate" value="#{assetCardManagedBean.currentEntity.usingDate}" title="buyDate">
+                                    <f:convertDateTime pattern="yyyy/MM/dd"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="是否报废" /></p:column>
+                            <p:column>
+                                <p:inputSwitch id="scrap" value="#{assetCardManagedBean.currentEntity.scrap}" disabled="true" />
+                            </p:column>
+                            <p:column><h:outputText value="报废日期"/></p:column>
+                            <p:column>
+                                <h:outputText id="scrapDate" value="#{assetCardManagedBean.currentEntity.scrapDate}" title="scrapDate">
+                                    <f:convertDateTime pattern="yyyy/MM/dd"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnPrint,btnVerify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -21,7 +21,7 @@
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产领用－修改</p:column>
+                        <p:column colspan="4">资产领用－新增</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
@@ -109,10 +109,10 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column><p:outputLabel value="件号" for="assetItem" /></p:column>
+                            <p:column><p:outputLabel value="品号" for="assetItem" /></p:column>
                             <p:column>
                                 <p:inputText id="assetItem" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
-                                             required="true" requiredMessage="The AssetItem field is required." readonly="true"/>
+                                             required="true" requiredMessage="请输入品号" readonly="true"/>
                                 <p:commandButton id="btnAssetItemSelect" actionListener="#{assetDistributeManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWhenDetailEdit}"
@@ -231,7 +231,7 @@
                         <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
-                                <h:outputText value="件号"/>
+                                <h:outputText value="品号"/>
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemno}"/>
                         </p:column>

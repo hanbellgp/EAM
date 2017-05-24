@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetcard" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetCardManagedBean.persist()}" icon="ui-icon-save"
+                                     process="@this,plgHead,formOne:tabView:plgBase" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">资产卡片－新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="编号" for="formid" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="formid" value="#{assetCardManagedBean.newEntity.formid}" title="Formid"
+                                     required="true" requiredMessage="请输入编号"  disabled="#{assetCardManagedBean.currentPrgGrant.sysprg.noauto}"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="建立日期" for="formdate" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:calendar id="formdate" value="#{assetCardManagedBean.newEntity.formdate}" title="Formdate"
+                                    pattern="yyyy/MM/dd" required="true" requiredMessage="请输入建立日期"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="名称" for="assetDesc"/></p:column>
+                    <p:column>
+                        <p:inputText id="assetDesc" value="#{assetCardManagedBean.newEntity.assetDesc}" title="assetDesc"
+                                     required="true" requiredMessage="请输入名称" />
+                    </p:column>
+                    <p:column><p:outputLabel value="规格" for="assetSpec"/></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="assetSpec" value="#{assetCardManagedBean.newEntity.assetSpec}" title="assetSpec" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="品号" for="assetItem" /></p:column>
+                    <p:column>
+                        <p:inputText id="assetItem" value="#{assetCardManagedBean.newEntity.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
+                                     required="true" requiredMessage="The AssetItem field is required." readonly="true"/>
+                        <p:commandButton id="btnAssetItemSelect" actionListener="#{assetCardManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnWhenEdit}"
+                                    update="assetItem,,assetDesc,assetSpec,unit" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <p:inputText id="unit" value="#{assetCardManagedBean.newEntity.unit}" title="Unit"
+                                     required="true" requiredMessage="请输入单位"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="基础信息">
+                    <p:panelGrid id="plgBase"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="购置金额" for="amts" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="amts" value="#{assetCardManagedBean.newEntity.amts}" title="amts"
+                                             required="true" requiredMessage="请输入购置金额" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="购置日期" for="buyDate"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:calendar id="buyDate" value="#{assetCardManagedBean.newEntity.buyDate}" title="buyDate"
+                                            pattern="yyyy/MM/dd" required="true" requiredMessage="请输购置日期"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="使用部门" for="deptno" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="deptno" value="#{assetCardManagedBean.newEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnDepartmentSelect" actionListener="#{assetCardManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnDeptWhenEdit}"
+                                            update="deptno,deptname" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><p:outputLabel value="公司" for="position1" /></p:column>
+                            <p:column>
+                                <p:inputText id="position1" value="#{assetCardManagedBean.newEntity.position1.name}" title="position1" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition1Select" actionListener="#{assetCardManagedBean.openDialog('assetposition1Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnPosition1WhenEdit}"
+                                            update="position1" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptname" value="#{assetCardManagedBean.newEntity.deptname}" title="RequireDeptname" />
+                            </p:column>
+                            <p:column><p:outputLabel value="厂区" for="position2" /></p:column>
+                            <p:column>
+                                <p:inputText id="position2" value="#{assetCardManagedBean.newEntity.position2.name}" title="position2" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition2Select" actionListener="#{assetCardManagedBean.openDialog('assetposition2Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnPosition2WhenEdit}"
+                                            update="position2" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="使用人" for="userno" /></p:column>
+                            <p:column>
+                                <p:inputText id="userno" value="#{assetCardManagedBean.newEntity.userno}" title="RequireUserno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnSystemUserSelect" actionListener="#{assetCardManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnUserWhenEdit}"
+                                            update="userno,username" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><p:outputLabel value="厂房" for="position3" /></p:column>
+                            <p:column>
+                                <p:inputText id="position3" value="#{assetCardManagedBean.newEntity.position3.name}" title="position3" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition3Select" actionListener="#{assetCardManagedBean.openDialog('assetposition3Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnPosition3WhenEdit}"
+                                            update="position3" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="姓名" for="username" /></p:column>
+                            <p:column>
+                                <h:outputText id="username" value="#{assetCardManagedBean.newEntity.username}" title="RequireUsername" />
+                            </p:column>
+                            <p:column><p:outputLabel value="地点" for="position4" /></p:column>
+                            <p:column>
+                                <p:inputText id="position4" value="#{assetCardManagedBean.newEntity.position4.name}" title="position4" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition4Select" actionListener="#{assetCardManagedBean.openDialog('assetposition4Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnPosition4WhenEdit}"
+                                            update="position4" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="来源单号" for="srcformid" /></p:column>
+                            <p:column>
+                                <h:outputText id="srcformid" value="#{assetCardManagedBean.newEntity.srcformid}" title="srcformid" />
+                            </p:column>
+                            <p:column><p:outputLabel value="仓库" for="warehouse" /></p:column>
+                            <p:column>
+                                <p:inputText id="warehouse" value="#{assetCardManagedBean.newEntity.warehouse.name}" title="warehouse" styleClass="inputWithButton"
+                                             required="true"  readonly="true"/>
+                                <p:commandButton id="btnWarehouseSelect" actionListener="#{assetCardManagedBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnWarehouseWhenEdit}"
+                                            update="warehouse" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

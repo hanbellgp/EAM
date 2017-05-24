@@ -42,7 +42,7 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><h:outputLabel value="编号" for="queryTrtype" /></p:column>
+                    <p:column><h:outputLabel value="编号" for="queryAssetno" /></p:column>
                     <p:column>
                         <p:inputText id="queryAssetno" value="#{assetTransactionQueryBean.queryAssetno}" title="编号" />
                     </p:column>
@@ -106,13 +106,13 @@
                     </f:facet>
                     <h:outputText value="#{item.assetItem.itemno}"/>
                 </p:column>
-                <p:column styleClass="Wid10">
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="品名"/>
                     </f:facet>
                     <h:outputText value="#{item.assetItem.itemdesc}"/>
                 </p:column>
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="编号"/>
                     </f:facet>
@@ -124,13 +124,19 @@
                     </f:facet>
                     <h:outputText value="#{item.warehouse.name}"/>
                 </p:column>
-                <p:column styleClass="Wid10" style="text-align: right;">
+                <p:column styleClass="Wid5" style="text-align: right;">
+                    <f:facet name="header">
+                        <h:outputText value="出入库"/>
+                    </f:facet>
+                    <h:outputText value="#{item.iocode}"/>
+                </p:column>
+                <p:column styleClass="Wid5" style="text-align: right;">
                     <f:facet name="header">
                         <h:outputText value="数量"/>
                     </f:facet>
-                    <h:outputText value="#{item.qty * item.iocode}"/>
+                    <h:outputText value="#{item.qty}"/>
                 </p:column>
-                <p:column styleClass="Wid10">
+                <p:column styleClass="Wid5">
                     <f:facet name="header">
                         <h:outputText value="单位"/>
                     </f:facet>

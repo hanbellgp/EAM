@@ -13,64 +13,64 @@
                 <f:facet name="header">
                     查询条件
                 </f:facet>
-                <h:outputLabel value="领用单号" for="queryFormId" />
-                <p:inputText id="queryFormId" value="#{assetDistributeManagedBean.queryFormId}" title="单号" />
+                <h:outputLabel value="异动单号" for="queryFormId" />
+                <p:inputText id="queryFormId" value="#{assetAdjustManagedBean.queryFormId}" title="单号" />
                 <h:outputLabel value="状态" for="queryState" />
-                <p:selectOneMenu id="queryState" value="#{assetDistributeManagedBean.queryState}" title="状态" >
+                <p:selectOneMenu id="queryState" value="#{assetAdjustManagedBean.queryState}" title="状态" >
                     <f:selectItem itemLabel="全部" itemValue="ALL"/>
                     <f:selectItem itemLabel="未审核" itemValue="N"/>
                     <f:selectItem itemLabel="已审核" itemValue="V"/>
                 </p:selectOneMenu>
-                <h:outputLabel value="领用日期" for="queryDateBegin" />
-                <p:calendar id="queryDateBegin" value="#{assetDistributeManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                <h:outputLabel value="异动日期" for="queryDateBegin" />
+                <p:calendar id="queryDateBegin" value="#{assetAdjustManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="截止日期" for="queryDateEnd" />
-                <p:calendar id="queryDateEnd" value="#{assetDistributeManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                <p:calendar id="queryDateEnd" value="#{assetAdjustManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetDistributeManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
-                    <p:commandButton id="btnView" value="查看" action="#{assetDistributeManagedBean.view('assetdistributeView')}"  icon="ui-icon-document"/>
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetAdjustManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{assetAdjustManagedBean.view('assetadjustView')}"  icon="ui-icon-document"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
-                        <p:menuitem id="btnEdit" value="编辑" action="#{assetDistributeManagedBean.edit('assetdistributeEdit')}" icon="ui-icon-pencil"
-                                    rendered="#{assetDistributeManagedBean.doEdit}"/>
-                        <p:menuitem id="btnDelete" value="删除" actionListener="#{assetDistributeManagedBean.delete()}" icon="ui-icon-trash"
-                                    rendered="#{assetDistributeManagedBean.doDel}" update=":formList">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{assetAdjustManagedBean.edit('assetadjustEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{assetAdjustManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{assetAdjustManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{assetAdjustManagedBean.doDel}" update=":formList">
                             <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{assetDistributeManagedBean.unverify()}" icon="ui-icon-lock-open"
-                                    rendered="#{assetDistributeManagedBean.doUnCfm}"  update=":formList">
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{assetAdjustManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{assetAdjustManagedBean.doUnCfm}"  update=":formList">
                             <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem id="btnCreate" value="新增" action="#{assetDistributeManagedBean.create('assetdistributeNew')}" icon="ui-icon-plus"
-                                    rendered="#{assetDistributeManagedBean.doAdd}" process="@this" />
+                        <p:menuitem id="btnCreate" value="新增" action="#{assetAdjustManagedBean.create('assetadjustNew')}" icon="ui-icon-plus"
+                                    rendered="#{assetAdjustManagedBean.doAdd}" process="@this" />
                     </p:splitButton>
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetDistributeManagedBean.reset()}" icon="ui-icon-refresh"
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetAdjustManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetDistributeManagedBean.query()}" icon="ui-icon-search"
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetAdjustManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
             <p:panel id="panelList">
-                <p:dataTable value="#{assetDistributeManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                <p:dataTable value="#{assetAdjustManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="15,30,45"  lazy="true"
-                             selectionMode="single" selection="#{assetDistributeManagedBean.currentEntity}" rowKey="#{item.id}" >
+                             selectionMode="single" selection="#{assetAdjustManagedBean.currentEntity}" rowKey="#{item.id}" >
                     <f:facet name="header">
-                        资产领用维护
+                        资产异动维护
                     </f:facet>
                     <p:ajax event="rowSelect"  update=":formList:toolbar" />
                     <p:ajax event="rowUnselect" update=":formList:toolbar" />
                     <p:column styleClass="Wid10">
                         <f:facet name="header">
-                            <h:outputText value="领用单号"/>
+                            <h:outputText value="异动单号"/>
                         </f:facet>
                         <h:outputText value="#{item.formid}"/>
                     </p:column>
                     <p:column styleClass="Wid10">
                         <f:facet name="header">
-                            <h:outputText value="领用日期"/>
+                            <h:outputText value="异动日期"/>
                         </f:facet>
                         <h:outputText value="#{item.formdate}">
                             <f:convertDateTime pattern="yyyy/MM/dd" />

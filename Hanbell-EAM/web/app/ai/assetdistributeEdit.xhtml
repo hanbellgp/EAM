@@ -108,7 +108,7 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column><p:outputLabel value="件号" for="assetItem" /></p:column>
+                            <p:column><p:outputLabel value="品号" for="assetItem" /></p:column>
                             <p:column>
                                 <p:inputText id="assetItem" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
                                              required="true" requiredMessage="The AssetItem field is required." readonly="true"/>
@@ -230,7 +230,7 @@
                         <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
-                                <h:outputText value="件号"/>
+                                <h:outputText value="品号"/>
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemno}"/>
                         </p:column>
@@ -252,7 +252,7 @@
                             </f:facet>
                             <h:outputText value="#{item.username}"/>
                         </p:column>
-                        <p:column styleClass="Wid10">
+                        <p:column styleClass="Wid10" style="text-align: right;">
                             <f:facet name="header">
                                 <h:outputText value="数量"/>
                             </f:facet>

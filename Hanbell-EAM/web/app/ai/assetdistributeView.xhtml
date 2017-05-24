@@ -23,7 +23,13 @@
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetDistributeManagedBean.print()}" icon="ui-icon-print"
                                      process="@this" rendered="#{assetDistributeManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" action="#{assetDistributeManagedBean.verify()}" icon="ui-icon-check"
-                                     process="@this" rendered="#{assetDistributeManagedBean.doCfm}" update="toolbar"/>
+                                     process="@this" rendered="#{assetDistributeManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetDistributeManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     rendered="#{assetDistributeManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
@@ -69,7 +75,7 @@
                         <p:ajax event="rowUnselect"  update="formOne:dlgDetail" oncomplete="" />
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
-                                <h:outputText value="件号"/>
+                                <h:outputText value="品号"/>
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemno}"/>
                         </p:column>
@@ -129,7 +135,7 @@
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column><h:outputText value="件号"/></p:column>
+                        <p:column><h:outputText value="品号"/></p:column>
                         <p:column>
                             <h:outputText id="assetItem" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemno}" title="itemno"/>
                         </p:column>
