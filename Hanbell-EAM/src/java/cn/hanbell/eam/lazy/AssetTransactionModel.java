@@ -6,7 +6,7 @@
 package cn.hanbell.eam.lazy;
 
 import cn.hanbell.eam.control.UserManagedBean;
-import cn.hanbell.eam.entity.AssetDistribute;
+import cn.hanbell.eam.entity.AssetTransaction;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
 import java.util.List;
@@ -17,21 +17,21 @@ import org.primefaces.model.SortOrder;
  *
  * @author C0160
  */
-public class AssetDistributeModel extends BaseLazyModel<AssetDistribute> {
+public class AssetTransactionModel extends BaseLazyModel<AssetTransaction> {
 
     private final UserManagedBean userManagedBean;
 
-    public AssetDistributeModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
+    public AssetTransactionModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
     }
 
     @Override
-    public List<AssetDistribute> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public List<AssetTransaction> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         filterFields.put("company =", userManagedBean.getCompany());
-        setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
-        setRowCount(superEJB.getRowCount(filterFields));
-        return dataList;
+        sortFields.put("formdate", "ASC");
+        sortFields.put("id", "ASC");
+        return super.load(first, pageSize, sortField, sortOrder, filters);
     }
 
 }

@@ -163,6 +163,8 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 st.setQty(d.getQty());
                 st.setUnit(d.getUnit());
                 if (d.getAssetCard() != null) {
+                    st.setAssetCard(d.getAssetCard());
+                    st.setAssetno(d.getAssetno());
                     st.setPrice(d.getAssetCard().getAmts());
                 } else {
                     st.setPrice(BigDecimal.ZERO);
@@ -204,6 +206,8 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 tt.setQty(d.getQty());
                 tt.setUnit(d.getUnit());
                 if (d.getAssetCard() != null) {
+                    tt.setAssetCard(d.getAssetCard());
+                    tt.setAssetno(d.getAssetno());
                     tt.setPrice(d.getAssetCard().getAmts());
                 } else {
                     tt.setPrice(BigDecimal.ZERO);

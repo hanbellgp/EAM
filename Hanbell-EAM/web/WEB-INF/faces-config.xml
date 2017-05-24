@@ -125,8 +125,8 @@
         </navigation-case>
         <navigation-case>
             <description>AI155交易过程查询</description>
-            <from-outcome>assettranaction</from-outcome>
-            <to-view-id>/app/ai/assettranaction.xhtml</to-view-id>
+            <from-outcome>assettransaction</from-outcome>
+            <to-view-id>/app/ai/assettransaction.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
