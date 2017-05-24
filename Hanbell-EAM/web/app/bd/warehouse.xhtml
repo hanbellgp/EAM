@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                    
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{warehouseManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{warehouseManagedBean.view('warehouseView')}" icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{warehouseManagedBean.edit('warehouseEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{warehouseManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{warehouseManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{warehouseManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{warehouseManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{warehouseManagedBean.doUnCfm}"  update=":formList"/>
+                        <p:menuitem id="btnCreate" value="新增" action="#{warehouseManagedBean.create('warehouseNew')}" icon="ui-icon-plus"
+                                    rendered="#{warehouseManagedBean.doAdd}" process="@this" />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{warehouseManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{warehouseManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+                <f:facet name="header">
+                    资产仓库维护
+                </f:facet>
+            <p:panel id="panelList">
+                <p:dataTable value="#{warehouseManagedBean.model}" var="item" paginator="true" paginatorPosition="bottom" rows="15" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="15,30,45" lazy="true" styleClass="tableList" selectionMode="single" selection="#{warehouseManagedBean.currentEntity}" rowKey="#{item.id}">
+            <p:column>
+               <f:facet name="header">
+               <h:outputText value="公司"/>
+               </f:facet>
+               <h:outputText value="#{item.company}"/>
+           </p:column>
+            <p:column>
+              <f:facet name="header">
+              <h:outputText value="资产仓库编号"/>
+              </f:facet>
+              <h:outputText value="#{item.warehouseno}"/>
+            </p:column>
+             <p:column>
+              <f:facet name="header">
+              <h:outputText value="资产名称"/>
+              </f:facet>
+              <h:outputText value="#{item.name}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+              <h:outputText value="是否有成本"/>
+              </f:facet>
+              <h:outputText value="#{item.hascost}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+              <h:outputText value="ERP库号"/>
+              </f:facet>
+              <h:outputText value="#{item.remark}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+              <h:outputText value="状态"/>
+              </f:facet>
+              <h:outputText value="#{item.status}"/>
+            </p:column>
+                </p:dataTable>
+        </p:panel>
+         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+          <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+        </p:confirmDialog>
+                
+        </h:form>
+    </ui:define>
+
+</ui:composition>
