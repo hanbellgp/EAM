@@ -19,26 +19,27 @@ import org.primefaces.event.SelectEvent;
  *
  * @author Administrator
  */
-@ManagedBean(name="warehouseManagedBean")
+@ManagedBean(name = "warehouseManagedBean")
 @SessionScoped
-public class WarehouseManagedBean extends SuperSingleBean<Warehouse>{
+public class WarehouseManagedBean extends SuperSingleBean<Warehouse> {
+
     @EJB
     private WarehouseBean warehouseBean;
-    
+
     public WarehouseManagedBean() {
         super(Warehouse.class);
     }
-       
+
     @Override
-    public void create(){
-      super.create();
-      newEntity.setCompany(userManagedBean.getCompany());
+    public void create() {
+        super.create();
+        newEntity.setCompany(userManagedBean.getCompany());
     }
-    
-   public void init(){
-     this.superEJB=warehouseBean;
-     this.model=new WarehouseModel(warehouseBean,userManagedBean);
-   }
-    
-   
+
+    public void init() {
+        this.superEJB = warehouseBean;
+        this.model = new WarehouseModel(warehouseBean, userManagedBean);
+        super.init();
+    }
+
 }
