@@ -130,6 +130,7 @@ public class AssetItem extends SuperEntity {
     private String remark;
 
     public AssetItem() {
+
     }
 
     public AssetCategory getCategory() {
@@ -394,10 +395,10 @@ public class AssetItem extends SuperEntity {
             return false;
         }
         AssetItem other = (AssetItem) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if (this.id != null && other.id != null) {
+            return this.id.equals(other.id);
         }
-        return true;
+        return this.itemno.equals(other.itemno);
     }
 
     @Override

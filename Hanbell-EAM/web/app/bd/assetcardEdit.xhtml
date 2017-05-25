@@ -53,7 +53,7 @@
                         <p:commandButton id="btnAssetItemSelect" actionListener="#{assetCardManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnWhenEdit}"
-                                    update="assetItem,,assetDesc,assetSpec,unit" />
+                                    update="assetItem,assetDesc,assetSpec,unit" />
                         </p:commandButton>
                     </p:column>
                     <p:column><p:outputLabel value="单位" for="unit" /></p:column>

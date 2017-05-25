@@ -21,9 +21,15 @@
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCardManagedBean.print()}" icon="ui-icon-print"
-                                       process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
+                                     process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" action="#{assetCardManagedBean.verify()}" icon="ui-icon-check"
-                                     process="@this" rendered="#{assetCardManagedBean.doCfm}" update="toolbar"/>
+                                     process="@this" rendered="#{assetCardManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetCardManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     rendered="#{assetCardManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
