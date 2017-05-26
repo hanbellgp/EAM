@@ -311,7 +311,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                     openOptions.put("modal", true);
                     openOptions.put("contentWidth", "900");
                 }
-                super.openDialog("assetcardSelect", openParams);
+                super.openDialog("assetcardSelect", openOptions, openParams);
                 break;
             case "warehouseSelect":
                 openParams.clear();
