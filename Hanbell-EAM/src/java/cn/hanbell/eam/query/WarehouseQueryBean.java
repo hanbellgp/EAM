@@ -34,6 +34,7 @@ public class WarehouseQueryBean extends SuperQueryBean<Warehouse> {
     public void init() {
         superEJB = warehouseBean;
         model = new WarehouseModel(warehouseBean, userManagedBean);
+        model.getSortFields().put("warehouseno", "ASC");
         params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
         if (params != null) {
             if (params.containsKey("hascost")) {

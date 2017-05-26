@@ -40,6 +40,7 @@ public abstract class SuperMulti3Bean<T extends SuperEntity, D1 extends SuperDet
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
 
+    protected Map<String, Object> openOptions;
     protected Map<String, List<String>> openParams;
 
     /**

@@ -27,7 +27,7 @@
                         <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
                     </p:commandButton>
                     <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetDistributeManagedBean.unverify()}" icon="ui-icon-lock-open"
-                                     rendered="#{assetDistributeManagedBean.doUnCfm}"  update="toolbar">
+                                     process="@this" rendered="#{assetDistributeManagedBean.doUnCfm}"  update="toolbar">
                         <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
                     </p:commandButton>
                 </f:facet>

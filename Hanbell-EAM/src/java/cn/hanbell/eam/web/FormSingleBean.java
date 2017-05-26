@@ -36,6 +36,7 @@ public abstract class FormSingleBean<T extends FormEntity> extends FormSingleMan
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
 
+    protected Map<String, Object> openOptions;
     protected Map<String, List<String>> openParams;
 
     /**

@@ -32,6 +32,7 @@ public class DepartmentQueryBean extends SuperQueryBean<Department> {
     public void init() {
         superEJB = departmentBean;
         model = new DepartmentModel(departmentBean);
+        model.getSortFields().put("deptno", "ASC");
         super.init();
     }
 
