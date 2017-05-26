@@ -123,6 +123,8 @@ public class AssetItemManagedBean extends SuperSingleBean<AssetItem> {
     public void init() {
         superEJB = assetItemBean;
         model = new AssetItemModel(assetItemBean);
+        model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("itemno", "ASC");
         super.init();
     }
 

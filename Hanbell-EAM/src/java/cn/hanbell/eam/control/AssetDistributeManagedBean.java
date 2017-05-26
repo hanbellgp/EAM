@@ -306,6 +306,11 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                 }
                 paramUsed.add("0");
                 openParams.put("used", paramUsed);
+                if (openOptions == null) {
+                    openOptions = new HashMap();
+                    openOptions.put("modal", true);
+                    openOptions.put("contentWidth", "900");
+                }
                 super.openDialog("assetcardSelect", openParams);
                 break;
             case "warehouseSelect":

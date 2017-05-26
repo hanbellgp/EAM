@@ -6,17 +6,19 @@
 package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.AssetCardBean;
-import cn.hanbell.eam.ejb.AssetAdjustBean;
-import cn.hanbell.eam.ejb.AssetAdjustDetailBean;
+import cn.hanbell.eam.ejb.AssetScrapBean;
+import cn.hanbell.eam.ejb.AssetScrapDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
 import cn.hanbell.eam.ejb.TransactionTypeBean;
 import cn.hanbell.eam.entity.AssetCard;
-import cn.hanbell.eam.entity.AssetAdjust;
-import cn.hanbell.eam.entity.AssetAdjustDetail;
+import cn.hanbell.eam.entity.AssetScrap;
+import cn.hanbell.eam.entity.AssetScrapDetail;
 import cn.hanbell.eam.entity.AssetInventory;
+import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.entity.TransactionType;
-import cn.hanbell.eam.lazy.AssetAdjustModel;
+import cn.hanbell.eam.entity.Warehouse;
+import cn.hanbell.eam.lazy.AssetScrapModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
@@ -24,7 +26,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -34,31 +35,26 @@ import org.primefaces.event.SelectEvent;
  *
  * @author C0160
  */
-@ManagedBean(name = "assetAdjustManagedBean")
+@ManagedBean(name = "assetScrapManagedBean")
 @SessionScoped
-public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdjustDetail> {
+public class AssetScrapManagedBean extends FormMultiBean<AssetScrap, AssetScrapDetail> {
 
     @EJB
-    private AssetAdjustBean assetAdjustBean;
+    private AssetScrapBean assetScrapBean;
     @EJB
-    private AssetAdjustDetailBean assetAdjustDetailBean;
+    private AssetScrapDetailBean assetScrapDetailBean;
 
     @EJB
     private AssetInventoryBean assetInventoryBean;
     @EJB
     private AssetCardBean assetCardBean;
 
-    @EJB
-    private TransactionTypeBean transactoinTypeBean;
-
-    private TransactionType trtype;
-
     private List<String> paramPosition = null;
     private List<String> paramUsed = null;
     private List<String> paramHascost = null;
 
-    public AssetAdjustManagedBean() {
-        super(AssetAdjust.class, AssetAdjustDetail.class);
+    public AssetScrapManagedBean() {
+        super(AssetScrap.class, AssetScrapDetail.class);
     }
 
     @Override
@@ -66,23 +62,42 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
+        newEntity.setTotalAmts(BigDecimal.ZERO);
+        newEntity.setSurplusValue(BigDecimal.ZERO);
     }
 
     @Override
     public void createDetail() {
         super.createDetail();
-        currentDetail.setTrtype(trtype);
     }
 
     @Override
     protected boolean doBeforePersist() throws Exception {
         if (super.doBeforePersist()) {
-            for (AssetAdjustDetail add : detailList) {
+            BigDecimal totolAmts = BigDecimal.ZERO;
+            BigDecimal totolValues = BigDecimal.ZERO;
+            for (AssetScrapDetail add : detailList) {
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要输入编号");
                     return false;
                 }
+                if (add.getWarehouse().getHascost()) {
+                    showErrorMsg("Error", "来源仓成本属性错误");
+                    return false;
+                }
+                if (add.getWarehouse2().getHascost()) {
+                    showErrorMsg("Error", "目的仓成本属性错误");
+                    return false;
+                }
+                if (add.getAmts() != null) {
+                    totolAmts = totolAmts.add(add.getAmts());
+                }
+                if (add.getSurplusValue() != null) {
+                    totolValues = totolValues.add(add.getSurplusValue());
+                }
             }
+            newEntity.setTotalAmts(totolAmts);
+            newEntity.setSurplusValue(totolValues);
             return true;
         }
         return false;
@@ -91,12 +106,30 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     @Override
     protected boolean doBeforeUpdate() throws Exception {
         if (super.doBeforeUpdate()) {
-            for (AssetAdjustDetail add : detailList) {
+            BigDecimal totolAmts = BigDecimal.ZERO;
+            BigDecimal totolValues = BigDecimal.ZERO;
+            for (AssetScrapDetail add : detailList) {
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要输入编号");
                     return false;
                 }
+                if (add.getWarehouse().getHascost()) {
+                    showErrorMsg("Error", "来源仓成本属性错误");
+                    return false;
+                }
+                if (add.getWarehouse2().getHascost()) {
+                    showErrorMsg("Error", "目的仓成本属性错误");
+                    return false;
+                }
+                if (add.getAmts() != null) {
+                    totolAmts = totolAmts.add(add.getAmts());
+                }
+                if (add.getSurplusValue() != null) {
+                    totolValues = totolValues.add(add.getSurplusValue());
+                }
             }
+            newEntity.setTotalAmts(totolAmts);
+            newEntity.setSurplusValue(totolValues);
             return true;
         }
         return false;
@@ -107,16 +140,16 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (super.doBeforeUnverify()) {
             AssetInventory ai;
             AssetCard ac;
-            for (AssetAdjustDetail aad : detailList) {
-                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), aad.getAssetItem().getItemno(), "", "", "", aad.getWarehouse2().getWarehouseno());
-                if ((ai == null) || ai.getQty().compareTo(aad.getQty()) == -1) {
-                    showErrorMsg("Error", aad.getAssetItem().getItemno() + "库存可还原量不足");
+            for (AssetScrapDetail add : detailList) {
+                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse2().getWarehouseno());
+                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
+                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可还原量不足");
                     return false;
                 }
-                if (aad.getAssetCard() != null) {
-                    ac = assetCardBean.findByFilters(currentEntity.getCompany(), aad.getAssetno(), aad.getAssetItem().getItemno(), aad.getDeptno2(), aad.getUserno2());
-                    if ((ac == null) || ac.getQty().compareTo(aad.getQty()) == -1) {
-                        showErrorMsg("Error", aad.getAssetno() + "不存在或可还原量不足");
+                if (add.getAssetCard() != null) {
+                    ac = assetCardBean.findByFiltersAndUsed(add.getPid(), add.getSeq());
+                    if ((ac == null) || !ac.getScrap()) {
+                        showErrorMsg("Error", add.getAssetno() + "不存在或未报废");
                         return false;
                     }
                 } else {
@@ -133,16 +166,16 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (super.doBeforeVerify()) {
             AssetInventory ai;
             AssetCard ac;
-            for (AssetAdjustDetail aad : detailList) {
-                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), aad.getAssetItem().getItemno(), "", "", "", aad.getWarehouse().getWarehouseno());
-                if ((ai == null) || ai.getQty().compareTo(aad.getQty()) == -1) {
-                    showErrorMsg("Error", aad.getAssetItem().getItemno() + "库存可利用量不足");
+            for (AssetScrapDetail add : detailList) {
+                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
+                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
+                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
                     return false;
                 }
-                if (aad.getAssetCard() != null) {
-                    ac = assetCardBean.findByAssetno(aad.getAssetno());
-                    if ((ac == null) || ac.getQty().compareTo(aad.getQty()) == -1) {
-                        showErrorMsg("Error", aad.getAssetno() + "不存在或可利用量不足");
+                if (add.getAssetCard() != null) {
+                    ac = assetCardBean.findByAssetno(add.getAssetno());
+                    if ((ac == null) || ac.getScrap()) {
+                        showErrorMsg("Error", add.getAssetno() + "不存在或已报废");
                         return false;
                     }
                 } else {
@@ -157,14 +190,6 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     @Override
     public void doConfirmDetail() {
         if (currentDetail == null) {
-            return;
-        }
-        if (currentDetail.getDeptno2() == null || "".equals(currentDetail.getDeptno2())) {
-            showErrorMsg("Error", "请输入领用部门");
-            return;
-        }
-        if (currentDetail.getUserno2() == null || "".equals(currentDetail.getUserno2())) {
-            showErrorMsg("Error", "请输入领用人");
             return;
         }
         if (currentDetail.getAssetItem() == null) {
@@ -207,80 +232,95 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
+            AssetItem e = (AssetItem) event.getObject();
+            currentDetail.setAssetItem(e);
+            currentDetail.setUnit(e.getUnit());
+        }
+    }
+
+    public void handleDialogReturnAssetCardWhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
             AssetCard e = (AssetCard) event.getObject();
             currentDetail.setAssetCard(e);
             currentDetail.setAssetno(e.getFormid());
             currentDetail.setAssetItem(e.getAssetItem());
-            currentDetail.setDeptno(e.getDeptno());
-            currentDetail.setDeptname(e.getDeptname());
-            currentDetail.setUserno(e.getUserno());
-            currentDetail.setUsername(e.getUsername());
-            currentDetail.setPosition1(e.getPosition1());
-            currentDetail.setPosition2(e.getPosition2());
-            currentDetail.setPosition3(e.getPosition3());
-            currentDetail.setPosition4(e.getPosition4());
+            currentDetail.setQty(e.getQty());
+            currentDetail.setUnit(e.getUnit());
+            currentDetail.setPrice(e.getAmts());
+            currentDetail.setAmts(e.getAmts());
+            currentDetail.setBuyDate(e.getBuyDate());
+            currentDetail.setSurplusValue(e.getSurplusValue());
             currentDetail.setWarehouse(e.getWarehouse());
-            currentDetail.setWarehouse2(e.getWarehouse());
         }
     }
 
     public void handleDialogReturnDeptWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             Department d = (Department) event.getObject();
-            currentDetail.setDeptno2(d.getDeptno());
-            currentDetail.setDeptname2(d.getDept());
+            currentDetail.setDeptno(d.getDeptno());
+            currentDetail.setDeptname(d.getDept());
         }
     }
 
     public void handleDialogReturnPosition1WhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
-            currentDetail.setPosition12(e);
+            currentDetail.setPosition1(e);
         }
     }
 
     public void handleDialogReturnPosition2WhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
-            currentDetail.setPosition22(e);
+            currentDetail.setPosition2(e);
         }
     }
 
     public void handleDialogReturnPosition3WhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
-            currentDetail.setPosition32(e);
+            currentDetail.setPosition3(e);
         }
     }
 
     public void handleDialogReturnPosition4WhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
-            currentDetail.setPosition42(e);
+            currentDetail.setPosition4(e);
         }
     }
 
     public void handleDialogReturnUserWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             SystemUser u = (SystemUser) event.getObject();
-            currentDetail.setUserno2(u.getUserid());
-            currentDetail.setUsername2(u.getUsername());
+            currentDetail.setUserno(u.getUserid());
+            currentDetail.setUsername(u.getUsername());
+        }
+    }
+
+    public void handleDialogReturnWarehouseWhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            currentDetail.setWarehouse(e);
+        }
+    }
+
+    public void handleDialogReturnWarehouse2WhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            currentDetail.setWarehouse2(e);
         }
     }
 
     @Override
     public void init() {
-        openParams = new HashMap<>();
-        superEJB = assetAdjustBean;
-        detailEJB = assetAdjustDetailBean;
-        model = new AssetAdjustModel(assetAdjustBean, userManagedBean);
+        superEJB = assetScrapBean;
+        detailEJB = assetScrapDetailBean;
+        model = new AssetScrapModel(assetScrapBean, userManagedBean);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
-        trtype = transactoinTypeBean.findByTrtype("AIC");
-        if (trtype == null) {
-            showErrorMsg("Error", "AIC异动类别未设置");
-        }
         super.init();
+        openParams = new HashMap<>();
     }
 
     @Override

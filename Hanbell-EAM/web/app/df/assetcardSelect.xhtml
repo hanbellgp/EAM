@@ -34,6 +34,12 @@
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
                 <p:column styleClass="">
                     <f:facet name="header">
+                        <h:outputText value="品号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.itemno}"/>
+                </p:column>
+                <p:column styleClass="">
+                    <f:facet name="header">
                         <h:outputText value="编号"/>
                     </f:facet>
                     <h:outputText value="#{item.formid}"/>
@@ -43,6 +49,18 @@
                         <h:outputText value="名称"/>
                     </f:facet>
                     <h:outputText value="#{item.assetDesc}"/>
+                </p:column>
+                <p:column styleClass="">
+                    <f:facet name="header">
+                        <h:outputText value="部门"/>
+                    </f:facet>
+                    <h:outputText value="#{item.deptname}"/>
+                </p:column>
+                <p:column styleClass="">
+                    <f:facet name="header">
+                        <h:outputText value="人员"/>
+                    </f:facet>
+                    <h:outputText value="#{item.username}"/>
                 </p:column>
             </p:dataTable>
         </h:form>

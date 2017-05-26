@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 
@@ -40,6 +39,7 @@ public abstract class FormMulti3Bean<T extends FormEntity, D1 extends FormDetail
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
 
+    protected Map<String, Object> openOptions;
     protected Map<String, List<String>> openParams;
 
     /**
