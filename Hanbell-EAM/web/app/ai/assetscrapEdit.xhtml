@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetscrap" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetScrapManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">资产报废－修改</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="报废单号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{assetScrapManagedBean.currentEntity.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="报废日期" for="formdate" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:calendar id="formdate" value="#{assetScrapManagedBean.currentEntity.formdate}" title="Formdate"
+                                    pattern="yyyy/MM/dd" required="true" requiredMessage="请输入报废日期"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="处理部门" for="deptno" /></p:column>
+                    <p:column>
+                        <p:inputText id="deptno" value="#{assetScrapManagedBean.currentEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnRequireDeptSelect" actionListener="#{assetScrapManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnWhenEdit}"
+                                    update="deptno,deptname" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="部门名称" for="deptname" /></p:column>
+                    <p:column>
+                        <h:outputText id="deptname" value="#{assetScrapManagedBean.currentEntity.deptname}" title="RequireDeptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{assetScrapManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="报废明细">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetScrapManagedBean.createDetail()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update=":formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetScrapManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetScrapManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column><p:outputLabel value="编号" for="assetno" /></p:column>
+                            <p:column>
+                                <p:inputText id="assetno" value="#{assetScrapManagedBean.currentDetail.assetno}" title="assetno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnAssetCardSelect" actionListener="#{assetScrapManagedBean.openDialog('assetcardSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnAssetCardWhenDetailEdit}"
+                                            update="formOne:tabView:plgDetail" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><h:outputText value="名称"/></p:column>
+                            <p:column>
+                                <h:outputText id="assetDesc" value="#{assetScrapManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="品号" for="assetItem"/></p:column>
+                            <p:column>
+                                <p:inputText id="assetItem" value="#{assetScrapManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
+                                             required="true" requiredMessage="请输入品号" readonly="true"/>
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetDistributeManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnWhenDetailEdit}"
+                                            update="assetItem,itemdesc,unit" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><h:outputText value="品名"/></p:column>
+                            <p:column>
+                                <h:outputText id="itemdesc" value="#{assetScrapManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="使用部门" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptno" value="#{assetScrapManagedBean.currentDetail.assetCard.deptno}" title="RequireDeptno" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="处置部门" for="deptno2" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="deptno2" value="#{assetScrapManagedBean.currentDetail.deptno}" title="RequireDeptno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnDepartmentSelect" actionListener="#{assetScrapManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnDeptWhenDetailEdit}"
+                                            update="deptno2,deptname2" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="部门名称"/></p:column>
+                            <p:column>
+                                <h:outputText id="deptname" value="#{assetScrapManagedBean.currentDetail.assetCard.deptname}" title="RequireDeptname" />
+                            </p:column>
+                            <p:column><p:outputLabel value="部门名称" for="deptname2" /></p:column>
+                            <p:column>
+                                <h:outputText id="deptname2" value="#{assetScrapManagedBean.currentDetail.deptname}" title="RequireDeptname" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="原使用人"/></p:column>
+                            <p:column>
+                                <h:outputText id="userno" value="#{assetScrapManagedBean.currentDetail.assetCard.userno}" title="RequireUserno" />
+                            </p:column>
+                            <p:column><p:outputLabel value="新负责人" for="userno2" /></p:column>
+                            <p:column>
+                                <p:inputText id="userno2" value="#{assetScrapManagedBean.currentDetail.userno}" title="RequireUserno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnSystemUserSelect" actionListener="#{assetScrapManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnUserWhenDetailEdit}"
+                                            update="userno2,username2" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="姓名"/></p:column>
+                            <p:column>
+                                <h:outputText id="username" value="#{assetScrapManagedBean.currentDetail.assetCard.username}" title="RequireUsername" />
+                            </p:column>
+                            <p:column><h:outputText value="姓名"/></p:column>
+                            <p:column>
+                                <h:outputText id="username2" value="#{assetScrapManagedBean.currentDetail.username}" title="RequireUsername" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="数量" for="qty" /></p:column>
+                            <p:column>
+                                <p:spinner id="qty" value="#{assetScrapManagedBean.currentDetail.qty}" title="Qty"
+                                           required="true" requiredMessage="请输入数量"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                            <p:column>
+                                <p:inputText id="unit" value="#{assetScrapManagedBean.currentDetail.unit}" title="Unit"
+                                             required="true" requiredMessage="请输入单位"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="购置单价" for="price" /></p:column>
+                            <p:column>
+                                <p:inputText id="price" value="#{assetScrapManagedBean.currentDetail.price}" title="price"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="购置金额" for="amts" /></p:column>
+                            <p:column>
+                                <p:inputText id="amts" value="#{assetScrapManagedBean.currentDetail.amts}" title="amts"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="购置日期" for="buyDate" /></p:column>
+                            <p:column>
+                                <p:calendar id="buyDate" value="#{assetScrapManagedBean.currentDetail.buyDate}" title="buyDate"
+                                            pattern="yyyy/MM/dd"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="使用月数" for="used" /></p:column>
+                            <p:column>
+                                <p:inputText id="used" value="#{assetScrapManagedBean.currentDetail.used}" title="used"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
+                            <p:column>
+                                <h:outputText id="warehouse" value="#{assetScrapManagedBean.currentDetail.warehouse.name}" title="warehouse"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="目的仓库" for="warehouse2" /></p:column>
+                            <p:column>
+                                <p:inputText id="warehouse2" value="#{assetScrapManagedBean.currentDetail.warehouse2.name}" title="warehouse2" styleClass="inputWithButton"
+                                             required="true"  readonly="true"/>
+                                <p:commandButton id="btnWarehouse2Select" actionListener="#{assetScrapManagedBean.openDialog('warehouse2Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnWarehouse2WhenDetailEdit}"
+                                            update="warehouse2" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{assetScrapManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{assetScrapManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="品号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemdesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="处置部门"/>
+                            </f:facet>
+                            <h:outputText value="#{item.deptname}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.unit}"/>
+                        </p:column>                      
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="仓库"/>
+                            </f:facet>
+                            <h:outputText value="#{item.warehouse2.name}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

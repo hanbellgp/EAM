@@ -38,6 +38,7 @@ public abstract class FormMultiBean<T extends FormEntity, D1 extends FormDetailE
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
 
+    protected Map<String, Object> openOptions;
     protected Map<String, List<String>> openParams;
 
     /**

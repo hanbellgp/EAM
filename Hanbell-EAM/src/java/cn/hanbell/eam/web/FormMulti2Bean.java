@@ -39,6 +39,7 @@ public abstract class FormMulti2Bean<T extends FormEntity, D1 extends FormDetail
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
 
+    protected Map<String, Object> openOptions;
     protected Map<String, List<String>> openParams;
 
     /**

@@ -9,11 +9,13 @@ import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.ejb.AssetAdjustBean;
 import cn.hanbell.eam.ejb.AssetAdjustDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
+import cn.hanbell.eam.ejb.TransactionTypeBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetAdjust;
 import cn.hanbell.eam.entity.AssetAdjustDetail;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetPosition;
+import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eam.lazy.AssetAdjustModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -45,6 +48,11 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     @EJB
     private AssetCardBean assetCardBean;
 
+    @EJB
+    private TransactionTypeBean transactoinTypeBean;
+
+    private TransactionType trtype;
+
     private List<String> paramPosition = null;
     private List<String> paramUsed = null;
     private List<String> paramHascost = null;
@@ -58,6 +66,12 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
+    }
+
+    @Override
+    public void createDetail() {
+        super.createDetail();
+        currentDetail.setTrtype(trtype);
     }
 
     @Override
@@ -256,13 +270,17 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
 
     @Override
     public void init() {
+        openParams = new HashMap<>();
         superEJB = assetAdjustBean;
         detailEJB = assetAdjustDetailBean;
         model = new AssetAdjustModel(assetAdjustBean, userManagedBean);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
+        trtype = transactoinTypeBean.findByTrtype("AIC");
+        if (trtype == null) {
+            showErrorMsg("Error", "AIC异动类别未设置");
+        }
         super.init();
-        openParams = new HashMap<>();
     }
 
     @Override
@@ -277,7 +295,12 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 }
                 paramUsed.add("1");
                 openParams.put("used", paramUsed);
-                super.openDialog("assetcardSelect", openParams);
+                if (openOptions == null) {
+                    openOptions = new HashMap();
+                    openOptions.put("modal", true);
+                    openOptions.put("contentWidth", "900");
+                }
+                super.openDialog("assetcardSelect", openOptions, openParams);
                 break;
             case "warehouseSelect":
                 openParams.clear();

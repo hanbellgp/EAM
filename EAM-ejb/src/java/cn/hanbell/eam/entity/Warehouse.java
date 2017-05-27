@@ -26,18 +26,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Warehouse.findAll", query = "SELECT w FROM Warehouse w"),
     @NamedQuery(name = "Warehouse.findById", query = "SELECT w FROM Warehouse w WHERE w.id = :id"),
-    @NamedQuery(name = "Warehouse.findByCompany", query = "SELECT w FROM Warehouse w WHERE w.company = :company"),
     @NamedQuery(name = "Warehouse.findByWarehouseno", query = "SELECT w FROM Warehouse w WHERE w.warehouseno = :warehouseno"),
     @NamedQuery(name = "Warehouse.findByName", query = "SELECT w FROM Warehouse w WHERE w.name = :name"),
     @NamedQuery(name = "Warehouse.findByHascost", query = "SELECT w FROM Warehouse w WHERE w.hascost = :hascost"),
     @NamedQuery(name = "Warehouse.findByStatus", query = "SELECT w FROM Warehouse w WHERE w.status = :status")})
 public class Warehouse extends SuperEntity {
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2)
-    @Column(name = "company")
-    private String company;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
@@ -74,14 +68,6 @@ public class Warehouse extends SuperEntity {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
     }
 
     public String getWarehouseno() {

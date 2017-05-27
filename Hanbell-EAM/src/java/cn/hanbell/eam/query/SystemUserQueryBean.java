@@ -32,6 +32,7 @@ public class SystemUserQueryBean extends SuperQueryBean<SystemUser> {
     public void init() {
         this.superEJB = systemUserBean;
         setModel(new SystemUserModel(systemUserBean));
+        model.getSortFields().put("userid", "ASC");
         super.init();
     }
 

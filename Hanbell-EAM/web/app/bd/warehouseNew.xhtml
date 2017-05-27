@@ -21,19 +21,9 @@
             <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产仓库维护－新增</p:column>
+                        <p:column colspan="4">仓库维护－新增</p:column>
                     </p:row>
                 </f:facet>
-                <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="公司别" for="company" /></p:column>
-                    <p:column styleClass="Wid30">
-                        <h:outputText id="company" value="#{warehouseManagedBean.newEntity.company}" title="Company"/>
-                    </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="状态" for="status" /></p:column>
-                    <p:column styleClass="Wid30">
-                        <h:outputText id="status" value="#{warehouseManagedBean.newEntity.status}" title="status"/>
-                    </p:column>
-                </p:row>
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="仓库编号" for="warehouseno" /></p:column>
                     <p:column styleClass="Wid30">

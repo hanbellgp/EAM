@@ -160,6 +160,8 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     public void init() {
         superEJB = assetCardBean;
         model = new AssetCardModel(assetCardBean, userManagedBean);
+        model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("formid", "DESC");
         super.init();
     }
 

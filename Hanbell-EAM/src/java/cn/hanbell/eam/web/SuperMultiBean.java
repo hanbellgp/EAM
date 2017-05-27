@@ -38,6 +38,7 @@ public abstract class SuperMultiBean<T extends SuperEntity, D1 extends SuperDeta
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
 
+    protected Map<String, Object> openOptions;
     protected Map<String, List<String>> openParams;
 
     /**

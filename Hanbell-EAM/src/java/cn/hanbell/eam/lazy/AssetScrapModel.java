@@ -6,8 +6,7 @@
 package cn.hanbell.eam.lazy;
 
 import cn.hanbell.eam.control.UserManagedBean;
-import cn.hanbell.eam.entity.AssetPosition;
-import cn.hanbell.eam.entity.Warehouse;
+import cn.hanbell.eam.entity.AssetScrap;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
 import java.util.List;
@@ -18,13 +17,19 @@ import org.primefaces.model.SortOrder;
  *
  * @author C0160
  */
-public class WarehouseModel extends BaseLazyModel<Warehouse> {
+public class AssetScrapModel extends BaseLazyModel<AssetScrap> {
 
     private final UserManagedBean userManagedBean;
 
-    public WarehouseModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
+    public AssetScrapModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
+    }
+
+    @Override
+    public List<AssetScrap> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+        filterFields.put("company =", userManagedBean.getCompany());
+        return super.load(first, pageSize, sortField, sortOrder, filters);
     }
 
 }

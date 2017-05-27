@@ -6,17 +6,19 @@
 package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.AssetCardBean;
-import cn.hanbell.eam.ejb.AssetDistributeBean;
-import cn.hanbell.eam.ejb.AssetDistributeDetailBean;
+import cn.hanbell.eam.ejb.AssetScrapBean;
+import cn.hanbell.eam.ejb.AssetScrapDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
+import cn.hanbell.eam.ejb.TransactionTypeBean;
 import cn.hanbell.eam.entity.AssetCard;
-import cn.hanbell.eam.entity.AssetDistribute;
-import cn.hanbell.eam.entity.AssetDistributeDetail;
+import cn.hanbell.eam.entity.AssetScrap;
+import cn.hanbell.eam.entity.AssetScrapDetail;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.AssetPosition;
+import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eam.entity.Warehouse;
-import cn.hanbell.eam.lazy.AssetDistributeModel;
+import cn.hanbell.eam.lazy.AssetScrapModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
@@ -33,14 +35,14 @@ import org.primefaces.event.SelectEvent;
  *
  * @author C0160
  */
-@ManagedBean(name = "assetDistributeManagedBean")
+@ManagedBean(name = "assetScrapManagedBean")
 @SessionScoped
-public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, AssetDistributeDetail> {
+public class AssetScrapManagedBean extends FormMultiBean<AssetScrap, AssetScrapDetail> {
 
     @EJB
-    private AssetDistributeBean assetDistributeBean;
+    private AssetScrapBean assetScrapBean;
     @EJB
-    private AssetDistributeDetailBean assetDistributeDetailBean;
+    private AssetScrapDetailBean assetScrapDetailBean;
 
     @EJB
     private AssetInventoryBean assetInventoryBean;
@@ -51,8 +53,8 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     private List<String> paramUsed = null;
     private List<String> paramHascost = null;
 
-    public AssetDistributeManagedBean() {
-        super(AssetDistribute.class, AssetDistributeDetail.class);
+    public AssetScrapManagedBean() {
+        super(AssetScrap.class, AssetScrapDetail.class);
     }
 
     @Override
@@ -60,17 +62,26 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
+        newEntity.setTotalAmts(BigDecimal.ZERO);
+        newEntity.setSurplusValue(BigDecimal.ZERO);
+    }
+
+    @Override
+    public void createDetail() {
+        super.createDetail();
     }
 
     @Override
     protected boolean doBeforePersist() throws Exception {
         if (super.doBeforePersist()) {
-            for (AssetDistributeDetail add : detailList) {
+            BigDecimal totolAmts = BigDecimal.ZERO;
+            BigDecimal totolValues = BigDecimal.ZERO;
+            for (AssetScrapDetail add : detailList) {
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要输入编号");
                     return false;
                 }
-                if (!add.getWarehouse().getHascost()) {
+                if (add.getWarehouse().getHascost()) {
                     showErrorMsg("Error", "来源仓成本属性错误");
                     return false;
                 }
@@ -78,7 +89,15 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                     showErrorMsg("Error", "目的仓成本属性错误");
                     return false;
                 }
+                if (add.getAmts() != null) {
+                    totolAmts = totolAmts.add(add.getAmts());
+                }
+                if (add.getSurplusValue() != null) {
+                    totolValues = totolValues.add(add.getSurplusValue());
+                }
             }
+            newEntity.setTotalAmts(totolAmts);
+            newEntity.setSurplusValue(totolValues);
             return true;
         }
         return false;
@@ -87,12 +106,14 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     protected boolean doBeforeUpdate() throws Exception {
         if (super.doBeforeUpdate()) {
-            for (AssetDistributeDetail add : detailList) {
+            BigDecimal totolAmts = BigDecimal.ZERO;
+            BigDecimal totolValues = BigDecimal.ZERO;
+            for (AssetScrapDetail add : detailList) {
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要输入编号");
                     return false;
                 }
-                if (!add.getWarehouse().getHascost()) {
+                if (add.getWarehouse().getHascost()) {
                     showErrorMsg("Error", "来源仓成本属性错误");
                     return false;
                 }
@@ -100,7 +121,15 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                     showErrorMsg("Error", "目的仓成本属性错误");
                     return false;
                 }
+                if (add.getAmts() != null) {
+                    totolAmts = totolAmts.add(add.getAmts());
+                }
+                if (add.getSurplusValue() != null) {
+                    totolValues = totolValues.add(add.getSurplusValue());
+                }
             }
+            newEntity.setTotalAmts(totolAmts);
+            newEntity.setSurplusValue(totolValues);
             return true;
         }
         return false;
@@ -111,16 +140,16 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         if (super.doBeforeUnverify()) {
             AssetInventory ai;
             AssetCard ac;
-            for (AssetDistributeDetail add : detailList) {
+            for (AssetScrapDetail add : detailList) {
                 ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse2().getWarehouseno());
                 if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可还原量不足");
                     return false;
                 }
                 if (add.getAssetCard() != null) {
-                    ac = assetCardBean.findByFilters(currentEntity.getCompany(), add.getAssetno(), add.getAssetItem().getItemno(), add.getDeptno(), add.getUserno());
-                    if ((ac == null) || !ac.getUsed()) {
-                        showErrorMsg("Error", add.getAssetno() + "不存在或未领用或被他人领用");
+                    ac = assetCardBean.findByFiltersAndUsed(add.getPid(), add.getSeq());
+                    if ((ac == null) || !ac.getScrap()) {
+                        showErrorMsg("Error", add.getAssetno() + "不存在或未报废");
                         return false;
                     }
                 } else {
@@ -137,7 +166,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         if (super.doBeforeVerify()) {
             AssetInventory ai;
             AssetCard ac;
-            for (AssetDistributeDetail add : detailList) {
+            for (AssetScrapDetail add : detailList) {
                 ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
                 if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
@@ -145,8 +174,8 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                 }
                 if (add.getAssetCard() != null) {
                     ac = assetCardBean.findByAssetno(add.getAssetno());
-                    if ((ac == null) || ac.getUsed()) {
-                        showErrorMsg("Error", add.getAssetno() + "不存在或已被领用");
+                    if ((ac == null) || ac.getScrap()) {
+                        showErrorMsg("Error", add.getAssetno() + "不存在或已报废");
                         return false;
                     }
                 } else {
@@ -161,14 +190,6 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     public void doConfirmDetail() {
         if (currentDetail == null) {
-            return;
-        }
-        if (currentDetail.getDeptno() == null || "".equals(currentDetail.getDeptno())) {
-            showErrorMsg("Error", "请输入领用部门");
-            return;
-        }
-        if (currentDetail.getUserno() == null || "".equals(currentDetail.getUserno())) {
-            showErrorMsg("Error", "请输入领用人");
             return;
         }
         if (currentDetail.getAssetItem() == null) {
@@ -222,6 +243,14 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
             AssetCard e = (AssetCard) event.getObject();
             currentDetail.setAssetCard(e);
             currentDetail.setAssetno(e.getFormid());
+            currentDetail.setAssetItem(e.getAssetItem());
+            currentDetail.setQty(e.getQty());
+            currentDetail.setUnit(e.getUnit());
+            currentDetail.setPrice(e.getAmts());
+            currentDetail.setAmts(e.getAmts());
+            currentDetail.setBuyDate(e.getBuyDate());
+            currentDetail.setSurplusValue(e.getSurplusValue());
+            currentDetail.setWarehouse(e.getWarehouse());
         }
     }
 
@@ -285,9 +314,9 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
 
     @Override
     public void init() {
-        superEJB = assetDistributeBean;
-        detailEJB = assetDistributeDetailBean;
-        model = new AssetDistributeModel(assetDistributeBean, userManagedBean);
+        superEJB = assetScrapBean;
+        detailEJB = assetScrapDetailBean;
+        model = new AssetScrapModel(assetScrapBean, userManagedBean);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();
@@ -304,7 +333,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                 } else {
                     paramUsed.clear();
                 }
-                paramUsed.add("0");
+                paramUsed.add("1");
                 openParams.put("used", paramUsed);
                 if (openOptions == null) {
                     openOptions = new HashMap();
@@ -320,7 +349,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                 } else {
                     paramHascost.clear();
                 }
-                paramHascost.add("1");
+                paramHascost.add("0");
                 openParams.put("hascost", paramHascost);
                 super.openDialog("warehouseSelect", openParams);
                 break;

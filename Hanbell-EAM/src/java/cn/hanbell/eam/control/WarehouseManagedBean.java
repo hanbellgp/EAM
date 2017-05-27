@@ -30,16 +30,11 @@ public class WarehouseManagedBean extends SuperSingleBean<Warehouse> {
         super(Warehouse.class);
     }
 
-    @Override
-    public void create() {
-        super.create();
-        newEntity.setCompany(userManagedBean.getCompany());
-    }
-
     public void init() {
         this.superEJB = warehouseBean;
         this.model = new WarehouseModel(warehouseBean, userManagedBean);
         model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("warehouseno", "ASC");
         super.init();
     }
 
