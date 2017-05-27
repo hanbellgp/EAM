@@ -6,19 +6,14 @@
 package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.SuperEntity;
-import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,26 +30,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetCategory.findById", query = "SELECT a FROM AssetCategory a WHERE a.id = :id"),
     @NamedQuery(name = "AssetCategory.findByCategory", query = "SELECT a FROM AssetCategory a WHERE a.category = :category"),
     @NamedQuery(name = "AssetCategory.findByName", query = "SELECT a FROM AssetCategory a WHERE a.name = :name"),
-    @NamedQuery(name = "AssetCategory.findByPid", query = "SELECT a FROM AssetCategory a WHERE a.pid = :pid"),
-    @NamedQuery(name = "AssetCategory.findByDeptno", query = "SELECT a FROM AssetCategory a WHERE a.deptno = :deptno"),
-    @NamedQuery(name = "AssetCategory.findByDeptname", query = "SELECT a FROM AssetCategory a WHERE a.deptname = :deptname"),
-    @NamedQuery(name = "AssetCategory.findByUserno", query = "SELECT a FROM AssetCategory a WHERE a.userno = :userno"),
-    @NamedQuery(name = "AssetCategory.findByUsername", query = "SELECT a FROM AssetCategory a WHERE a.username = :username"),
-    @NamedQuery(name = "AssetCategory.findByWarehouseno", query = "SELECT a FROM AssetCategory a WHERE a.warehouseno = :warehouseno"),
-    @NamedQuery(name = "AssetCategory.findByWarehouseno2", query = "SELECT a FROM AssetCategory a WHERE a.warehouseno2 = :warehouseno2"),
-    @NamedQuery(name = "AssetCategory.findByNoauto", query = "SELECT a FROM AssetCategory a WHERE a.noauto = :noauto"),
-    @NamedQuery(name = "AssetCategory.findByNochange", query = "SELECT a FROM AssetCategory a WHERE a.nochange = :nochange"),
-    @NamedQuery(name = "AssetCategory.findByNolead", query = "SELECT a FROM AssetCategory a WHERE a.nolead = :nolead"),
-    @NamedQuery(name = "AssetCategory.findByNoformat", query = "SELECT a FROM AssetCategory a WHERE a.noformat = :noformat"),
-    @NamedQuery(name = "AssetCategory.findByNoseqlen", query = "SELECT a FROM AssetCategory a WHERE a.noseqlen = :noseqlen"),
-    @NamedQuery(name = "AssetCategory.findByRemark", query = "SELECT a FROM AssetCategory a WHERE a.remark = :remark"),
-    @NamedQuery(name = "AssetCategory.findByStatus", query = "SELECT a FROM AssetCategory a WHERE a.status = :status"),
-    @NamedQuery(name = "AssetCategory.findByCreator", query = "SELECT a FROM AssetCategory a WHERE a.creator = :creator"),
-    @NamedQuery(name = "AssetCategory.findByCredate", query = "SELECT a FROM AssetCategory a WHERE a.credate = :credate"),
-    @NamedQuery(name = "AssetCategory.findByOptuser", query = "SELECT a FROM AssetCategory a WHERE a.optuser = :optuser"),
-    @NamedQuery(name = "AssetCategory.findByOptdate", query = "SELECT a FROM AssetCategory a WHERE a.optdate = :optdate"),
-    @NamedQuery(name = "AssetCategory.findByCfmuser", query = "SELECT a FROM AssetCategory a WHERE a.cfmuser = :cfmuser"),
-    @NamedQuery(name = "AssetCategory.findByCfmdate", query = "SELECT a FROM AssetCategory a WHERE a.cfmdate = :cfmdate")})
+    @NamedQuery(name = "AssetCategory.findByPId", query = "SELECT a FROM AssetCategory a WHERE a.parentCategory.id = :pid"),
+    @NamedQuery(name = "AssetCategory.findRoot", query = "SELECT a FROM AssetCategory a WHERE a.parentCategory IS NULL"),
+    @NamedQuery(name = "AssetCategory.findByStatus", query = "SELECT a FROM AssetCategory a WHERE a.status = :status")})
 public class AssetCategory extends SuperEntity {
 
     @Basic(optional = false)
@@ -67,8 +45,11 @@ public class AssetCategory extends SuperEntity {
     @Size(min = 1, max = 45)
     @Column(name = "name")
     private String name;
-    @Column(name = "pid")
-    private Integer pid;
+
+    @JoinColumn(name = "pid", referencedColumnName = "id")
+    @ManyToOne
+    private AssetCategory parentCategory;
+
     @Size(max = 20)
     @Column(name = "deptno")
     private String deptno;
@@ -104,24 +85,13 @@ public class AssetCategory extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-    
 
     public AssetCategory() {
     }
 
-    public AssetCategory(Integer id) {
-        this.id = id;
-    }
-
-    public AssetCategory(Integer id, String category, String name, boolean noauto, String status) {
-        this.id = id;
+    public AssetCategory(String category) {
         this.category = category;
-        this.name = name;
-        this.noauto = noauto;
-        this.status = status;
     }
-
-  
 
     public String getCategory() {
         return category;
@@ -139,12 +109,12 @@ public class AssetCategory extends SuperEntity {
         this.name = name;
     }
 
-    public Integer getPid() {
-        return pid;
+    public AssetCategory getParentCategory() {
+        return parentCategory;
     }
 
-    public void setPid(Integer pid) {
-        this.pid = pid;
+    public void setParentCategory(AssetCategory parentCategory) {
+        this.parentCategory = parentCategory;
     }
 
     public String getDeptno() {
@@ -243,8 +213,6 @@ public class AssetCategory extends SuperEntity {
         this.remark = remark;
     }
 
-   
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -269,5 +237,5 @@ public class AssetCategory extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.AssetCategory[ id=" + id + " ]";
     }
-    
+
 }

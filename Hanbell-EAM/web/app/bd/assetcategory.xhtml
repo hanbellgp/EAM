@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetCategoryManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{assetCategoryManagedBean.view('assetcategoryView')}" icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{assetCategoryManagedBean.edit('assetcategoryEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{assetCategoryManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{assetCategoryManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{assetCategoryManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{assetCategoryManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{assetCategoryManagedBean.doUnCfm}"  update=":formList"/>
+                        <p:menuitem id="btnCreate" value="新增" action="#{assetCategoryManagedBean.create('assetcategoryNew')}" icon="ui-icon-plus"
+                                    rendered="#{assetCategoryManagedBean.doAdd}" process="@this" />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetCategoryManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetCategoryManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:treeTable value="#{assetCategoryManagedBean.rootNode}" var="item" tableStyleClass="tableList"
+                         selectionMode="single" selection="#{assetCategoryManagedBean.selectedNode}">
+                <f:facet name="header">
+                    资产类别维护
+                </f:facet>
+                <p:ajax event="select"  update=":formList:toolbar" />
+                <p:ajax event="unselect" update=":formList:toolbar" />
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.category}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="类别名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.name}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="父阶类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.parentCategory.name}"/>
+                </p:column>
+            </p:treeTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnDelete,btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

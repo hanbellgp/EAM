@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetcategory" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetCategoryManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">类别－新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类别编号" for="category" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="category" value="#{assetCategoryManagedBean.currentEntity.category}" title="Category"
+                                     required="true" requiredMessage="请输入类别编号"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类别名称" for="name" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="name" value="#{assetCategoryManagedBean.currentEntity.name}" title="Name"
+                                     required="true" requiredMessage="请输入类别名称"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="上级类别" for="pid" /></p:column>
+                    <p:column>
+                        <p:inputText id="pid" value="#{assetCategoryManagedBean.currentEntity.parentCategory.name}" title="Pid" styleClass="inputWithButton" readonly="true" />
+                        <p:commandButton id="btnCategorySelect" actionListener="#{assetCategoryManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCategoryManagedBean.handleDialogReturnWhenNew}"
+                                    update="pid" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column>
+                        <p:inputText id="remark" value="#{assetCategoryManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
