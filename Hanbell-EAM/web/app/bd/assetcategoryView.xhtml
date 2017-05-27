@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetcategory" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnVerify" value="审核" action="#{assetCategoryManagedBean.verify()}" icon="ui-icon-check"
+                                     rendered="#{assetCategoryManagedBean.doCfm}" update="toolbar"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">类别-查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="类别编号"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="category" value="#{assetCategoryManagedBean.currentEntity.category}" title="Category"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="类别名称" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="name" value="#{assetCategoryManagedBean.currentEntity.name}" title="Name"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="上级类别"/></p:column>
+                    <p:column>
+                        <h:outputText id="pid" value="#{assetCategoryManagedBean.currentEntity.parentCategory.name}" title="Pid"/>
+                    </p:column>
+                    <p:column><h:outputText value="备注" /></p:column>
+                    <p:column>
+                        <h:outputText id="remark" value="#{assetCategoryManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnVerify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

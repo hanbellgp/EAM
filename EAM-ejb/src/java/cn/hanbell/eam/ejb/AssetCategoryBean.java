@@ -18,14 +18,15 @@ import javax.persistence.Query;
  */
 @Stateless
 @LocalBean
-public class AssetCategoryBean extends SuperEJBForEAM<AssetCategory>{
+public class AssetCategoryBean extends SuperEJBForEAM<AssetCategory> {
 
     public AssetCategoryBean() {
         super(AssetCategory.class);
     }
-      public List<AssetCategory> findRootByCategory(String value) {
-        Query query = getEntityManager().createNamedQuery("AssetCategory.findRootByCategory");
-        query.setParameter("Category", value);
+
+    public List<AssetCategory> findRoot() {
+        Query query = getEntityManager().createNamedQuery("AssetCategory.findRoot");
         return query.getResultList();
     }
+
 }
