@@ -43,7 +43,7 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         query.setParameter("company", company);
         query.setParameter("formid", assetno);
         query.setParameter("itemno", itemno);
-        query.setParameter("detpno", deptno);
+        query.setParameter("deptno", deptno);
         query.setParameter("userno", userno);
         try {
             Object o = query.getSingleResult();
@@ -59,6 +59,18 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         query.setParameter("srcseq", srcseq);
         try {
             return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public AssetCard findByFiltersAndUsed(String relformid, int relseq) {
+        Query query = getEntityManager().createNamedQuery("AssetCard.findByFiltersAndUsed");
+        query.setParameter("relformid", relformid);
+        query.setParameter("relseq", relseq);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetCard) o;
         } catch (Exception ex) {
             return null;
         }

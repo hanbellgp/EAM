@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetitem" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetItemManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">资产品号－编辑</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="类别" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="category" value="#{assetItemManagedBean.currentEntity.category.category}" title="category" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="类别名称" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="name" value="#{assetItemManagedBean.currentEntity.category.name}"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="品号"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemno" value="#{assetItemManagedBean.currentEntity.itemno}" title="Itemno"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="品名" for="itemdesc" /></p:column>
+                    <p:column>
+                        <p:inputText id="itemdesc" value="#{assetItemManagedBean.currentEntity.itemdesc}" title="Itemdesc"
+                                     required="true" requiredMessage="请输入品名"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="规格" for="itemspec" /></p:column>
+                    <p:column>
+                        <p:inputText id="itemspec" value="#{assetItemManagedBean.currentEntity.itemspec}" title="Itemspec" />
+                    </p:column>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <p:inputText id="unit" value="#{assetItemManagedBean.currentEntity.unit}" title="Unit" styleClass="inputWithButton"
+                                     required="true" requiredMessage="请输入单位"/>
+                        <p:commandButton id="btnUnitSelect" actionListener="#{assetItemManagedBean.openDialog('unitSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetItemManagedBean.handleDialogReturnUnitWhenEdit}"
+                                    update="unit" />
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{assetItemManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

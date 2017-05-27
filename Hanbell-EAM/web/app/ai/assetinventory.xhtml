@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery"  styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">查询条件</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputLabel value="品号" for="queryFormId" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="queryFormId" value="#{assetInventoryQueryBean.queryFormId}" title="品号" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputLabel value="名称" for="queryName" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="queryName" value="#{assetInventoryQueryBean.queryName}" title="名称" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="仓库" for="queryWarehouse" /></p:column>
+                    <p:column>
+                        <p:inputText id="queryWarehouse" value="#{assetInventoryQueryBean.queryWarehouse.name}" title="仓库"
+                                     styleClass="inputWithButton" required="false" />
+                        <p:commandButton id="btnSelectWarehouse" actionListener="#{assetInventoryQueryBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetInventoryQueryBean.handleDialogReturnWhenEdit}"
+                                    update="queryWarehouse" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><h:outputLabel value="零库存" for="queryState" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="queryState" value="#{assetInventoryQueryBean.queryState}" title="零库存" >
+                            <f:selectItem itemLabel="不显示" itemValue="N"/>
+                            <f:selectItem itemLabel="显示" itemValue="V"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetInventoryQueryBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{assetInventoryQueryBean.view('')}"  icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetInventoryQueryBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetInventoryQueryBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panel id="panelList">
+                <p:dataTable value="#{assetInventoryQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="15,30,45"  lazy="true"
+                             selectionMode="single" selection="#{assetInventoryQueryBean.currentEntity}" rowKey="#{item.id}" >
+                    <f:facet name="header">
+                        库存明细
+                    </f:facet>
+                    <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                    <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                    <p:column styleClass="Wid20">
+                        <f:facet name="header">
+                            <h:outputText value="件号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetItem.itemno}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid30">
+                        <f:facet name="header">
+                            <h:outputText value="名称"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetItem.itemdesc}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="库号"/>
+                        </f:facet>
+                        <h:outputText value="#{item.warehouse.warehouseno}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid20">
+                        <f:facet name="header">
+                            <h:outputText value="库名"/>
+                        </f:facet>
+                        <h:outputText value="#{item.warehouse.name}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10" style="text-align: right">
+                        <f:facet name="header">
+                            <h:outputText value="数量"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qty}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="单位"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assetItem.unit}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnReset,btnQuery">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

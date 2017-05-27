@@ -12,6 +12,8 @@ import com.lightshell.comm.FormDetailEntity;
 import com.lightshell.comm.FormEntity;
 import com.lightshell.comm.FormMulti3ManagedBean;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -37,6 +39,8 @@ public abstract class FormMulti3Bean<T extends FormEntity, D1 extends FormDetail
     protected String appDataPath;
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
+
+    protected Map<String, List<String>> openParams;
 
     /**
      * @param entityClass
@@ -161,7 +165,7 @@ public abstract class FormMulti3Bean<T extends FormEntity, D1 extends FormDetail
     @Override
     public void print() throws Exception {
         if (currentEntity == null) {
-            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可打印数据");
+            showWarnMsg("Warn", "没有可打印数据");
             return;
         }
         //设置报表参数
@@ -245,15 +249,15 @@ public abstract class FormMulti3Bean<T extends FormEntity, D1 extends FormDetail
                     currentEntity.setCfmdate(null);
                     superEJB.unverify(currentEntity);
                     doAfterUnverify();
-                    showMsg(FacesMessage.SEVERITY_INFO, "Info", "更新成功");
+                    showInfoMsg("Info", "更新成功");
                 } else {
-                    showMsg(FacesMessage.SEVERITY_WARN, "Warn", "还原前检查失败");
+                    showErrorMsg("Error", "还原前检查失败");
                 }
             } catch (Exception ex) {
-                showMsg(FacesMessage.SEVERITY_ERROR, "Error", ex.toString());
+                showErrorMsg("Error", ex.getMessage());
             }
         } else {
-            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可更新数据");
+            showWarnMsg("Warn", "没有可更新数据");
         }
     }
 
@@ -267,15 +271,15 @@ public abstract class FormMulti3Bean<T extends FormEntity, D1 extends FormDetail
                     currentEntity.setCfmdateToNow();
                     superEJB.verify(currentEntity);
                     doAfterVerify();
-                    showMsg(FacesMessage.SEVERITY_INFO, "Info", "更新成功");
+                    showInfoMsg("Info", "更新成功");
                 } else {
-                    showMsg(FacesMessage.SEVERITY_WARN, "Warn", "审核前检查失败");
+                    showErrorMsg("Error", "审核前检查失败");
                 }
             } catch (Exception ex) {
-                showMsg(FacesMessage.SEVERITY_ERROR, "Error", ex.toString());
+                showErrorMsg("Error", ex.getMessage());
             }
         } else {
-            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可更新数据");
+            showWarnMsg("Warn", "没有可更新数据");
         }
     }
 

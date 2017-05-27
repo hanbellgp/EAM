@@ -1,0 +1,489 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cn.hanbell.eam.entity;
+
+import com.lightshell.comm.FormDetailEntity;
+import java.math.BigDecimal;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *
+ * @author C0160
+ */
+@Entity
+@Table(name = "assetadjustdetail")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "AssetAdjustDetail.findAll", query = "SELECT a FROM AssetAdjustDetail a"),
+    @NamedQuery(name = "AssetAdjustDetail.findById", query = "SELECT a FROM AssetAdjustDetail a WHERE a.id = :id"),
+    @NamedQuery(name = "AssetAdjustDetail.findByPId", query = "SELECT a FROM AssetAdjustDetail a WHERE a.pid = :pid")})
+public class AssetAdjustDetail extends FormDetailEntity {
+
+    @JoinColumn(name = "trtype", referencedColumnName = "trtype")
+    @ManyToOne(optional = false)
+    private TransactionType trtype;
+
+    @JoinColumn(name = "assetid", referencedColumnName = "id")
+    @ManyToOne(optional = true)
+    private AssetCard assetCard;
+
+    @Size(max = 20)
+    @Column(name = "assetno")
+    private String assetno;
+
+    @JoinColumn(name = "itemno", referencedColumnName = "itemno")
+    @ManyToOne(optional = false)
+    private AssetItem assetItem;
+
+    @Size(max = 20)
+    @Column(name = "batch")
+    private String batch;
+    @Size(max = 20)
+    @Column(name = "brand")
+    private String brand;
+    @Size(max = 20)
+    @Column(name = "sn")
+    private String sn;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "qty")
+    private BigDecimal qty;
+    @Size(max = 10)
+    @Column(name = "unit")
+    private String unit;
+
+    @JoinColumn(name = "position1", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position1;
+    @JoinColumn(name = "position2", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position2;
+    @JoinColumn(name = "position3", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position3;
+    @JoinColumn(name = "position4", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position4;
+    @JoinColumn(name = "position5", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position5;
+    @JoinColumn(name = "position6", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position6;
+    @Size(max = 20)
+    @Column(name = "deptno")
+    private String deptno;
+    @Size(max = 45)
+    @Column(name = "deptname")
+    private String deptname;
+    @Size(max = 20)
+    @Column(name = "userno")
+    private String userno;
+    @Size(max = 45)
+    @Column(name = "username")
+    private String username;
+    @JoinColumn(name = "warehouseno", referencedColumnName = "warehouseno")
+    @ManyToOne
+    private Warehouse warehouse;
+
+    @JoinColumn(name = "position12", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position12;
+    @JoinColumn(name = "position22", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position22;
+    @JoinColumn(name = "position32", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position32;
+    @JoinColumn(name = "position42", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position42;
+    @JoinColumn(name = "position52", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position52;
+    @JoinColumn(name = "position62", referencedColumnName = "id")
+    @ManyToOne
+    private AssetPosition position62;
+    @Size(max = 20)
+    @Column(name = "deptno2")
+    private String deptno2;
+    @Size(max = 45)
+    @Column(name = "deptname2")
+    private String deptname2;
+    @Size(max = 20)
+    @Column(name = "userno2")
+    private String userno2;
+    @Size(max = 45)
+    @Column(name = "username2")
+    private String username2;
+    @JoinColumn(name = "warehouseno2", referencedColumnName = "warehouseno")
+    @ManyToOne
+    private Warehouse warehouse2;
+
+    @Size(max = 100)
+    @Column(name = "srcapi")
+    private String srcapi;
+    @Size(max = 20)
+    @Column(name = "srcformid")
+    private String srcformid;
+    @Column(name = "srcseq")
+    private Integer srcseq;
+    @Size(max = 100)
+    @Column(name = "relapi")
+    private String relapi;
+    @Size(max = 20)
+    @Column(name = "relformid")
+    private String relformid;
+    @Column(name = "relseq")
+    private Integer relseq;
+    @Size(max = 100)
+    @Column(name = "remark")
+    private String remark;
+
+    public AssetAdjustDetail() {
+    }
+
+    public TransactionType getTrtype() {
+        return trtype;
+    }
+
+    public void setTrtype(TransactionType trtype) {
+        this.trtype = trtype;
+    }
+
+    public AssetCard getAssetCard() {
+        return assetCard;
+    }
+
+    public void setAssetCard(AssetCard assetCard) {
+        this.assetCard = assetCard;
+    }
+
+    public String getAssetno() {
+        return assetno;
+    }
+
+    public void setAssetno(String assetno) {
+        this.assetno = assetno;
+    }
+
+    public AssetItem getAssetItem() {
+        return assetItem;
+    }
+
+    public void setAssetItem(AssetItem assetItem) {
+        this.assetItem = assetItem;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
+    }
+
+    public BigDecimal getQty() {
+        return qty;
+    }
+
+    public void setQty(BigDecimal qty) {
+        this.qty = qty;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public AssetPosition getPosition1() {
+        return position1;
+    }
+
+    public void setPosition1(AssetPosition position1) {
+        this.position1 = position1;
+    }
+
+    public AssetPosition getPosition2() {
+        return position2;
+    }
+
+    public void setPosition2(AssetPosition position2) {
+        this.position2 = position2;
+    }
+
+    public AssetPosition getPosition3() {
+        return position3;
+    }
+
+    public void setPosition3(AssetPosition position3) {
+        this.position3 = position3;
+    }
+
+    public AssetPosition getPosition4() {
+        return position4;
+    }
+
+    public void setPosition4(AssetPosition position4) {
+        this.position4 = position4;
+    }
+
+    public AssetPosition getPosition5() {
+        return position5;
+    }
+
+    public void setPosition5(AssetPosition position5) {
+        this.position5 = position5;
+    }
+
+    public AssetPosition getPosition6() {
+        return position6;
+    }
+
+    public void setPosition6(AssetPosition position6) {
+        this.position6 = position6;
+    }
+
+    public String getDeptno() {
+        return deptno;
+    }
+
+    public void setDeptno(String deptno) {
+        this.deptno = deptno;
+    }
+
+    public String getDeptname() {
+        return deptname;
+    }
+
+    public void setDeptname(String deptname) {
+        this.deptname = deptname;
+    }
+
+    public String getUserno() {
+        return userno;
+    }
+
+    public void setUserno(String userno) {
+        this.userno = userno;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public AssetPosition getPosition12() {
+        return position12;
+    }
+
+    public void setPosition12(AssetPosition position12) {
+        this.position12 = position12;
+    }
+
+    public AssetPosition getPosition22() {
+        return position22;
+    }
+
+    public void setPosition22(AssetPosition position22) {
+        this.position22 = position22;
+    }
+
+    public AssetPosition getPosition32() {
+        return position32;
+    }
+
+    public void setPosition32(AssetPosition position32) {
+        this.position32 = position32;
+    }
+
+    public AssetPosition getPosition42() {
+        return position42;
+    }
+
+    public void setPosition42(AssetPosition position42) {
+        this.position42 = position42;
+    }
+
+    public AssetPosition getPosition52() {
+        return position52;
+    }
+
+    public void setPosition52(AssetPosition position52) {
+        this.position52 = position52;
+    }
+
+    public AssetPosition getPosition62() {
+        return position62;
+    }
+
+    public void setPosition62(AssetPosition position62) {
+        this.position62 = position62;
+    }
+
+    public String getDeptno2() {
+        return deptno2;
+    }
+
+    public void setDeptno2(String deptno2) {
+        this.deptno2 = deptno2;
+    }
+
+    public String getDeptname2() {
+        return deptname2;
+    }
+
+    public void setDeptname2(String deptname2) {
+        this.deptname2 = deptname2;
+    }
+
+    public String getUserno2() {
+        return userno2;
+    }
+
+    public void setUserno2(String userno2) {
+        this.userno2 = userno2;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public void setUsername2(String username2) {
+        this.username2 = username2;
+    }
+
+    public Warehouse getWarehouse2() {
+        return warehouse2;
+    }
+
+    public void setWarehouse2(Warehouse warehouse2) {
+        this.warehouse2 = warehouse2;
+    }
+
+    public String getSrcapi() {
+        return srcapi;
+    }
+
+    public void setSrcapi(String srcapi) {
+        this.srcapi = srcapi;
+    }
+
+    public String getSrcformid() {
+        return srcformid;
+    }
+
+    public void setSrcformid(String srcformid) {
+        this.srcformid = srcformid;
+    }
+
+    public Integer getSrcseq() {
+        return srcseq;
+    }
+
+    public void setSrcseq(Integer srcseq) {
+        this.srcseq = srcseq;
+    }
+
+    public String getRelapi() {
+        return relapi;
+    }
+
+    public void setRelapi(String relapi) {
+        this.relapi = relapi;
+    }
+
+    public String getRelformid() {
+        return relformid;
+    }
+
+    public void setRelformid(String relformid) {
+        this.relformid = relformid;
+    }
+
+    public Integer getRelseq() {
+        return relseq;
+    }
+
+    public void setRelseq(Integer relseq) {
+        this.relseq = relseq;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof AssetAdjustDetail)) {
+            return false;
+        }
+        AssetAdjustDetail other = (AssetAdjustDetail) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "cn.hanbell.eam.entity.AssetAdjustdetail[ id=" + id + " ]";
+    }
+
+}

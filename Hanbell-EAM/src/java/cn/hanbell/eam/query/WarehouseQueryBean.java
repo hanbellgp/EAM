@@ -12,6 +12,7 @@ import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -23,6 +24,7 @@ public class WarehouseQueryBean extends SuperQueryBean<Warehouse> {
 
     @EJB
     private WarehouseBean warehouseBean;
+    private Integer queryHascost = -1;
 
     public WarehouseQueryBean() {
         super(Warehouse.class);
@@ -32,6 +34,17 @@ public class WarehouseQueryBean extends SuperQueryBean<Warehouse> {
     public void init() {
         superEJB = warehouseBean;
         model = new WarehouseModel(warehouseBean, userManagedBean);
+        params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+        if (params != null) {
+            if (params.containsKey("hascost")) {
+                queryHascost = Integer.valueOf(params.get("hascost")[0]);
+            }
+        }
+        if (queryHascost == 0) {
+            model.getFilterFields().put("hascost", false);
+        } else if (queryHascost > 0) {
+            model.getFilterFields().put("hascost", true);
+        }
         super.init();
     }
 
@@ -45,6 +58,21 @@ public class WarehouseQueryBean extends SuperQueryBean<Warehouse> {
             if (this.queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("name", this.queryName);
             }
+            if (queryHascost == 0) {
+                model.getFilterFields().put("hascost", false);
+            } else if (queryHascost > 0) {
+                model.getFilterFields().put("hascost", true);
+            }
+        }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        if (queryHascost == 0) {
+            model.getFilterFields().put("hascost", false);
+        } else if (queryHascost > 0) {
+            model.getFilterFields().put("hascost", true);
         }
     }
 

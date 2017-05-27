@@ -22,8 +22,14 @@ body .ui-panelgrid .ui-panelgrid-cell {
     margin-top: 10px;
 }
 
+.Wid5{
+    width: 5%;
+}
 .Wid10{
     width: 10%;
+}
+.Wid15{
+    width: 15%;
 }
 .Wid20{
     width: 20%;

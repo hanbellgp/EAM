@@ -11,7 +11,7 @@ import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
 import java.util.List;
 import java.util.Map;
-import org.primefaces.model.SortMeta;
+import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -27,7 +27,7 @@ public class AssetDistributeModel extends BaseLazyModel<AssetDistribute> {
     }
 
     @Override
-    public List<AssetDistribute> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
+    public List<AssetDistribute> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         filterFields.put("company =", userManagedBean.getCompany());
         setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
         setRowCount(superEJB.getRowCount(filterFields));

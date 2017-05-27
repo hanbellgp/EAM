@@ -23,7 +23,13 @@
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetAcceptanceManagedBean.print()}" icon="ui-icon-print"
                                      process="@this" rendered="#{assetAcceptanceManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" action="#{assetAcceptanceManagedBean.verify()}" icon="ui-icon-check"
-                                     process="@this" rendered="#{assetAcceptanceManagedBean.doCfm}" update="toolbar"/>
+                                     process="@this" rendered="#{assetAcceptanceManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetAcceptanceManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     rendered="#{assetAcceptanceManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
@@ -69,7 +75,7 @@
                         <p:ajax event="rowUnselect"  update="formOne:dlgDetail" oncomplete="" />
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
-                                <h:outputText value="件号"/>
+                                <h:outputText value="品号"/>
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemno}"/>
                         </p:column>
@@ -119,7 +125,7 @@
                         <p:column styleClass="Wid30">
                             <h:outputText id="srcformid" value="#{assetAcceptanceManagedBean.currentDetail.srcformid}" title="srcid" />
                         </p:column>
-                        <p:column styleClass="Wid20"><h:outputText value="件号"/></p:column>
+                        <p:column styleClass="Wid20"><h:outputText value="品号"/></p:column>
                         <p:column styleClass="Wid30">
                             <h:outputText id="assetItem" value="#{assetAcceptanceManagedBean.currentDetail.assetItem.itemno}" title="Itemno" />
                         </p:column>

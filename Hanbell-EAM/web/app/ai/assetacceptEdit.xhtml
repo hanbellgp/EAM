@@ -86,10 +86,10 @@
                                             update="plgDetail" />
                                 </p:commandButton>
                             </p:column>
-                            <p:column styleClass="Wid20"><p:outputLabel value="件号"/></p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="品号"/></p:column>
                             <p:column styleClass="Wid30">
                                 <p:inputText id="assetItem" value="#{assetAcceptanceManagedBean.currentDetail.assetItem.itemno}" title="Itemno" styleClass="inputWithButton"
-                                             required="true" requiredMessage="请输入件号" readonly="true" />
+                                             required="true" requiredMessage="请输入品号" readonly="true" />
                                 <p:commandButton id="btnAssetItemSelect" actionListener="#{assetAcceptanceManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{assetAcceptanceManagedBean.handleDialogReturnAssetItemWhenDetailEdit}"
@@ -172,7 +172,7 @@
                         <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
-                                <h:outputText value="件号"/>
+                                <h:outputText value="品号"/>
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemno}"/>
                         </p:column>

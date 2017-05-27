@@ -28,7 +28,7 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
     @EJB
     private AssetApplyThrowBean assetApplyThrowBean;
 
-    private boolean doDistribute;
+    private boolean doThrow;
     private boolean doPurchase;
 
     public AssetApplyThrowManagedBean() {
@@ -79,7 +79,24 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
     public void init() {
         superEJB = assetApplyThrowBean;
         model = new AssetApplyThrowModel(assetApplyThrowBean, userManagedBean);
+        model.getSortFields().put("assetApply.formid", "DESC");
         super.init();
+    }
+
+    public void initAssetAdjust() {
+        if (currentEntity == null) {
+            showWarnMsg("Warn", "没有可抛转明细");
+        }
+        try {
+            if (!doBeforeUpdate()) {
+                return;
+            }
+            String formid = assetApplyThrowBean.initAssetAdjust(currentEntity, userManagedBean.getCurrentUser());
+            setToolBar();
+            showInfoMsg("Info", "成功产生异动单" + formid);
+        } catch (Exception ex) {
+            showErrorMsg("Error", ex.getMessage());
+        }
     }
 
     public void initAssetDistribute() {
@@ -87,11 +104,37 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
             showWarnMsg("Warn", "没有可抛转明细");
         }
         try {
+            if (!doBeforeUpdate()) {
+                return;
+            }
             String formid = assetApplyThrowBean.initAssetDistribute(currentEntity, userManagedBean.getCurrentUser());
             setToolBar();
             showInfoMsg("Info", "成功产生领用单" + formid);
         } catch (Exception ex) {
             showErrorMsg("Error", ex.getMessage());
+        }
+    }
+
+    public void initAssetPurchase() {
+        showWarnMsg("Warn", "暂不支持抛转请购");
+    }
+
+    @Override
+    public void query() {
+        if (this.model != null && this.model.getFilterFields() != null) {
+            this.model.getFilterFields().clear();
+            if (queryFormId != null && !"".equals(queryFormId)) {
+                this.model.getFilterFields().put("assetApply.formid", queryFormId);
+            }
+            if (queryName != null && !"".equals(queryName)) {
+                this.model.getFilterFields().put("assetApply.applyDeptno", queryName);
+            }
+            if (queryDateBegin != null) {
+                this.model.getFilterFields().put("assetApply.formdateBegin", queryDateBegin);
+            }
+            if (queryDateEnd != null) {
+                this.model.getFilterFields().put("assetApply.formdateEnd", queryDateEnd);
+            }
         }
     }
 
@@ -105,7 +148,7 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
                     this.doCfm = false;
                     this.doUnCfm = false;
                     this.doPurchase = !currentEntity.getPurchased() && !currentEntity.getDistributed() && true;
-                    this.doDistribute = !currentEntity.getDistributed() && true;
+                    this.doThrow = !currentEntity.getDistributed() && true;
                     break;
                 case "20":
                 case "30":
@@ -114,14 +157,14 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
                     this.doCfm = false;
                     this.doUnCfm = false;
                     this.doPurchase = false;
-                    this.doDistribute = !currentEntity.getDistributed() && true;
+                    this.doThrow = !currentEntity.getDistributed() && true;
                     break;
                 default:
                     this.doEdit = false;
                     this.doDel = false;
                     this.doCfm = false;
                     this.doUnCfm = false;
-                    this.doDistribute = false;
+                    this.doThrow = false;
                     this.doPurchase = false;
             }
         } else {
@@ -129,23 +172,23 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
             this.doDel = false;
             this.doCfm = false;
             this.doUnCfm = false;
-            this.doDistribute = false;
+            this.doThrow = false;
             this.doPurchase = false;
         }
     }
 
     /**
-     * @return the doDistribute
+     * @return the doThrow
      */
-    public boolean isDoDistribute() {
-        return doDistribute;
+    public boolean isDoThrow() {
+        return doThrow;
     }
 
     /**
-     * @param doDistribute the doDistribute to set
+     * @param doThrow the doThrow to set
      */
-    public void setDoDistribute(boolean doDistribute) {
-        this.doDistribute = doDistribute;
+    public void setDoThrow(boolean doThrow) {
+        this.doThrow = doThrow;
     }
 
     /**
