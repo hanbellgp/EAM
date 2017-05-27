@@ -10,15 +10,15 @@ import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.lazy.AssetCategoryModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
-import javax.faces.view.ViewScoped;
 
 /**
  *
  * @author C1368
  */
-@Named(value = "assetCategoryQueryBean")
+@ManagedBean(name = "assetCategoryQueryBean")
 @ViewScoped
 public class AssetCategoryQueryBean extends SuperQueryBean<AssetCategory> {
 

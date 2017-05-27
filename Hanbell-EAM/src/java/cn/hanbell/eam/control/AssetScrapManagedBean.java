@@ -9,14 +9,12 @@ import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.ejb.AssetScrapBean;
 import cn.hanbell.eam.ejb.AssetScrapDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
-import cn.hanbell.eam.ejb.TransactionTypeBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetScrap;
 import cn.hanbell.eam.entity.AssetScrapDetail;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.AssetPosition;
-import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetScrapModel;
 import cn.hanbell.eam.web.FormMultiBean;
@@ -147,13 +145,22 @@ public class AssetScrapManagedBean extends FormMultiBean<AssetScrap, AssetScrapD
                     return false;
                 }
                 if (add.getAssetCard() != null) {
-                    ac = assetCardBean.findByFiltersAndUsed(add.getPid(), add.getSeq());
-                    if ((ac == null) || !ac.getScrap()) {
-                        showErrorMsg("Error", add.getAssetno() + "不存在或未报废");
-                        return false;
+                    if (add.getAssetItem().getCategory().getNoauto()) {
+                        //处理自动编号逻辑
+                        ac = assetCardBean.findByFiltersAndScrapped(add.getPid(), add.getSeq());
+                        if ((ac == null) || !ac.getScrap()) {
+                            showErrorMsg("Error", add.getAssetno() + "不存在或未报废");
+                            return false;
+                        }
+                    } else {
+                        //处理没有编号逻辑
+                        String assetno = add.getPid() + "-" + assetCardBean.formatString(String.valueOf(add.getSeq()), "0000");
+                        ac = assetCardBean.findByAssetno(assetno);
+                        if ((ac == null) || !ac.getScrap() || ac.getQty().compareTo(add.getQty()) == -1) {
+                            showErrorMsg("Error", assetno + "不存在或可还原量不足");
+                            return false;
+                        }
                     }
-                } else {
-                    //需要处理刀工量仪的逻辑
                 }
             }
             return true;
@@ -174,12 +181,10 @@ public class AssetScrapManagedBean extends FormMultiBean<AssetScrap, AssetScrapD
                 }
                 if (add.getAssetCard() != null) {
                     ac = assetCardBean.findByAssetno(add.getAssetno());
-                    if ((ac == null) || ac.getScrap()) {
-                        showErrorMsg("Error", add.getAssetno() + "不存在或已报废");
+                    if ((ac == null) || ac.getQty().compareTo(add.getQty()) == -1) {
+                        showErrorMsg("Error", add.getAssetno() + "不存在或可利用量不足");
                         return false;
                     }
-                } else {
-                    //需要处理刀工量仪的逻辑
                 }
             }
             return true;

@@ -112,15 +112,20 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 ti.setStatusToNew();
                 inventoryList.add(ti);
 
-                //更新卡片信息
+                //更新卡片信息或删除卡片信息
                 if (d.getAssetCard() != null) {
+                    //来源是验收作业的就更新
                     AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
                     ac.setWarehouse(d.getWarehouse());
                     ac.setUsed(false);
                     ac.setUsingDate(null);
                     assetCardBean.update(ac);
-                } else {
-
+                } else if (!d.getAssetItem().getCategory().getNoauto()) {
+                    //来源是领用作业的就删除
+                    AssetCard ac = assetCardBean.findByAssetno(d.getPid() + "-" + formatString(String.valueOf(d.getSeq()), "0000"));
+                    if (ac != null) {
+                        assetCardBean.delete(ac);
+                    }
                 }
 
             }
@@ -261,8 +266,48 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                     ac.setRelformid(d.getPid());
                     ac.setRelseq(d.getSeq());
                     assetCardBean.update(ac);
-                } else {
-
+                } else if (!d.getAssetItem().getCategory().getNoauto()) {
+                    AssetCard ac = new AssetCard();
+                    ac.setCompany(e.getCompany());
+                    ac.setFormid(d.getPid() + "-" + formatString(String.valueOf(d.getSeq()), "0000"));
+                    ac.setFormdate(e.getFormdate());
+                    ac.setAssetDesc(d.getAssetItem().getItemdesc());
+                    ac.setAssetSpec(d.getAssetItem().getItemspec());
+                    ac.setUnit(d.getUnit());
+                    ac.setAssetItem(d.getAssetItem());
+                    ac.setDeptno(d.getDeptno());
+                    ac.setDeptname(d.getDeptname());
+                    ac.setUserno(d.getUserno());
+                    ac.setUsername(d.getUsername());
+                    if (d.getPosition1() != null) {
+                        ac.setPosition1(d.getPosition1());
+                    }
+                    if (d.getPosition2() != null) {
+                        ac.setPosition2(d.getPosition2());
+                    }
+                    if (d.getPosition3() != null) {
+                        ac.setPosition3(d.getPosition3());
+                    }
+                    if (d.getPosition4() != null) {
+                        ac.setPosition4(d.getPosition4());
+                    }
+                    ac.setWarehouse(d.getWarehouse2());
+                    ac.setQty(d.getQty());
+                    if (d.getAssetItem().getStdcost() != null) {
+                        ac.setAmts(d.getAssetItem().getStdcost());
+                    } else {
+                        ac.setAmts(BigDecimal.ZERO);
+                    }
+                    ac.setBuyDate(e.getFormdate());
+                    ac.setUsed(true);
+                    ac.setUsingDate(e.getFormdate());
+                    ac.setStatus("V");
+                    ac.setCreator(e.getCreator());
+                    ac.setCredate(e.getCredate());
+                    ac.setSrcapi("assetdistribute");
+                    ac.setSrcformid(d.getPid());
+                    ac.setSrcseq(d.getSeq());
+                    assetCardBean.persist(ac);
                 }
 
             }

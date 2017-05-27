@@ -113,13 +113,29 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
 
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
-                    ac.setWarehouse(d.getWarehouse());
-                    ac.setScrap(Boolean.FALSE);
-                    ac.setScrapDate(null);
-                    assetCardBean.update(ac);
-                } else {
-
+                    if (d.getAssetItem().getCategory().getNoauto()) {
+                        AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                        ac.setWarehouse(d.getWarehouse());
+                        ac.setScrap(Boolean.FALSE);
+                        ac.setScrapDate(null);
+                        assetCardBean.update(ac);
+                    } else {
+                        //还原报废来源数量
+                        AssetCard ac = assetCardBean.findByFiltersAndUsed(d.getPid(), d.getSeq());
+                        if (ac == null) {
+                            throw new RuntimeException("找不到" + d.getPid() + "对应的报废记录");
+                        } else {
+                            ac.setQty(ac.getQty().add(d.getQty()));
+                            assetCardBean.update(ac);
+                        }
+                        //删除调拨作业产生卡片
+                        AssetCard nc = assetCardBean.findByAssetno(d.getPid() + "-" + formatString(String.valueOf(d.getSeq()), "0000"));
+                        if (nc == null) {
+                            throw new RuntimeException("找不到" + d.getPid() + "对应的卡片记录");
+                        } else {
+                            assetCardBean.delete(nc);
+                        }
+                    }
                 }
 
             }
@@ -237,14 +253,70 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                 //有卡片的更新卡片信息，没卡片的生成卡片信息
                 if (d.getAssetCard() != null) {
                     AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
-                    ac.setScrap(Boolean.TRUE);
-                    ac.setScrapDate(e.getFormdate());
-                    ac.setRelapi("assetscrap");
-                    ac.setRelformid(d.getPid());
-                    ac.setRelseq(d.getSeq());
-                    assetCardBean.update(ac);
-                } else {
+                    if (ac == null) {
+                        throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
+                    }
+                    if (d.getAssetItem().getCategory().getNoauto()) {
+                        ac.setWarehouse(d.getWarehouse2());
+                        ac.setScrap(Boolean.TRUE);
+                        ac.setScrapDate(e.getFormdate());
+                        ac.setRelapi("assetscrap");
+                        ac.setRelformid(d.getPid());
+                        ac.setRelseq(d.getSeq());
+                        assetCardBean.update(ac);
+                    } else {
+                        //扣减报废来源数量
+                        ac.setQty(ac.getQty().subtract(d.getQty()));
+                        ac.setRelapi("assetscrap");
+                        ac.setRelformid(d.getPid());
+                        ac.setRelseq(d.getSeq());
+                        assetCardBean.update(ac);
 
+                        //产生报废作业卡片
+                        AssetCard nc = new AssetCard();
+                        nc.setCompany(e.getCompany());
+                        nc.setFormid(d.getPid() + "-" + formatString(String.valueOf(d.getSeq()), "0000"));
+                        nc.setFormdate(e.getFormdate());
+                        nc.setAssetDesc(d.getAssetItem().getItemdesc());
+                        nc.setAssetSpec(d.getAssetItem().getItemspec());
+                        nc.setUnit(d.getUnit());
+                        nc.setAssetItem(d.getAssetItem());
+                        nc.setDeptno(d.getDeptno());
+                        nc.setDeptname(d.getDeptname());
+                        nc.setUserno(d.getUserno());
+                        nc.setUsername(d.getUsername());
+                        if (d.getPosition1() != null) {
+                            nc.setPosition1(d.getPosition1());
+                        }
+                        if (d.getPosition2() != null) {
+                            nc.setPosition2(d.getPosition2());
+                        }
+                        if (d.getPosition3() != null) {
+                            nc.setPosition3(d.getPosition3());
+                        }
+                        if (d.getPosition4() != null) {
+                            nc.setPosition4(d.getPosition4());
+                        }
+                        nc.setWarehouse(d.getWarehouse2());
+                        nc.setQty(d.getQty());
+                        if (d.getAssetItem().getStdcost() != null) {
+                            nc.setAmts(d.getAssetItem().getStdcost());
+                        } else {
+                            nc.setAmts(BigDecimal.ZERO);
+                        }
+                        nc.setBuyDate(d.getBuyDate());
+                        nc.setUsed(true);
+                        nc.setScrap(Boolean.TRUE);
+                        nc.setScrapDate(e.getFormdate());
+                        nc.setStatus("V");
+                        nc.setCreator(e.getCreator());
+                        nc.setCredate(e.getCredate());
+                        nc.setSrcapi("assetscrap");
+                        nc.setSrcformid(d.getPid());
+                        nc.setSrcseq(d.getSeq());
+                        assetCardBean.persist(nc);
+
+                    }
                 }
 
             }

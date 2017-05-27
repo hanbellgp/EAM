@@ -29,4 +29,11 @@ public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
         return em_shbeam;
     }
 
+    public String formatString(String value, String format) {
+        if (value.length() >= format.length()) {
+            return value;
+        }
+        return format.substring(0, format.length() - value.length()) + value;
+    }
+
 }

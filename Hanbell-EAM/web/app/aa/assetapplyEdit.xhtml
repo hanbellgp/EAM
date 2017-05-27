@@ -211,15 +211,21 @@
                             <f:facet name="header">
                                 <h:outputText value="需求人"/>
                             </f:facet>
-                            <h:outputText value="#{item.requireUsername}"/>
+                            <h:outputText value="#{item.requireUserno}"/>
                         </p:column>
                         <p:column styleClass="Wid10">
+                            <f:facet name="header">
+                                <h:outputText value="姓名"/>
+                            </f:facet>
+                            <h:outputText value="#{item.requireUsername}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" style="text-align: right;">
                             <f:facet name="header">
                                 <h:outputText value="数量"/>
                             </f:facet>
                             <h:outputText value="#{item.qty}"/>
                         </p:column>
-                        <p:column styleClass="Wid10">
+                        <p:column styleClass="Wid5">
                             <f:facet name="header">
                                 <h:outputText value="单位"/>
                             </f:facet>

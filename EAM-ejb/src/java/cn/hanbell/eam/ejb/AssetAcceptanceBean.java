@@ -149,6 +149,7 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
                         ac.setAssetSpec(d.getAssetItem().getItemspec());
                         ac.setUnit(d.getUnit());
                         ac.setAssetItem(d.getAssetItem());
+                        ac.setWarehouse(d.getWarehouse());
                         ac.setQty(BigDecimal.ONE);
                         ac.setAmts(d.getPrice());
                         ac.setBuyDate(e.getFormdate());

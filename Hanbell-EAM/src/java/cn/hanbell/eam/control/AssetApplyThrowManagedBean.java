@@ -79,6 +79,7 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
     public void init() {
         superEJB = assetApplyThrowBean;
         model = new AssetApplyThrowModel(assetApplyThrowBean, userManagedBean);
+        model.getFilterFields().put("distributed", false);
         model.getSortFields().put("assetApply.formid", "DESC");
         super.init();
     }
