@@ -160,6 +160,7 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     public void init() {
         superEJB = assetCardBean;
         model = new AssetCardModel(assetCardBean, userManagedBean);
+        model.getFilterFields().put("qty <>", 0);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();
@@ -194,8 +195,15 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
                 this.model.getFilterFields().put("used", false);
             } else if (queryState != null && "V".equals(queryState)) {
                 this.model.getFilterFields().put("used", true);
+                this.model.getFilterFields().put("qty <>", 0);
             }
         }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        model.getFilterFields().put("qty <>", 0);
     }
 
     /**

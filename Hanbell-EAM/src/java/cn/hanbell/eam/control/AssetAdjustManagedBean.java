@@ -114,13 +114,21 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                     return false;
                 }
                 if (aad.getAssetCard() != null) {
-                    ac = assetCardBean.findByFilters(currentEntity.getCompany(), aad.getAssetno(), aad.getAssetItem().getItemno(), aad.getDeptno2(), aad.getUserno2());
-                    if ((ac == null) || ac.getQty().compareTo(aad.getQty()) == -1) {
-                        showErrorMsg("Error", aad.getAssetno() + "不存在或可还原量不足");
-                        return false;
+                    if (aad.getAssetItem().getCategory().getNoauto()) {
+                        ac = assetCardBean.findByFilters(currentEntity.getCompany(), aad.getAssetno(), aad.getAssetItem().getItemno(), aad.getDeptno2(), aad.getUserno2());
+                        if ((ac == null) || ac.getQty().compareTo(aad.getQty()) == -1) {
+                            showErrorMsg("Error", aad.getAssetno() + "不存在或可还原量不足");
+                            return false;
+                        }
+                    } else {
+                        //需要处理刀工量仪的逻辑
+                        String assetno = aad.getPid() + "-" + assetCardBean.formatString(String.valueOf(aad.getSeq()), "0000");
+                        ac = assetCardBean.findByFilters(currentEntity.getCompany(), assetno, aad.getAssetItem().getItemno(), aad.getDeptno2(), aad.getUserno2());
+                        if ((ac == null) || ac.getQty().compareTo(aad.getQty()) == -1) {
+                            showErrorMsg("Error", assetno + "不存在或可还原量不足");
+                            return false;
+                        }
                     }
-                } else {
-                    //需要处理刀工量仪的逻辑
                 }
             }
             return true;
@@ -145,8 +153,6 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                         showErrorMsg("Error", aad.getAssetno() + "不存在或可利用量不足");
                         return false;
                     }
-                } else {
-                    //需要处理刀工量仪的逻辑
                 }
             }
             return true;
@@ -215,6 +221,8 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             currentDetail.setDeptname(e.getDeptname());
             currentDetail.setUserno(e.getUserno());
             currentDetail.setUsername(e.getUsername());
+            currentDetail.setUnit(e.getUnit());
+            currentDetail.setQty(e.getQty());
             currentDetail.setPosition1(e.getPosition1());
             currentDetail.setPosition2(e.getPosition2());
             currentDetail.setPosition3(e.getPosition3());

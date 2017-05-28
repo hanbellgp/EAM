@@ -102,13 +102,19 @@
                         </f:facet>
                         <h:outputText value="#{item.qty}"/>
                     </p:column>
-                    <p:column  styleClass="Wid10" style="text-align: center;">
+                    <p:column  styleClass="Wid10" style="text-align: right;">
+                        <f:facet name="header">
+                            <h:outputText value="领用"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qty}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid5" style="text-align: center;">
                         <f:facet name="header">
                             <h:outputText value="请购"/>
                         </f:facet>
                         <p:selectBooleanCheckbox value="#{item.purchased}" disabled="true"/>
                     </p:column>
-                    <p:column  styleClass="Wid10" style="text-align: center;">
+                    <p:column  styleClass="Wid5" style="text-align: center;">
                         <f:facet name="header">
                             <h:outputText value="领用"/>
                         </f:facet>

@@ -25,6 +25,9 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     @EJB
     private AssetCardBean assetCardBean;
 
+    private String queryItemno;
+    private String queryUsername;
+
     private Integer queryUsed = -1;
 
     public AssetCardQueryBean() {
@@ -59,12 +62,46 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (this.queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("assetDesc", this.queryName);
             }
+            if (this.queryItemno != null && !"".equals(this.queryItemno)) {
+                this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
+            }
+            if (this.getQueryUsername() != null && !"".equals(this.queryUsername)) {
+                this.model.getFilterFields().put("username", this.getQueryUsername());
+            }
             if (queryUsed == 0) {
                 model.getFilterFields().put("used", false);
             } else if (queryUsed > 0) {
                 model.getFilterFields().put("used", true);
             }
         }
+    }
+
+    /**
+     * @return the queryItemno
+     */
+    public String getQueryItemno() {
+        return queryItemno;
+    }
+
+    /**
+     * @param queryItemno the queryItemno to set
+     */
+    public void setQueryItemno(String queryItemno) {
+        this.queryItemno = queryItemno;
+    }
+
+    /**
+     * @return the queryUsername
+     */
+    public String getQueryUsername() {
+        return queryUsername;
+    }
+
+    /**
+     * @param queryUsername the queryUsername to set
+     */
+    public void setQueryUsername(String queryUsername) {
+        this.queryUsername = queryUsername;
     }
 
 }

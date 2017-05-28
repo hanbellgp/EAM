@@ -57,9 +57,15 @@
                 </f:facet>
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.category.category}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="名称"/>
                     </f:facet>
                     <h:outputText value="#{item.category.name}"/>
                 </p:column>
@@ -81,7 +87,7 @@
                     </f:facet>
                     <h:outputText value="#{item.itemspec}"/>
                 </p:column>
-                <p:column styleClass="Wid10">
+                <p:column styleClass="Wid5">
                     <f:facet name="header">
                         <h:outputText value="单位"/>
                     </f:facet>

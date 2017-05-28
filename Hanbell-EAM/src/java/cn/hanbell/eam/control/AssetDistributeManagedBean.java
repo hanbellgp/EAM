@@ -119,12 +119,13 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                 }
                 if (add.getAssetCard() != null) {
                     ac = assetCardBean.findByFilters(currentEntity.getCompany(), add.getAssetno(), add.getAssetItem().getItemno(), add.getDeptno(), add.getUserno());
-                    if ((ac == null) || !ac.getUsed()) {
-                        showErrorMsg("Error", add.getAssetno() + "不存在或未领用或被他人领用");
-                        return false;
-                    }
                 } else {
-                    //需要处理刀工量仪的逻辑
+                    //无需自动编号的系统采用单号+4位流水作为识别
+                    ac = assetCardBean.findByAssetno(add.getPid() + "-" + assetCardBean.formatString(String.valueOf(add.getSeq()), "0000"));
+                }
+                if ((ac == null) || !ac.getUsed()) {
+                    showErrorMsg("Error", add.getAssetno() + "不存在或未领用或被他人领用");
+                    return false;
                 }
             }
             return true;
@@ -149,9 +150,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                         showErrorMsg("Error", add.getAssetno() + "不存在或已被领用");
                         return false;
                     }
-                } else {
-                    //需要处理刀工量仪的逻辑
-                }
+                }//刀工量仪在领用时才产生卡片信息，此处不用判断是否存在卡片
             }
             return true;
         }
