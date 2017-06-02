@@ -73,7 +73,7 @@
                                  selectionMode="single" selection="#{assetAcceptanceManagedBean.currentDetail}" rowKey="#{item.id}" >
                         <p:ajax event="rowSelect"  update="formOne:dlgDetail" oncomplete="PF('dlgDetail').show();" />
                         <p:ajax event="rowUnselect"  update="formOne:dlgDetail" oncomplete="" />
-                        <p:column styleClass="Wid20">
+                        <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="品号"/>
                             </f:facet>
@@ -85,19 +85,19 @@
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemdesc}"/>
                         </p:column>
-                        <p:column styleClass="Wid10" style="text-align: right">
+                        <p:column styleClass="Wid5" style="text-align: right">
                             <f:facet name="header">
-                                <h:outputText value="点收数量"/>
+                                <h:outputText value="点收"/>
                             </f:facet>
                             <h:outputText value="#{item.qty}"/>
                         </p:column>
-                        <p:column styleClass="Wid10" style="text-align: right">
+                        <p:column styleClass="Wid5" style="text-align: right">
                             <f:facet name="header">
-                                <h:outputText value="合格数量"/>
+                                <h:outputText value="合格"/>
                             </f:facet>
                             <h:outputText value="#{item.qcqty}"/>
                         </p:column>
-                        <p:column styleClass="Wid10">
+                        <p:column styleClass="Wid5">
                             <f:facet name="header">
                                 <h:outputText value="单位"/>
                             </f:facet>
@@ -114,6 +114,12 @@
                                 <h:outputText value="金额"/>
                             </f:facet>
                             <h:outputText value="#{item.amts}"/>
+                        </p:column>
+                         <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="仓库"/>
+                            </f:facet>
+                            <h:outputText value="#{item.warehouse.name}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

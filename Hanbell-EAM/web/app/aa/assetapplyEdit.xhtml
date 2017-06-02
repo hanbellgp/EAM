@@ -184,6 +184,16 @@
                                              required="true" requiredMessage="请输入单位"/>
                             </p:column>
                         </p:row>
+						            <p:row>
+                            <p:column><h:outputText value="来源"/></p:column>
+                            <p:column>
+                                <h:outputText id="srcapi" value="#{assetApplyManagedBean.currentDetail.srcapi}" title="srcapi"/>
+                            </p:column>
+                            <p:column><h:outputText value="来源单号" /></p:column>
+                            <p:column>
+                                <h:outputText id="srcformid" value="#{assetApplyManagedBean.currentDetail.srcformid}" title="srcformid"/>
+                            </p:column>
+                        </p:row>
                     </p:panelGrid>
                     <p:dataTable id="tableList" value="#{assetApplyManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
                                  selectionMode="single" selection="#{assetApplyManagedBean.currentDetail}" rowKey="#{item.seq}" >

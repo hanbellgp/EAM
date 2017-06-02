@@ -9,6 +9,10 @@
         <param-value>resources//app//res//</param-value>
     </context-param>
     <context-param>
+        <param-name>cn.hanbell.web.apprespath</param-name>
+        <param-value>resources//app//res//</param-value>
+    </context-param>
+    <context-param>
         <param-name>cn.hanbell.web.reportpath</param-name>
         <param-value>rpt//</param-value>
     </context-param>
