@@ -21,23 +21,23 @@
             <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">存放位置－新增</p:column>
+                        <p:column colspan="4">类别－新增</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="位置编号" for="category" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类别编号" for="category" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="category" value="#{assetCategoryManagedBean.newEntity.category}" title="Category"
-                                     required="true" requiredMessage="请输入位置编号"/>
+                                     required="true" requiredMessage="请输入类别编号"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="位置名称" for="name" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类别名称" for="name" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="name" value="#{assetCategoryManagedBean.newEntity.name}" title="Name"
-                                     required="true" requiredMessage="请输入位置名称"/>
+                                     required="true" requiredMessage="请输入类别名称"/>
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><p:outputLabel value="上级位置" for="pid" /></p:column>
+                    <p:column><p:outputLabel value="上级" for="pid" /></p:column>
                     <p:column>
                         <p:inputText id="pid" value="#{assetCategoryManagedBean.newEntity.parentCategory.name}" title="Pid" styleClass="inputWithButton" readonly="true" />
                         <p:commandButton id="btnCategorySelect" actionListener="#{assetCategoryManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
@@ -49,6 +49,28 @@
                     <p:column><p:outputLabel value="备注" for="remark" /></p:column>
                     <p:column>
                         <p:inputText id="remark" value="#{assetCategoryManagedBean.newEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
+                    <p:column>
+                        <p:inputText id="warehouse" value="#{assetCategoryManagedBean.newEntity.warehouse.name}" title="warehouse" styleClass="inputWithButton"
+                                     required="true"  readonly="true"/>
+                        <p:commandButton id="btnWarehouseSelect" actionListener="#{assetCategoryManagedBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCategoryManagedBean.handleDialogReturnWarehouseWhenNew}"
+                                    update="warehouse" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="目的仓库" for="warehouse2" /></p:column>
+                    <p:column>
+                        <p:inputText id="warehouse2" value="#{assetCategoryManagedBean.newEntity.warehouse2.name}" title="warehouse2" styleClass="inputWithButton"
+                                     required="true"  readonly="true"/>
+                        <p:commandButton id="btnWarehouse2Select" actionListener="#{assetCategoryManagedBean.openDialog('warehouse2Select')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCategoryManagedBean.handleDialogReturnWarehouse2WhenNew}"
+                                    update="warehouse2" />
+                        </p:commandButton>
                     </p:column>
                 </p:row>
             </p:panelGrid>

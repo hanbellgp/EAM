@@ -30,6 +30,18 @@ public class WarehouseManagedBean extends SuperSingleBean<Warehouse> {
         super(Warehouse.class);
     }
 
+    @Override
+    protected boolean doBeforeDelete(Warehouse entity) throws Exception {
+        if (super.doBeforeDelete(entity)) {
+            if (!warehouseBean.allowDelete(entity.getWarehouseno())) {
+                showErrorMsg("Error", "已有交易记录不可删除");
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
     public void init() {
         this.superEJB = warehouseBean;
         this.model = new WarehouseModel(warehouseBean, userManagedBean);

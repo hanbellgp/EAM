@@ -23,17 +23,6 @@ public class AssetItemBean extends SuperEJBForEAM<AssetItem> {
         super(AssetItem.class);
     }
 
-    public AssetItem findByItemno(String value) {
-        Query query = getEntityManager().createNamedQuery("AssetItem.findByItemno");
-        query.setParameter("itemno", value);
-        try {
-            Object o = query.getSingleResult();
-            return (AssetItem) o;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     public boolean allowDelete(String value) {
         Integer count;
         Query query;
@@ -71,6 +60,17 @@ public class AssetItemBean extends SuperEJBForEAM<AssetItem> {
             return false;
         }
         return true;
+    }
+
+    public AssetItem findByItemno(String value) {
+        Query query = getEntityManager().createNamedQuery("AssetItem.findByItemno");
+        query.setParameter("itemno", value);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetItem) o;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
 }

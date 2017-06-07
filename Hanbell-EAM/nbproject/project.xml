@@ -26,11 +26,16 @@
                     <file>${libs.Lightshell-JDK.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library dirs="200">
+                    <file>${libs.Hanbell-JDK.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
                 <library dirs="100">
                     <file>${reference.EAM-ejb.dist}</file>
                 </library>
                 <library dirs="100">
                     <file>${reference.EAP-ejb.dist}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries/>

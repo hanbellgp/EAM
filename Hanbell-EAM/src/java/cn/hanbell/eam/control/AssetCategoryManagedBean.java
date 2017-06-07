@@ -7,12 +7,16 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.AssetCategoryBean;
 import cn.hanbell.eam.entity.AssetCategory;
+import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetCategoryModel;
 import cn.hanbell.eam.web.SuperSingleBean;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -32,6 +36,7 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
     private List<AssetCategory> rootCategory;
 
     private String category;
+    private List<String> paramHascost = null;
 
     public AssetCategoryManagedBean() {
         super(AssetCategory.class);
@@ -40,7 +45,6 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
     @Override
     public void create() {
         super.create();
-        //newEntity.setCategory(userManagedBean.getCategory());
     }
 
     @Override
@@ -62,10 +66,55 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
     }
 
     @Override
+    public void handleDialogReturnWhenEdit(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            AssetCategory e = (AssetCategory) event.getObject();
+            currentEntity.setParentCategory(e);
+        }
+    }
+
+    @Override
+    public void handleDialogReturnWhenNew(SelectEvent event) {
+        if (event.getObject() != null && newEntity != null) {
+            AssetCategory e = (AssetCategory) event.getObject();
+            newEntity.setParentCategory(e);
+        }
+    }
+
+    public void handleDialogReturnWarehouseWhenEdit(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            currentEntity.setWarehouse(e);
+        }
+    }
+
+    public void handleDialogReturnWarehouseWhenNew(SelectEvent event) {
+        if (event.getObject() != null && newEntity != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            newEntity.setWarehouse(e);
+        }
+    }
+
+    public void handleDialogReturnWarehouse2WhenEdit(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            currentEntity.setWarehouse2(e);
+        }
+    }
+
+    public void handleDialogReturnWarehouse2WhenNew(SelectEvent event) {
+        if (event.getObject() != null && newEntity != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            newEntity.setWarehouse2(e);
+        }
+    }
+
+    @Override
     public void init() {
         superEJB = assetCategoryBean;
         model = new AssetCategoryModel(assetCategoryBean);
         super.init();
+        openParams = new HashMap<>();
         initTree();
     }
 
@@ -90,6 +139,36 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
                 n.setExpanded(true);
                 initTree(p, n);
             }
+        }
+    }
+
+    @Override
+    public void openDialog(String view) {
+        switch (view) {
+            case "warehouseSelect":
+                openParams.clear();
+                if (paramHascost == null) {
+                    paramHascost = new ArrayList<>();
+                } else {
+                    paramHascost.clear();
+                }
+                paramHascost.add("1");
+                openParams.put("hascost", paramHascost);
+                super.openDialog("warehouseSelect", openParams);
+                break;
+            case "warehouse2Select":
+                openParams.clear();
+                if (paramHascost == null) {
+                    paramHascost = new ArrayList<>();
+                } else {
+                    paramHascost.clear();
+                }
+                paramHascost.add("0");
+                openParams.put("hascost", paramHascost);
+                super.openDialog("warehouseSelect", openParams);
+                break;
+            default:
+                super.openDialog(view);
         }
     }
 
@@ -138,4 +217,5 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
     public void setCategory(String category) {
         this.category = category;
     }
+
 }
