@@ -54,6 +54,36 @@
                         <h:outputText id="warehouse2" value="#{assetCategoryManagedBean.currentEntity.warehouse2.name}" title="warehouse2"/>
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column><h:outputText value="自动编号"/></p:column>
+                    <p:column>
+                        <h:outputText id="noauto" value="#{assetCategoryManagedBean.currentEntity.noauto}"/>
+                    </p:column>
+                    <p:column></p:column>
+                    <p:column>
+
+                    </p:column>
+                </p:row>
+                <p:row rendered="#{assetCategoryManagedBean.currentEntity.noauto}">
+                    <p:column><h:outputText value="编号前缀"/></p:column>
+                    <p:column>
+                        <h:outputText id="nolead" value="#{assetCategoryManagedBean.currentEntity.nolead}" title="nolead"/>
+                    </p:column>
+                    <p:column><h:outputText value="编号格式"/></p:column>
+                    <p:column>
+                        <h:outputText id="noformat" value="#{assetCategoryManagedBean.currentEntity.noformat}"/>
+                    </p:column>
+                </p:row>
+                <p:row rendered="#{assetCategoryManagedBean.currentEntity.noauto}">
+                    <p:column><h:outputText value="流号长度"/></p:column>
+                    <p:column>
+                        <h:outputText id="noseqlen" value="#{assetCategoryManagedBean.currentEntity.noseqlen}"/>
+                    </p:column>
+                    <p:column><h:outputText value="更改编号"/></p:column>
+                    <p:column>
+                        <h:outputText id="nochange" value="#{assetCategoryManagedBean.currentEntity.nochange}"/>
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

@@ -45,6 +45,8 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
     @Override
     public void create() {
         super.create();
+        newEntity.setNoauto(false);
+        newEntity.setNochange(false);
     }
 
     @Override

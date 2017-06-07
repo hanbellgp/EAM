@@ -73,6 +73,41 @@
                         </p:commandButton>
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="自动编号" for="noauto" /></p:column>
+                    <p:column>
+                        <p:inputSwitch id="noauto" value="#{assetCategoryManagedBean.newEntity.noauto}"
+                                       required="true">
+                            <p:ajax process="@this" update="plgHead"/>
+                        </p:inputSwitch>
+                    </p:column>
+                    <p:column></p:column>
+                    <p:column>
+
+                    </p:column>
+                </p:row>
+                <p:row rendered="#{assetCategoryManagedBean.newEntity.noauto}">
+                    <p:column><p:outputLabel value="编号前缀" for="nolead"/></p:column>
+                    <p:column>
+                        <p:inputText id="nolead" value="#{assetCategoryManagedBean.newEntity.nolead}" title="nolead"
+                                     required="true" requiredMessage="编号前缀不可空白" />
+                    </p:column>
+                    <p:column> <p:outputLabel value="编号格式" for="noformat"/></p:column>
+                    <p:column>
+                        <p:inputText id="noformat" value="#{assetCategoryManagedBean.newEntity.noformat}"/>
+                    </p:column>
+                </p:row>
+                <p:row rendered="#{assetCategoryManagedBean.newEntity.noauto}">
+                    <p:column><p:outputLabel value="流号长度" for="noseqlen"/></p:column>
+                    <p:column>
+                        <p:spinner id="noseqlen" value="#{assetCategoryManagedBean.newEntity.noseqlen}"
+                                   required="true" requiredMessage="流号长度不可空白"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="更改编号" for="nochange" /></p:column>
+                    <p:column>
+                        <p:inputSwitch id="nochange" value="#{assetCategoryManagedBean.newEntity.nochange}" required="true"/>
+                    </p:column>
+                </p:row>
             </p:panelGrid>
         </h:form>
     </ui:define>
