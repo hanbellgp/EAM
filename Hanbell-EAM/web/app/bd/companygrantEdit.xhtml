@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="companygrant" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{companyGrantManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">公司授权－修改</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="公司" for="company" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="company" value="#{companyGrantManagedBean.currentEntity.company}" title="公司"
+                                         required="true" requiredMessage="请选择公司" >
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{companyGrantManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid20"></p:column>
+                    <p:column styleClass="Wid30">
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="工号" for="userid" /></p:column>
+                    <p:column>
+                        <p:inputText id="userid" value="#{companyGrantManagedBean.currentEntity.userid}" title="userid" styleClass="inputWithButton" readonly="true" />
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{companyGrantManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{companyGrantManagedBean.handleDialogReturnWhenNew}"
+                                    update="userid,username" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="姓名" for="username" /></p:column>
+                    <p:column>
+                        <h:outputText id="username" value="#{companyGrantManagedBean.currentEntity.username}" title="username" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

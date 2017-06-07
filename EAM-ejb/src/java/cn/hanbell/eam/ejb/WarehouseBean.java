@@ -23,6 +23,34 @@ public class WarehouseBean extends SuperEJBForEAM<Warehouse> {
         super(Warehouse.class);
     }
 
+    public boolean allowDelete(String value) {
+        Integer count;
+        Query query;
+        //验收
+        query = getEntityManager().createNativeQuery("SELECT COUNT(*) FROM assetacceptancedetail WHERE warehouseno = ?1");
+        query.setParameter(1, value);
+        try {
+            count = Integer.valueOf(query.getSingleResult().toString());
+            if (count > 0) {
+                return false;
+            }
+        } catch (Exception ex) {
+            return false;
+        }
+        //交易
+        query = getEntityManager().createNativeQuery("SELECT COUNT(*) FROM assettransaction WHERE warehouseno = ?1");
+        query.setParameter(1, value);
+        try {
+            count = Integer.valueOf(query.getSingleResult().toString());
+            if (count > 0) {
+                return false;
+            }
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
+    }
+
     public Warehouse findByWarehouseno(String value) {
         Query query = getEntityManager().createNamedQuery("Warehouse.findByWarehouseno");
         query.setParameter("warehosueno", value);

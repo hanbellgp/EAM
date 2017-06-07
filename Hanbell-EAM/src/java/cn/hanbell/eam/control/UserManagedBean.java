@@ -4,7 +4,8 @@
  */
 package cn.hanbell.eam.control;
 
-
+import cn.hanbell.eam.ejb.CompanyGrantBean;
+import cn.hanbell.eam.entity.CompanyGrant;
 import cn.hanbell.eap.ejb.CompanyBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Company;
@@ -34,6 +35,9 @@ public class UserManagedBean implements Serializable {
 
     @EJB
     private SystemUserBean systemUserBean;
+
+    @EJB
+    private CompanyGrantBean companyGrantBean;
 
     private Company currentCompany;
     private SystemUser currentUser;
@@ -74,33 +78,41 @@ public class UserManagedBean implements Serializable {
         }
         secpwd = BaseLib.securityMD5(getPwd());
         try {
-            SystemUser u = systemUserBean.findByUserIdAndPwd(getUserid(), getSecpwd());
-            if (u != null) {
-                if ("Admin".equals(u.getUserid())) {
-                    currentCompany = companyBean.findByCompany(company);
-                    if (currentCompany == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "请维护公司信息"));
+            if (cn.hanbell.util.BaseLib.ADAuth("172.16.10.6:389", userid + "@hanbell.com.cn", pwd)) {
+                SystemUser u = systemUserBean.findByUserId(getUserid());
+                if (u != null) {
+                    if ("Admin".equals(u.getUserid())) {
+                        currentCompany = companyBean.findByCompany(company);
+                        if (currentCompany == null) {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                        }
+                    } else {
+                        //此处加入公司授权检查
+                        CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
+                        if (cg == null) {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别"));
+                            status = false;
+                            return "";
+                        }
+                        currentCompany = companyBean.findByCompany(company);
+                        if (currentCompany == null) {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                            status = false;
+                            return "";
+                        }
                     }
-                } else {
-                    //此处需要加入权限检查
-                    currentCompany = companyBean.findByCompany(company);
-                    if (currentCompany == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "访问被拒权限不足"));
-                        status = false;
-                        return "";
-                    }
+                    currentUser = u;
+                    status = true;
+                    mobile = u.getUserid();
+                    updateLoginTime();
                 }
-                currentUser = u;
-                status = true;
-                mobile = u.getUserid();
-                updateLoginTime();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码错误"));
                 status = false;
                 return "";
             }
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Fatal", "用户名或密码不正确！"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码不正确！"));
             status = false;
             return "login";
         }

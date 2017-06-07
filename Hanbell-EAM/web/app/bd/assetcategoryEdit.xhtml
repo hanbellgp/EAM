@@ -21,7 +21,7 @@
             <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">类别－新增</p:column>
+                        <p:column colspan="4">类别－修改</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
@@ -49,6 +49,28 @@
                     <p:column><p:outputLabel value="备注" for="remark" /></p:column>
                     <p:column>
                         <p:inputText id="remark" value="#{assetCategoryManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
+                    <p:column>
+                        <p:inputText id="warehouse" value="#{assetCategoryManagedBean.currentEntity.warehouse.name}" title="warehouse" styleClass="inputWithButton"
+                                     required="true"  readonly="true"/>
+                        <p:commandButton id="btnWarehouseSelect" actionListener="#{assetCategoryManagedBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCategoryManagedBean.handleDialogReturnWarehouseWhenEdit}"
+                                    update="warehouse" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="目的仓库" for="warehouse2" /></p:column>
+                    <p:column>
+                        <p:inputText id="warehouse2" value="#{assetCategoryManagedBean.currentEntity.warehouse2.name}" title="warehouse2" styleClass="inputWithButton"
+                                     required="true"  readonly="true"/>
+                        <p:commandButton id="btnWarehouse2Select" actionListener="#{assetCategoryManagedBean.openDialog('warehouse2Select')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCategoryManagedBean.handleDialogReturnWarehouse2WhenEdit}"
+                                    update="warehouse2" />
+                        </p:commandButton>
                     </p:column>
                 </p:row>
             </p:panelGrid>

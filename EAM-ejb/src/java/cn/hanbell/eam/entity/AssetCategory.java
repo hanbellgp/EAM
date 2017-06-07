@@ -62,12 +62,15 @@ public class AssetCategory extends SuperEntity {
     @Size(max = 45)
     @Column(name = "username")
     private String username;
-    @Size(max = 20)
-    @Column(name = "warehouseno")
-    private String warehouseno;
-    @Size(max = 20)
-    @Column(name = "warehouseno2")
-    private String warehouseno2;
+
+    @JoinColumn(name = "warehouseno", referencedColumnName = "warehouseno")
+    @ManyToOne
+    private Warehouse warehouse;
+
+    @JoinColumn(name = "warehouseno2", referencedColumnName = "warehouseno")
+    @ManyToOne
+    private Warehouse warehouse2;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "noauto")
@@ -149,20 +152,20 @@ public class AssetCategory extends SuperEntity {
         this.username = username;
     }
 
-    public String getWarehouseno() {
-        return warehouseno;
+    public Warehouse getWarehouse() {
+        return warehouse;
     }
 
-    public void setWarehouseno(String warehouseno) {
-        this.warehouseno = warehouseno;
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
-    public String getWarehouseno2() {
-        return warehouseno2;
+    public Warehouse getWarehouse2() {
+        return warehouse2;
     }
 
-    public void setWarehouseno2(String warehouseno2) {
-        this.warehouseno2 = warehouseno2;
+    public void setWarehouse2(Warehouse warehouse2) {
+        this.warehouse2 = warehouse2;
     }
 
     public boolean getNoauto() {

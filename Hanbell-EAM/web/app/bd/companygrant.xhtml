@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{companyGrantManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{companyGrantManagedBean.view('companygrantView')}" icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" action="#{companyGrantManagedBean.edit('companygrantEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{companyGrantManagedBean.doEdit}"/>
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{companyGrantManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{companyGrantManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnUnverify" value="还原" actionListener="#{companyGrantManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                    rendered="#{companyGrantManagedBean.doUnCfm}"  update=":formList"/>
+                        <p:menuitem id="btnCreate" value="新增" action="#{companyGrantManagedBean.create('companygrantNew')}" icon="ui-icon-plus"
+                                    rendered="#{companyGrantManagedBean.doAdd}" process="@this" />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{companyGrantManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{companyGrantManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:treeTable value="#{companyGrantManagedBean.rootNode}" var="item" tableStyleClass="tableList"
+                         selectionMode="single" selection="#{companyGrantManagedBean.selectedNode}">
+                <f:facet name="header">
+                    公司授权维护
+                </f:facet>
+                <p:ajax event="select"  update=":formList:toolbar" />
+                <p:ajax event="unselect" update=":formList:toolbar" />
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="公司"/>
+                    </f:facet>
+                    <h:outputText value="#{item.company}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="工号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.userid}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="姓名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.username}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="状态"/>
+                    </f:facet>
+                    <h:outputText value="#{item.status}"/>
+                </p:column>
+            </p:treeTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnDelete,btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

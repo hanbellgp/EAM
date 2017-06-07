@@ -44,6 +44,16 @@
                         <h:outputText id="remark" value="#{assetCategoryManagedBean.currentEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column><h:outputText value="来源仓库"/></p:column>
+                    <p:column>
+                        <h:outputText id="warehouse" value="#{assetCategoryManagedBean.currentEntity.warehouse.name}" title="warehouse"/>
+                    </p:column>
+                    <p:column><h:outputText value="目的仓库"/></p:column>
+                    <p:column>
+                        <h:outputText id="warehouse2" value="#{assetCategoryManagedBean.currentEntity.warehouse2.name}" title="warehouse2"/>
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
