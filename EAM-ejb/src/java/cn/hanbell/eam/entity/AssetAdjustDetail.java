@@ -475,10 +475,10 @@ public class AssetAdjustDetail extends FormDetailEntity {
             return false;
         }
         AssetAdjustDetail other = (AssetAdjustDetail) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if (this.id != null && other.id != null) {
+            return this.id.equals(other.id);
         }
-        return true;
+        return this.seq == other.seq;
     }
 
     @Override

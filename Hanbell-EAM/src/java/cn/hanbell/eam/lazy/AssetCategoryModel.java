@@ -17,6 +17,7 @@ public class AssetCategoryModel extends BaseLazyModel<AssetCategory> {
 
     public AssetCategoryModel(SuperEJB superEJB) {
         this.superEJB = superEJB;
+        this.sortFields.put("category", "ASC");
     }
 
 }

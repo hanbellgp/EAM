@@ -86,7 +86,7 @@
                     <p:column>
                         <p:inputText id="requireUserno" value="#{assetApplyManagedBean.newEntity.requireUserno}" title="RequireUserno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnRequireUserSelect" actionListener="#{assetApplyManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
-                                         process="@this" >
+                                         process="@this"  >
                             <p:ajax event="dialogReturn" listener="#{assetApplyManagedBean.handleDialogReturnRequireUserWhenNew}"
                                     update="requireUserno,requireUsername" />
                         </p:commandButton>
@@ -236,7 +236,6 @@
                 </p:tab>
             </p:tabView>
         </h:form>
-
     </ui:define>
 
 </ui:composition>
