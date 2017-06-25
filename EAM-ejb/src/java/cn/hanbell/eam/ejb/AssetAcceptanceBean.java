@@ -16,6 +16,7 @@ import cn.hanbell.eap.ejb.CompanyBean;
 import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.ejb.SystemProgramBean;
 import cn.hanbell.eap.entity.Company;
+import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemProgram;
 import com.lightshell.comm.SuperEJB;
 import java.math.BigDecimal;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -83,25 +86,30 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
         return trtype;
     }
 
-    public void initAssetAcceptance(AssetAcceptance aa, List<AssetAcceptanceDetail> addedDetail) {
+    public String initAssetAcceptance(AssetAcceptance aa, List<AssetAcceptanceDetail> addedDetail) {
 
         HashMap<SuperEJB, List<?>> detailAdded = new HashMap<>();
         detailAdded.put(assetAcceptanceDetailBean, addedDetail);
 
         if (aa.getDeptno() != null && aa.getDeptname() == null) {
-            aa.setDeptname(departmentBean.findByDeptno(aa.getDeptno()).toString());
+            Department dept = departmentBean.findByDeptno(aa.getDeptno());
+            if (dept != null) {
+                aa.setDeptname(dept.getDept());
+            }
         }
-        String formid = getFormId(aa.getFormdate());
-        aa.setFormid(formid);
-
-        addedDetail.stream().map((acd) -> {
-            acd.setPid(formid);
-            return acd;
-        }).filter((acd) -> (acd.getTrtype() == null)).forEach((acd) -> {
-            acd.setTrtype(getTrtype());
-        });
-
-        this.persist(aa, detailAdded, null, null);
+        try {
+            String formid = getFormId(aa.getFormdate());
+            aa.setFormid(formid);
+            for (AssetAcceptanceDetail acd : addedDetail) {
+                acd.setPid(formid);
+                acd.setTrtype(getTrtype());
+            }
+            this.persist(aa, detailAdded, null, null);
+            return formid;
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
 
     }
 
