@@ -78,38 +78,42 @@ public class UserManagedBean implements Serializable {
         }
         secpwd = BaseLib.securityMD5(getPwd());
         try {
-            if (cn.hanbell.util.BaseLib.ADAuth("172.16.10.6:389", userid + "@hanbell.com.cn", pwd)) {
-                SystemUser u = systemUserBean.findByUserId(getUserid());
-                if (u != null) {
-                    if ("Admin".equals(u.getUserid())) {
-                        currentCompany = companyBean.findByCompany(company);
-                        if (currentCompany == null) {
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
-                        }
-                    } else {
-                        //此处加入公司授权检查
-                        CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
-                        if (cg == null) {
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别"));
-                            status = false;
-                            return "";
-                        }
-                        currentCompany = companyBean.findByCompany(company);
-                        if (currentCompany == null) {
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
-                            status = false;
-                            return "";
-                        }
-                    }
-                    currentUser = u;
-                    status = true;
-                    mobile = u.getUserid();
-                    updateLoginTime();
+            SystemUser u = null;
+            if ("Admin".equals(userid)) {
+                u = systemUserBean.findByUserIdAndPwd(userid, secpwd);
+                if (u == null) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码错误"));
+                    status = false;
+                    return "";
                 }
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码错误"));
-                status = false;
-                return "";
+            } else if (cn.hanbell.util.BaseLib.ADAuth("172.16.10.6:389", userid + "@hanbell.com.cn", pwd)) {
+                u = systemUserBean.findByUserId(getUserid());
+            }
+            if (u != null) {
+                if ("Admin".equals(u.getUserid())) {
+                    currentCompany = companyBean.findByCompany(company);
+                    if (currentCompany == null) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                    }
+                } else {
+                    //此处加入公司授权检查
+                    CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
+                    if (cg == null) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别"));
+                        status = false;
+                        return "";
+                    }
+                    currentCompany = companyBean.findByCompany(company);
+                    if (currentCompany == null) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                        status = false;
+                        return "";
+                    }
+                }
+                currentUser = u;
+                status = true;
+                mobile = u.getUserid();
+                updateLoginTime();
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码不正确！"));

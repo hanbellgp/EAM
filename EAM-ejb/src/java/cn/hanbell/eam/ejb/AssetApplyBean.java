@@ -50,9 +50,9 @@ public class AssetApplyBean extends SuperEJBForEAM<AssetApply> {
         return super.getFormId(day, sp.getNolead(), sp.getNoformat(), sp.getNoseqlen());
     }
 
-    public Boolean initAssetApply(AssetApply e, List<AssetApplyDetail> detailList) {
+    public String initAssetApply(AssetApply e, List<AssetApplyDetail> detailList) {
         if (e == null || detailList == null) {
-            return false;
+            return null;
         }
         LinkedHashMap<SuperEJB, List<?>> detailAdded = new LinkedHashMap<>();
         detailAdded.put(assetApplyDetailBean, detailList);
@@ -63,10 +63,10 @@ public class AssetApplyBean extends SuperEJBForEAM<AssetApply> {
                 d.setPid(formid);
             }
             persist(e, detailAdded, null, null);
-            return true;
+            return formid;
         } catch (Exception ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex.getMessage());
-            return false;
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 

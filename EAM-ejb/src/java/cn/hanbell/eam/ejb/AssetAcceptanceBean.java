@@ -11,11 +11,21 @@ import cn.hanbell.eam.entity.AssetAcceptanceDetail;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetTransaction;
+import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.ejb.DepartmentBean;
+import cn.hanbell.eap.ejb.SystemProgramBean;
 import cn.hanbell.eap.entity.Company;
+import cn.hanbell.eap.entity.Department;
+import cn.hanbell.eap.entity.SystemProgram;
+import com.lightshell.comm.SuperEJB;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -28,8 +38,13 @@ import javax.ejb.LocalBean;
 @LocalBean
 public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
 
+    //EJBForEAP
     @EJB
     private CompanyBean companyBean;
+    @EJB
+    private DepartmentBean departmentBean;
+    @EJB
+    private SystemProgramBean systemProgramBean;
 
     @EJB
     private AssetCardBean assetCardBean;
@@ -39,15 +54,63 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
 
     @EJB
     private AssetInventoryBean assetInventoryBean;
+
     @EJB
     private AssetTransactionBean assetTransactionBean;
+
+    @EJB
+    private TransactionTypeBean transactionType;
 
     private List<AssetAcceptanceDetail> detailList;
 
     private List<AssetInventory> inventoryList;
 
+    private TransactionType trtype;
+
     public AssetAcceptanceBean() {
         super(AssetAcceptance.class);
+    }
+
+    public String getFormId(Date day) {
+        SystemProgram sp = systemProgramBean.findBySystemAndAPI("EAM", "assetaccept");
+        if (sp == null) {
+            return "";
+        }
+        return super.getFormId(day, sp.getNolead(), sp.getNoformat(), sp.getNoseqlen());
+    }
+
+    public TransactionType getTrtype() {
+        if (trtype == null) {
+            trtype = transactionType.findByTrtype("PAA");
+        }
+        return trtype;
+    }
+
+    public String initAssetAcceptance(AssetAcceptance aa, List<AssetAcceptanceDetail> addedDetail) {
+
+        HashMap<SuperEJB, List<?>> detailAdded = new HashMap<>();
+        detailAdded.put(assetAcceptanceDetailBean, addedDetail);
+
+        if (aa.getDeptno() != null && aa.getDeptname() == null) {
+            Department dept = departmentBean.findByDeptno(aa.getDeptno());
+            if (dept != null) {
+                aa.setDeptname(dept.getDept());
+            }
+        }
+        try {
+            String formid = getFormId(aa.getFormdate());
+            aa.setFormid(formid);
+            for (AssetAcceptanceDetail acd : addedDetail) {
+                acd.setPid(formid);
+                acd.setTrtype(getTrtype());
+            }
+            this.persist(aa, detailAdded, null, null);
+            return formid;
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
     }
 
     @Override

@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetCategory.findById", query = "SELECT a FROM AssetCategory a WHERE a.id = :id"),
     @NamedQuery(name = "AssetCategory.findByCategory", query = "SELECT a FROM AssetCategory a WHERE a.category = :category"),
     @NamedQuery(name = "AssetCategory.findByName", query = "SELECT a FROM AssetCategory a WHERE a.name = :name"),
-    @NamedQuery(name = "AssetCategory.findByPId", query = "SELECT a FROM AssetCategory a WHERE a.parentCategory.id = :pid"),
-    @NamedQuery(name = "AssetCategory.findRoot", query = "SELECT a FROM AssetCategory a WHERE a.parentCategory IS NULL"),
+    @NamedQuery(name = "AssetCategory.findByPId", query = "SELECT a FROM AssetCategory a WHERE a.parentCategory.id = :pid  ORDER BY a.category"),
+    @NamedQuery(name = "AssetCategory.findRoot", query = "SELECT a FROM AssetCategory a WHERE a.parentCategory IS NULL ORDER BY a.category"),
     @NamedQuery(name = "AssetCategory.findByStatus", query = "SELECT a FROM AssetCategory a WHERE a.status = :status")})
 public class AssetCategory extends SuperEntity {
 
