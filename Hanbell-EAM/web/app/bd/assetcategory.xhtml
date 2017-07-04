@@ -59,6 +59,24 @@
                     </f:facet>
                     <h:outputText value="#{item.parentCategory.name}"/>
                 </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="计成本仓"/>
+                    </f:facet>
+                    <h:outputText value="#{item.warehouse.name}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="无成本仓"/>
+                    </f:facet>
+                    <h:outputText value="#{item.warehouse2.name}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="自动编号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.noauto}"/>
+                </p:column>
             </p:treeTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

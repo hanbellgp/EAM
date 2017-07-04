@@ -21,6 +21,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -64,6 +65,21 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
         return super.getFormId(day, sp.getNolead(), sp.getNoformat(), sp.getNoseqlen());
     }
 
+    public List<AssetDistribute> findByStatus(String value) {
+        Query query = getEntityManager().createNamedQuery("AssetDistribute.findByStatus");
+        query.setParameter("status", value);
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public void setDetail(Object value) {
+        detailList = assetDistributeDetailBean.findByPId(value);
+    }
+
     @Override
     public AssetDistribute unverify(AssetDistribute entity) {
         if (inventoryList == null) {
@@ -80,7 +96,7 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 throw new RuntimeException("交易类别设置错误");
             }
             AssetDistribute e = getEntityManager().merge(entity);
-            setDetailList(assetDistributeDetailBean.findByPId(e.getFormid()));
+            detailList = assetDistributeDetailBean.findByPId(e.getFormid());
             //删除库存交易
             List<AssetTransaction> transactionList = assetTransactionBean.findByFormid(e.getFormid());
             if (transactionList != null && !transactionList.isEmpty()) {
@@ -152,7 +168,7 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 throw new RuntimeException("交易类别设置错误");
             }
             AssetDistribute e = getEntityManager().merge(entity);
-            setDetailList(assetDistributeDetailBean.findByPId(e.getFormid()));
+            detailList = assetDistributeDetailBean.findByPId(e.getFormid());
             for (AssetDistributeDetail d : detailList) {
                 //更新库存交易出库
                 AssetTransaction st = new AssetTransaction();
@@ -324,13 +340,6 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
      */
     public List<AssetDistributeDetail> getDetailList() {
         return detailList;
-    }
-
-    /**
-     * @param detailList the detailList to set
-     */
-    public void setDetailList(List<AssetDistributeDetail> detailList) {
-        this.detailList = detailList;
     }
 
 }

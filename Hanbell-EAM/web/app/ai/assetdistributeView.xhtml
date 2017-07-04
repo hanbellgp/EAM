@@ -66,6 +66,16 @@
                         <h:outputText id="remark" value="#{assetDistributeManagedBean.currentEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column><h:outputText value="来源单号" /></p:column>
+                    <p:column>
+                        <h:outputText id="srcformid" value="#{assetDistributeManagedBean.currentEntity.srcformid}" title="srcformid" />
+                    </p:column>
+                    <p:column><h:outputText value="关联单号" /></p:column>
+                    <p:column>
+                        <h:outputText id="relformid" value="#{assetDistributeManagedBean.currentEntity.relformid}" title="relformid" />
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="领用明细">

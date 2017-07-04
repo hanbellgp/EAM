@@ -34,6 +34,10 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
     @EJB
     private AssetApplyDetailBean assetApplyDetailBean;
 
+    private String queryDeptname;
+    private String queryUsername;
+    private String queryRemark;
+
     public AssetApplyManagedBean() {
         super(AssetApply.class, AssetApplyDetail.class);
     }
@@ -208,7 +212,58 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
             if (queryState != null && !"ALL".equals(queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
+            if (queryDeptname != null && !"".equals(queryDeptname)) {
+                this.model.getFilterFields().put("requireDeptname", queryDeptname);
+            }
+            if (queryUsername != null && !"".equals(queryUsername)) {
+                this.model.getFilterFields().put("requireUsername", queryUsername);
+            }
+            if (queryRemark != null && !"".equals(queryRemark)) {
+                this.model.getFilterFields().put("remark", queryRemark);
+            }
         }
+    }
+
+    /**
+     * @return the queryDeptname
+     */
+    public String getQueryDeptname() {
+        return queryDeptname;
+    }
+
+    /**
+     * @param queryDeptname the queryDeptname to set
+     */
+    public void setQueryDeptname(String queryDeptname) {
+        this.queryDeptname = queryDeptname;
+    }
+
+    /**
+     * @return the queryUsername
+     */
+    public String getQueryUsername() {
+        return queryUsername;
+    }
+
+    /**
+     * @param queryUsername the queryUsername to set
+     */
+    public void setQueryUsername(String queryUsername) {
+        this.queryUsername = queryUsername;
+    }
+
+    /**
+     * @return the queryRemark
+     */
+    public String getQueryRemark() {
+        return queryRemark;
+    }
+
+    /**
+     * @param queryRemark the queryRemark to set
+     */
+    public void setQueryRemark(String queryRemark) {
+        this.queryRemark = queryRemark;
     }
 
 }

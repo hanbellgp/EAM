@@ -90,7 +90,7 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         aad.setDeptname2(entity.getRequireDeptname());
         aad.setUserno2(entity.getRequireUserno());
         aad.setUsername2(entity.getRequireUsername());
-        aad.setWarehouse2(null);
+        aad.setWarehouse2(entity.getAssetItem().getCategory().getWarehouse2());
         aad.setSrcapi("assetapply");
         aad.setSrcformid(formid);
         aad.setSrcseq(1);
@@ -145,7 +145,8 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         add.setDeptname(entity.getRequireDeptname());
         add.setUserno(entity.getRequireUserno());
         add.setUsername(entity.getRequireUsername());
-        add.setWarehouse(null);
+        add.setWarehouse(entity.getAssetItem().getCategory().getWarehouse());
+        add.setWarehouse2(entity.getAssetItem().getCategory().getWarehouse2());
         add.setSrcapi("assetapply");
         add.setSrcformid(formid);
         add.setSrcseq(1);

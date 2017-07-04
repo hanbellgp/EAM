@@ -46,6 +46,12 @@ public class AssetDistribute extends FormEntity {
     @Size(max = 100)
     @Column(name = "remark")
     private String remark;
+    @Size(max = 20)
+    @Column(name = "srcformid")
+    private String srcformid;
+    @Size(max = 20)
+    @Column(name = "relformid")
+    private String relformid;
 
     public AssetDistribute() {
     }
@@ -105,6 +111,34 @@ public class AssetDistribute extends FormEntity {
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.AssetDistribute[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the srcformid
+     */
+    public String getSrcformid() {
+        return srcformid;
+    }
+
+    /**
+     * @param srcformid the srcformid to set
+     */
+    public void setSrcformid(String srcformid) {
+        this.srcformid = srcformid;
+    }
+
+    /**
+     * @return the relformid
+     */
+    public String getRelformid() {
+        return relformid;
+    }
+
+    /**
+     * @param relformid the relformid to set
+     */
+    public void setRelformid(String relformid) {
+        this.relformid = relformid;
     }
 
 }
