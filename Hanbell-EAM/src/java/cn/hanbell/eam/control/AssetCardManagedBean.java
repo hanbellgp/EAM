@@ -30,6 +30,8 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     @EJB
     private AssetCardBean assetCardBean;
 
+    private String queryItemno;
+    private String queryItemdesc;
     private String queryDeptno;
     private String queryDeptname;
     private String queryUserno;
@@ -176,6 +178,12 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
             if (this.queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("assetDesc", this.queryName);
             }
+            if (this.queryItemno != null && !"".equals(this.queryItemno)) {
+                this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
+            }
+            if (this.queryItemdesc != null && !"".equals(this.queryItemdesc)) {
+                this.model.getFilterFields().put("assetItem.itemdesc", this.queryItemdesc);
+            }
             if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
                 this.model.getFilterFields().put("deptno", this.queryDeptno);
             }
@@ -274,6 +282,34 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
      */
     public void setQueryWarehouseno(String queryWarehouseno) {
         this.queryWarehouseno = queryWarehouseno;
+    }
+
+    /**
+     * @return the queryItemno
+     */
+    public String getQueryItemno() {
+        return queryItemno;
+    }
+
+    /**
+     * @param queryItemno the queryItemno to set
+     */
+    public void setQueryItemno(String queryItemno) {
+        this.queryItemno = queryItemno;
+    }
+
+    /**
+     * @return the queryItemdesc
+     */
+    public String getQueryItemdesc() {
+        return queryItemdesc;
+    }
+
+    /**
+     * @param queryItemdesc the queryItemdesc to set
+     */
+    public void setQueryItemdesc(String queryItemdesc) {
+        this.queryItemdesc = queryItemdesc;
     }
 
 }

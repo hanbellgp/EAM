@@ -414,4 +414,34 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         }
     }
 
+    @Override
+    protected void setToolBar() {
+        if (currentEntity != null && getCurrentPrgGrant() != null && currentEntity.getStatus() != null) {
+            switch (currentEntity.getStatus()) {
+                case "T":
+                    this.doEdit = false;
+                    this.doDel = false;
+                    this.doCfm = false;
+                    this.doUnCfm = false;
+                    break;
+                case "V":
+                    this.doEdit = getCurrentPrgGrant().getDoedit() && false;
+                    this.doDel = getCurrentPrgGrant().getDodel() && false;
+                    this.doCfm = false;
+                    this.doUnCfm = getCurrentPrgGrant().getDouncfm() && true;
+                    break;
+                default:
+                    this.doEdit = getCurrentPrgGrant().getDoedit() && true;
+                    this.doDel = getCurrentPrgGrant().getDodel() && true;
+                    this.doCfm = getCurrentPrgGrant().getDocfm() && true;
+                    this.doUnCfm = false;
+            }
+        } else {
+            this.doEdit = false;
+            this.doDel = false;
+            this.doCfm = false;
+            this.doUnCfm = false;
+        }
+    }
+
 }
