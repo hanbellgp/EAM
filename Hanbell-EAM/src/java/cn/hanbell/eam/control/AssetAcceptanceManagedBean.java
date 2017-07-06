@@ -8,10 +8,12 @@ package cn.hanbell.eam.control;
 import cn.hanbell.eam.ejb.AssetAcceptanceBean;
 import cn.hanbell.eam.ejb.AssetAcceptanceDetailBean;
 import cn.hanbell.eam.ejb.AssetCardBean;
+import cn.hanbell.eam.ejb.AssetInventoryBean;
 import cn.hanbell.eam.ejb.TransactionTypeBean;
 import cn.hanbell.eam.entity.AssetAcceptance;
 import cn.hanbell.eam.entity.AssetAcceptanceDetail;
 import cn.hanbell.eam.entity.AssetCard;
+import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eam.entity.Warehouse;
@@ -36,13 +38,16 @@ import org.primefaces.event.SelectEvent;
 public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, AssetAcceptanceDetail> {
 
     @EJB
-    private AssetCardBean assetCardBean;
-
-    @EJB
     private AssetAcceptanceBean assetAcceptanceBean;
 
     @EJB
     private AssetAcceptanceDetailBean assetAcceptanceDetailBean;
+
+    @EJB
+    private AssetCardBean assetCardBean;
+
+    @EJB
+    private AssetInventoryBean assetInventoryBean;
 
     @EJB
     private TransactionTypeBean transactoinTypeBean;
@@ -80,15 +85,23 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
     @Override
     protected boolean doBeforeUnverify() throws Exception {
         if (super.doBeforeUnverify()) {
-            for (AssetAcceptanceDetail d : detailList) {
+            AssetInventory ai;
+            BigDecimal acqty;
+            for (AssetAcceptanceDetail aad : detailList) {
+                //库存数量检查
+                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), aad.getAssetItem().getItemno(), "", "", "", aad.getWarehouse().getWarehouseno());
+                if ((ai == null) || ai.getQty().compareTo(aad.getQcqty()) == -1) {
+                    showErrorMsg("Error", aad.getAssetItem().getItemno() + "库存可还原量不足");
+                    return false;
+                }
                 //判断是不是自动产生资产卡片
-                if (d.getAssetItem().getCategory().getNoauto()) {
-                    BigDecimal acqty = BigDecimal.ZERO;
-                    List<AssetCard> acs = assetCardBean.findByFiltersAndNotUsed(d.getPid(), d.getSeq());
+                if (aad.getAssetItem().getCategory().getNoauto()) {
+                    acqty = BigDecimal.ZERO;
+                    List<AssetCard> acs = assetCardBean.findByFiltersAndNotUsed(aad.getPid(), aad.getSeq());
                     for (AssetCard ac : acs) {
                         acqty = acqty.add(ac.getQty());
                     }
-                    if (acqty.compareTo(d.getQcqty()) != 0) {
+                    if (acqty.compareTo(aad.getQcqty()) != 0) {
                         showErrorMsg("Error", "卡片可还原数量不足");
                         return false;
                     }

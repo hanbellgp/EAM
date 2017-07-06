@@ -26,7 +26,7 @@ import org.primefaces.event.SelectEvent;
 public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow> {
 
     @EJB
-    private AssetApplyThrowBean assetApplyThrowBean;
+    protected AssetApplyThrowBean assetApplyThrowBean;
 
     private boolean doThrow;
     private boolean doPurchase;
