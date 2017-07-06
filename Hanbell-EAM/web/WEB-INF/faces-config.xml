@@ -190,6 +190,11 @@
             <to-view-id>/app/aa/assetthrow.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>applybatchthrow</from-outcome>
+            <to-view-id>/app/aa/applybatchthrow.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <description>模态开窗</description>

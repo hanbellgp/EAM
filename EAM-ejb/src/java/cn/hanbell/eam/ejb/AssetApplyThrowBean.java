@@ -92,8 +92,8 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         aad.setUsername2(entity.getRequireUsername());
         aad.setWarehouse2(entity.getAssetItem().getCategory().getWarehouse2());
         aad.setSrcapi("assetapply");
-        aad.setSrcformid(formid);
-        aad.setSrcseq(1);
+        aad.setSrcformid(entity.getAssetApply().getFormid());
+        aad.setSrcseq(entity.getSeq());
         addedDetail.add(aad);
 
         entity.setDistributed(Boolean.TRUE);
@@ -103,6 +103,88 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         try {
             assetAdjustBean.persist(aa, detailAdded, null, null);
             update(entity);
+            return formid;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    public String initAssetAdjust(List<AssetApplyThrow> entities, SystemUser user) throws Exception {
+
+        if (entities == null || entities.isEmpty()) {
+            throw new NullPointerException();
+        }
+
+        Date day = BaseLib.getDate();
+        String formid = assetAdjustBean.getFormId(day);
+        if (formid == null || "".equals(formid)) {
+            throw new RuntimeException("产生异动单单号失败");
+        }
+        //资产异动
+        TransactionType AIC = transactionTypeBean.findByTrtype("AIC");
+        if (AIC == null) {
+            throw new RuntimeException("交易类别设置错误");
+        }
+
+        List<AssetApplyThrow> detailList = new ArrayList();
+
+        List<AssetAdjustDetail> addedAAD = new ArrayList();
+        HashMap<SuperEJB, List<?>> aadAdded = new HashMap();
+        aadAdded.put(assetAdjustDetailBean, addedAAD);
+
+        AssetApplyThrow e = entities.get(0);
+
+        AssetAdjust aa = new AssetAdjust();
+        aa.setCompany(e.getAssetApply().getCompany());
+        aa.setFormid(formid);
+        aa.setFormdate(day);
+        aa.setDeptno(e.getAssetApply().getApplyDeptno());
+        aa.setDeptname(e.getAssetApply().getApplyDeptname());
+        aa.setRemark(e.getRemark());
+        aa.setStatusToNew();
+        aa.setCreator(user.getUsername());
+        aa.setCredateToNow();
+
+        int seq = 0;
+        for (AssetApplyThrow entity : entities) {
+            seq++;
+            AssetAdjustDetail aad = new AssetAdjustDetail();
+            aad.setPid(formid);
+            aad.setSeq(seq);
+            aad.setTrtype(AIC);
+            aad.setAssetItem(entity.getAssetItem());
+            aad.setBrand(entity.getBrand());
+            aad.setBatch(entity.getBatch());
+            aad.setSn(entity.getSn());
+            aad.setQty(entity.getDisqty());
+            aad.setUnit(entity.getUnit());
+            aad.setDeptno2(entity.getRequireDeptno());
+            aad.setDeptname2(entity.getRequireDeptname());
+            aad.setUserno2(entity.getRequireUserno());
+            aad.setUsername2(entity.getRequireUsername());
+            aad.setWarehouse2(entity.getAssetItem().getCategory().getWarehouse2());
+            aad.setSrcapi("assetapply");
+            aad.setSrcformid(entity.getAssetApply().getFormid());
+            aad.setSrcseq(entity.getSeq());
+
+            addedAAD.add(aad);
+
+            entity.setDistributed(Boolean.TRUE);
+            entity.setRelapi("assetadjust");
+            entity.setRelformid(formid);
+            entity.setRelseq(seq);
+
+            detailList.add(entity);
+
+            if (aa.getRemark() == null) {
+                aa.setRemark(entity.getRequireDeptname() + "_" + entity.getRequireUsername());
+            }
+        }
+
+        try {
+            assetAdjustBean.persist(aa, aadAdded, null, null);
+            update(detailList);
             return formid;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -148,8 +230,8 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         add.setWarehouse(entity.getAssetItem().getCategory().getWarehouse());
         add.setWarehouse2(entity.getAssetItem().getCategory().getWarehouse2());
         add.setSrcapi("assetapply");
-        add.setSrcformid(formid);
-        add.setSrcseq(1);
+        add.setSrcformid(entity.getAssetApply().getFormid());
+        add.setSrcseq(entity.getSeq());
         addedDetail.add(add);
 
         entity.setDistributed(Boolean.TRUE);
@@ -159,6 +241,83 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         try {
             assetDistributeBean.persist(ad, detailAdded, null, null);
             update(entity);
+            return formid;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    public String initAssetDistribute(List<AssetApplyThrow> entities, SystemUser user) throws Exception {
+
+        if (entities == null || entities.isEmpty()) {
+            throw new NullPointerException();
+        }
+
+        Date day = BaseLib.getDate();
+        String formid = assetDistributeBean.getFormId(day);
+        if (formid == null || "".equals(formid)) {
+            throw new RuntimeException("产生领用单单号失败");
+        }
+
+        List<AssetApplyThrow> detailList = new ArrayList();
+
+        List<AssetDistributeDetail> addedADD = new ArrayList();
+        HashMap<SuperEJB, List<?>> addAdded = new HashMap();
+        addAdded.put(assetDistributeDetailBean, addedADD);
+
+        AssetApplyThrow e = entities.get(0);
+
+        AssetDistribute ad = new AssetDistribute();
+        ad.setCompany(e.getAssetApply().getCompany());
+        ad.setFormid(formid);
+        ad.setFormdate(day);
+        ad.setDeptno(e.getAssetApply().getApplyDeptno());
+        ad.setDeptname(e.getAssetApply().getApplyDeptname());
+        ad.setRemark(e.getRemark());
+        ad.setStatusToNew();
+        ad.setCreator(user.getUsername());
+        ad.setCredateToNow();
+
+        int seq = 0;
+        for (AssetApplyThrow entity : entities) {
+            seq++;
+            AssetDistributeDetail add = new AssetDistributeDetail();
+            add.setPid(formid);
+            add.setSeq(seq);
+            add.setAssetItem(entity.getAssetItem());
+            add.setBrand(entity.getBrand());
+            add.setBatch(entity.getBatch());
+            add.setSn(entity.getSn());
+            add.setQty(entity.getDisqty());
+            add.setUnit(entity.getUnit());
+            add.setDeptno(entity.getRequireDeptno());
+            add.setDeptname(entity.getRequireDeptname());
+            add.setUserno(entity.getRequireUserno());
+            add.setUsername(entity.getRequireUsername());
+            add.setWarehouse(entity.getAssetItem().getCategory().getWarehouse());
+            add.setWarehouse2(entity.getAssetItem().getCategory().getWarehouse2());
+            add.setSrcapi("assetapply");
+            add.setSrcformid(entity.getAssetApply().getFormid());
+            add.setSrcseq(entity.getSeq());
+
+            addedADD.add(add);
+
+            entity.setDistributed(Boolean.TRUE);
+            entity.setRelapi("assetdistribute");
+            entity.setRelformid(formid);
+            entity.setRelseq(seq);
+
+            detailList.add(entity);
+
+            if (ad.getRemark() == null) {
+                ad.setRemark(entity.getRequireDeptname() + "_" + entity.getRequireUsername());
+            }
+        }
+
+        try {
+            assetDistributeBean.persist(ad, addAdded, null, null);
+            update(detailList);
             return formid;
         } catch (Exception ex) {
             throw new RuntimeException(ex);

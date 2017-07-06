@@ -76,6 +76,17 @@ public class AssetApplyManagedBean extends FormMultiBean<AssetApply, AssetApplyD
     }
 
     @Override
+    protected boolean doBeforeVerify() throws Exception {
+        if (super.doBeforeVerify()) {
+            for (AssetApplyDetail aad : detailList) {
+                aad.setStatus("20");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void doConfirmDetail() {
         if (currentDetail == null) {
             showErrorMsg("Error", "没有明细对象");
