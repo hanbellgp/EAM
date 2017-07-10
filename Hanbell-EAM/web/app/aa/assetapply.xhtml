@@ -82,12 +82,6 @@
                             <f:convertDateTime pattern="yyyy/MM/dd" />
                         </h:outputText>
                     </p:column>
-                    <p:column  styleClass="Wid20">
-                        <f:facet name="header">
-                            <h:outputText value="申请部门"/>
-                        </f:facet>
-                        <h:outputText value="#{item.applyDeptname}"/>
-                    </p:column>
                     <p:column  styleClass="Wid10">
                         <f:facet name="header">
                             <h:outputText value="申请人"/>
@@ -106,7 +100,13 @@
                         </f:facet>
                         <h:outputText value="#{item.requireUsername}"/>
                     </p:column>
-                    <p:column  styleClass="Wid20">
+                    <p:column  styleClass="Wid30">
+                        <f:facet name="header">
+                            <h:outputText value="备注"/>
+                        </f:facet>
+                        <h:outputText value="#{item.remark.length() > 20 ? item.remark.substring(0,20) : item.remark}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
                         <f:facet name="header">
                             <h:outputText value="状态"/>
                         </f:facet>

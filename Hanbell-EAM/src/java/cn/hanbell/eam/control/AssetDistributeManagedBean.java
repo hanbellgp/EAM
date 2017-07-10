@@ -151,6 +151,11 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                         return false;
                     }
                 }//刀工量仪在领用时才产生卡片信息，此处不用判断是否存在卡片
+                //检查ERP库存
+                if (!assetInventoryBean.isLessThenInvbal(currentEntity.getCompany(), "1", add.getAssetItem().getItemno(), add.getWarehouse().getWarehouseno(), add.getQty())) {
+                    showErrorMsg("Error", add.getAssetItem().getItemno() + "ERP系统" + add.getWarehouse().getRemark() + "库存可利用量不足");
+                    return false;
+                }
             }
             return true;
         }
