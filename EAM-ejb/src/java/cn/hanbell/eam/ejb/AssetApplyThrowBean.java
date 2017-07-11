@@ -72,6 +72,9 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         aa.setDeptno(entity.getAssetApply().getApplyDeptno());
         aa.setDeptname(entity.getAssetApply().getApplyDeptname());
         aa.setRemark(entity.getRemark());
+        if (aa.getRemark() == null) {
+            aa.setRemark(entity.getRequireDeptname() + "_" + entity.getRequireUsername());
+        }
         aa.setStatusToNew();
         aa.setCreator(user.getUsername());
         aa.setCredateToNow();
@@ -210,6 +213,9 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         ad.setDeptno(entity.getAssetApply().getApplyDeptno());
         ad.setDeptname(entity.getAssetApply().getApplyDeptname());
         ad.setRemark(entity.getRemark());
+        if (ad.getRemark() == null) {
+            ad.setRemark(entity.getRequireDeptname() + "_" + entity.getRequireUsername());
+        }
         ad.setStatusToNew();
         ad.setCreator(user.getUsername());
         ad.setCredateToNow();
