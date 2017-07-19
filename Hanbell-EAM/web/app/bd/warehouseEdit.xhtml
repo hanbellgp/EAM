@@ -48,6 +48,51 @@
                     </p:column>
                 </p:row>
             </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="ERP仓库映射">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{warehouseManagedBean.createDetail()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update="formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{warehouseManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{warehouseManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgDetail Wid100">
+                        <p:column><p:outputLabel value="公司代号" for="company" /></p:column>
+                        <p:column>
+                            <p:inputText id="company" value="#{warehouseManagedBean.currentDetail.company}" title="company" styleClass="inputWithButton"
+                                         required="true" requiredMessage="请输入公司代号" />
+                        </p:column>
+                        <p:column><p:outputLabel value="ERP库号" for="wareh" /></p:column>
+                        <p:column>
+                            <p:inputText id="wareh" value="#{warehouseManagedBean.currentDetail.warehouseno}" title="wareh" styleClass="inputWithButton"
+                                         required="true" requiredMessage="请输入ERP库号"/>
+                        </p:column>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{warehouseManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{warehouseManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail" oncomplete="" />
+                        <p:column headerText="公司" styleClass="Wid20">
+                            <h:outputText value="#{item.company}"/>
+                        </p:column>
+                        <p:column headerText="库号" styleClass="Wid20">
+                            <h:outputText value="#{item.warehouseno}"/>
+                        </p:column>
+                        <p:column headerText="备注" styleClass="Wid60">
+                            <h:outputText value="#{item.remark}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
         </h:form>
     </ui:define>
 

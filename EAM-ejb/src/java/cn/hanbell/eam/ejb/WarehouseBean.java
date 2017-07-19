@@ -7,6 +7,8 @@ package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.Warehouse;
+import cn.hanbell.eam.entity.WarehouseRelation;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.Query;
@@ -18,6 +20,9 @@ import javax.persistence.Query;
 @Stateless
 @LocalBean
 public class WarehouseBean extends SuperEJBForEAM<Warehouse> {
+
+    @EJB
+    private WarehouseRelationBean warehouseRelationBean;
 
     public WarehouseBean() {
         super(Warehouse.class);
@@ -60,6 +65,15 @@ public class WarehouseBean extends SuperEJBForEAM<Warehouse> {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    public String findERPWarehouse(String company, int pid) {
+        WarehouseRelation wr = warehouseRelationBean.findByCompanyAndPId(company, pid);
+        if (wr != null) {
+            return wr.getWarehouseno();
+        }
+        Warehouse w = findById(pid);
+        return w.getRemark();
     }
 
 }

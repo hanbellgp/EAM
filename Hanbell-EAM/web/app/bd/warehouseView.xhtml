@@ -58,8 +58,25 @@
                         <h:outputText id="hascost" value="#{warehouseManagedBean.currentEntity.hascost}" title="hascost"/>
                     </p:column>
                 </p:row>
-
             </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="ERP仓库映射">
+                    <p:dataTable id="tableList" value="#{warehouseManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{warehouseManagedBean.currentDetail}" rowKey="#{item.id}" >
+                        <p:ajax event="rowSelect"  update="" oncomplete="" />
+                        <p:ajax event="rowUnselect"  update="" oncomplete="" />
+                        <p:column headerText="公司" styleClass="Wid20">
+                            <h:outputText value="#{item.company}"/>
+                        </p:column>
+                        <p:column headerText="库号" styleClass="Wid20">
+                            <h:outputText value="#{item.warehouseno}"/>
+                        </p:column>
+                        <p:column headerText="备注" styleClass="Wid60">
+                            <h:outputText value="#{item.remark}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
