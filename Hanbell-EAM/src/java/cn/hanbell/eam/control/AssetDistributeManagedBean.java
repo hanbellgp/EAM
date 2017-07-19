@@ -9,6 +9,7 @@ import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.ejb.AssetDistributeBean;
 import cn.hanbell.eam.ejb.AssetDistributeDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
+import cn.hanbell.eam.ejb.WarehouseBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetDistribute;
 import cn.hanbell.eam.entity.AssetDistributeDetail;
@@ -46,6 +47,8 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     private AssetInventoryBean assetInventoryBean;
     @EJB
     private AssetCardBean assetCardBean;
+    @EJB
+    private WarehouseBean warehouseBean;
 
     private List<String> paramPosition = null;
     private List<String> paramUsed = null;
@@ -136,12 +139,17 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     protected boolean doBeforeVerify() throws Exception {
         if (super.doBeforeVerify()) {
+            String wareh;
             AssetInventory ai;
             AssetCard ac;
             for (AssetDistributeDetail add : detailList) {
                 ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
                 if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
+                    return false;
+                }
+                if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
+                    showErrorMsg("Error", add.getAssetItem().getItemno() + "需要指定资产编号");
                     return false;
                 }
                 if (add.getAssetCard() != null) {
@@ -152,8 +160,9 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                     }
                 }//刀工量仪在领用时才产生卡片信息，此处不用判断是否存在卡片
                 //检查ERP库存
-                if (!assetInventoryBean.isLessThenInvbal(currentEntity.getCompany(), "1", add.getAssetItem().getItemno(), add.getWarehouse().getRemark(), add.getQty())) {
-                    showErrorMsg("Error", add.getAssetItem().getItemno() + "ERP系统" + add.getWarehouse().getRemark() + "库存可利用量不足");
+                wareh = warehouseBean.findERPWarehouse(currentEntity.getCompany(), add.getWarehouse().getId());
+                if (!assetInventoryBean.isLessThenInvbal(currentEntity.getCompany(), "1", add.getAssetItem().getItemno(), wareh, add.getQty())) {
+                    showErrorMsg("Error", add.getAssetItem().getItemno() + "ERP系统" + wareh + "库存可利用量不足");
                     return false;
                 }
             }

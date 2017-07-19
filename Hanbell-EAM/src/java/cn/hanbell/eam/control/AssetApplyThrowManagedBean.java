@@ -38,10 +38,10 @@ public class AssetApplyThrowManagedBean extends SuperSingleBean<AssetApplyThrow>
     @Override
     protected boolean doBeforeUpdate() throws Exception {
         if (super.doBeforeUpdate()) {
-            if (currentEntity.getPurqty().compareTo(currentEntity.getQty()) == 1) {
-                showErrorMsg("Error", "请购数量不能大于申请数量");
-                return false;
-            }
+            //if (currentEntity.getPurqty().compareTo(currentEntity.getQty()) == 1) {
+            //    showErrorMsg("Error", "请购数量不能大于申请数量");
+            //    return false;
+            //}
             if (currentEntity.getPurqty().compareTo(BigDecimal.ZERO) == -1) {
                 showErrorMsg("Error", "请购数量不能小于零");
                 return false;

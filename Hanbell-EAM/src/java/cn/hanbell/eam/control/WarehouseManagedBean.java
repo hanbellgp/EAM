@@ -6,14 +6,14 @@
 package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.WarehouseBean;
-import cn.hanbell.eam.entity.AssetPosition;
+import cn.hanbell.eam.ejb.WarehouseRelationBean;
 import cn.hanbell.eam.entity.Warehouse;
+import cn.hanbell.eam.entity.WarehouseRelation;
 import cn.hanbell.eam.lazy.WarehouseModel;
-import cn.hanbell.eam.web.SuperSingleBean;
+import cn.hanbell.eam.web.SuperMultiBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -21,13 +21,21 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "warehouseManagedBean")
 @SessionScoped
-public class WarehouseManagedBean extends SuperSingleBean<Warehouse> {
+public class WarehouseManagedBean extends SuperMultiBean<Warehouse, WarehouseRelation> {
 
     @EJB
     private WarehouseBean warehouseBean;
+    @EJB
+    private WarehouseRelationBean warehouseRelationBean;
 
     public WarehouseManagedBean() {
-        super(Warehouse.class);
+        super(Warehouse.class, WarehouseRelation.class);
+    }
+
+    @Override
+    public void createDetail() {
+        super.createDetail();
+        newDetail.setCompany(this.userManagedBean.getCompany());
     }
 
     @Override
@@ -45,6 +53,7 @@ public class WarehouseManagedBean extends SuperSingleBean<Warehouse> {
     public void init() {
         this.superEJB = warehouseBean;
         this.model = new WarehouseModel(warehouseBean, userManagedBean);
+        this.detailEJB = warehouseRelationBean;
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("warehouseno", "ASC");
         super.init();
