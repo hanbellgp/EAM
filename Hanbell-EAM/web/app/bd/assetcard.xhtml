@@ -42,6 +42,8 @@
                     <p:commandButton id="btnView" value="查看" action="#{assetCardManagedBean.view('assetcardView')}" icon="ui-icon-document"/>
                 </f:facet>
                 <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCardManagedBean.print('cn.hanbell.eam.rpt.AssetCodeReport','assetcode.rptdesign')}" icon="ui-icon-print"
+                                     process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnEdit" value="编辑"  action="#{assetCardManagedBean.edit('assetcardEdit')}" icon="ui-icon-pencil"
                                     rendered="#{assetCardManagedBean.doEdit}" />
@@ -118,8 +120,8 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formList" trigger="btnUnverify">
-                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            <p:blockUI id="blockUI" block="formList" trigger="btnPrint,btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>
     </ui:define>

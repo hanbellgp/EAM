@@ -55,7 +55,7 @@ public class AssetTransactionQueryBean extends SuperQueryBean<AssetTransaction> 
         model = new AssetTransactionModel(assetTransactionBean, userManagedBean);
         model.getSortFields().put("formdate", "ASC");
         model.getSortFields().put("id", "ASC");
-        model.getFilterFields().put("assetItem.itemno", "-1");
+        model.getFilterFields().put("assetItem.id", -1);
         if (queryWarehouse == null) {
             queryWarehouse = new Warehouse();
             queryWarehouse.setId(-1);
@@ -89,7 +89,7 @@ public class AssetTransactionQueryBean extends SuperQueryBean<AssetTransaction> 
     @Override
     public void reset() {
         super.reset();
-        this.model.getFilterFields().put("assetItem.itemno", "-1");
+        this.model.getFilterFields().put("assetItem.id", -1);
         queryFormId = null;
         queryName = null;
         queryWarehouse = new Warehouse();

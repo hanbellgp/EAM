@@ -14,6 +14,8 @@ import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.FormSingleBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
+import com.lightshell.comm.BaseLib;
+import java.util.HashMap;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -166,6 +168,47 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();
+    }
+
+    public void print(String rptclazz, String rptdesign) throws Exception {
+        if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
+            HashMap<String, Object> reportParams = new HashMap<>();
+            reportParams.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
+            if (!this.model.getFilterFields().isEmpty()) {
+                reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));
+            } else {
+                reportParams.put("filterFields", "");
+            }
+            if (!this.model.getSortFields().isEmpty()) {
+                reportParams.put("sortFields", BaseLib.convertMapToString(this.model.getSortFields()));
+            } else {
+                reportParams.put("sortFields", "");
+            }
+            //设置报表名称
+            String reportFormat;
+            if (this.currentPrgGrant.getSysprg().getRptformat() != null) {
+                reportFormat = this.currentPrgGrant.getSysprg().getRptformat();
+            } else {
+                reportFormat = reportOutputFormat;
+            }
+            this.fileName = this.currentPrgGrant.getSysprg().getApi() + BaseLib.formatDate("yyyyMMddHHss", this.getDate()) + "." + reportFormat;
+            String reportName = reportPath + rptdesign;
+            String outputName = reportOutputPath + this.fileName;
+            this.reportViewPath = reportViewContext + this.fileName;
+            try {
+                if (this.currentPrgGrant != null && rptclazz != null) {
+                    reportClassLoader = Class.forName(rptclazz).getClassLoader();
+                }
+                //初始配置
+                this.reportInitAndConfig();
+                //生成报表
+                this.reportRunAndOutput(reportName, reportParams, outputName, reportFormat, null);
+                //预览报表
+                this.preview();
+            } catch (Exception ex) {
+                throw ex;
+            }
+        }
     }
 
     @Override
