@@ -14,6 +14,10 @@ import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.FormSingleBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
+import com.lightshell.comm.BaseLib;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -37,6 +41,8 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     private String queryUserno;
     private String queryUsername;
     private String queryWarehouseno;
+
+    private List<String> paramPosition = null;
 
     public AssetCardManagedBean() {
         super(AssetCard.class);
@@ -160,12 +166,118 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
 
     @Override
     public void init() {
+        openParams = new HashMap<>();
         superEJB = assetCardBean;
         model = new AssetCardModel(assetCardBean, userManagedBean);
         model.getFilterFields().put("qty <>", 0);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();
+    }
+
+    @Override
+    public void openDialog(String view) {
+        switch (view) {
+            case "assetposition1Select":
+                openParams.clear();
+                if (paramPosition == null) {
+                    paramPosition = new ArrayList<>();
+                } else {
+                    paramPosition.clear();
+                }
+                paramPosition.add("0");//最高阶
+                openParams.put("pid", paramPosition);
+                super.openDialog("assetpositionSelect", openParams);
+                break;
+            case "assetposition2Select":
+                if (currentEntity == null || currentEntity.getPosition1() == null) {
+                    showWarnMsg("Warn", "请先选择公司位置");
+                    return;
+                }
+                openParams.clear();
+                if (paramPosition == null) {
+                    paramPosition = new ArrayList<>();
+                } else {
+                    paramPosition.clear();
+                }
+                paramPosition.add(currentEntity.getPosition1().getId().toString());
+                openParams.put("pid", paramPosition);
+                super.openDialog("assetpositionSelect", openParams);
+                break;
+            case "assetposition3Select":
+                if (currentEntity == null || currentEntity.getPosition2() == null) {
+                    showWarnMsg("Warn", "请先选择厂区位置");
+                    return;
+                }
+                openParams.clear();
+                if (paramPosition == null) {
+                    paramPosition = new ArrayList<>();
+                } else {
+                    paramPosition.clear();
+                }
+                paramPosition.add(currentEntity.getPosition2().getId().toString());
+                openParams.put("pid", paramPosition);
+                super.openDialog("assetpositionSelect", openParams);
+                break;
+            case "assetposition4Select":
+                if (currentEntity == null || currentEntity.getPosition3() == null) {
+                    showWarnMsg("Warn", "请先选择厂房位置");
+                    return;
+                }
+                openParams.clear();
+                if (paramPosition == null) {
+                    paramPosition = new ArrayList<>();
+                } else {
+                    paramPosition.clear();
+                }
+                paramPosition.add(currentEntity.getPosition3().getId().toString());//最高阶
+                openParams.put("pid", paramPosition);
+                super.openDialog("assetpositionSelect", openParams);
+                break;
+            default:
+                super.openDialog(view);
+        }
+    }
+
+    public void print(String rptclazz, String rptdesign) throws Exception {
+        if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
+            HashMap<String, Object> reportParams = new HashMap<>();
+            reportParams.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
+            if (!this.model.getFilterFields().isEmpty()) {
+                reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));
+            } else {
+                reportParams.put("filterFields", "");
+            }
+            if (!this.model.getSortFields().isEmpty()) {
+                reportParams.put("sortFields", BaseLib.convertMapToString(this.model.getSortFields()));
+            } else {
+                reportParams.put("sortFields", "");
+            }
+            //设置报表名称
+            String reportFormat;
+            if (this.currentPrgGrant.getSysprg().getRptformat() != null) {
+                reportFormat = this.currentPrgGrant.getSysprg().getRptformat();
+            } else {
+                reportFormat = reportOutputFormat;
+            }
+            this.fileName = this.currentPrgGrant.getSysprg().getApi() + BaseLib.formatDate("yyyyMMddHHss", this.getDate()) + "." + reportFormat;
+            String reportName = reportPath + rptdesign;
+            String outputName = reportOutputPath + this.fileName;
+            this.reportViewPath = reportViewContext + this.fileName;
+            try {
+                if (this.currentPrgGrant != null && rptclazz != null) {
+                    reportClassLoader = Class.forName(rptclazz).getClassLoader();
+                }
+                //初始配置
+                this.reportInitAndConfig();
+                //生成报表
+                this.reportRunAndOutput(reportName, reportParams, outputName, reportFormat, null);
+                //预览报表
+                this.preview();
+            } catch (Exception ex) {
+                throw ex;
+            }
+        }
     }
 
     @Override

@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -244,6 +243,9 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
             currentDetail.setPosition12(e);
+            currentDetail.setPosition22(null);
+            currentDetail.setPosition32(null);
+            currentDetail.setPosition42(null);
         }
     }
 
@@ -251,6 +253,8 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
             currentDetail.setPosition22(e);
+            currentDetail.setPosition32(null);
+            currentDetail.setPosition42(null);
         }
     }
 
@@ -258,6 +262,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (event.getObject() != null && currentDetail != null) {
             AssetPosition e = (AssetPosition) event.getObject();
             currentDetail.setPosition32(e);
+            currentDetail.setPosition42(null);
         }
     }
 
@@ -344,7 +349,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 super.openDialog("assetpositionSelect", openParams);
                 break;
             case "assetposition2Select":
-                if (currentDetail == null || currentDetail.getPosition1() == null) {
+                if (currentDetail == null || currentDetail.getPosition12() == null) {
                     showWarnMsg("Warn", "请先选择公司位置");
                     return;
                 }
@@ -354,12 +359,12 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 } else {
                     paramPosition.clear();
                 }
-                paramPosition.add(currentDetail.getPosition1().getId().toString());
+                paramPosition.add(currentDetail.getPosition12().getId().toString());
                 openParams.put("pid", paramPosition);
                 super.openDialog("assetpositionSelect", openParams);
                 break;
             case "assetposition3Select":
-                if (currentDetail == null || currentDetail.getPosition2() == null) {
+                if (currentDetail == null || currentDetail.getPosition22() == null) {
                     showWarnMsg("Warn", "请先选择厂区位置");
                     return;
                 }
@@ -369,12 +374,12 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 } else {
                     paramPosition.clear();
                 }
-                paramPosition.add(currentDetail.getPosition2().getId().toString());
+                paramPosition.add(currentDetail.getPosition22().getId().toString());
                 openParams.put("pid", paramPosition);
                 super.openDialog("assetpositionSelect", openParams);
                 break;
             case "assetposition4Select":
-                if (currentDetail == null || currentDetail.getPosition3() == null) {
+                if (currentDetail == null || currentDetail.getPosition32() == null) {
                     showWarnMsg("Warn", "请先选择厂房位置");
                     return;
                 }
@@ -384,7 +389,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 } else {
                     paramPosition.clear();
                 }
-                paramPosition.add(currentDetail.getPosition3().getId().toString());//最高阶
+                paramPosition.add(currentDetail.getPosition32().getId().toString());
                 openParams.put("pid", paramPosition);
                 super.openDialog("assetpositionSelect", openParams);
                 break;

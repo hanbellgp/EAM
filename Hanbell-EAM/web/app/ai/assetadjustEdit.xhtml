@@ -166,6 +166,70 @@
                             </p:column>
                         </p:row>
                         <p:row>
+                            <p:column><p:outputLabel value="原公司" for="position1" /></p:column>
+                            <p:column>
+                                <h:outputText id="position1" value="#{assetAdjustManagedBean.currentDetail.position1.name}" title="position1" />
+                            </p:column>
+                            <p:column><p:outputLabel value="新公司" for="position12" /></p:column>
+                            <p:column>
+                                <p:inputText id="position12" value="#{assetAdjustManagedBean.currentDetail.position12.name}" title="position12" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition1Select" actionListener="#{assetAdjustManagedBean.openDialog('assetposition1Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnPosition1WhenDetailEdit}"
+                                            update="position12,position22,position32,position42" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="原厂区" for="position2" /></p:column>
+                            <p:column>
+                                <h:outputText id="position2" value="#{assetAdjustManagedBean.currentDetail.position2.name}" title="position2" />
+                            </p:column>
+                            <p:column><p:outputLabel value="新厂区" for="position22" /></p:column>
+                            <p:column>
+                                <p:inputText id="position22" value="#{assetAdjustManagedBean.currentDetail.position22.name}" title="position22" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition2Select" actionListener="#{assetAdjustManagedBean.openDialog('assetposition2Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnPosition2WhenDetailEdit}"
+                                            update="position22,position32,position42" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="原厂房" for="position3" /></p:column>
+                            <p:column>
+                                <h:outputText id="position3" value="#{assetAdjustManagedBean.currentDetail.position3.name}" title="position3" />
+                            </p:column>
+                            <p:column><p:outputLabel value="新厂房" for="position32" /></p:column>
+                            <p:column>
+                                <p:inputText id="position32" value="#{assetAdjustManagedBean.currentDetail.position32.name}" title="position32" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition3Select" actionListener="#{assetAdjustManagedBean.openDialog('assetposition3Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnPosition3WhenDetailEdit}"
+                                            update="position32,position42" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="原地点" for="position4" /></p:column>
+                            <p:column>
+                                <h:outputText id="position4" value="#{assetAdjustManagedBean.currentDetail.position4.name}" title="position4"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="新地点" for="position42" /></p:column>
+                            <p:column>
+                                <p:inputText id="position42" value="#{assetAdjustManagedBean.currentDetail.position42.name}" title="position4" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnPosition4Select" actionListener="#{assetAdjustManagedBean.openDialog('assetposition4Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnPosition4WhenDetailEdit}"
+                                            update="position42" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
                             <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
                             <p:column>
                                 <h:outputText id="warehouse" value="#{assetAdjustManagedBean.currentDetail.warehouse.name}" title="warehouse"/>
