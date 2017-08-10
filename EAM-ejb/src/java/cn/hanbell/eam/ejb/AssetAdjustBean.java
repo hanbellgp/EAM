@@ -54,10 +54,15 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
     }
 
     @Override
+    public void setDetail(Object value) {
+        detailList = assetAdjustDetailBean.findByPId(value);
+    }
+
+    @Override
     public AssetAdjust unverify(AssetAdjust entity) {
         try {
             AssetAdjust e = getEntityManager().merge(entity);
-            setDetailList(assetAdjustDetailBean.findByPId(e.getFormid()));
+            detailList = assetAdjustDetailBean.findByPId(e.getFormid());
             //删除库存交易
             List<AssetTransaction> transactionList = assetTransactionBean.findByFormid(e.getFormid());
             if (transactionList != null && !transactionList.isEmpty()) {
@@ -114,7 +119,7 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
     public AssetAdjust verify(AssetAdjust entity) {
         try {
             AssetAdjust e = getEntityManager().merge(entity);
-            setDetailList(assetAdjustDetailBean.findByPId(e.getFormid()));
+            detailList = assetAdjustDetailBean.findByPId(e.getFormid());
             for (AssetAdjustDetail d : detailList) {
                 //更新库存交易转出
                 AssetTransaction st = new AssetTransaction();
@@ -284,13 +289,6 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
      */
     public List<AssetAdjustDetail> getDetailList() {
         return detailList;
-    }
-
-    /**
-     * @param detailList the detailList to set
-     */
-    public void setDetailList(List<AssetAdjustDetail> detailList) {
-        this.detailList = detailList;
     }
 
 }

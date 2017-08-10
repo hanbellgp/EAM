@@ -42,7 +42,7 @@
                         <p:inputText id="pid" value="#{assetPositionManagedBean.currentEntity.parentPosition.name}" title="Pid" styleClass="inputWithButton" readonly="true" />
                         <p:commandButton id="btnPositionSelect" actionListener="#{assetPositionManagedBean.openDialog('assetpositionSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetPositionManagedBean.handleDialogReturnWhenNew}"
+                            <p:ajax event="dialogReturn" listener="#{assetPositionManagedBean.handleDialogReturnWhenEdit}"
                                     update="pid" />
                         </p:commandButton>
                     </p:column>
