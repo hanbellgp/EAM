@@ -57,13 +57,14 @@ public abstract class SuperQueryBean<T extends BaseEntity> extends SuperSingleMa
     @Override
     public void construct() {
         //不需要进行操作权限设置
-        FacesContext fc = FacesContext.getCurrentInstance();
-        appDataPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.appdatapath");
-        appResPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.apprespath");
-        reportPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.reportpath");
-        reportOutputFormat = fc.getExternalContext().getInitParameter("cn.hanbell.web.reportoutputformat");
-        reportOutputPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.reportoutputpath");
-        reportViewContext = fc.getExternalContext().getInitParameter("cn.hanbell.web.reportviewcontext");
+        fc = FacesContext.getCurrentInstance();
+        ec = fc.getExternalContext();
+        appDataPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.appdatapath");
+        appResPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.apprespath");
+        reportPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.reportpath");
+        reportOutputFormat = ec.getInitParameter("cn.hanbell.web.reportoutputformat");
+        reportOutputPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.reportoutputpath");
+        reportViewContext = ec.getInitParameter("cn.hanbell.web.reportviewcontext");
         int beginIndex = fc.getViewRoot().getViewId().lastIndexOf("/") + 1;
         int endIndex = fc.getViewRoot().getViewId().lastIndexOf(".");
         if (userManagedBean.getSystemGrantPrgList() != null && !userManagedBean.getSystemGrantPrgList().isEmpty()) {
@@ -112,6 +113,8 @@ public abstract class SuperQueryBean<T extends BaseEntity> extends SuperSingleMa
     public void print() throws Exception {
         if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
             HashMap<String, Object> reportParams = new HashMap<>();
+            reportParams.put("company", userManagedBean.getCurrentCompany().getName());
+            reportParams.put("companyFullName", userManagedBean.getCurrentCompany().getFullname());
             reportParams.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
             if (!this.model.getFilterFields().isEmpty()) {
                 reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));

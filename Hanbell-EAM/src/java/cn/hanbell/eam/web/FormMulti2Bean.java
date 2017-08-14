@@ -65,13 +65,14 @@ public abstract class FormMulti2Bean<T extends FormEntity, D1 extends FormDetail
 
     @Override
     public void construct() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        appDataPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.appdatapath");
-        appResPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.apprespath");
-        reportPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.reportpath");
-        reportOutputFormat = fc.getExternalContext().getInitParameter("cn.hanbell.web.reportoutputformat");
-        reportOutputPath = fc.getExternalContext().getRealPath("/") + fc.getExternalContext().getInitParameter("cn.hanbell.web.reportoutputpath");
-        reportViewContext = fc.getExternalContext().getInitParameter("cn.hanbell.web.reportviewcontext");
+        fc = FacesContext.getCurrentInstance();
+        ec = fc.getExternalContext();
+        appDataPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.appdatapath");
+        appResPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.apprespath");
+        reportPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.reportpath");
+        reportOutputFormat = ec.getInitParameter("cn.hanbell.web.reportoutputformat");
+        reportOutputPath = ec.getRealPath("/") + ec.getInitParameter("cn.hanbell.web.reportoutputpath");
+        reportViewContext = ec.getInitParameter("cn.hanbell.web.reportviewcontext");
         int beginIndex = fc.getViewRoot().getViewId().lastIndexOf("/") + 1;
         int endIndex = fc.getViewRoot().getViewId().lastIndexOf(".");
         if (userManagedBean.getSystemGrantPrgList() != null && !userManagedBean.getSystemGrantPrgList().isEmpty()) {
@@ -157,10 +158,12 @@ public abstract class FormMulti2Bean<T extends FormEntity, D1 extends FormDetail
             return;
         }
         //设置报表参数
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("id", currentEntity.getId());
-        params.put("formid", currentEntity.getFormid());
-        params.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
+        HashMap<String, Object> reportParams = new HashMap<>();
+        reportParams.put("company", userManagedBean.getCurrentCompany().getName());
+        reportParams.put("companyFullName", userManagedBean.getCurrentCompany().getFullname());
+        reportParams.put("id", currentEntity.getId());
+        reportParams.put("formid", currentEntity.getFormid());
+        reportParams.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
         //设置报表名称
         String reportFormat;
         if (this.currentPrgGrant.getSysprg().getRptformat() != null) {
@@ -178,7 +181,7 @@ public abstract class FormMulti2Bean<T extends FormEntity, D1 extends FormDetail
             //初始配置
             this.reportInitAndConfig();
             //生成报表
-            this.reportRunAndOutput(reportName, params, outputName, reportFormat, null);
+            this.reportRunAndOutput(reportName, reportParams, outputName, reportFormat, null);
             //预览报表
             this.preview();
         } catch (Exception ex) {
