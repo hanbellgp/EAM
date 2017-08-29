@@ -41,6 +41,10 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     private String queryUserno;
     private String queryUsername;
     private String queryWarehouseno;
+    private String queryPosition1;
+    private String queryPosition2;
+    private String queryPosition3;
+    private String queryPosition4;
 
     private List<String> paramPosition = null;
 
@@ -317,6 +321,18 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
                 this.model.getFilterFields().put("used", true);
                 this.model.getFilterFields().put("qty <>", 0);
             }
+            if (this.queryPosition1 != null && !"".equals(this.queryPosition1)) {
+                this.model.getFilterFields().put("position1.position", this.queryPosition1);
+            }
+            if (this.queryPosition2 != null && !"".equals(this.queryPosition2)) {
+                this.model.getFilterFields().put("position2.position", this.queryPosition2);
+            }
+            if (this.queryPosition3 != null && !"".equals(this.queryPosition3)) {
+                this.model.getFilterFields().put("position3.position", this.queryPosition3);
+            }
+            if (this.queryPosition4 != null && !"".equals(this.queryPosition4)) {
+                this.model.getFilterFields().put("position4.position", this.queryPosition4);
+            }
         }
     }
 
@@ -422,6 +438,62 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
      */
     public void setQueryItemdesc(String queryItemdesc) {
         this.queryItemdesc = queryItemdesc;
+    }
+
+    /**
+     * @return the queryPosition1
+     */
+    public String getQueryPosition1() {
+        return queryPosition1;
+    }
+
+    /**
+     * @param queryPosition1 the queryPosition1 to set
+     */
+    public void setQueryPosition1(String queryPosition1) {
+        this.queryPosition1 = queryPosition1;
+    }
+
+    /**
+     * @return the queryPosition2
+     */
+    public String getQueryPosition2() {
+        return queryPosition2;
+    }
+
+    /**
+     * @param queryPosition2 the queryPosition2 to set
+     */
+    public void setQueryPosition2(String queryPosition2) {
+        this.queryPosition2 = queryPosition2;
+    }
+
+    /**
+     * @return the queryPosition3
+     */
+    public String getQueryPosition3() {
+        return queryPosition3;
+    }
+
+    /**
+     * @param queryPosition3 the queryPosition3 to set
+     */
+    public void setQueryPosition3(String queryPosition3) {
+        this.queryPosition3 = queryPosition3;
+    }
+
+    /**
+     * @return the queryPosition4
+     */
+    public String getQueryPosition4() {
+        return queryPosition4;
+    }
+
+    /**
+     * @param queryPosition4 the queryPosition4 to set
+     */
+    public void setQueryPosition4(String queryPosition4) {
+        this.queryPosition4 = queryPosition4;
     }
 
 }

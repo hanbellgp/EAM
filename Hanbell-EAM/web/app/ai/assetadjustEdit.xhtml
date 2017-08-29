@@ -232,11 +232,23 @@
                         <p:row>
                             <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
                             <p:column>
-                                <h:outputText id="warehouse" value="#{assetAdjustManagedBean.currentDetail.warehouse.name}" title="warehouse"/>
+                                <p:inputText id="warehouse" value="#{assetAdjustManagedBean.currentDetail.warehouse.name}" title="warehouse" styleClass="inputWithButton"
+                                             required="true"  readonly="true"/>
+                                <p:commandButton id="btnWarehouseSelect" actionListener="#{assetAdjustManagedBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnWarehouseWhenDetailEdit}"
+                                            update="warehouse" />
+                                </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="目的仓库" for="warehouse2" /></p:column>
                             <p:column>
-                                <h:outputText id="warehouse2" value="#{assetAdjustManagedBean.currentDetail.warehouse2.name}" title="warehouse2"/>
+                                <p:inputText id="warehouse2" value="#{assetAdjustManagedBean.currentDetail.warehouse2.name}" title="warehouse2" styleClass="inputWithButton"
+                                             required="true"  readonly="true"/>
+                                <p:commandButton id="btnWarehouse2Select" actionListener="#{assetAdjustManagedBean.openDialog('warehouse2Select')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnWarehouse2WhenDetailEdit}"
+                                            update="warehouse2" />
+                                </p:commandButton>
                             </p:column>
                         </p:row>
                     </p:panelGrid>
