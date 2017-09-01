@@ -139,15 +139,13 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     protected boolean doBeforeVerify() throws Exception {
         if (super.doBeforeVerify()) {
+            int i;
+            boolean flag;
             String wareh;
             AssetInventory ai;
             AssetCard ac;
+            List<AssetDistributeDetail> details = new ArrayList<>();
             for (AssetDistributeDetail add : detailList) {
-                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
-                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
-                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
-                    return false;
-                }
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要指定资产编号");
                     return false;
@@ -159,6 +157,24 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                         return false;
                     }
                 }//刀工量仪在领用时才产生卡片信息，此处不用判断是否存在卡片
+                //数量累加后再判断库存可利用量
+                flag = true;
+                for (AssetDistributeDetail d : details) {
+                    if (d.getAssetItem().getItemno().equals(add.getAssetItem().getItemno())) {
+                        d.setQty(d.getQty().add(add.getQty()));
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    details.add(add);
+                }
+            }
+            for (AssetDistributeDetail add : details) {
+                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
+                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
+                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
+                    return false;
+                }
                 //检查ERP库存
                 wareh = warehouseBean.findERPWarehouse(currentEntity.getCompany(), add.getWarehouse().getId());
                 if (!assetInventoryBean.isLessThenInvbal(currentEntity.getCompany(), "1", add.getAssetItem().getItemno(), wareh, add.getQty())) {
@@ -168,6 +184,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
             }
             return true;
         }
+
         return false;
     }
 

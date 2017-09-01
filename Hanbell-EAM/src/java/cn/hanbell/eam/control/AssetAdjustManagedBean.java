@@ -16,6 +16,7 @@ import cn.hanbell.eam.entity.AssetAdjustDetail;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.entity.TransactionType;
+import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetAdjustModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
@@ -278,6 +279,20 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             SystemUser u = (SystemUser) event.getObject();
             currentDetail.setUserno2(u.getUserid());
             currentDetail.setUsername2(u.getUsername());
+        }
+    }
+
+    public void handleDialogReturnWarehouseWhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            currentDetail.setWarehouse(e);
+        }
+    }
+
+    public void handleDialogReturnWarehouse2WhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            Warehouse e = (Warehouse) event.getObject();
+            currentDetail.setWarehouse2(e);
         }
     }
 

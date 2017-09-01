@@ -363,6 +363,9 @@ public class AssetDistributeDetail extends FormDetailEntity {
         if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
+        if (this.pid != null && other.pid != null) {
+            return (this.pid.equals(other.pid) && (this.seq == other.seq));
+        }
         return this.seq == other.seq;
     }
 

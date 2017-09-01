@@ -9,10 +9,12 @@ import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetAdjust;
 import cn.hanbell.eam.entity.AssetAdjustDetail;
+import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetTransaction;
 import cn.hanbell.eap.ejb.SystemProgramBean;
 import cn.hanbell.eap.entity.SystemProgram;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -34,12 +36,17 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
     private AssetAdjustDetailBean assetAdjustDetailBean;
 
     @EJB
+    private AssetInventoryBean assetInventoryBean;
+
+    @EJB
     private AssetTransactionBean assetTransactionBean;
 
     @EJB
     private AssetCardBean assetCardBean;
 
     private List<AssetAdjustDetail> detailList;
+
+    private List<AssetInventory> inventoryList;
 
     public AssetAdjustBean() {
         super(AssetAdjust.class);
@@ -60,6 +67,11 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
 
     @Override
     public AssetAdjust unverify(AssetAdjust entity) {
+        if (inventoryList == null) {
+            inventoryList = new ArrayList<>();
+        } else {
+            inventoryList.clear();
+        }
         try {
             AssetAdjust e = getEntityManager().merge(entity);
             detailList = assetAdjustDetailBean.findByPId(e.getFormid());
@@ -69,6 +81,30 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                 assetTransactionBean.delete(transactionList);
             }
             for (AssetAdjustDetail d : detailList) {
+                //更新库存转出数量
+                AssetInventory si = new AssetInventory();
+                si.setCompany(e.getCompany());
+                si.setAssetItem(d.getAssetItem());
+                si.setBrand(d.getBrand());
+                si.setBatch(d.getBatch());
+                si.setSn(d.getSn());
+                si.setWarehouse(d.getWarehouse());
+                si.setPreqty(BigDecimal.ZERO);
+                si.setQty(d.getQty().multiply(BigDecimal.valueOf(-1)));//出库就 x(-1)
+                si.setStatusToNew();
+                inventoryList.add(si);
+                //更新库存转入数量
+                AssetInventory ti = new AssetInventory();
+                ti.setCompany(e.getCompany());
+                ti.setAssetItem(d.getAssetItem());
+                ti.setBrand(d.getBrand());
+                ti.setBatch(d.getBatch());
+                ti.setSn(d.getSn());
+                ti.setWarehouse(d.getWarehouse2());
+                ti.setPreqty(BigDecimal.ZERO);
+                ti.setQty(d.getQty());//出库就 x(-1)
+                ti.setStatusToNew();
+                inventoryList.add(ti);
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
                     if (d.getAssetItem().getCategory().getNoauto()) {
@@ -109,6 +145,7 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                     }
                 }
             }
+            assetInventoryBean.subtract(inventoryList);
             return e;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -117,6 +154,11 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
 
     @Override
     public AssetAdjust verify(AssetAdjust entity) {
+        if (inventoryList == null) {
+            inventoryList = new ArrayList<>();
+        } else {
+            inventoryList.clear();
+        }
         try {
             AssetAdjust e = getEntityManager().merge(entity);
             detailList = assetAdjustDetailBean.findByPId(e.getFormid());
@@ -146,7 +188,7 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                     st.setPrice(BigDecimal.ZERO);
                 }
                 st.setWarehouse(d.getWarehouse());
-                st.setIocode(d.getTrtype().getIocode());
+                st.setIocode(-1);
                 st.setSrcapi(d.getSrcapi());
                 st.setSrcformid(d.getSrcformid());
                 st.setSrcseq(d.getSrcseq());
@@ -181,7 +223,7 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                     tt.setPrice(BigDecimal.ZERO);
                 }
                 tt.setWarehouse(d.getWarehouse2());
-                tt.setIocode(d.getTrtype().getIocode());
+                tt.setIocode(1);
                 tt.setSrcapi(d.getSrcapi());
                 tt.setSrcformid(d.getSrcformid());
                 tt.setSrcseq(d.getSrcseq());
@@ -191,6 +233,32 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                 assetTransactionBean.setDefaultValue(tt);
                 assetTransactionBean.persist(tt);
 
+                //更新库存转出数量
+                AssetInventory si = new AssetInventory();
+                si.setCompany(e.getCompany());
+                si.setAssetItem(d.getAssetItem());
+                si.setBrand(d.getBrand());
+                si.setBatch(d.getBatch());
+                si.setSn(d.getSn());
+                si.setWarehouse(d.getWarehouse());
+                si.setPreqty(BigDecimal.ZERO);
+                si.setQty(d.getQty().multiply(BigDecimal.valueOf(-1)));//出库就 x(-1)
+                si.setStatusToNew();
+                inventoryList.add(si);
+
+                //更新库存转入数量
+                AssetInventory ti = new AssetInventory();
+                ti.setCompany(e.getCompany());
+                ti.setAssetItem(d.getAssetItem());
+                ti.setBrand(d.getBrand());
+                ti.setBatch(d.getBatch());
+                ti.setSn(d.getSn());
+                ti.setWarehouse(d.getWarehouse2());
+                ti.setPreqty(BigDecimal.ZERO);
+                ti.setQty(d.getQty());//出库就 x(-1)
+                ti.setStatusToNew();
+                inventoryList.add(ti);
+
                 //有卡片的更新卡片信息，没卡片的生成卡片信息
                 if (d.getAssetCard() != null) {
                     AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
@@ -198,6 +266,7 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                         throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
                     }
                     if (d.getAssetItem().getCategory().getNoauto()) {
+                        //更新卡片信息
                         ac.setDeptno(d.getDeptno2());
                         ac.setDeptname(d.getDeptname2());
                         ac.setUserno(d.getUserno2());
@@ -246,17 +315,23 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                         nc.setDeptname(d.getDeptname2());
                         nc.setUserno(d.getUserno2());
                         nc.setUsername(d.getUsername2());
-                        if (d.getPosition1() != null) {
-                            nc.setPosition1(d.getPosition1());
+                        if (d.getPosition12() != null) {
+                            nc.setPosition1(d.getPosition12());
                         }
-                        if (d.getPosition2() != null) {
-                            nc.setPosition2(d.getPosition2());
+                        if (d.getPosition22() != null) {
+                            nc.setPosition2(d.getPosition22());
                         }
-                        if (d.getPosition3() != null) {
-                            nc.setPosition3(d.getPosition3());
+                        if (d.getPosition32() != null) {
+                            nc.setPosition3(d.getPosition32());
                         }
-                        if (d.getPosition4() != null) {
-                            nc.setPosition4(d.getPosition4());
+                        if (d.getPosition42() != null) {
+                            nc.setPosition4(d.getPosition42());
+                        }
+                        if (d.getPosition52() != null) {
+                            ac.setPosition5(d.getPosition52());
+                        }
+                        if (d.getPosition62() != null) {
+                            ac.setPosition6(d.getPosition62());
                         }
                         nc.setWarehouse(d.getWarehouse2());
                         nc.setQty(d.getQty());
@@ -278,6 +353,8 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                     }
                 }
             }
+            //更新库存
+            assetInventoryBean.add(inventoryList);
             return e;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
