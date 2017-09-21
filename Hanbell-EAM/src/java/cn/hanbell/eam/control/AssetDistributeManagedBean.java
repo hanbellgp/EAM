@@ -50,6 +50,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @EJB
     private WarehouseBean warehouseBean;
 
+    private List<String> paramItemno = null;
     private List<String> paramPosition = null;
     private List<String> paramUsed = null;
     private List<String> paramHascost = null;
@@ -329,6 +330,13 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         switch (view) {
             case "assetcardSelect":
                 openParams.clear();
+                if (paramItemno == null) {
+                    paramItemno = new ArrayList<>();
+                } else {
+                    paramItemno.clear();
+                }
+                paramItemno.add(currentDetail.getAssetItem().getItemno());
+                openParams.put("itemno", paramItemno);
                 if (paramUsed == null) {
                     paramUsed = new ArrayList<>();
                 } else {
@@ -472,6 +480,53 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
             this.doDel = false;
             this.doCfm = false;
             this.doUnCfm = false;
+        }
+    }
+
+    public void splitDetail() {
+        if (currentDetail != null && currentDetail.getId() != null) {
+            int n = detailList.indexOf(currentDetail);
+            if (n < 0) {
+                return;
+            }
+            AssetDistributeDetail add = detailList.get(n);
+            if (add.getAssetItem().getCategory().getNoauto() && add.getQty().compareTo(BigDecimal.ONE) == 1) {
+                int j = currentDetail.getQty().intValue();
+                for (int i = 1; i < j; i++) {
+                    this.createDetail();
+                    newDetail.setPid(add.getPid());
+                    newDetail.setAssetCard(add.getAssetCard());
+                    newDetail.setAssetno(add.getAssetno());
+                    newDetail.setAssetItem(add.getAssetItem());
+                    newDetail.setBrand(add.getBrand());
+                    newDetail.setBatch(add.getBatch());
+                    newDetail.setSn(add.getSn());
+                    newDetail.setQty(BigDecimal.ONE);
+                    newDetail.setUnit(add.getUnit());
+                    newDetail.setPosition1(add.getPosition1());
+                    newDetail.setPosition2(add.getPosition2());
+                    newDetail.setPosition3(add.getPosition3());
+                    newDetail.setPosition4(add.getPosition4());
+                    newDetail.setPosition5(add.getPosition5());
+                    newDetail.setPosition6(add.getPosition6());
+                    newDetail.setDeptno(add.getDeptno());
+                    newDetail.setDeptname(add.getDeptname());
+                    newDetail.setUserno(add.getUserno());
+                    newDetail.setUsername(add.getUsername());
+                    newDetail.setWarehouse(add.getWarehouse());
+                    newDetail.setWarehouse2(add.getWarehouse2());
+                    newDetail.setSrcapi(add.getSrcapi());
+                    newDetail.setSrcformid(add.getSrcformid());
+                    newDetail.setSrcseq(add.getSrcseq());
+                    newDetail.setRelapi(add.getRelapi());
+                    newDetail.setRelformid(add.getRelformid());
+                    newDetail.setRelseq(add.getRelseq());
+                    newDetail.setRemark(add.getRemark());
+                    this.doConfirmDetail();
+                }
+            }
+        } else {
+            showErrorMsg("Error", "没有可拆分明细资料");
         }
     }
 

@@ -54,8 +54,12 @@
                     <p:commandButton id="btnView" value="查看" action="#{assetCardManagedBean.view('assetcardView')}" icon="ui-icon-document"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCardManagedBean.print('cn.hanbell.eam.rpt.AssetCodeReport','assetcode.rptdesign')}" icon="ui-icon-print"
-                                     process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
+                    <p:splitButton id="btnPrintOperate" value="打印" icon="ui-icon-menu">
+                        <p:menuitem id="btnPrint" value="标签" actionListener="#{assetCardManagedBean.print('cn.hanbell.eam.rpt.AssetCardReport','assetcode.rptdesign','pdf')}" icon="ui-icon-print"
+                                    process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
+                        <p:menuitem id="btnPrint2" value="清单" actionListener="#{assetCardManagedBean.print('cn.hanbell.eam.rpt.AssetCardReport','assetlist.rptdesign','xls')}" icon="ui-icon-print"
+                                    process="@this" rendered="#{assetCardManagedBean.doPrt}"/>
+                    </p:splitButton>
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnEdit" value="编辑"  action="#{assetCardManagedBean.edit('assetcardEdit')}" icon="ui-icon-pencil"
                                     rendered="#{assetCardManagedBean.doEdit}" />

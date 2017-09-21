@@ -61,7 +61,7 @@
             <method name="open"><![CDATA[
 importPackage(Packages.cn.hanbell.eam.rpt);
 
-ejbClient = new AssetCodeReport();
+ejbClient = new AssetCardReport();
 ejbClient.setEJB(params["JNDIName"]);
 
 detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],true);
