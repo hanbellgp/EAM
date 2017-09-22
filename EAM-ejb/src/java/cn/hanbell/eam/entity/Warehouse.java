@@ -46,6 +46,14 @@ public class Warehouse extends SuperEntity {
     @NotNull
     @Column(name = "hascost")
     private boolean hascost;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idle")
+    private boolean idle;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "scrap")
+    private boolean scrap;
     @Column(name = "systemid")
     private Integer systemid;
     @Column(name = "moduleid")
@@ -60,14 +68,9 @@ public class Warehouse extends SuperEntity {
     private String remark;
 
     public Warehouse() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        this.hascost = false;
+        this.idle = false;
+        this.scrap = false;
     }
 
     public String getWarehouseno() {
@@ -92,6 +95,34 @@ public class Warehouse extends SuperEntity {
 
     public void setHascost(boolean hascost) {
         this.hascost = hascost;
+    }
+
+    /**
+     * @return the idle
+     */
+    public boolean isIdle() {
+        return idle;
+    }
+
+    /**
+     * @param idle the idle to set
+     */
+    public void setIdle(boolean idle) {
+        this.idle = idle;
+    }
+
+    /**
+     * @return the scrap
+     */
+    public boolean isScrap() {
+        return scrap;
+    }
+
+    /**
+     * @param scrap the scrap to set
+     */
+    public void setScrap(boolean scrap) {
+        this.scrap = scrap;
     }
 
     public Integer getSystemid() {

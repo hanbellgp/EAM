@@ -46,7 +46,7 @@
                     </f:facet>
                     <p:ajax event="rowSelect"  update=":formList:toolbar" />
                     <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                    <p:column styleClass="Wid20">
+                    <p:column styleClass="Wid10">
                         <f:facet name="header">
                             <h:outputText value="仓库编号"/>
                         </f:facet>
@@ -60,9 +60,21 @@
                     </p:column>
                     <p:column  styleClass="Wid10">
                         <f:facet name="header">
-                            <h:outputText value="是否有成本"/>
+                            <h:outputText value="有成本"/>
                         </f:facet>
                         <h:outputText value="#{item.hascost}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="闲置仓"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idle}"/>
+                    </p:column>
+                    <p:column  styleClass="Wid10">
+                        <f:facet name="header">
+                            <h:outputText value="报废仓"/>
+                        </f:facet>
+                        <h:outputText value="#{item.scrap}"/>
                     </p:column>
                     <p:column styleClass="Wid20">
                         <f:facet name="header">
@@ -70,7 +82,7 @@
                         </f:facet>
                         <h:outputText value="#{item.remark}"/>
                     </p:column>
-                    <p:column  styleClass="Wid20">
+                    <p:column  styleClass="Wid10">
                         <f:facet name="header">
                             <h:outputText value="状态"/>
                         </f:facet>

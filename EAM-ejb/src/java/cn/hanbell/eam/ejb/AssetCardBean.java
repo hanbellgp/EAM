@@ -9,6 +9,7 @@ import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetItem;
 import com.lightshell.comm.BaseLib;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -140,4 +141,20 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         }
     }
 
+    public BigDecimal getQtyByCategory(String company, String category, int hascost, int idle, int scrap) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select assetcategory.name,assetinventory.warehouseno,sum(assetinventory.qty) from assetinventory,assetitem,assetcategory,warehouse ");
+        sb.append(" where assetinventory.itemno = assetitem.itemno and assetitem.categoryid = assetcategory.id and assetinventory.warehouseno = warehouse.warehouseno ");
+        sb.append(" and assetinventory.company='").append(company).append("' and assetcategory.category='").append(category).append("' ");
+        sb.append(" and warehouse.hascost = ").append(hascost).append(" and warehouse.idle = ").append(idle).append(" and warehouse.scrap = ").append(scrap);
+        sb.append(" group by assetcategory.category,assetinventory.warehouseno");
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+        List result = query.getResultList();
+        if (result != null && !result.isEmpty()) {
+            Object[] row = (Object[]) result.get(0);
+            return BigDecimal.valueOf(Double.valueOf(row[2].toString()));
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
 }

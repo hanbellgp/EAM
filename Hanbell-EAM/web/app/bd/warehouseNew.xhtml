@@ -37,14 +37,26 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="ERP库号" for="remark" /></p:column>
-                    <p:column styleClass="Wid30">
+                    <p:column><p:outputLabel value="ERP库号" for="remark" /></p:column>
+                    <p:column>
                         <p:inputText id="remark" value="#{warehouseManagedBean.newEntity.remark}" title="remark"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="是否有成本" for="hascost" /></p:column>
-                    <p:column styleClass="Wid30">
+                    <p:column><p:outputLabel value="是否有成本" for="hascost" /></p:column>
+                    <p:column>
                         <p:selectBooleanCheckbox id="hascost" value="#{warehouseManagedBean.newEntity.hascost}" title="hascost"
                                                  required="true" requiredMessage="请输入是否有成本"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="闲置仓" for="idle" /></p:column>
+                    <p:column>
+                        <p:selectBooleanCheckbox id="idle" value="#{warehouseManagedBean.newEntity.idle}"
+                                                 required="true" requiredMessage="请输入是否闲置仓"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="报废仓" for="scrap" /></p:column>
+                    <p:column>
+                        <p:selectBooleanCheckbox id="scrap" value="#{warehouseManagedBean.newEntity.scrap}"
+                                                 required="true" requiredMessage="请输入是否报废仓"/>
                     </p:column>
                 </p:row>
             </p:panelGrid>

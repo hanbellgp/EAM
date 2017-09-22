@@ -11,9 +11,9 @@
     </ui:define>
 
     <ui:define name="content">
-        <div style="margin: auto;min-height: 768px;display: block;text-align: center">
-            <h1>首页待更新</h1>
-        </div>       
+        <h:form id="formOne">
+            <p:chart type="bar" model="#{homePageManagedBean.chartModel}" style="height:400px"/>
+        </h:form>
     </ui:define>
 
 </ui:composition>
