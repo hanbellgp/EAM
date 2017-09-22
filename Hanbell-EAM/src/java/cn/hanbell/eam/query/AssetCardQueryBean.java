@@ -40,9 +40,15 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
         model = new AssetCardModel(assetCardBean, userManagedBean);
         params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
         if (params != null) {
+            if (params.containsKey("itemno")) {
+                queryItemno = params.get("itemno")[0];
+            }
             if (params.containsKey("used")) {
                 queryUsed = Integer.valueOf(params.get("used")[0]);
             }
+        }
+        if (queryItemno != null && !"".equals(queryItemno)) {
+            model.getFilterFields().put("assetItem.itemno", queryItemno);
         }
         if (queryUsed == 0) {
             model.getFilterFields().put("used", false);

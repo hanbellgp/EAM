@@ -130,7 +130,8 @@ public class AssetItem extends SuperEntity {
     private String remark;
 
     public AssetItem() {
-
+        this.invtype = true;
+        this.bbstype = "000";
     }
 
     public AssetCategory getCategory() {

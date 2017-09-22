@@ -29,4 +29,9 @@ public class AssetCategoryBean extends SuperEJBForEAM<AssetCategory> {
         return query.getResultList();
     }
 
+    public List<AssetCategory> findAsset() {
+        Query query = getEntityManager().createNamedQuery("AssetCategory.findAsset");
+        return query.getResultList();
+    }
+
 }

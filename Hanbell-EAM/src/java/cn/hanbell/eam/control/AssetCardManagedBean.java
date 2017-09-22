@@ -243,9 +243,11 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
         }
     }
 
-    public void print(String rptclazz, String rptdesign) throws Exception {
+    public void print(String rptclazz, String rptdesign,String reportFormat) throws Exception {
         if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
             HashMap<String, Object> reportParams = new HashMap<>();
+            reportParams.put("company", userManagedBean.getCurrentCompany().getName());
+            reportParams.put("companyFullName", userManagedBean.getCurrentCompany().getFullname());
             reportParams.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
             if (!this.model.getFilterFields().isEmpty()) {
                 reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));
@@ -256,13 +258,6 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
                 reportParams.put("sortFields", BaseLib.convertMapToString(this.model.getSortFields()));
             } else {
                 reportParams.put("sortFields", "");
-            }
-            //设置报表名称
-            String reportFormat;
-            if (this.currentPrgGrant.getSysprg().getRptformat() != null) {
-                reportFormat = this.currentPrgGrant.getSysprg().getRptformat();
-            } else {
-                reportFormat = reportOutputFormat;
             }
             this.fileName = this.currentPrgGrant.getSysprg().getApi() + BaseLib.formatDate("yyyyMMddHHss", this.getDate()) + "." + reportFormat;
             String reportName = reportPath + rptdesign;

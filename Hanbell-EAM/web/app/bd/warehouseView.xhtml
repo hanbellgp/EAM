@@ -49,13 +49,23 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="ERP库号" for="remark" /></p:column>
-                    <p:column styleClass="Wid30">
+                    <p:column><h:outputText value="ERP库号" /></p:column>
+                    <p:column>
                         <h:outputText id="remark" value="#{warehouseManagedBean.currentEntity.remark}" title="remark"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="是否有成本" for="hascost" /></p:column>
-                    <p:column styleClass="Wid30">
+                    <p:column><h:outputText value="是否有成本"/></p:column>
+                    <p:column>
                         <h:outputText id="hascost" value="#{warehouseManagedBean.currentEntity.hascost}" title="hascost"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="闲置仓" /></p:column>
+                    <p:column>
+                        <h:outputText id="idle" value="#{warehouseManagedBean.currentEntity.idle}"/>
+                    </p:column>
+                    <p:column><h:outputText value="报废仓"/></p:column>
+                    <p:column>
+                        <h:outputText id="scrap" value="#{warehouseManagedBean.currentEntity.scrap}"/>
                     </p:column>
                 </p:row>
             </p:panelGrid>

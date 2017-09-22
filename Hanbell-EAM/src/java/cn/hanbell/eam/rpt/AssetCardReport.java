@@ -13,9 +13,9 @@ import com.lightshell.comm.SuperSingleReportBean;
  *
  * @author C0160
  */
-public class AssetCodeReport extends SuperSingleReportBean<AssetCardBean, AssetCard> {
+public class AssetCardReport extends SuperSingleReportBean<AssetCardBean, AssetCard> {
 
-    public AssetCodeReport() {
+    public AssetCardReport() {
 
     }
 
