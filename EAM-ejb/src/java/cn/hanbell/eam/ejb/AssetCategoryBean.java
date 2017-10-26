@@ -24,13 +24,24 @@ public class AssetCategoryBean extends SuperEJBForEAM<AssetCategory> {
         super(AssetCategory.class);
     }
 
-    public List<AssetCategory> findRoot() {
-        Query query = getEntityManager().createNamedQuery("AssetCategory.findRoot");
+    public List<AssetCategory> findAsset() {
+        Query query = getEntityManager().createNamedQuery("AssetCategory.findAsset");
         return query.getResultList();
     }
 
-    public List<AssetCategory> findAsset() {
-        Query query = getEntityManager().createNamedQuery("AssetCategory.findAsset");
+    public AssetCategory findByCategory(String value) {
+        Query query = getEntityManager().createNamedQuery("AssetCategory.findByCategory");
+        query.setParameter("category", value);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetCategory) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public List<AssetCategory> findRoot() {
+        Query query = getEntityManager().createNamedQuery("AssetCategory.findRoot");
         return query.getResultList();
     }
 
