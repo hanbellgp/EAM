@@ -14,10 +14,14 @@ import cn.hanbell.eam.entity.AssetTransaction;
 import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eap.ejb.SystemProgramBean;
 import cn.hanbell.eap.entity.SystemProgram;
+import com.lightshell.comm.SuperEJB;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -61,6 +65,26 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
             return "";
         }
         return super.getFormId(day, sp.getNolead(), sp.getNoformat(), sp.getNoseqlen());
+    }
+
+    public String initAssetScrap(AssetScrap e, List<AssetScrapDetail> detailList) {
+        if (e == null || detailList == null) {
+            return null;
+        }
+        LinkedHashMap<SuperEJB, List<?>> detailAdded = new LinkedHashMap<>();
+        detailAdded.put(assetScrapDetailBean, detailList);
+        try {
+            String formid = getFormId(e.getFormdate());
+            e.setFormid(formid);
+            for (AssetScrapDetail d : detailList) {
+                d.setPid(formid);
+            }
+            persist(e, detailAdded, null, null);
+            return formid;
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @Override

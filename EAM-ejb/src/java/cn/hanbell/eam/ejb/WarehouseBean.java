@@ -58,7 +58,7 @@ public class WarehouseBean extends SuperEJBForEAM<Warehouse> {
 
     public Warehouse findByWarehouseno(String value) {
         Query query = getEntityManager().createNamedQuery("Warehouse.findByWarehouseno");
-        query.setParameter("warehosueno", value);
+        query.setParameter("warehouseno", value);
         try {
             Object o = query.getSingleResult();
             return (Warehouse) o;
