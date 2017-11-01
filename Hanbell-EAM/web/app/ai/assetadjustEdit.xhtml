@@ -262,7 +262,7 @@
                             </f:facet>
                             <h:outputText value="#{item.assetItem.itemno}"/>
                         </p:column>
-                        <p:column styleClass="Wid30">
+                        <p:column styleClass="Wid20">
                             <f:facet name="header">
                                 <h:outputText value="名称"/>
                             </f:facet>
@@ -280,17 +280,17 @@
                             </f:facet>
                             <h:outputText value="#{item.username2}"/>
                         </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetno}"/>
+                        </p:column>
                         <p:column styleClass="Wid10" style="text-align: right;">
                             <f:facet name="header">
                                 <h:outputText value="数量"/>
                             </f:facet>
                             <h:outputText value="#{item.qty}"/>
-                        </p:column>
-                        <p:column styleClass="Wid10">
-                            <f:facet name="header">
-                                <h:outputText value="单位"/>
-                            </f:facet>
-                            <h:outputText value="#{item.unit}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

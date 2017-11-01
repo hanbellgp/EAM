@@ -68,6 +68,7 @@ public class HomePageManagedBean extends SuperQueryBean<AssetCard> {
 
         Axis yAxis = getChartModel().getAxis(AxisType.Y);
         yAxis.setLabel("数量");
+
     }
 
     /**

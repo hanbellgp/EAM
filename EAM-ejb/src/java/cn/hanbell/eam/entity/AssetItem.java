@@ -130,8 +130,16 @@ public class AssetItem extends SuperEntity {
     private String remark;
 
     public AssetItem() {
+        this.qcpass = false;
+        this.unittype = "1";
         this.invtype = true;
         this.bbstype = "000";
+        this.stdcost = BigDecimal.ZERO;
+        this.purprice = BigDecimal.ZERO;
+        this.purmin = BigDecimal.ZERO;
+        this.purmax = BigDecimal.ZERO;
+        this.invmin = BigDecimal.ZERO;
+        this.invmax = BigDecimal.ZERO;
     }
 
     public AssetCategory getCategory() {

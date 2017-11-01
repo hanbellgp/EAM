@@ -11,23 +11,23 @@
             <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:button id="btnReturn" value="返回" outcome="assetdistribute" icon="ui-icon-restore"/>
-                    <p:commandButton id="btnPrev" value="向前" actionListener="#{assetDistributeManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                    <p:button id="btnReturn" value="返回" outcome="assetdistributenotthrow" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{assetDistributeNotThrowBean.toPrev()}" icon="ui-icon-carat-1-w"
                                      process="@this" update="formOne"
-                                     rendered="#{assetDistributeManagedBean.hasPrev}"/>
-                    <p:commandButton id="btnNext" value="向后" actionListener="#{assetDistributeManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     rendered="#{assetDistributeNotThrowBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{assetDistributeNotThrowBean.toNext()}" icon="ui-icon-carat-1-e"
                                      process="@this" update="formOne"
-                                     rendered="#{assetDistributeManagedBean.hasNext}"/>
+                                     rendered="#{assetDistributeNotThrowBean.hasNext}"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnPrint" value="打印" actionListener="#{assetDistributeManagedBean.print()}" icon="ui-icon-print"
-                                     process="@this" rendered="#{assetDistributeManagedBean.doPrt}"/>
-                    <p:commandButton id="btnVerify" value="审核" action="#{assetDistributeManagedBean.verify()}" icon="ui-icon-check"
-                                     process="@this" rendered="#{assetDistributeManagedBean.doCfm}" update="toolbar">
+                    <p:commandButton id="btnPrint" value="打印" actionListener="#{assetDistributeNotThrowBean.print()}" icon="ui-icon-print"
+                                     process="@this" rendered="#{assetDistributeNotThrowBean.doPrt}"/>
+                    <p:commandButton id="btnVerify" value="审核" action="#{assetDistributeNotThrowBean.verify()}" icon="ui-icon-check"
+                                     process="@this" rendered="#{assetDistributeNotThrowBean.doCfm}" update="toolbar">
                         <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
                     </p:commandButton>
-                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetDistributeManagedBean.unverify()}" icon="ui-icon-lock-open"
-                                     process="@this" rendered="#{assetDistributeManagedBean.doUnCfm}"  update="toolbar">
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetDistributeNotThrowBean.unverify()}" icon="ui-icon-lock-open"
+                                     process="@this" rendered="#{assetDistributeNotThrowBean.doUnCfm}"  update="toolbar">
                         <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
                     </p:commandButton>
                 </f:facet>
@@ -35,17 +35,17 @@
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产领用－查看</p:column>
+                        <p:column colspan="4">资产领用不抛ERP－查看</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
                     <p:column styleClass="Wid20"> <h:outputText value="领用单号" /></p:column>
                     <p:column styleClass="Wid30">
-                        <h:outputText id="formid" value="#{assetDistributeManagedBean.currentEntity.formid}" title="Formid"/>
+                        <h:outputText id="formid" value="#{assetDistributeNotThrowBean.currentEntity.formid}" title="Formid"/>
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="领用日期" for="formdate" /></p:column>
                     <p:column styleClass="Wid30">
-                        <h:outputText id="formdate" value="#{assetDistributeManagedBean.currentEntity.formdate}" title="Formdate">
+                        <h:outputText id="formdate" value="#{assetDistributeNotThrowBean.currentEntity.formdate}" title="Formdate">
                             <f:convertDateTime pattern="yyyy/MM/dd"/>
                         </h:outputText>
                     </p:column>
@@ -53,34 +53,34 @@
                 <p:row>
                     <p:column><h:outputText value="处理部门" /></p:column>
                     <p:column>
-                        <h:outputText id="deptno" value="#{assetDistributeManagedBean.currentEntity.deptno}" title="RequireDeptno" />
+                        <h:outputText id="deptno" value="#{assetDistributeNotThrowBean.currentEntity.deptno}" title="RequireDeptno" />
                     </p:column>
                     <p:column><h:outputText value="部门名称" /></p:column>
                     <p:column>
-                        <h:outputText id="deptname" value="#{assetDistributeManagedBean.currentEntity.deptname}" title="RequireDeptname" />
+                        <h:outputText id="deptname" value="#{assetDistributeNotThrowBean.currentEntity.deptname}" title="RequireDeptname" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><h:outputText value="备注"/></p:column>
                     <p:column colspan="3">
-                        <h:outputText id="remark" value="#{assetDistributeManagedBean.currentEntity.remark}" title="Remark" />
+                        <h:outputText id="remark" value="#{assetDistributeNotThrowBean.currentEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><h:outputText value="来源单号" /></p:column>
                     <p:column>
-                        <h:outputText id="srcformid" value="#{assetDistributeManagedBean.currentEntity.srcformid}" title="srcformid" />
+                        <h:outputText id="srcformid" value="#{assetDistributeNotThrowBean.currentEntity.srcformid}" title="srcformid" />
                     </p:column>
                     <p:column><h:outputText value="关联单号" /></p:column>
                     <p:column>
-                        <h:outputText id="relformid" value="#{assetDistributeManagedBean.currentEntity.relformid}" title="relformid" />
+                        <h:outputText id="relformid" value="#{assetDistributeNotThrowBean.currentEntity.relformid}" title="relformid" />
                     </p:column>
                 </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="领用明细">
-                    <p:dataTable id="tableList" value="#{assetDistributeManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
-                                 selectionMode="single" selection="#{assetDistributeManagedBean.currentDetail}" rowKey="#{item.id}" >
+                    <p:dataTable id="tableList" value="#{assetDistributeNotThrowBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{assetDistributeNotThrowBean.currentDetail}" rowKey="#{item.id}" >
                         <p:ajax event="rowSelect"  update="formOne:dlgDetail" oncomplete="PF('dlgDetail').show();" />
                         <p:ajax event="rowUnselect"  update="formOne:dlgDetail" oncomplete="" />
                         <p:column styleClass="Wid20">
@@ -127,87 +127,87 @@
                     <p:row>
                         <p:column styleClass="Wid20"><h:outputText value="领用部门"/></p:column>
                         <p:column styleClass="Wid30">
-                            <h:outputText id="ddeptno" value="#{assetDistributeManagedBean.currentDetail.deptno}" title="RequireDeptno" />
+                            <h:outputText id="ddeptno" value="#{assetDistributeNotThrowBean.currentDetail.deptno}" title="RequireDeptno" />
                         </p:column>
                         <p:column styleClass="Wid20"><h:outputText value="部门名称"/></p:column>
                         <p:column styleClass="Wid30">
-                            <h:outputText id="ddeptname" value="#{assetDistributeManagedBean.currentDetail.deptname}" title="RequireDeptname" />
+                            <h:outputText id="ddeptname" value="#{assetDistributeNotThrowBean.currentDetail.deptname}" title="RequireDeptname" />
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="领用人"/></p:column>
                         <p:column>
-                            <h:outputText id="userno" value="#{assetDistributeManagedBean.currentDetail.userno}" title="RequireUserno"/>
+                            <h:outputText id="userno" value="#{assetDistributeNotThrowBean.currentDetail.userno}" title="RequireUserno"/>
                         </p:column>
                         <p:column><h:outputText value="姓名" /></p:column>
                         <p:column>
-                            <h:outputText id="username" value="#{assetDistributeManagedBean.currentDetail.username}" title="RequireUsername" />
+                            <h:outputText id="username" value="#{assetDistributeNotThrowBean.currentDetail.username}" title="RequireUsername" />
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="品号"/></p:column>
                         <p:column>
-                            <h:outputText id="assetItem" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemno}" title="itemno"/>
+                            <h:outputText id="assetItem" value="#{assetDistributeNotThrowBean.currentDetail.assetItem.itemno}" title="itemno"/>
                         </p:column>
                         <p:column><h:outputText value="公司"/></p:column>
                         <p:column>
-                            <h:outputText id="position1" value="#{assetDistributeManagedBean.currentDetail.position1.name}" title="position1"/>
+                            <h:outputText id="position1" value="#{assetDistributeNotThrowBean.currentDetail.position1.name}" title="position1"/>
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="品名"/></p:column>
                         <p:column>
-                            <h:outputText id="itemdesc" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                            <h:outputText id="itemdesc" value="#{assetDistributeNotThrowBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
                         </p:column>
                         <p:column><h:outputText value="厂区" /></p:column>
                         <p:column>
-                            <h:outputText id="position2" value="#{assetDistributeManagedBean.currentDetail.position2.name}" title="position2"/>
+                            <h:outputText id="position2" value="#{assetDistributeNotThrowBean.currentDetail.position2.name}" title="position2"/>
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="编号"/></p:column>
                         <p:column>
-                            <h:outputText id="assetno" value="#{assetDistributeManagedBean.currentDetail.assetno}" title="assetno" />
+                            <h:outputText id="assetno" value="#{assetDistributeNotThrowBean.currentDetail.assetno}" title="assetno" />
                         </p:column>
                         <p:column><h:outputText value="厂房"/></p:column>
                         <p:column>
-                            <h:outputText id="position3" value="#{assetDistributeManagedBean.currentDetail.position3.name}" title="position3" />
+                            <h:outputText id="position3" value="#{assetDistributeNotThrowBean.currentDetail.position3.name}" title="position3" />
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="名称"/></p:column>
                         <p:column>
-                            <h:outputText id="assetDesc" value="#{assetDistributeManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                            <h:outputText id="assetDesc" value="#{assetDistributeNotThrowBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
                         </p:column>
                         <p:column><h:outputText value="地点"/></p:column>
                         <p:column>
-                            <h:outputText id="position4" value="#{assetDistributeManagedBean.currentDetail.position4.name}" title="position4" />
+                            <h:outputText id="position4" value="#{assetDistributeNotThrowBean.currentDetail.position4.name}" title="position4" />
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="规格"/></p:column>
                         <p:column colspan="3">
-                            <h:outputText id="assetSpec" value="#{assetDistributeManagedBean.currentDetail.assetCard.assetSpec}" title="assetSpec" />
+                            <h:outputText id="assetSpec" value="#{assetDistributeNotThrowBean.currentDetail.assetCard.assetSpec}" title="assetSpec" />
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="数量"/></p:column>
                         <p:column>
-                            <h:outputText id="qty" value="#{assetDistributeManagedBean.currentDetail.qty}" title="Qty"/>
+                            <h:outputText id="qty" value="#{assetDistributeNotThrowBean.currentDetail.qty}" title="Qty"/>
                         </p:column>
                         <p:column><h:outputText value="单位"/></p:column>
                         <p:column>
-                            <h:outputText id="unit" value="#{assetDistributeManagedBean.currentDetail.unit}" title="Unit"/>
+                            <h:outputText id="unit" value="#{assetDistributeNotThrowBean.currentDetail.unit}" title="Unit"/>
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column><h:outputText value="来源仓库"/></p:column>
                         <p:column>
-                            <h:outputText id="warehouse" value="#{assetDistributeManagedBean.currentDetail.warehouse.name}" title="warehouse"/>
+                            <h:outputText id="warehouse" value="#{assetDistributeNotThrowBean.currentDetail.warehouse.name}" title="warehouse"/>
                         </p:column>
                         <p:column><h:outputText value="目的仓库"/></p:column>
                         <p:column>
-                            <h:outputText id="warehouse2" value="#{assetDistributeManagedBean.currentDetail.warehouse2.name}" title="warehouse2" />
+                            <h:outputText id="warehouse2" value="#{assetDistributeNotThrowBean.currentDetail.warehouse2.name}" title="warehouse2" />
                         </p:column>
                     </p:row>
                 </p:panelGrid>

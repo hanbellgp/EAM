@@ -11,50 +11,50 @@
             <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:button id="btnReturn" value="返回" outcome="assetdistribute" icon="ui-icon-restore"/>
+                    <p:button id="btnReturn" value="返回" outcome="assetdistributenotthrow" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetDistributeManagedBean.persist()}" icon="ui-icon-save"
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetDistributeNotThrowBean.persist()}" icon="ui-icon-save"
                                      process="@this,plgHead" update="formOne"/>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产领用－新增</p:column>
+                        <p:column colspan="4">资产领用不抛ERP－新增</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="领用单号" for="formid" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:inputText id="formid" value="#{assetDistributeManagedBean.newEntity.formid}" title="Formid"
-                                     required="true" requiredMessage="请输入领用单号"  disabled="#{assetDistributeManagedBean.currentPrgGrant.sysprg.noauto}"/>
+                        <p:inputText id="formid" value="#{assetDistributeNotThrowBean.newEntity.formid}" title="Formid"
+                                     required="true" requiredMessage="请输入领用单号"  disabled="#{assetDistributeNotThrowBean.currentPrgGrant.sysprg.noauto}"/>
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="领用日期" for="formdate" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:calendar id="formdate" value="#{assetDistributeManagedBean.newEntity.formdate}" title="Formdate"
+                        <p:calendar id="formdate" value="#{assetDistributeNotThrowBean.newEntity.formdate}" title="Formdate"
                                     pattern="yyyy/MM/dd" required="true" requiredMessage="请输入申请日期"/>
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="处理部门" for="deptno" /></p:column>
                     <p:column>
-                        <p:inputText id="deptno" value="#{assetDistributeManagedBean.newEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
-                        <p:commandButton id="btnRequireDeptSelect" actionListener="#{assetDistributeManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                        <p:inputText id="deptno" value="#{assetDistributeNotThrowBean.newEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnRequireDeptSelect" actionListener="#{assetDistributeNotThrowBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWhenEdit}"
+                            <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnWhenEdit}"
                                     update="deptno,deptname" />
                         </p:commandButton>
                     </p:column>
                     <p:column><p:outputLabel value="部门名称" for="deptname" /></p:column>
                     <p:column>
-                        <h:outputText id="deptname" value="#{assetDistributeManagedBean.newEntity.deptname}" title="RequireDeptname" />
+                        <h:outputText id="deptname" value="#{assetDistributeNotThrowBean.newEntity.deptname}" title="RequireDeptname" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column><p:outputLabel value="备注" for="remark" /></p:column>
                     <p:column colspan="3">
-                        <p:inputText id="remark" value="#{assetDistributeManagedBean.newEntity.remark}" title="Remark" />
+                        <p:inputText id="remark" value="#{assetDistributeNotThrowBean.newEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -62,15 +62,15 @@
                 <p:tab title="领用明细">
                     <p:toolbar id="detailToolbar" styleClass="detailToolbar">
                         <f:facet name="left">
-                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetDistributeManagedBean.createDetail()}" icon="ui-icon-plus"
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetDistributeNotThrowBean.createDetail()}" icon="ui-icon-plus"
                                              oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
                                              process="@this" update=":formOne:tabView:plgDetail"/>
-                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetDistributeManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetDistributeNotThrowBean.deleteDetail()}" icon="ui-icon-trash"
                                              oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
                                              process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
                         </f:facet>
                         <f:facet name="right">
-                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetDistributeManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetDistributeNotThrowBean.doConfirmDetail()}" icon="ui-icon-check"
                                              onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
                                              process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
                         </f:facet>
@@ -79,53 +79,53 @@
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="领用部门" for="deptno" /></p:column>
                             <p:column styleClass="Wid30">
-                                <p:inputText id="deptno" value="#{assetDistributeManagedBean.currentDetail.deptno}" title="RequireDeptno" styleClass="inputWithButton"
+                                <p:inputText id="deptno" value="#{assetDistributeNotThrowBean.currentDetail.deptno}" title="RequireDeptno" styleClass="inputWithButton"
                                              required="true" readonly="true"/>
-                                <p:commandButton id="btnDepartmentSelect" actionListener="#{assetDistributeManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnDepartmentSelect" actionListener="#{assetDistributeNotThrowBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnDeptWhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnDeptWhenDetailEdit}"
                                             update="deptno,deptname" />
                                 </p:commandButton>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname" /></p:column>
                             <p:column styleClass="Wid30">
-                                <h:outputText id="deptname" value="#{assetDistributeManagedBean.currentDetail.deptname}" title="RequireDeptname" />
+                                <h:outputText id="deptname" value="#{assetDistributeNotThrowBean.currentDetail.deptname}" title="RequireDeptname" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="领用人" for="userno" /></p:column>
                             <p:column>
-                                <p:inputText id="userno" value="#{assetDistributeManagedBean.currentDetail.userno}" title="RequireUserno" styleClass="inputWithButton"
+                                <p:inputText id="userno" value="#{assetDistributeNotThrowBean.currentDetail.userno}" title="RequireUserno" styleClass="inputWithButton"
                                              required="true" readonly="true"/>
-                                <p:commandButton id="btnSystemUserSelect" actionListener="#{assetDistributeManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnSystemUserSelect" actionListener="#{assetDistributeNotThrowBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnUserWhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnUserWhenDetailEdit}"
                                             update="userno,username" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="姓名" for="username" /></p:column>
                             <p:column>
-                                <h:outputText id="username" value="#{assetDistributeManagedBean.currentDetail.username}" title="RequireUsername" />
+                                <h:outputText id="username" value="#{assetDistributeNotThrowBean.currentDetail.username}" title="RequireUsername" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="品号" for="assetItem" /></p:column>
                             <p:column>
-                                <p:inputText id="assetItem" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
+                                <p:inputText id="assetItem" value="#{assetDistributeNotThrowBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
                                              required="true" requiredMessage="请输入品号" readonly="true"/>
-                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetDistributeManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetDistributeNotThrowBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnWhenDetailEdit}"
                                             update="assetItem,itemdesc,unit" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="公司" for="position1" /></p:column>
                             <p:column>
-                                <p:inputText id="position1" value="#{assetDistributeManagedBean.currentDetail.position1.name}" title="position1" styleClass="inputWithButton"
+                                <p:inputText id="position1" value="#{assetDistributeNotThrowBean.currentDetail.position1.name}" title="position1" styleClass="inputWithButton"
                                              readonly="true"/>
-                                <p:commandButton id="btnPosition1Select" actionListener="#{assetDistributeManagedBean.openDialog('assetposition1Select')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnPosition1Select" actionListener="#{assetDistributeNotThrowBean.openDialog('assetposition1Select')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnPosition1WhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnPosition1WhenDetailEdit}"
                                             update="position1" />
                                 </p:commandButton>
                             </p:column>
@@ -133,15 +133,15 @@
                         <p:row>
                             <p:column><h:outputText value="品名"/></p:column>
                             <p:column>
-                                <h:outputText id="itemdesc" value="#{assetDistributeManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                                <h:outputText id="itemdesc" value="#{assetDistributeNotThrowBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
                             </p:column>
                             <p:column><p:outputLabel value="厂区" for="position2" /></p:column>
                             <p:column>
-                                <p:inputText id="position2" value="#{assetDistributeManagedBean.currentDetail.position2.name}" title="position2" styleClass="inputWithButton"
+                                <p:inputText id="position2" value="#{assetDistributeNotThrowBean.currentDetail.position2.name}" title="position2" styleClass="inputWithButton"
                                              readonly="true"/>
-                                <p:commandButton id="btnPosition2Select" actionListener="#{assetDistributeManagedBean.openDialog('assetposition2Select')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnPosition2Select" actionListener="#{assetDistributeNotThrowBean.openDialog('assetposition2Select')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnPosition2WhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnPosition2WhenDetailEdit}"
                                             update="position2" />
                                 </p:commandButton>
                             </p:column>
@@ -149,21 +149,21 @@
                         <p:row>
                             <p:column><p:outputLabel value="编号" for="assetno" /></p:column>
                             <p:column>
-                                <p:inputText id="assetno" value="#{assetDistributeManagedBean.currentDetail.assetno}" title="assetno" styleClass="inputWithButton"
+                                <p:inputText id="assetno" value="#{assetDistributeNotThrowBean.currentDetail.assetno}" title="assetno" styleClass="inputWithButton"
                                              readonly="true"/>
-                                <p:commandButton id="btnAssetCardSelect" actionListener="#{assetDistributeManagedBean.openDialog('assetcardSelect')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnAssetCardSelect" actionListener="#{assetDistributeNotThrowBean.openDialog('assetcardSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnAssetCardWhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnAssetCardWhenDetailEdit}"
                                             update="assetno,assetDesc,assetSpec" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="厂房" for="position3" /></p:column>
                             <p:column>
-                                <p:inputText id="position3" value="#{assetDistributeManagedBean.currentDetail.position3.name}" title="position3" styleClass="inputWithButton"
+                                <p:inputText id="position3" value="#{assetDistributeNotThrowBean.currentDetail.position3.name}" title="position3" styleClass="inputWithButton"
                                              readonly="true"/>
-                                <p:commandButton id="btnPosition3Select" actionListener="#{assetDistributeManagedBean.openDialog('assetposition3Select')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnPosition3Select" actionListener="#{assetDistributeNotThrowBean.openDialog('assetposition3Select')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnPosition3WhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnPosition3WhenDetailEdit}"
                                             update="position3" />
                                 </p:commandButton>
                             </p:column>
@@ -171,15 +171,15 @@
                         <p:row>
                             <p:column><h:outputText value="名称"/></p:column>
                             <p:column>
-                                <h:outputText id="assetDesc" value="#{assetDistributeManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                                <h:outputText id="assetDesc" value="#{assetDistributeNotThrowBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
                             </p:column>
                             <p:column><p:outputLabel value="地点" for="position4" /></p:column>
                             <p:column>
-                                <p:inputText id="position4" value="#{assetDistributeManagedBean.currentDetail.position4.name}" title="position4" styleClass="inputWithButton"
+                                <p:inputText id="position4" value="#{assetDistributeNotThrowBean.currentDetail.position4.name}" title="position4" styleClass="inputWithButton"
                                              readonly="true"/>
-                                <p:commandButton id="btnPosition4Select" actionListener="#{assetDistributeManagedBean.openDialog('assetposition4Select')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnPosition4Select" actionListener="#{assetDistributeNotThrowBean.openDialog('assetposition4Select')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnPosition4WhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnPosition4WhenDetailEdit}"
                                             update="position4" />
                                 </p:commandButton>
                             </p:column>
@@ -187,46 +187,46 @@
                         <p:row>
                             <p:column><h:outputText value="规格"/></p:column>
                             <p:column colspan="3">
-                                <h:outputText id="assetSpec" value="#{assetDistributeManagedBean.currentDetail.assetCard.assetSpec}" title="assetSpec" />
+                                <h:outputText id="assetSpec" value="#{assetDistributeNotThrowBean.currentDetail.assetCard.assetSpec}" title="assetSpec" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="数量" for="qty" /></p:column>
                             <p:column>
-                                <p:spinner id="qty" value="#{assetDistributeManagedBean.currentDetail.qty}" title="Qty"
+                                <p:spinner id="qty" value="#{assetDistributeNotThrowBean.currentDetail.qty}" title="Qty"
                                            required="true" requiredMessage="请输入数量"/>
                             </p:column>
                             <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                             <p:column>
-                                <p:inputText id="unit" value="#{assetDistributeManagedBean.currentDetail.unit}" title="Unit"
+                                <p:inputText id="unit" value="#{assetDistributeNotThrowBean.currentDetail.unit}" title="Unit"
                                              required="true" requiredMessage="请输入单位"/>
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
                             <p:column>
-                                <p:inputText id="warehouse" value="#{assetDistributeManagedBean.currentDetail.warehouse.name}" title="warehouse" styleClass="inputWithButton"
+                                <p:inputText id="warehouse" value="#{assetDistributeNotThrowBean.currentDetail.warehouse.name}" title="warehouse" styleClass="inputWithButton"
                                              required="true"  readonly="true"/>
-                                <p:commandButton id="btnWarehouseSelect" actionListener="#{assetDistributeManagedBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnWarehouseSelect" actionListener="#{assetDistributeNotThrowBean.openDialog('warehouseSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWarehouseWhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnWarehouseWhenDetailEdit}"
                                             update="warehouse" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="目的仓库" for="warehouse2" /></p:column>
                             <p:column>
-                                <p:inputText id="warehouse2" value="#{assetDistributeManagedBean.currentDetail.warehouse2.name}" title="warehouse2" styleClass="inputWithButton"
+                                <p:inputText id="warehouse2" value="#{assetDistributeNotThrowBean.currentDetail.warehouse2.name}" title="warehouse2" styleClass="inputWithButton"
                                              required="true"  readonly="true"/>
-                                <p:commandButton id="btnWarehouse2Select" actionListener="#{assetDistributeManagedBean.openDialog('warehouse2Select')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnWarehouse2Select" actionListener="#{assetDistributeNotThrowBean.openDialog('warehouse2Select')}" icon="ui-icon-extlink"
                                                  process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWarehouse2WhenDetailEdit}"
+                                    <p:ajax event="dialogReturn" listener="#{assetDistributeNotThrowBean.handleDialogReturnWarehouse2WhenDetailEdit}"
                                             update="warehouse2" />
                                 </p:commandButton>
                             </p:column>
                         </p:row>
                     </p:panelGrid>
-                    <p:dataTable id="tableList" value="#{assetDistributeManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
-                                 selectionMode="single" selection="#{assetDistributeManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                    <p:dataTable id="tableList" value="#{assetDistributeNotThrowBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{assetDistributeNotThrowBean.currentDetail}" rowKey="#{item.seq}" >
                         <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
                         <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
                         <p:column styleClass="Wid20">

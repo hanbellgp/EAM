@@ -39,21 +39,21 @@ import org.primefaces.event.SelectEvent;
 public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, AssetDistributeDetail> {
 
     @EJB
-    private AssetDistributeBean assetDistributeBean;
+    protected AssetDistributeBean assetDistributeBean;
     @EJB
-    private AssetDistributeDetailBean assetDistributeDetailBean;
+    protected AssetDistributeDetailBean assetDistributeDetailBean;
 
     @EJB
-    private AssetInventoryBean assetInventoryBean;
+    protected AssetInventoryBean assetInventoryBean;
     @EJB
-    private AssetCardBean assetCardBean;
+    protected AssetCardBean assetCardBean;
     @EJB
-    private WarehouseBean warehouseBean;
+    protected WarehouseBean warehouseBean;
 
-    private List<String> paramItemno = null;
-    private List<String> paramPosition = null;
-    private List<String> paramUsed = null;
-    private List<String> paramHascost = null;
+    protected List<String> paramItemno = null;
+    protected List<String> paramPosition = null;
+    protected List<String> paramUsed = null;
+    protected List<String> paramHascost = null;
 
     public AssetDistributeManagedBean() {
         super(AssetDistribute.class, AssetDistributeDetail.class);
@@ -319,6 +319,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         superEJB = assetDistributeBean;
         detailEJB = assetDistributeDetailBean;
         model = new AssetDistributeModel(assetDistributeBean, userManagedBean);
+        model.getFilterFields().put("status", "N");
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();

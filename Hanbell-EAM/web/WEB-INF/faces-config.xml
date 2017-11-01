@@ -104,7 +104,27 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <description>资产申请一级导航</description>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>assetapply</from-outcome>
+            <to-view-id>/app/aa/assetapply.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>assetthrow</from-outcome>
+            <to-view-id>/app/aa/assetthrow.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>applybatchthrow</from-outcome>
+            <to-view-id>/app/aa/applybatchthrow.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <description>资产库存一级导航</description>
+        <from-view-id>/*</from-view-id>
         <navigation-case>
             <description>AI110交易类别维护</description>
             <from-outcome>inventorytype</from-outcome>
@@ -133,6 +153,12 @@
             <description>AI310资产领用作业</description>
             <from-outcome>assetdistribute</from-outcome>
             <to-view-id>/app/ai/assetdistribute.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>AI315领用不抛ERP</description>
+            <from-outcome>assetdistributenotthrow</from-outcome>
+            <to-view-id>/app/ai/assetdistributenotthrow.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -179,25 +205,46 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <description>资产申请一级导航</description>
+        <description>资产领用抛转ERP</description>
+        <from-view-id>/app/ai/assetdistribute.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>assetapply</from-outcome>
-            <to-view-id>/app/aa/assetapply.xhtml</to-view-id>
+            <from-outcome>assetdistributeNew</from-outcome>
+            <to-view-id>/app/ai/assetdistributeNew.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>assetthrow</from-outcome>
-            <to-view-id>/app/aa/assetthrow.xhtml</to-view-id>
+            <from-outcome>assetdistributeEdit</from-outcome>
+            <to-view-id>/app/ai/assetdistributeEdit.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>applybatchthrow</from-outcome>
-            <to-view-id>/app/aa/applybatchthrow.xhtml</to-view-id>
+            <from-outcome>assetdistributeView</from-outcome>
+            <to-view-id>/app/ai/assetdistributeView.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <description>资产领用不抛ERP</description>
+        <from-view-id>/app/ai/assetdistributenotthrow.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>assetdistributenotthrowNew</from-outcome>
+            <to-view-id>/app/ai/assetdistributenotthrowNew.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>assetdistributenotthrowEdit</from-outcome>
+            <to-view-id>/app/ai/assetdistributenotthrowEdit.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>assetdistributenotthrowView</from-outcome>
+            <to-view-id>/app/ai/assetdistributenotthrowView.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <description>模态开窗</description>
+        <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>assetcardSelect</from-outcome>
             <to-view-id>/app/df/assetcardSelect.xhtml</to-view-id>
