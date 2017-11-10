@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetcheck" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetCheckManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">盘点作业－修改</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="盘点单号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{assetCheckManagedBean.currentEntity.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="盘点日期" for="formdate" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:calendar id="formdate" value="#{assetCheckManagedBean.currentEntity.formdate}" title="Formdate"
+                                    pattern="yyyy/MM/dd" required="true" requiredMessage="请输入盘点日期"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="盘点对象" /></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="useDeptno" value="#{assetCheckManagedBean.currentEntity.deptno}" title="useDeptno" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{assetCheckManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="盘点明细">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetCheckManagedBean.createDetail()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update=":formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetCheckManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetCheckManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column><p:outputLabel value="编号" for="assetno" /></p:column>
+                            <p:column>
+                                <p:inputText id="assetno" value="#{assetCheckManagedBean.currentDetail.assetno}" title="assetno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnAssetCardSelect" actionListener="#{assetCheckManagedBean.openDialog('assetcardSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" rendered="#{assetCheckManagedBean.currentEntity.formtype='AC'}" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCheckManagedBean.handleDialogReturnAssetCardWhenDetailEdit}"
+                                            update="formOne:tabView:plgDetail" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><h:outputText value="名称"/></p:column>
+                            <p:column>
+                                <h:outputText id="assetDesc" value="#{assetCheckManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="品号" for="assetItem"/></p:column>
+                            <p:column>
+                                <p:inputText id="assetItem" value="#{assetCheckManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
+                                             required="true" requiredMessage="请输入品号" readonly="true"/>
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetCheckManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCheckManagedBean.handleDialogReturnWhenDetailEdit}"
+                                            update="assetItem,itemdesc,unit" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><h:outputText value="品名"/></p:column>
+                            <p:column>
+                                <h:outputText id="itemdesc" value="#{assetCheckManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="使用部门" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptno" value="#{assetCheckManagedBean.currentDetail.assetCard.deptno}" title="RequireDeptno" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="新部门" for="deptno2" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="deptno2" value="#{assetCheckManagedBean.currentDetail.deptno}" title="RequireDeptno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnDepartmentSelect" actionListener="#{assetCheckManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCheckManagedBean.handleDialogReturnDeptWhenDetailEdit}"
+                                            update="deptno2,deptname2" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="部门名称"/></p:column>
+                            <p:column>
+                                <h:outputText id="deptname" value="#{assetCheckManagedBean.currentDetail.assetCard.deptname}" title="RequireDeptname" />
+                            </p:column>
+                            <p:column><p:outputLabel value="部门名称" for="deptname2" /></p:column>
+                            <p:column>
+                                <h:outputText id="deptname2" value="#{assetCheckManagedBean.currentDetail.deptname}" title="RequireDeptname" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="原使用人"/></p:column>
+                            <p:column>
+                                <h:outputText id="userno" value="#{assetCheckManagedBean.currentDetail.assetCard.userno}" title="RequireUserno" />
+                            </p:column>
+                            <p:column><p:outputLabel value="新使用人" for="userno2" /></p:column>
+                            <p:column>
+                                <p:inputText id="userno2" value="#{assetCheckManagedBean.currentDetail.userno}" title="RequireUserno" styleClass="inputWithButton"
+                                             readonly="true"/>
+                                <p:commandButton id="btnSystemUserSelect" actionListener="#{assetCheckManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCheckManagedBean.handleDialogReturnUserWhenDetailEdit}"
+                                            update="userno2,username2" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="姓名"/></p:column>
+                            <p:column>
+                                <h:outputText id="username" value="#{assetCheckManagedBean.currentDetail.assetCard.username}" title="RequireUsername" />
+                            </p:column>
+                            <p:column><h:outputText value="姓名"/></p:column>
+                            <p:column>
+                                <h:outputText id="username2" value="#{assetCheckManagedBean.currentDetail.username}" title="RequireUsername" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="账面数量" for="qty" /></p:column>
+                            <p:column>
+                                <h:outputText id="qty" value="#{assetCheckManagedBean.currentDetail.qty}" title="Qty"/>
+                            </p:column>
+                            <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                            <p:column>
+                                <h:outputText id="unit" value="#{assetCheckManagedBean.currentDetail.unit}" title="Unit"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="实盘数量" for="actqty" /></p:column>
+                            <p:column>
+                                <p:spinner id="actqty" value="#{assetCheckManagedBean.currentDetail.actqty}" title="actqty"
+                                           required="true" requiredMessage="请输入数量">
+                                    <f:validateDoubleRange minimum="0"/>
+                                </p:spinner>
+                            </p:column>
+                            <p:column><p:outputLabel value="差异数量" for="diffqty" /></p:column>
+                            <p:column>
+                                <h:outputText id="diffqty" value="#{assetCheckManagedBean.currentDetail.diffqty}" title="diffqty"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
+                            <p:column>
+                                <h:outputText id="warehouse" value="#{assetCheckManagedBean.currentDetail.warehouse.name}" title="warehouse"/>
+                            </p:column>
+                            <p:column></p:column>
+                            <p:column>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{assetCheckManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{assetCheckManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="品号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemdesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10">
+                            <f:facet name="header">
+                                <h:outputText value="使用人"/>
+                            </f:facet>
+                            <h:outputText value="#{item.username}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="实盘"/>
+                            </f:facet>
+                            <h:outputText value="#{item.actqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="差异"/>
+                            </f:facet>
+                            <h:outputText value="#{item.diffqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.unit}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

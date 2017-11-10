@@ -24,6 +24,12 @@ public class AssetPositionBean extends SuperEJBForEAM<AssetPosition> {
         super(AssetPosition.class);
     }
 
+    public List<AssetPosition> findByCompany(String value) {
+        Query query = getEntityManager().createNamedQuery("AssetPosition.findByCompany");
+        query.setParameter("company", value);
+        return query.getResultList();
+    }
+
     public List<AssetPosition> findRootByCompany(String value) {
         Query query = getEntityManager().createNamedQuery("AssetPosition.findRootByCompany");
         query.setParameter("company", value);

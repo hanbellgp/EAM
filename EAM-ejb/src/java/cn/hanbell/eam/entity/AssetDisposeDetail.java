@@ -7,6 +7,7 @@ package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.FormDetailEntity;
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,13 +27,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author C0160
  */
 @Entity
-@Table(name = "assetcheckdetail")
+@Table(name = "assetdisposedetail")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AssetCheckDetail.findAll", query = "SELECT a FROM AssetCheckDetail a"),
-    @NamedQuery(name = "AssetCheckDetail.findById", query = "SELECT a FROM AssetCheckDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetCheckDetail.findByPId", query = "SELECT a FROM AssetCheckDetail a WHERE a.pid = :pid ORDER BY a.seq")})
-public class AssetCheckDetail extends FormDetailEntity {
+    @NamedQuery(name = "AssetDisposeDetail.findAll", query = "SELECT a FROM AssetDisposeDetail a"),
+    @NamedQuery(name = "AssetDisposeDetail.findById", query = "SELECT a FROM AssetDisposeDetail a WHERE a.id = :id"),
+    @NamedQuery(name = "AssetDisposeDetail.findByPId", query = "SELECT a FROM AssetDisposeDetail a WHERE a.pid = :pid")})
+public class AssetDisposeDetail extends FormDetailEntity {
 
     @JoinColumn(name = "assetid", referencedColumnName = "id")
     @ManyToOne
@@ -58,17 +61,22 @@ public class AssetCheckDetail extends FormDetailEntity {
     @NotNull
     @Column(name = "qty")
     private BigDecimal qty;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "actqty")
-    private BigDecimal actqty;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "diffqty")
-    private BigDecimal diffqty;
     @Size(max = 10)
     @Column(name = "unit")
     private String unit;
+    @Column(name = "buyPrice")
+    private BigDecimal buyPrice;
+    @Column(name = "buyAmts")
+    private BigDecimal buyAmts;
+    @Column(name = "buyDate")
+    @Temporal(TemporalType.DATE)
+    private Date buyDate;
+    @Column(name = "used")
+    private Integer used;
+    @Column(name = "surplusValue")
+    private BigDecimal surplusValue;
+    @Column(name = "amts")
+    private BigDecimal amts;
 
     @JoinColumn(name = "position1", referencedColumnName = "id")
     @ManyToOne
@@ -126,7 +134,12 @@ public class AssetCheckDetail extends FormDetailEntity {
     @Column(name = "remark")
     private String remark;
 
-    public AssetCheckDetail() {
+    public AssetDisposeDetail() {
+        this.qty = BigDecimal.ZERO;
+        this.buyPrice = BigDecimal.ZERO;
+        this.buyAmts = BigDecimal.ZERO;
+        this.surplusValue = BigDecimal.ZERO;
+        this.amts = BigDecimal.ZERO;
     }
 
     public AssetCard getAssetCard() {
@@ -185,34 +198,66 @@ public class AssetCheckDetail extends FormDetailEntity {
         this.qty = qty;
     }
 
-    public BigDecimal getActqty() {
-        return actqty;
-    }
-
-    public void setActqty(BigDecimal actqty) {
-        this.actqty = actqty;
-    }
-
-    /**
-     * @return the diffqty
-     */
-    public BigDecimal getDiffqty() {
-        return diffqty;
-    }
-
-    /**
-     * @param diffqty the diffqty to set
-     */
-    public void setDiffqty(BigDecimal diffqty) {
-        this.diffqty = diffqty;
-    }
-
     public String getUnit() {
         return unit;
     }
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public BigDecimal getBuyPrice() {
+        return buyPrice;
+    }
+
+    public void setBuyPrice(BigDecimal buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
+    public BigDecimal getBuyAmts() {
+        return buyAmts;
+    }
+
+    public void setBuyAmts(BigDecimal buyAmts) {
+        this.buyAmts = buyAmts;
+    }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
+    }
+
+    public Integer getUsed() {
+        return used;
+    }
+
+    public void setUsed(Integer used) {
+        this.used = used;
+    }
+
+    public BigDecimal getSurplusValue() {
+        return surplusValue;
+    }
+
+    public void setSurplusValue(BigDecimal surplusValue) {
+        this.surplusValue = surplusValue;
+    }
+
+    /**
+     * @return the amts
+     */
+    public BigDecimal getAmts() {
+        return amts;
+    }
+
+    /**
+     * @param amts the amts to set
+     */
+    public void setAmts(BigDecimal amts) {
+        this.amts = amts;
     }
 
     public AssetPosition getPosition1() {
@@ -369,10 +414,10 @@ public class AssetCheckDetail extends FormDetailEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AssetCheckDetail)) {
+        if (!(object instanceof AssetDisposeDetail)) {
             return false;
         }
-        AssetCheckDetail other = (AssetCheckDetail) object;
+        AssetDisposeDetail other = (AssetDisposeDetail) object;
         if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
@@ -381,7 +426,7 @@ public class AssetCheckDetail extends FormDetailEntity {
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.AssetCheckDetail[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.AssetDisposeDetail[ id=" + id + " ]";
     }
 
 }

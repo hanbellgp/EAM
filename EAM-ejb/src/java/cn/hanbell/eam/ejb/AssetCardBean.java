@@ -99,6 +99,16 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         }
     }
 
+    public List<AssetCard> findByRelformidAndNeedDelete(String relformid) {
+        Query query = getEntityManager().createNamedQuery("AssetCard.findByRelformidAndNeedDelete");
+        query.setParameter("relformid", relformid);
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public List<AssetCard> findBySrcformid(String srcformid) {
         Query query = getEntityManager().createNamedQuery("AssetCard.findBySrcformid");
         query.setParameter("srcformid", srcformid);

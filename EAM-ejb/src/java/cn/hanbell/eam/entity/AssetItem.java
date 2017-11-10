@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "assetitem")
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "AssetItem.getRowCount", query = "SELECT COUNT(a) FROM AssetItem a"),
     @NamedQuery(name = "AssetItem.findAll", query = "SELECT a FROM AssetItem a"),
     @NamedQuery(name = "AssetItem.findById", query = "SELECT a FROM AssetItem a WHERE a.id = :id"),
     @NamedQuery(name = "AssetItem.findByCategoryId", query = "SELECT a FROM AssetItem a WHERE a.category.id = :categoryid"),
