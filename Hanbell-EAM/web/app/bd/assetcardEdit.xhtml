@@ -53,8 +53,18 @@
                         <p:commandButton id="btnAssetItemSelect" actionListener="#{assetCardManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnWhenEdit}"
-                                    update="assetItem,assetDesc,assetSpec,unit" />
+                                    update="assetItem,itemdesc,assetDesc,assetSpec,unit" />
                         </p:commandButton>
+                    </p:column>
+                    <p:column><h:outputText value="品名" /></p:column>
+                    <p:column>
+                        <h:outputText id="itemdesc" value="#{assetCardManagedBean.currentEntity.assetItem.itemdesc}" title="itemdesc"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="数量" /></p:column>
+                    <p:column>
+                        <h:outputText id="qty" value="#{assetCardManagedBean.currentEntity.qty}" title="qty"/>
                     </p:column>
                     <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                     <p:column>

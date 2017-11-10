@@ -9,6 +9,8 @@ import com.lightshell.comm.FormEntity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -38,16 +40,23 @@ public class AssetCheck extends FormEntity {
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
+
     @Size(max = 20)
+    @Column(name = "formtype")
+    private String formtype;
+    @Size(max = 20)
+    @Column(name = "formkind")
+    private String formkind;
+    @JoinColumn(name = "categoryid", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private AssetCategory category;
+    @Size(max = 200)
     @Column(name = "deptno")
     private String deptno;
-    @Size(max = 45)
-    @Column(name = "deptname")
-    private String deptname;
-    @Size(max = 45)
-    @Column(name = "reason")
-    private String reason;
     @Size(max = 20)
+    @Column(name = "userno")
+    private String userno;
+    @Size(max = 200)
     @Column(name = "warehouseno")
     private String warehouseno;
     @Size(max = 200)
@@ -73,20 +82,48 @@ public class AssetCheck extends FormEntity {
         this.deptno = deptno;
     }
 
-    public String getDeptname() {
-        return deptname;
+    public String getFormtype() {
+        return formtype;
     }
 
-    public void setDeptname(String deptname) {
-        this.deptname = deptname;
+    public void setFormtype(String formtype) {
+        this.formtype = formtype;
     }
 
-    public String getReason() {
-        return reason;
+    /**
+     * @return the formkind
+     */
+    public String getFormkind() {
+        return formkind;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    /**
+     * @param formkind the formkind to set
+     */
+    public void setFormkind(String formkind) {
+        this.formkind = formkind;
+    }
+
+    /**
+     * @return the category
+     */
+    public AssetCategory getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    public void setCategory(AssetCategory category) {
+        this.category = category;
+    }
+
+    public String getUserno() {
+        return userno;
+    }
+
+    public void setUserno(String userno) {
+        this.userno = userno;
     }
 
     public String getWarehouseno() {

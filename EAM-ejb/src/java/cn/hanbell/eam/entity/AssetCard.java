@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetCard.findByDeptno", query = "SELECT a FROM AssetCard a WHERE a.deptno = :deptno"),
     @NamedQuery(name = "AssetCard.findByUserno", query = "SELECT a FROM AssetCard a WHERE a.userno = :userno"),
     @NamedQuery(name = "AssetCard.findBySrcformid", query = "SELECT a FROM AssetCard a WHERE a.srcformid = :srcformid "),
+    @NamedQuery(name = "AssetCard.findByRelformidAndNeedDelete", query = "SELECT a FROM AssetCard a WHERE a.relformid = :relformid AND a.status='X' "),
     @NamedQuery(name = "AssetCard.findByWarehouseno", query = "SELECT a FROM AssetCard a WHERE a.warehouse.warehouseno = :warehouseno")})
 public class AssetCard extends FormEntity {
 

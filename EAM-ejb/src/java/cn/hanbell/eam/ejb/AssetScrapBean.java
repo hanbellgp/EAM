@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -59,6 +60,17 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
         super(AssetScrap.class);
     }
 
+    public AssetScrap findByFormId(String formid) {
+        Query query = getEntityManager().createNamedQuery("AssetScrap.findByFormid");
+        query.setParameter("formid", formid);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetScrap) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public String getFormId(Date day) {
         SystemProgram sp = systemProgramBean.findBySystemAndAPI("EAM", "assetscrap");
         if (sp == null) {
@@ -88,6 +100,11 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
     }
 
     @Override
+    public void setDetail(Object value) {
+        detailList = assetScrapDetailBean.findByPId(value);
+    }
+
+    @Override
     public AssetScrap unverify(AssetScrap entity) {
         if (inventoryList == null) {
             inventoryList = new ArrayList<>();
@@ -103,7 +120,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                 throw new RuntimeException("交易类别设置错误");
             }
             AssetScrap e = getEntityManager().merge(entity);
-            setDetailList(assetScrapDetailBean.findByPId(e.getFormid()));
+            detailList = assetScrapDetailBean.findByPId(e.getFormid());
             //删除库存交易
             List<AssetTransaction> transactionList = assetTransactionBean.findByFormid(e.getFormid());
             if (transactionList != null && !transactionList.isEmpty()) {
@@ -186,7 +203,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                 throw new RuntimeException("交易类别设置错误");
             }
             AssetScrap e = getEntityManager().merge(entity);
-            setDetailList(assetScrapDetailBean.findByPId(e.getFormid()));
+            detailList = assetScrapDetailBean.findByPId(e.getFormid());
             for (AssetScrapDetail d : detailList) {
                 //更新库存交易出库
                 AssetTransaction st = new AssetTransaction();
@@ -357,13 +374,6 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
      */
     public List<AssetScrapDetail> getDetailList() {
         return detailList;
-    }
-
-    /**
-     * @param detailList the detailList to set
-     */
-    public void setDetailList(List<AssetScrapDetail> detailList) {
-        this.detailList = detailList;
     }
 
 }

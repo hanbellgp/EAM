@@ -186,6 +186,12 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <description>AI705盘点产生作业</description>
+            <from-outcome>assetcheckinit</from-outcome>
+            <to-view-id>/app/ai/assetcheckinit.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <description>AI710资产盘点作业</description>
             <from-outcome>assetcheck</from-outcome>
             <to-view-id>/app/ai/assetcheck.xhtml</to-view-id>

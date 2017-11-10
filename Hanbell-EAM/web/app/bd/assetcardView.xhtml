@@ -65,6 +65,16 @@
                     <p:column>
                         <h:outputText id="assetItem" value="#{assetCardManagedBean.currentEntity.assetItem.itemno}" title="itemno" />
                     </p:column>
+                    <p:column><h:outputText value="品名" /></p:column>
+                    <p:column>
+                        <h:outputText id="itemdesc" value="#{assetCardManagedBean.currentEntity.assetItem.itemdesc}" title="itemdesc"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="数量" /></p:column>
+                    <p:column>
+                        <h:outputText id="qty" value="#{assetCardManagedBean.currentEntity.qty}" title="qty"/>
+                    </p:column>
                     <p:column><h:outputText value="单位"/></p:column>
                     <p:column>
                         <h:outputText id="unit" value="#{assetCardManagedBean.currentEntity.unit}" title="Unit"/>

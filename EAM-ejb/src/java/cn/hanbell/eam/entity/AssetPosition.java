@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetPosition.getRowCount", query = "SELECT COUNT(a) FROM AssetPosition a"),
     @NamedQuery(name = "AssetPosition.findAll", query = "SELECT a FROM AssetPosition a"),
     @NamedQuery(name = "AssetPosition.findById", query = "SELECT a FROM AssetPosition a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetPosition.findByCompany", query = "SELECT a FROM AssetPosition a WHERE a.company = :company"),
+    @NamedQuery(name = "AssetPosition.findByCompany", query = "SELECT a FROM AssetPosition a WHERE a.company = :company ORDER BY a.position"),
     @NamedQuery(name = "AssetPosition.findByPosition", query = "SELECT a FROM AssetPosition a WHERE a.position = :position"),
     @NamedQuery(name = "AssetPosition.findByName", query = "SELECT a FROM AssetPosition a WHERE a.name = :name"),
     @NamedQuery(name = "AssetPosition.findByPId", query = "SELECT a FROM AssetPosition a WHERE a.parentPosition.id = :pid"),

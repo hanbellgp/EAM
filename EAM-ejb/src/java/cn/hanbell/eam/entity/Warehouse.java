@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "warehouse")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Warehouse.findAll", query = "SELECT w FROM Warehouse w"),
+    @NamedQuery(name = "Warehouse.getRowCount", query = "SELECT COUNT(w) FROM Warehouse w "),
+    @NamedQuery(name = "Warehouse.findAll", query = "SELECT w FROM Warehouse w ORDER BY w.warehouseno"),
     @NamedQuery(name = "Warehouse.findById", query = "SELECT w FROM Warehouse w WHERE w.id = :id"),
     @NamedQuery(name = "Warehouse.findByWarehouseno", query = "SELECT w FROM Warehouse w WHERE w.warehouseno = :warehouseno"),
     @NamedQuery(name = "Warehouse.findByName", query = "SELECT w FROM Warehouse w WHERE w.name = :name"),

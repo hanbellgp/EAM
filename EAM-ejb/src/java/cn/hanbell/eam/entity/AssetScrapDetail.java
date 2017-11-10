@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "AssetScrapDetail.findAll", query = "SELECT a FROM AssetScrapDetail a"),
     @NamedQuery(name = "AssetScrapDetail.findById", query = "SELECT a FROM AssetScrapDetail a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetScrapDetail.findByPId", query = "SELECT a FROM AssetScrapDetail a WHERE a.pid = :pid")})
+    @NamedQuery(name = "AssetScrapDetail.findByPId", query = "SELECT a FROM AssetScrapDetail a WHERE a.pid = :pid ORDER BY a.pid,a.seq")})
 public class AssetScrapDetail extends FormDetailEntity {
 
     @JoinColumn(name = "assetid", referencedColumnName = "id")

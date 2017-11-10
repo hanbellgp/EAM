@@ -97,7 +97,7 @@
                             <p:column>
                                 <p:inputText id="assetItem" value="#{assetScrapManagedBean.currentDetail.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
                                              required="true" requiredMessage="请输入品号" readonly="true"/>
-                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetDistributeManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{assetScrapManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{assetScrapManagedBean.handleDialogReturnWhenDetailEdit}"
                                             update="assetItem,itemdesc,unit" />
