@@ -493,7 +493,7 @@ return false;]]></method>
                         <property name="resultSetColumn">company</property>
                     </data>
                 </cell>
-                <cell id="566">
+                <cell id="579">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <property name="borderLeftStyle">solid</property>
@@ -837,8 +837,7 @@ return false;]]></method>
             <column id="336">
                 <property name="width">0.4in</property>
             </column>
-            <column id="433">
-                <property name="repeat">1</property>
+            <column id="288">
                 <property name="width">1.4in</property>
             </column>
             <column id="450">
@@ -869,7 +868,7 @@ return false;]]></method>
             <column id="524">
                 <property name="width">0.5in</property>
             </column>
-            <column id="574"/>
+            <column id="565"/>
             <header>
                 <row id="190">
                     <cell id="332">
@@ -885,7 +884,7 @@ return false;]]></method>
                             <text-property name="text">序号</text-property>
                         </label>
                     </cell>
-                    <cell id="427">
+                    <cell id="191">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -894,8 +893,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="443">
-                            <text-property name="text">编号</text-property>
+                        <label id="200">
+                            <text-property name="text">品号</text-property>
                         </label>
                     </cell>
                     <cell id="444">
@@ -1015,7 +1014,7 @@ return false;]]></method>
                             <text-property name="text">差异</text-property>
                         </label>
                     </cell>
-                    <cell id="572">
+                    <cell id="563">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1046,7 +1045,7 @@ return false;]]></method>
                             <property name="resultSetColumn">seq</property>
                         </data>
                     </cell>
-                    <cell id="428">
+                    <cell id="230">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1055,8 +1054,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="243">
-                            <property name="resultSetColumn">assetno</property>
+                        <data id="239">
+                            <property name="resultSetColumn">itemno</property>
                         </data>
                     </cell>
                     <cell id="445">
@@ -1174,7 +1173,7 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                     </cell>
-                    <cell id="573">
+                    <cell id="564">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>

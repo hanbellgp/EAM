@@ -228,6 +228,10 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             currentDetail.setPosition3(e.getPosition3());
             currentDetail.setPosition4(e.getPosition4());
             currentDetail.setWarehouse(e.getWarehouse());
+            currentDetail.setDeptno2(e.getDeptno());
+            currentDetail.setDeptname2(e.getDeptname());
+            currentDetail.setUserno2(e.getUserno());
+            currentDetail.setUsername2(e.getUsername());
             currentDetail.setWarehouse2(e.getWarehouse());
         }
     }

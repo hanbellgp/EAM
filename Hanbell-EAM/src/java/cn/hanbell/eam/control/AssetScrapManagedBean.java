@@ -138,25 +138,25 @@ public class AssetScrapManagedBean extends FormMultiBean<AssetScrap, AssetScrapD
         if (super.doBeforeUnverify()) {
             AssetInventory ai;
             AssetCard ac;
-            for (AssetScrapDetail add : detailList) {
-                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse2().getWarehouseno());
-                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
-                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可还原量不足");
+            for (AssetScrapDetail asd : detailList) {
+                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), asd.getAssetItem().getItemno(), "", "", "", asd.getWarehouse2().getWarehouseno());
+                if ((ai == null) || ai.getQty().compareTo(asd.getQty()) == -1) {
+                    showErrorMsg("Error", asd.getAssetItem().getItemno() + "库存可还原量不足");
                     return false;
                 }
-                if (add.getAssetCard() != null) {
-                    if (add.getAssetItem().getCategory().getNoauto()) {
+                if (asd.getAssetCard() != null) {
+                    if (asd.getAssetItem().getCategory().getNoauto()) {
                         //处理自动编号逻辑
-                        ac = assetCardBean.findByFiltersAndScrapped(add.getPid(), add.getSeq());
+                        ac = assetCardBean.findByFiltersAndScrapped(asd.getPid(), asd.getSeq());
                         if ((ac == null) || !ac.getScrap()) {
-                            showErrorMsg("Error", add.getAssetno() + "不存在或未报废");
+                            showErrorMsg("Error", asd.getAssetno() + "不存在或未报废");
                             return false;
                         }
                     } else {
                         //处理没有编号逻辑
-                        String assetno = add.getPid() + "-" + assetCardBean.formatString(String.valueOf(add.getSeq()), "0000");
+                        String assetno = asd.getPid() + "-" + assetCardBean.formatString(String.valueOf(asd.getSeq()), "0000");
                         ac = assetCardBean.findByAssetno(assetno);
-                        if ((ac == null) || !ac.getScrap() || ac.getQty().compareTo(add.getQty()) == -1) {
+                        if ((ac == null) || !ac.getScrap() || ac.getQty().compareTo(asd.getQty()) == -1) {
                             showErrorMsg("Error", assetno + "不存在或可还原量不足");
                             return false;
                         }
@@ -173,16 +173,16 @@ public class AssetScrapManagedBean extends FormMultiBean<AssetScrap, AssetScrapD
         if (super.doBeforeVerify()) {
             AssetInventory ai;
             AssetCard ac;
-            for (AssetScrapDetail add : detailList) {
-                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
-                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
-                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
+            for (AssetScrapDetail asd : detailList) {
+                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), asd.getAssetItem().getItemno(), "", "", "", asd.getWarehouse().getWarehouseno());
+                if ((ai == null) || ai.getQty().compareTo(asd.getQty()) == -1) {
+                    showErrorMsg("Error", asd.getAssetItem().getItemno() + "库存可利用量不足");
                     return false;
                 }
-                if (add.getAssetCard() != null) {
-                    ac = assetCardBean.findByAssetno(add.getAssetno());
-                    if ((ac == null) || ac.getQty().compareTo(add.getQty()) == -1) {
-                        showErrorMsg("Error", add.getAssetno() + "不存在或可利用量不足");
+                if (asd.getAssetCard() != null) {
+                    ac = assetCardBean.findByAssetno(asd.getAssetno());
+                    if ((ac == null) || ac.getQty().compareTo(asd.getQty()) == -1) {
+                        showErrorMsg("Error", asd.getAssetno() + "不存在或可利用量不足");
                         return false;
                     }
                 }

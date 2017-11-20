@@ -139,23 +139,56 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                 String formid = "";
                 String ret = "";
                 try {
-                    for (AssetPosition p : selectedPosition) {
-                        filters.clear();
-                        filters.put("company =", company);
-                        filters.put("assetItem.category.category =", queryCategory.getCategory());
-                        filters.put("warehouse.warehouseno IN ", warehouses);
-                        switch (queryFormKind) {
-                            case "1000":
-                                filters.put("position1.position =", p.getPosition());
-                                break;
-                            case "0100":
-                                filters.put("position2.position =", p.getPosition());
-                                break;
-                            default:
+                    if (selectedDept == null || selectedDept.isEmpty()) {
+                        for (AssetPosition p : selectedPosition) {
+                            filters.clear();
+                            filters.put("company =", company);
+                            filters.put("assetItem.category.category =", queryCategory.getCategory());
+                            filters.put("warehouse.warehouseno IN ", warehouses);
+                            switch (queryFormKind) {
+                                case "1000":
+                                    filters.put("position1.position =", p.getPosition());
+                                    break;
+                                case "0100":
+                                    filters.put("position2.position =", p.getPosition());
+                                    break;
+                                default:
+                            }
+                            if (queryState.equals("N")) {
+                                //不含数量为零
+                                filters.put("qty <>", 0);
+                            }
+                            formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, p.getPosition() + "_" + p.getName(), "", creator, filters, sorts);
+                            if (formid != null && !"".equals(formid)) {
+                                ret += formid + ";";
+                            }
                         }
-                        formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, p.getPosition() + "_" + p.getName(), "", creator, filters, sorts);
-                        if (formid != null && !"".equals(formid)) {
-                            ret += formid + ";";
+                    } else {
+                        for (AssetPosition p : selectedPosition) {
+                            for (Department d : selectedDept) {
+                                filters.clear();
+                                filters.put("company =", company);
+                                filters.put("assetItem.category.category =", queryCategory.getCategory());
+                                filters.put("deptno =", d.getDeptno());
+                                filters.put("warehouse.warehouseno IN ", warehouses);
+                                switch (queryFormKind) {
+                                    case "1000":
+                                        filters.put("position1.position =", p.getPosition());
+                                        break;
+                                    case "0100":
+                                        filters.put("position2.position =", p.getPosition());
+                                        break;
+                                    default:
+                                }
+                                if (queryState.equals("N")) {
+                                    //不含数量为零
+                                    filters.put("qty <>", 0);
+                                }
+                                formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, p.getPosition() + "_" + p.getName() + "_" + d.getDeptno() + "_" + d.getDept(), "", creator, filters, sorts);
+                                if (formid != null && !"".equals(formid)) {
+                                    ret += formid + ";";
+                                }
+                            }
                         }
                     }
                     if (!"".equals(ret)) {
@@ -176,6 +209,10 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                 filters.put("assetItem.category.category =", queryCategory.getCategory());
                 filters.put("deptno IN ", depts);
                 filters.put("warehouse.warehouseno IN ", warehouses);
+                if (queryState.equals("N")) {
+                    //不含数量为零
+                    filters.put("qty <>", 0);
+                }
                 try {
                     String ret = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, depts.toString(), "", creator, filters, sorts);
                     if (ret != null && !"".equals(ret)) {
@@ -197,6 +234,10 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                         filters.put("assetItem.category.category =", queryCategory.getCategory());
                         filters.put("deptno =", d.getDeptno());
                         filters.put("warehouse.warehouseno IN ", warehouses);
+                        if (queryState.equals("N")) {
+                            //不含数量为零
+                            filters.put("qty <>", 0);
+                        }
                         formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, d.getDeptno(), "", creator, filters, sorts);
                         if (formid != null && !"".equals(formid)) {
                             ret += formid + ";";
@@ -214,7 +255,7 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
             }
         } else {
             //仓库盘点
-
+            showInfoMsg("Info", "系统暂时不支持按仓库盘点");
         }
     }
 
