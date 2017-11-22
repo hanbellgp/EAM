@@ -29,6 +29,7 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     private String queryUsername;
 
     private Integer queryUsed = -1;
+    private Integer queryScrap = -1;
 
     public AssetCardQueryBean() {
         super(AssetCard.class);
@@ -46,6 +47,9 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (params.containsKey("used")) {
                 queryUsed = Integer.valueOf(params.get("used")[0]);
             }
+            if (params.containsKey("scrap")) {
+                queryScrap = Integer.valueOf(params.get("used")[0]);
+            }
         }
         if (queryItemno != null && !"".equals(queryItemno)) {
             model.getFilterFields().put("assetItem.itemno", queryItemno);
@@ -54,6 +58,11 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             model.getFilterFields().put("used", false);
         } else if (queryUsed > 0) {
             model.getFilterFields().put("used", true);
+        }
+        if (queryScrap == 0) {
+            model.getFilterFields().put("scrap", false);
+        } else if (queryScrap > 0) {
+            model.getFilterFields().put("scrap", true);
         }
         super.init();
     }

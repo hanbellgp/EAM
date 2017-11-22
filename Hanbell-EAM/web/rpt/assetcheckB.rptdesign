@@ -412,6 +412,8 @@ if(master!=null){
 	if(detail.get(currentRow).getAssetCard()!=null){
 		dataSetRow["assetdesc"] = detail.get(currentRow).getAssetCard().getAssetDesc();
 		dataSetRow["assetspec"] = detail.get(currentRow).getAssetCard().getAssetSpec();
+	}else{
+		dataSetRow["assetdesc"] = detail.get(currentRow).getAssetItem().getItemdesc();
 	}
 	dataSetRow["userno"] = detail.get(currentRow).getUserno();
 	dataSetRow["username"] = detail.get(currentRow).getUsername();

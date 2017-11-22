@@ -17,7 +17,9 @@ import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -36,6 +38,8 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
 
     @EJB
     protected AssetCheckBean assetCheckBean;
+
+    private List<String> paramUsed = null;
 
     /**
      * Creates a new instance of AssetCheckManagedBean
@@ -130,12 +134,37 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
 
     @Override
     public void init() {
+        openParams = new HashMap<>();
         superEJB = assetCheckBean;
         detailEJB = assetCheckDetailBean;
         model = new AssetCheckModel(assetCheckBean, userManagedBean);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();
+    }
+
+    @Override
+    public void openDialog(String view) {
+        switch (view) {
+            case "assetcardSelect":
+                openParams.clear();
+                if (paramUsed == null) {
+                    paramUsed = new ArrayList<>();
+                } else {
+                    paramUsed.clear();
+                }
+                paramUsed.add("1");
+                openParams.put("used", paramUsed);
+                if (openOptions == null) {
+                    openOptions = new HashMap();
+                    openOptions.put("modal", true);
+                    openOptions.put("contentWidth", "900");
+                }
+                super.openDialog("assetcardSelect", openOptions, openParams);
+                break;
+            default:
+                super.openDialog(view);
+        }
     }
 
     @Override

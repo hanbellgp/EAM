@@ -113,6 +113,8 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
         selectedWarehouse.stream().forEach((w) -> {
             warehouses.add(w.getWarehouseno());
         });
+        String formid = "";
+        String ret = "";
         if (queryFormType.equals("AC")) {
             //卡片盘点
             //排序条件
@@ -136,8 +138,6 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
             }
             if (!"0000".equals(queryFormKind)) {
                 //按存放位置盘点
-                String formid = "";
-                String ret = "";
                 try {
                     if (selectedDept == null || selectedDept.isEmpty()) {
                         for (AssetPosition p : selectedPosition) {
@@ -214,7 +214,7 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                     filters.put("qty <>", 0);
                 }
                 try {
-                    String ret = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, depts.toString(), "", creator, filters, sorts);
+                    ret = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, depts.toString(), "", creator, filters, sorts);
                     if (ret != null && !"".equals(ret)) {
                         showInfoMsg("Info", "成功产生盘点单" + ret);
                         reset();
@@ -225,8 +225,6 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                     showErrorMsg("Error", ex.getMessage());
                 }
             } else {
-                String formid = "";
-                String ret = "";
                 try {
                     for (Department d : selectedDept) {
                         filters.clear();
@@ -238,7 +236,7 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                             //不含数量为零
                             filters.put("qty <>", 0);
                         }
-                        formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, d.getDeptno(), "", creator, filters, sorts);
+                        formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, d.getDeptno() + d.getDeptno(), "", creator, filters, sorts);
                         if (formid != null && !"".equals(formid)) {
                             ret += formid + ";";
                         }
@@ -255,7 +253,32 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
             }
         } else {
             //仓库盘点
-            showInfoMsg("Info", "系统暂时不支持按仓库盘点");
+            sorts.put("warehouse.warehouseno", "ASC");
+            sorts.put("assetItem.itemno", "ASC");
+            try {
+                for (Warehouse wh : selectedWarehouse) {
+                    filters.clear();
+                    filters.put("company =", company);
+                    filters.put("assetItem.category.category =", queryCategory.getCategory());
+                    filters.put("warehouse.warehouseno = ", wh.getWarehouseno());
+                    if (queryState.equals("N")) {
+                        //不含数量为零
+                        filters.put("qty <>", 0);
+                    }
+                    formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, wh.getWarehouseno() + wh.getName(), "", creator, filters, sorts);
+                    if (formid != null && !"".equals(formid)) {
+                        ret += formid + ";";
+                    }
+                }
+                if (!"".equals(ret)) {
+                    showInfoMsg("Info", "成功产生盘点单" + ret);
+                    reset();
+                } else {
+                    showErrorMsg("Error", "产生盘点单失败");
+                }
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
         }
     }
 
