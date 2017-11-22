@@ -45,6 +45,10 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     private String queryPosition2;
     private String queryPosition3;
     private String queryPosition4;
+    private boolean noPosition1;
+    private boolean noPosition2;
+    private boolean noPosition3;
+    private boolean noPosition4;
 
     private List<String> paramPosition = null;
 
@@ -170,6 +174,10 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
 
     @Override
     public void init() {
+        noPosition1 = false;
+        noPosition2 = false;
+        noPosition3 = false;
+        noPosition4 = false;
         openParams = new HashMap<>();
         superEJB = assetCardBean;
         model = new AssetCardModel(assetCardBean, userManagedBean);
@@ -243,7 +251,7 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
         }
     }
 
-    public void print(String rptclazz, String rptdesign,String reportFormat) throws Exception {
+    public void print(String rptclazz, String rptdesign, String reportFormat) throws Exception {
         if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
             HashMap<String, Object> reportParams = new HashMap<>();
             reportParams.put("company", userManagedBean.getCurrentCompany().getName());
@@ -327,6 +335,18 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
             }
             if (this.queryPosition4 != null && !"".equals(this.queryPosition4)) {
                 this.model.getFilterFields().put("position4.position", this.queryPosition4);
+            }
+            if (noPosition1) {
+                this.model.getFilterFields().put("position1 IS NULL", true);
+            }
+            if (noPosition2) {
+                this.model.getFilterFields().put("position2 IS NULL", true);
+            }
+            if (noPosition3) {
+                this.model.getFilterFields().put("position3 IS NULL", true);
+            }
+            if (noPosition4) {
+                this.model.getFilterFields().put("position4 IS NULL", true);
             }
         }
     }
@@ -489,6 +509,62 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
      */
     public void setQueryPosition4(String queryPosition4) {
         this.queryPosition4 = queryPosition4;
+    }
+
+    /**
+     * @return the noPosition1
+     */
+    public boolean isNoPosition1() {
+        return noPosition1;
+    }
+
+    /**
+     * @return the noPosition2
+     */
+    public boolean isNoPosition2() {
+        return noPosition2;
+    }
+
+    /**
+     * @return the noPosition3
+     */
+    public boolean isNoPosition3() {
+        return noPosition3;
+    }
+
+    /**
+     * @return the noPosition4
+     */
+    public boolean isNoPosition4() {
+        return noPosition4;
+    }
+
+    /**
+     * @param noPosition1 the noPosition1 to set
+     */
+    public void setNoPosition1(boolean noPosition1) {
+        this.noPosition1 = noPosition1;
+    }
+
+    /**
+     * @param noPosition2 the noPosition2 to set
+     */
+    public void setNoPosition2(boolean noPosition2) {
+        this.noPosition2 = noPosition2;
+    }
+
+    /**
+     * @param noPosition3 the noPosition3 to set
+     */
+    public void setNoPosition3(boolean noPosition3) {
+        this.noPosition3 = noPosition3;
+    }
+
+    /**
+     * @param noPosition4 the noPosition4 to set
+     */
+    public void setNoPosition4(boolean noPosition4) {
+        this.noPosition4 = noPosition4;
     }
 
 }

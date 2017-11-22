@@ -15,7 +15,6 @@ import cn.hanbell.eam.entity.AssetTransaction;
 import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eap.ejb.SystemProgramBean;
 import cn.hanbell.eap.entity.SystemProgram;
-import com.lightshell.comm.BaseLib;
 import com.lightshell.comm.SuperEJB;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -74,114 +73,157 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
     }
 
     public String init(String company, Date formdate, String formtype, String formkind, AssetCategory category, String deptno, String userno, String creator, Map<String, Object> filters, Map<String, String> sorts) {
-        List<AssetCard> assetCardList = assetCardBean.findByFilters(filters, sorts);
-        if (assetCardList == null || assetCardList.isEmpty()) {
-            return null;
-        }
-        boolean flag;
-        int seq = 0;
         AssetCheck ac;
         AssetCheckDetail acd;
         List<AssetCheckDetail> addedDetail = new ArrayList<>();
-        if (category.getNoauto()) {
-            //资产类
-            for (AssetCard c : assetCardList) {
+        if (formtype.equals("AC")) {
+            List<AssetCard> assetCardList = assetCardBean.findByFilters(filters, sorts);
+            if (assetCardList == null || assetCardList.isEmpty()) {
+                return null;
+            }
+            boolean flag;
+            int seq = 0;
+            if (category.getNoauto()) {
+                //资产类
+                for (AssetCard c : assetCardList) {
+                    seq++;
+                    acd = new AssetCheckDetail();
+                    acd.setSeq(seq);
+                    acd.setAssetCard(c);
+                    acd.setAssetno(c.getFormid());
+                    acd.setAssetItem(c.getAssetItem());
+                    acd.setBrand(c.getBrand());
+                    acd.setBatch(c.getBatch());
+                    acd.setSn(c.getSn());
+                    acd.setQty(c.getQty());
+                    acd.setActqty(c.getQty());
+                    acd.setDiffqty(BigDecimal.ZERO);
+                    acd.setUnit(c.getUnit());
+                    acd.setPosition1(c.getPosition1());
+                    acd.setPosition2(c.getPosition2());
+                    acd.setPosition3(c.getPosition3());
+                    acd.setPosition4(c.getPosition4());
+                    acd.setPosition5(c.getPosition5());
+                    acd.setPosition6(c.getPosition6());
+                    acd.setDeptno(c.getDeptno());
+                    acd.setDeptname(c.getDeptname());
+                    acd.setUserno(c.getUserno());
+                    acd.setUsername(c.getUsername());
+                    acd.setWarehouse(c.getWarehouse());
+                    addedDetail.add(acd);
+                    c.setRelseq(seq);
+                }
+            } else {
+                //非资产
+                for (AssetCard c : assetCardList) {
+                    acd = new AssetCheckDetail();
+                    acd.setAssetCard(c);
+                    acd.setAssetno(c.getFormid());
+                    acd.setAssetItem(c.getAssetItem());
+                    acd.setBrand(c.getBrand());
+                    acd.setBatch(c.getBatch());
+                    acd.setSn(c.getSn());
+                    acd.setQty(c.getQty());
+                    acd.setActqty(c.getQty());
+                    acd.setDiffqty(BigDecimal.ZERO);
+                    acd.setUnit(c.getUnit());
+                    acd.setPosition1(c.getPosition1());
+                    acd.setPosition2(c.getPosition2());
+                    acd.setPosition3(c.getPosition3());
+                    acd.setPosition4(c.getPosition4());
+                    acd.setPosition5(c.getPosition5());
+                    acd.setPosition6(c.getPosition6());
+                    acd.setDeptno(c.getDeptno());
+                    acd.setDeptname(c.getDeptname());
+                    acd.setUserno(c.getUserno());
+                    acd.setUsername(c.getUsername());
+                    acd.setWarehouse(c.getWarehouse());
+                    //相同品号和使用人进行合并
+                    flag = true;
+                    for (AssetCheckDetail d : addedDetail) {
+                        if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && d.getUserno().equals(acd.getUserno())) {
+                            d.setQty(d.getQty().add(acd.getQty()));
+                            d.setActqty(d.getQty());
+                            flag = false;
+                        }
+                    }
+                    if (flag) {
+                        seq++;
+                        acd.setSeq(seq);
+                        addedDetail.add(acd);
+                        c.setRelseq(seq);
+                    } else {
+                        //记录需要删除
+                        c.setStatus("X");
+                        c.setRelseq(0);
+                    }
+                }
+            }
+            ac = new AssetCheck();
+            ac.setCompany(company);
+            ac.setFormdate(formdate);
+            ac.setFormtype(formtype);
+            ac.setFormkind(formkind);
+            ac.setCategory(category);
+            ac.setDeptno(deptno);
+            ac.setUserno(userno);
+            ac.setStatusToNew();
+            ac.setCreator(creator);
+            ac.setCredateToNow();
+            try {
+                String formid = initAssetCheck(ac, addedDetail);
+                if (formid != null && !"".equals(formid)) {
+                    for (AssetCard e : assetCardList) {
+                        e.setRelapi("assetcheck");
+                        e.setRelformid(formid);
+                    }
+                    assetCardBean.update(assetCardList);
+                }
+                return formid;
+            } catch (Exception ex) {
+                return ex.getMessage();
+            }
+        } else {
+            List<AssetInventory> assetInventoryList = assetInventoryBean.findByFilters(filters, sorts);
+            if (assetInventoryList == null || assetInventoryList.isEmpty()) {
+                return null;
+            }
+            boolean flag;
+            int seq = 0;
+            for (AssetInventory i : assetInventoryList) {
                 seq++;
                 acd = new AssetCheckDetail();
                 acd.setSeq(seq);
-                acd.setAssetCard(c);
-                acd.setAssetno(c.getFormid());
-                acd.setAssetItem(c.getAssetItem());
-                acd.setBrand(c.getBrand());
-                acd.setBatch(c.getBatch());
-                acd.setSn(c.getSn());
-                acd.setQty(c.getQty());
-                acd.setActqty(c.getQty());
+                acd.setAssetCard(null);
+                acd.setAssetno(null);
+                acd.setAssetItem(i.getAssetItem());
+                acd.setBrand(i.getBrand());
+                acd.setBatch(i.getBatch());
+                acd.setSn(i.getSn());
+                acd.setQty(i.getQty());
+                acd.setActqty(i.getQty());
                 acd.setDiffqty(BigDecimal.ZERO);
-                acd.setUnit(c.getUnit());
-                acd.setPosition1(c.getPosition1());
-                acd.setPosition2(c.getPosition2());
-                acd.setPosition3(c.getPosition3());
-                acd.setPosition4(c.getPosition4());
-                acd.setPosition5(c.getPosition5());
-                acd.setPosition6(c.getPosition6());
-                acd.setDeptno(c.getDeptno());
-                acd.setDeptname(c.getDeptname());
-                acd.setUserno(c.getUserno());
-                acd.setUsername(c.getUsername());
-                acd.setWarehouse(c.getWarehouse());
+                acd.setUnit(i.getAssetItem().getUnit());
+                acd.setWarehouse(i.getWarehouse());
                 addedDetail.add(acd);
-                c.setRelseq(seq);
             }
-        } else {
-            //非资产
-            for (AssetCard c : assetCardList) {
-                acd = new AssetCheckDetail();
-                acd.setAssetCard(c);
-                acd.setAssetno(c.getFormid());
-                acd.setAssetItem(c.getAssetItem());
-                acd.setBrand(c.getBrand());
-                acd.setBatch(c.getBatch());
-                acd.setSn(c.getSn());
-                acd.setQty(c.getQty());
-                acd.setActqty(c.getQty());
-                acd.setDiffqty(BigDecimal.ZERO);
-                acd.setUnit(c.getUnit());
-                acd.setPosition1(c.getPosition1());
-                acd.setPosition2(c.getPosition2());
-                acd.setPosition3(c.getPosition3());
-                acd.setPosition4(c.getPosition4());
-                acd.setPosition5(c.getPosition5());
-                acd.setPosition6(c.getPosition6());
-                acd.setDeptno(c.getDeptno());
-                acd.setDeptname(c.getDeptname());
-                acd.setUserno(c.getUserno());
-                acd.setUsername(c.getUsername());
-                acd.setWarehouse(c.getWarehouse());
-                //相同品号和使用人进行合并
-                flag = true;
-                for (AssetCheckDetail d : addedDetail) {
-                    if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && d.getUserno().equals(acd.getUserno())) {
-                        d.setQty(d.getQty().add(acd.getQty()));
-                        d.setActqty(d.getQty());
-                        flag = false;
-                    }
-                }
-                if (flag) {
-                    seq++;
-                    acd.setSeq(seq);
-                    addedDetail.add(acd);
-                    c.setRelseq(seq);
-                } else {
-                    //记录需要删除
-                    c.setStatus("X");
-                    c.setRelseq(0);
-                }
+            ac = new AssetCheck();
+            ac.setCompany(company);
+            ac.setFormdate(formdate);
+            ac.setFormtype(formtype);
+            ac.setFormkind(formkind);
+            ac.setCategory(category);
+            ac.setDeptno(deptno);
+            ac.setUserno(userno);
+            ac.setStatusToNew();
+            ac.setCreator(creator);
+            ac.setCredateToNow();
+            try {
+                String formid = initAssetCheck(ac, addedDetail);
+                return formid;
+            } catch (Exception ex) {
+                return ex.getMessage();
             }
-        }
-        ac = new AssetCheck();
-        ac.setCompany(company);
-        ac.setFormdate(formdate);
-        ac.setFormtype(formtype);
-        ac.setFormkind(formkind);
-        ac.setCategory(category);
-        ac.setDeptno(deptno);
-        ac.setUserno(userno);
-        ac.setStatusToNew();
-        ac.setCreator(creator);
-        ac.setCredateToNow();
-        try {
-            String formid = initAssetCheck(ac, addedDetail);
-            if (formid != null && !"".equals(formid)) {
-                for (AssetCard e : assetCardList) {
-                    e.setRelapi("assetcheck");
-                    e.setRelformid(formid);
-                }
-                assetCardBean.update(assetCardList);
-            }
-            return formid;
-        } catch (Exception ex) {
-            return ex.getMessage();
         }
     }
 

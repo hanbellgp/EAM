@@ -50,7 +50,7 @@ public class AssetScrap extends FormEntity {
     @Size(max = 45)
     @Column(name = "deptname")
     private String deptname;
-    @Size(max = 45)
+    @Size(max = 200)
     @Column(name = "reason")
     private String reason;
     @Size(max = 20)

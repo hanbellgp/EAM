@@ -23,7 +23,7 @@
                     <p:column styleClass="Wid20"><h:outputLabel value="盘点日期" for="queryFormDate" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:calendar id="queryFormDate" value="#{assetCheckInitManagedBean.queryFormDate}" title="盘点日期" pattern="yyyy/MM/dd"
-                                    rendered="true" requiredMessage="请输入盘点日期" />
+                                    required="true" requiredMessage="请输入盘点日期" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -35,14 +35,14 @@
                             <f:selectItem itemLabel="按库存" itemValue="WH"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
+                    <p:column><h:outputLabel value="位置分组" for="queryFormKind" /></p:column>
                     <p:column>
-                        <p:inputText id="queryCategory" value="#{assetCheckInitManagedBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
-                        <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCheckInitManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
-                                         process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetCheckInitManagedBean.handleDialogReturnCategoryWhenNew}"
-                                    update="queryCategory" />
-                        </p:commandButton>
+                        <p:selectOneMenu id="queryFormKind" value="#{assetCheckInitManagedBean.queryFormKind}"
+                                         required="true" requiredMessage="请输入位置分组">
+                            <f:selectItem itemLabel="不分组" itemValue="0000"/>
+                            <f:selectItem itemLabel="按位置1(公司)" itemValue="1000"/>
+                            <f:selectItem itemLabel="按位置2(厂区)" itemValue="0100"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -57,18 +57,22 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><h:outputLabel value="位置分组" for="queryFormKind" /></p:column>
+                    <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
                     <p:column>
-                        <p:selectOneMenu id="queryFormKind" value="#{assetCheckInitManagedBean.queryFormKind}"
-                                         required="true" requiredMessage="请输入位置分组">
-                            <f:selectItem itemLabel="不分组" itemValue="0000"/>
-                            <f:selectItem itemLabel="按位置1(公司)" itemValue="1000"/>
-                            <f:selectItem itemLabel="按位置2(厂区)" itemValue="0100"/>
-                        </p:selectOneMenu>
+                        <p:inputText id="queryCategory" value="#{assetCheckInitManagedBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCheckInitManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCheckInitManagedBean.handleDialogReturnCategoryWhenNew}"
+                                    update="queryCategory" />
+                        </p:commandButton>
                     </p:column>
-                    <p:column></p:column>
+                    <p:column><h:outputLabel value="包含零数量" for="queryState" /></p:column>
                     <p:column>
-
+                        <p:selectOneMenu id="queryState" value="#{assetCheckInitManagedBean.queryState}" title="零数量" 
+                                         required="true" requiredMessage="请选择是否包含零数量">
+                            <f:selectItem itemLabel="不含" itemValue="N"/>
+                            <f:selectItem itemLabel="包含" itemValue="V"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
             </p:panelGrid>
