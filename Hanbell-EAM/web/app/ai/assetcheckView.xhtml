@@ -20,6 +20,8 @@
                                      rendered="#{assetCheckManagedBean.hasNext}"/>
                 </f:facet>
                 <f:facet name="right">
+                    <p:commandButton id="btnExport" value="导出" actionListener="#{assetCheckManagedBean.print('xls')}" icon="ui-icon-print"
+                                     process="@this" rendered="#{assetCheckManagedBean.doPrt}"/>
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCheckManagedBean.print()}" icon="ui-icon-print"
                                      process="@this" rendered="#{assetCheckManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" action="#{assetCheckManagedBean.verify()}" icon="ui-icon-check"
@@ -216,7 +218,7 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formOne" trigger="btnPrint,btnVerify,btnUnverify">
+            <p:blockUI id="blockUI" block="formOne" trigger="btnExport,btnPrint,btnVerify,btnUnverify">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>

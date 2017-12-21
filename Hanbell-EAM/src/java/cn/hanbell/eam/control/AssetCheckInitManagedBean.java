@@ -42,7 +42,6 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
     private Date queryFormDate;
     private String queryFormType;
     private String queryFormKind;
-    private AssetCategory queryCategory;
     private String queryDeptno;
     private String queryUserno;
     private String queryPosition;
@@ -98,7 +97,7 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                     showErrorMsg("Error", "请先选择部门");
                     return;
                 }
-            } else if (selectedPosition.isEmpty()) {
+            } else if (selectedPosition == null || selectedPosition.isEmpty()) {
                 showErrorMsg("Error", "按位置分组时请选择位置");
                 return;
             }
@@ -236,7 +235,7 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
                             //不含数量为零
                             filters.put("qty <>", 0);
                         }
-                        formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, d.getDeptno() + d.getDeptno(), "", creator, filters, sorts);
+                        formid = assetCheckBean.init(company, queryFormDate, queryFormType, queryFormKind, queryCategory, d.getDeptno() + "_" + d.getDept(), "", creator, filters, sorts);
                         if (formid != null && !"".equals(formid)) {
                             ret += formid + ";";
                         }
@@ -342,20 +341,6 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
      */
     public void setQueryFormKind(String queryFormKind) {
         this.queryFormKind = queryFormKind;
-    }
-
-    /**
-     * @return the queryCategory
-     */
-    public AssetCategory getQueryCategory() {
-        return queryCategory;
-    }
-
-    /**
-     * @param queryCategory the queryCategory to set
-     */
-    public void setQueryCategory(AssetCategory queryCategory) {
-        this.queryCategory = queryCategory;
     }
 
     /**

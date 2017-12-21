@@ -85,16 +85,17 @@
                                      update=":formList">
                         <p:confirm header="系统提示" message="产生盘点单吗?" icon="ui-icon-alert" />
                     </p:commandButton>
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetCheckInitManagedBean.reset()}" icon="ui-icon-refresh"
-                                     process="@this" update=":formList"/>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetCheckInitManagedBean.reset()}" icon="ui-icon-refresh" 
+                                     process="@this" update="formList"/>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{assetCheckInitManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
             <p:tabView id="tabView" styleClass="tabView">
-                <p:tab title="使用部门">
-                    <p:dataTable id="tableList" value="#{assetCheckInitManagedBean.deptList}" var="item" styleClass="tableList Mtop10"
-                                 selection="#{assetCheckInitManagedBean.selectedDept}" rowKey="#{item.id}" >
+                <p:tab title="使用部门" id="selectedDept">
+                    <p:dataTable id="tableList1" value="#{assetCheckInitManagedBean.deptList}" var="item" styleClass="tableList Mtop10" paginator="true" paginatorPosition="bottom" rows="50"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="50,100,150"   selection="#{assetCheckInitManagedBean.selectedDept}" rowKey="#{item.id}">
                         <f:facet name="header">
                             选择需要盘点的部门
                         </f:facet>
@@ -117,8 +118,9 @@
                     </p:dataTable>
                 </p:tab>
                 <p:tab title="盘点仓库">
-                    <p:dataTable id="tableList2" value="#{assetCheckInitManagedBean.warehouseList}" var="item" styleClass="tableList Mtop10"
-                                 selection="#{assetCheckInitManagedBean.selectedWarehouse}" rowKey="#{item.id}" >
+                    <p:dataTable id="tableList2" value="#{assetCheckInitManagedBean.warehouseList}" var="item" styleClass="tableList Mtop10" paginator="true" paginatorPosition="bottom" rows="50"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="50,100,150"  selection="#{assetCheckInitManagedBean.selectedWarehouse}" rowKey="#{item.id}" >
                         <f:facet name="header">
                             选择需要盘点的仓库
                         </f:facet>

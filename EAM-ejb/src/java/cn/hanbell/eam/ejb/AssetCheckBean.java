@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -138,10 +139,10 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                     acd.setUserno(c.getUserno());
                     acd.setUsername(c.getUsername());
                     acd.setWarehouse(c.getWarehouse());
-                    //相同品号和使用人进行合并
+                    //相同品号、部门和使用人进行合并
                     flag = true;
                     for (AssetCheckDetail d : addedDetail) {
-                        if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && d.getUserno().equals(acd.getUserno())) {
+                        if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && Objects.equals(d.getDeptno(), acd.getDeptno()) && Objects.equals(d.getUserno(), acd.getUserno())) {
                             d.setQty(d.getQty().add(acd.getQty()));
                             d.setActqty(d.getQty());
                             flag = false;
