@@ -274,21 +274,20 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
             }
             for (AssetCheckDetail d : detailList) {
                 i = d.getDiffqty().compareTo(BigDecimal.ZERO);
-                if (i == 0) {
-                    continue;
+                if (i != 0) {
+                    //更新库存数量
+                    AssetInventory si = new AssetInventory();
+                    si.setCompany(e.getCompany());
+                    si.setAssetItem(d.getAssetItem());
+                    si.setBrand(d.getBrand());
+                    si.setBatch(d.getBatch());
+                    si.setSn(d.getSn());
+                    si.setWarehouse(d.getWarehouse());
+                    si.setPreqty(BigDecimal.ZERO);
+                    si.setQty(d.getDiffqty());//盘亏负数盘盈正数
+                    si.setStatusToNew();
+                    inventoryList.add(si);
                 }
-                //更新库存数量
-                AssetInventory si = new AssetInventory();
-                si.setCompany(e.getCompany());
-                si.setAssetItem(d.getAssetItem());
-                si.setBrand(d.getBrand());
-                si.setBatch(d.getBatch());
-                si.setSn(d.getSn());
-                si.setWarehouse(d.getWarehouse());
-                si.setPreqty(BigDecimal.ZERO);
-                si.setQty(d.getDiffqty());//盘亏负数盘盈正数
-                si.setStatusToNew();
-                inventoryList.add(si);
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
                     AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
@@ -331,59 +330,58 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
             detailList = assetCheckDetailBean.findByPId(e.getFormid());
             for (AssetCheckDetail d : detailList) {
                 i = d.getDiffqty().compareTo(BigDecimal.ZERO);
-                if (i == 0) {
-                    continue;
+                if (i != 0) {
+                    //更新库存交易出库
+                    AssetTransaction st = new AssetTransaction();
+                    st.setCompany(e.getCompany());
+                    st.setFormid(e.getFormid());
+                    st.setFormdate(e.getFormdate());
+                    st.setSeq(d.getSeq());
+                    st.setAssetItem(d.getAssetItem());
+                    st.setBrand(d.getBrand());
+                    st.setBatch(d.getBatch());
+                    st.setSn(d.getSn());
+                    st.setQty(d.getDiffqty());
+                    st.setUnit(d.getUnit());
+                    if (d.getAssetCard() != null) {
+                        st.setAssetCard(d.getAssetCard());
+                        st.setAssetno(d.getAssetno());
+                    }
+                    st.setPrice(BigDecimal.ZERO);
+                    st.setWarehouse(d.getWarehouse());
+                    st.setSrcapi(d.getSrcapi());
+                    st.setSrcformid(d.getSrcformid());
+                    st.setSrcseq(d.getSrcseq());
+                    st.setRelapi(d.getRelapi());
+                    st.setRelformid(d.getRelformid());
+                    st.setRelseq(d.getRelseq());
+                    st.setStatus(e.getStatus());
+                    st.setCfmuser(e.getCfmuser());
+                    st.setCfmdate(e.getCfmdate());
+                    if (i < 1) {
+                        //盘亏
+                        st.setTrtype(AJO);
+                        st.setIocode(AJO.getIocode());
+                    } else {
+                        //盘盈
+                        st.setTrtype(AJI);
+                        st.setIocode(AJI.getIocode());
+                    }
+                    assetTransactionBean.setDefaultValue(st);
+                    assetTransactionBean.persist(st);
+                    //更新库存数量
+                    AssetInventory si = new AssetInventory();
+                    si.setCompany(e.getCompany());
+                    si.setAssetItem(d.getAssetItem());
+                    si.setBrand(d.getBrand());
+                    si.setBatch(d.getBatch());
+                    si.setSn(d.getSn());
+                    si.setWarehouse(d.getWarehouse());
+                    si.setPreqty(BigDecimal.ZERO);
+                    si.setQty(d.getDiffqty());//盘亏负数盘盈正数
+                    si.setStatusToNew();
+                    inventoryList.add(si);
                 }
-                //更新库存交易出库
-                AssetTransaction st = new AssetTransaction();
-                st.setCompany(e.getCompany());
-                st.setFormid(e.getFormid());
-                st.setFormdate(e.getFormdate());
-                st.setSeq(d.getSeq());
-                st.setAssetItem(d.getAssetItem());
-                st.setBrand(d.getBrand());
-                st.setBatch(d.getBatch());
-                st.setSn(d.getSn());
-                st.setQty(d.getDiffqty());
-                st.setUnit(d.getUnit());
-                if (d.getAssetCard() != null) {
-                    st.setAssetCard(d.getAssetCard());
-                    st.setAssetno(d.getAssetno());
-                }
-                st.setPrice(BigDecimal.ZERO);
-                st.setWarehouse(d.getWarehouse());
-                st.setSrcapi(d.getSrcapi());
-                st.setSrcformid(d.getSrcformid());
-                st.setSrcseq(d.getSrcseq());
-                st.setRelapi(d.getRelapi());
-                st.setRelformid(d.getRelformid());
-                st.setRelseq(d.getRelseq());
-                st.setStatus(e.getStatus());
-                st.setCfmuser(e.getCfmuser());
-                st.setCfmdate(e.getCfmdate());
-                if (i < 1) {
-                    //盘亏
-                    st.setTrtype(AJO);
-                    st.setIocode(AJO.getIocode());
-                } else {
-                    //盘盈
-                    st.setTrtype(AJI);
-                    st.setIocode(AJI.getIocode());
-                }
-                assetTransactionBean.setDefaultValue(st);
-                assetTransactionBean.persist(st);
-                //更新库存数量
-                AssetInventory si = new AssetInventory();
-                si.setCompany(e.getCompany());
-                si.setAssetItem(d.getAssetItem());
-                si.setBrand(d.getBrand());
-                si.setBatch(d.getBatch());
-                si.setSn(d.getSn());
-                si.setWarehouse(d.getWarehouse());
-                si.setPreqty(BigDecimal.ZERO);
-                si.setQty(d.getDiffqty());//盘亏负数盘盈正数
-                si.setStatusToNew();
-                inventoryList.add(si);
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
                     AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
