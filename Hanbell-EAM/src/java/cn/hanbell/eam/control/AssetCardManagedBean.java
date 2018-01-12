@@ -7,6 +7,7 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.entity.AssetCard;
+import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.entity.Warehouse;
@@ -34,6 +35,7 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     @EJB
     private AssetCardBean assetCardBean;
 
+    private AssetCategory queryCategory;
     private String queryItemno;
     private String queryItemdesc;
     private String queryDeptno;
@@ -51,6 +53,20 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     private boolean noPosition4;
 
     private List<String> paramPosition = null;
+
+    /**
+     * @return the queryCategory
+     */
+    public AssetCategory getQueryCategory() {
+        return queryCategory;
+    }
+
+    /**
+     * @param queryCategory the queryCategory to set
+     */
+    public void setQueryCategory(AssetCategory queryCategory) {
+        this.queryCategory = queryCategory;
+    }
 
     public AssetCardManagedBean() {
         super(AssetCard.class);
@@ -169,6 +185,13 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
         if (event.getObject() != null && currentEntity != null) {
             Warehouse e = (Warehouse) event.getObject();
             currentEntity.setWarehouse(e);
+        }
+    }
+
+    public void handleDialogReturnCategoryWhenQuery(SelectEvent event) {
+        if (event.getObject() != null) {
+            AssetCategory e = (AssetCategory) event.getObject();
+            queryCategory = e;
         }
     }
 
@@ -291,6 +314,9 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     public void query() {
         if (this.model != null) {
             this.model.getFilterFields().clear();
+            if (this.queryCategory != null) {
+                this.model.getFilterFields().put("assetItem.category.id", this.queryCategory.getId());
+            }
             if (this.queryFormId != null && !"".equals(this.queryFormId)) {
                 this.model.getFilterFields().put("formid", this.queryFormId);
             }
@@ -318,11 +344,19 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
             if (this.queryWarehouseno != null && !"".equals(this.queryWarehouseno)) {
                 this.model.getFilterFields().put("warehouse.warehouseno", this.queryWarehouseno);
             }
-            if (queryState != null && "N".equals(queryState)) {
-                this.model.getFilterFields().put("used", false);
-            } else if (queryState != null && "V".equals(queryState)) {
-                this.model.getFilterFields().put("used", true);
-                this.model.getFilterFields().put("qty <>", 0);
+            if (queryState != null) {
+                switch (queryState) {
+                    case "N":
+                        this.model.getFilterFields().put("used", false);
+                        break;
+                    case "V":
+                        this.model.getFilterFields().put("used", true);
+                        this.model.getFilterFields().put("qty <>", 0);
+                        break;
+                    case "X":
+                        this.model.getFilterFields().put("status", "X");
+                    default:
+                }
             }
             if (this.queryPosition1 != null && !"".equals(this.queryPosition1)) {
                 this.model.getFilterFields().put("position1.position", this.queryPosition1);
@@ -355,6 +389,7 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     public void reset() {
         super.reset();
         model.getFilterFields().put("qty <>", 0);
+        queryCategory = null;
     }
 
     /**

@@ -79,8 +79,7 @@ public class AssetCheckPrintManagedBean extends AssetCheckManagedBean {
         this.reportViewPath = reportViewContext + fileName;
         this.preview();
     }
-    
-    
+
     public void print(String rptclazz, String rptdesign, String reportFormat) throws Exception {
         if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
             HashMap<String, Object> reportParams = new HashMap<>();
@@ -116,6 +115,5 @@ public class AssetCheckPrintManagedBean extends AssetCheckManagedBean {
             }
         }
     }
-
 
 }

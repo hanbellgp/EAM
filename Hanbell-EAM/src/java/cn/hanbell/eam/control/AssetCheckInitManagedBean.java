@@ -60,13 +60,6 @@ public class AssetCheckInitManagedBean extends AssetCheckManagedBean {
     public AssetCheckInitManagedBean() {
     }
 
-    public void handleDialogReturnCategoryWhenNew(SelectEvent event) {
-        if (event.getObject() != null) {
-            AssetCategory e = (AssetCategory) event.getObject();
-            queryCategory = e;
-        }
-    }
-
     @Override
     public void init() {
         super.init();

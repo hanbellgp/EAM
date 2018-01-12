@@ -11,48 +11,115 @@
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
             <p:accordionPanel>
                 <p:tab  title="查询条件">
-                    <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
-                        <h:outputLabel value="编号" for="queryFormId" />
-                        <p:inputText id="queryFormId" value="#{assetCardManagedBean.queryFormId}" title="编号" />
-                        <h:outputLabel value="名称" for="queryName" />
-                        <p:inputText id="queryName" value="#{assetCardManagedBean.queryName}" title="名称" />
-                        <h:outputLabel value="品号" for="queryItemno" />
-                        <p:inputText id="queryItemno" value="#{assetCardManagedBean.queryItemno}" title="品号" />
-                        <h:outputLabel value="品名" for="queryItemdesc" />
-                        <p:inputText id="queryItemdesc" value="#{assetCardManagedBean.queryItemdesc}" title="品名" />
-                        <h:outputLabel value="使用部门" for="queryDeptno" />
-                        <p:inputText id="queryDeptno" value="#{assetCardManagedBean.queryDeptno}" title="使用部门" />
-                        <h:outputLabel value="部门名称" for="queryDeptname" />
-                        <p:inputText id="queryDeptname" value="#{assetCardManagedBean.queryDeptname}" title="部门名称" />
-                        <h:outputLabel value="使用人" for="queryUserno" />
-                        <p:inputText id="queryUserno" value="#{assetCardManagedBean.queryUserno}" title="使用人" />
-                        <h:outputLabel value="姓名" for="queryUsername" />
-                        <p:inputText id="queryUsername" value="#{assetCardManagedBean.queryUsername}" title="姓名" />
-                        <h:outputLabel value="仓库" for="queryWarehouseno" />
-                        <p:inputText id="queryWarehouseno" value="#{assetCardManagedBean.queryWarehouseno}" title="仓库" />
-                        <h:outputLabel value="状态" for="queryState" />
-                        <p:selectOneMenu id="queryState" value="#{assetCardManagedBean.queryState}" title="状态" >
-                            <f:selectItem itemLabel="全部" itemValue="ALL"/>
-                            <f:selectItem itemLabel="未使用" itemValue="N"/>
-                            <f:selectItem itemLabel="已使用" itemValue="V"/>
-                            <f:selectItem itemLabel="需删除" itemValue="X"/>
-                        </p:selectOneMenu>
-                        <h:outputLabel value="位置编号1" for="queryPosition1" />
-                        <p:inputText id="queryPosition1" value="#{assetCardManagedBean.queryPosition1}" title="位置编号1" />
-                        <h:outputLabel value="位置1为空" for="noPosition1" />
-                        <p:selectBooleanCheckbox id="noPosition1" value="#{assetCardManagedBean.noPosition1}" title="位置1为空" />
-                        <h:outputLabel value="位置编号2" for="queryPosition2" />
-                        <p:inputText id="queryPosition2" value="#{assetCardManagedBean.queryPosition2}" title="位置编号2" />
-                        <h:outputLabel value="位置2为空" for="noPosition2" />
-                        <p:selectBooleanCheckbox id="noPosition2" value="#{assetCardManagedBean.noPosition2}" title="位置2为空" />
-                        <h:outputLabel value="位置编号3" for="queryPosition3" />
-                        <p:inputText id="queryPosition3" value="#{assetCardManagedBean.queryPosition3}" title="位置编号3" />
-                        <h:outputLabel value="位置3为空" for="noPosition3" />
-                        <p:selectBooleanCheckbox id="noPosition3" value="#{assetCardManagedBean.noPosition3}" title="位置3为空" />
-                        <h:outputLabel value="位置编号4" for="queryPosition4" />
-                        <p:inputText id="queryPosition4" value="#{assetCardManagedBean.queryPosition4}" title="位置编号4" />
-                        <h:outputLabel value="位置4为空" for="noPosition4" />
-                        <p:selectBooleanCheckbox id="noPosition4" value="#{assetCardManagedBean.noPosition4}" title="位置4为空" />
+                    <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputLabel value="编号" for="queryFormId" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="queryFormId" value="#{assetCardManagedBean.queryFormId}" title="编号" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><h:outputLabel value="名称" for="queryName" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="queryName" value="#{assetCardManagedBean.queryName}" title="名称" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="品号" for="queryItemno" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryItemno" value="#{assetCardManagedBean.queryItemno}" title="品号" />
+                            </p:column>
+                            <p:column><h:outputLabel value="品名" for="queryItemdesc" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryItemdesc" value="#{assetCardManagedBean.queryItemdesc}" title="品名" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="使用部门" for="queryDeptno" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryDeptno" value="#{assetCardManagedBean.queryDeptno}" title="使用部门" />
+                            </p:column>
+                            <p:column><h:outputLabel value="部门名称" for="queryDeptname" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryDeptname" value="#{assetCardManagedBean.queryDeptname}" title="部门名称" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="使用人" for="queryUserno" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryUserno" value="#{assetCardManagedBean.queryUserno}" title="使用人" />
+                            </p:column>
+                            <p:column><h:outputLabel value="姓名" for="queryUsername" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryUsername" value="#{assetCardManagedBean.queryUsername}" title="姓名" />
+                            </p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column><h:outputLabel value="仓库" for="queryWarehouseno" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryWarehouseno" value="#{assetCardManagedBean.queryWarehouseno}" title="仓库" />
+                            </p:column>
+                            <p:column><h:outputLabel value="状态" for="queryState" /></p:column>
+                            <p:column>
+                                <p:selectOneMenu id="queryState" value="#{assetCardManagedBean.queryState}" title="状态" >
+                                    <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                                    <f:selectItem itemLabel="未使用" itemValue="N"/>
+                                    <f:selectItem itemLabel="已使用" itemValue="V"/>
+                                    <f:selectItem itemLabel="需删除" itemValue="X"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="位置编号1" for="queryPosition1" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryPosition1" value="#{assetCardManagedBean.queryPosition1}" title="位置编号1" />
+                            </p:column>
+                            <p:column><h:outputLabel value="位置1为空" for="noPosition1" /></p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox id="noPosition1" value="#{assetCardManagedBean.noPosition1}" title="位置1为空" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="位置编号2" for="queryPosition2" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryPosition2" value="#{assetCardManagedBean.queryPosition2}" title="位置编号2" />
+                            </p:column>
+                            <p:column><h:outputLabel value="位置2为空" for="noPosition2" /></p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox id="noPosition2" value="#{assetCardManagedBean.noPosition2}" title="位置2为空" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="位置编号3" for="queryPosition3" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryPosition3" value="#{assetCardManagedBean.queryPosition3}" title="位置编号3" />
+                            </p:column>
+                            <p:column><h:outputLabel value="位置3为空" for="noPosition3" /></p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox id="noPosition3" value="#{assetCardManagedBean.noPosition3}" title="位置3为空" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="位置编号4" for="queryPosition4" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryPosition4" value="#{assetCardManagedBean.queryPosition4}" title="位置编号4" />
+                            </p:column>
+                            <p:column><h:outputLabel value="位置4为空" for="noPosition4" /></p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox id="noPosition4" value="#{assetCardManagedBean.noPosition4}" title="位置4为空" />
+                            </p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
+                            <p:column>
+                                <p:inputText id="queryCategory" value="#{assetCardManagedBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
+                                <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCardManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnCategoryWhenQuery}"
+                                            update="queryCategory" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column></p:column>
+                            <p:column></p:column>
+                        </p:row>
                     </p:panelGrid>
                 </p:tab>
             </p:accordionPanel>

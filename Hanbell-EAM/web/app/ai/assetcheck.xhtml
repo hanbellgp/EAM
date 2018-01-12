@@ -9,22 +9,49 @@
     <ui:define name="content">
         <h:form id="formList">
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
-            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+            <p:panelGrid id="plgQuery"  styleClass="plgQuery Wid100">
                 <f:facet name="header">
-                    查询条件
+                    <p:row>
+                        <p:column colspan="4">查询条件</p:column>
+                    </p:row>
                 </f:facet>
-                <h:outputLabel value="盘点单号" for="queryFormId" />
-                <p:inputText id="queryFormId" value="#{assetCheckManagedBean.queryFormId}" title="单号" />
-                <h:outputLabel value="状态" for="queryState" />
-                <p:selectOneMenu id="queryState" value="#{assetCheckManagedBean.queryState}" title="状态" >
-                    <f:selectItem itemLabel="全部" itemValue="ALL"/>
-                    <f:selectItem itemLabel="未审核" itemValue="N"/>
-                    <f:selectItem itemLabel="已审核" itemValue="V"/>
-                </p:selectOneMenu>
-                <h:outputLabel value="盘点日期" for="queryDateBegin" />
-                <p:calendar id="queryDateBegin" value="#{assetCheckManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
-                <h:outputLabel value="截止日期" for="queryDateEnd" />
-                <p:calendar id="queryDateEnd" value="#{assetCheckManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputLabel value="盘点单号" for="queryFormId" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="queryFormId" value="#{assetCheckManagedBean.queryFormId}" title="单号" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputLabel value="状态" for="queryState" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="queryState" value="#{assetCheckManagedBean.queryState}" title="状态" >
+                            <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                            <f:selectItem itemLabel="未审核" itemValue="N"/>
+                            <f:selectItem itemLabel="已审核" itemValue="V"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="盘点日期" for="queryDateBegin" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateBegin" value="#{assetCheckManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                    <p:column><h:outputLabel value="截止日期" for="queryDateEnd" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateEnd" value="#{assetCheckManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
+                    <p:column>
+                        <p:inputText id="queryCategory" value="#{assetCheckManagedBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCheckManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCheckManagedBean.handleDialogReturnCategoryWhenNew}"
+                                    update="queryCategory" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column></p:column>
+                    <p:column></p:column>
+                </p:row>
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">

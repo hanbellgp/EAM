@@ -64,6 +64,13 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
         handleDialogReturnWhenEdit(event);
     }
 
+    public void handleDialogReturnCategoryWhenNew(SelectEvent event) {
+        if (event.getObject() != null) {
+            AssetCategory e = (AssetCategory) event.getObject();
+            queryCategory = e;
+        }
+    }
+
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
