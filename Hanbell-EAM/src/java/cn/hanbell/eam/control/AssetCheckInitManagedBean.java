@@ -7,7 +7,6 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.AssetPositionBean;
 import cn.hanbell.eam.ejb.WarehouseBean;
-import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eap.ejb.DepartmentBean;
@@ -21,7 +20,6 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import org.primefaces.event.SelectEvent;
 
 /**
  *

@@ -43,7 +43,6 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
     private AssetCardBean assetCardBean;
     @EJB
     private AssetCheckDetailBean assetCheckDetailBean;
-
     @EJB
     private AssetInventoryBean assetInventoryBean;
     @EJB
