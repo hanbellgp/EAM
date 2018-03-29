@@ -21,17 +21,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author C0160
  */
 @Entity
-@Table(name = "assetdistribute")
+@Table(name = "assettransfer")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AssetDistribute.getRowCount", query = "SELECT COUNT(a) FROM AssetDistribute a"),
-    @NamedQuery(name = "AssetDistribute.findAll", query = "SELECT a FROM AssetDistribute a"),
-    @NamedQuery(name = "AssetDistribute.findById", query = "SELECT a FROM AssetDistribute a WHERE a.id = :id"),
-    @NamedQuery(name = "AssetDistribute.findByCompany", query = "SELECT a FROM AssetDistribute a WHERE a.company = :company"),
-    @NamedQuery(name = "AssetDistribute.findByFormid", query = "SELECT a FROM AssetDistribute a WHERE a.formid = :formid"),
-    @NamedQuery(name = "AssetDistribute.findByStatus", query = "SELECT a FROM AssetDistribute a WHERE a.status = :status"),
-    @NamedQuery(name = "AssetDistribute.findNeedThrow", query = "SELECT a FROM AssetDistribute a WHERE a.status = 'V' and ((a.relformid is null) or (a.relformid = '')) ")})
-public class AssetDistribute extends FormEntity {
+    @NamedQuery(name = "AssetTransfer.findAll", query = "SELECT a FROM AssetTransfer a"),
+    @NamedQuery(name = "AssetTransfer.findById", query = "SELECT a FROM AssetTransfer a WHERE a.id = :id"),
+    @NamedQuery(name = "AssetTransfer.findByCompany", query = "SELECT a FROM AssetTransfer a WHERE a.company = :company"),
+    @NamedQuery(name = "AssetTransfer.findByFormid", query = "SELECT a FROM AssetTransfer a WHERE a.formid = :formid"),
+    @NamedQuery(name = "AssetTransfer.findByFormdate", query = "SELECT a FROM AssetTransfer a WHERE a.formdate = :formdate"),
+    @NamedQuery(name = "AssetTransfer.findByDeptno", query = "SELECT a FROM AssetTransfer a WHERE a.deptno = :deptno"),
+    @NamedQuery(name = "AssetTransfer.findByDeptname", query = "SELECT a FROM AssetTransfer a WHERE a.deptname = :deptname"),
+    @NamedQuery(name = "AssetTransfer.findByStatus", query = "SELECT a FROM AssetTransfer a WHERE a.status = :status")})
+public class AssetTransfer extends FormEntity {
 
     @Basic(optional = false)
     @NotNull
@@ -54,7 +55,7 @@ public class AssetDistribute extends FormEntity {
     @Column(name = "relformid")
     private String relformid;
 
-    public AssetDistribute() {
+    public AssetTransfer() {
     }
 
     public String getCompany() {
@@ -89,6 +90,22 @@ public class AssetDistribute extends FormEntity {
         this.remark = remark;
     }
 
+    public String getSrcformid() {
+        return srcformid;
+    }
+
+    public void setSrcformid(String srcformid) {
+        this.srcformid = srcformid;
+    }
+
+    public String getRelformid() {
+        return relformid;
+    }
+
+    public void setRelformid(String relformid) {
+        this.relformid = relformid;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -99,10 +116,10 @@ public class AssetDistribute extends FormEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AssetDistribute)) {
+        if (!(object instanceof AssetTransfer)) {
             return false;
         }
-        AssetDistribute other = (AssetDistribute) object;
+        AssetTransfer other = (AssetTransfer) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -111,35 +128,7 @@ public class AssetDistribute extends FormEntity {
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.AssetDistribute[ id=" + id + " ]";
-    }
-
-    /**
-     * @return the srcformid
-     */
-    public String getSrcformid() {
-        return srcformid;
-    }
-
-    /**
-     * @param srcformid the srcformid to set
-     */
-    public void setSrcformid(String srcformid) {
-        this.srcformid = srcformid;
-    }
-
-    /**
-     * @return the relformid
-     */
-    public String getRelformid() {
-        return relformid;
-    }
-
-    /**
-     * @param relformid the relformid to set
-     */
-    public void setRelformid(String relformid) {
-        this.relformid = relformid;
+        return "cn.hanbell.eam.entity.AssetTransfer[ id=" + id + " ]";
     }
 
 }

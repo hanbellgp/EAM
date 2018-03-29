@@ -65,9 +65,8 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
         return super.getFormId(day, sp.getNolead(), sp.getNoformat(), sp.getNoseqlen());
     }
 
-    public List<AssetDistribute> findByStatus(String value) {
-        Query query = getEntityManager().createNamedQuery("AssetDistribute.findByStatus");
-        query.setParameter("status", value);
+    public List<AssetDistribute> findNeedThrow() {
+        Query query = getEntityManager().createNamedQuery("AssetDistribute.findNeedThrow");
         try {
             return query.getResultList();
         } catch (Exception ex) {
