@@ -122,6 +122,17 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     }
 
     @Override
+    protected boolean doBeforeVerify() throws Exception {
+        if (currentEntity != null) {
+            this.fileName = this.getAppResPath() + currentEntity.getFormid() + ".png";
+            assetCardBean.generateCode128(currentEntity.getFormid(), 1.0f, 8d, fileName);
+            assetCardBean.generateQRCode(currentEntity.getFormid(), 300, 300, this.getAppResPath(), "QR" + currentEntity.getFormid() + ".png");
+            currentEntity.setCode(currentEntity.getFormid() + ".png");
+        }
+        return super.doBeforeVerify();
+    }
+
+    @Override
     public void handleDialogReturnWhenEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             AssetItem e = (AssetItem) event.getObject();

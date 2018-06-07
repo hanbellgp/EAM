@@ -204,6 +204,12 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <description>AI715资产盘点导出</description>
+            <from-outcome>assetcheckexport</from-outcome>
+            <to-view-id>/app/ai/assetcheckexport.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <description>AI810资产报废作业</description>
             <from-outcome>assetscrap</from-outcome>
             <to-view-id>/app/ai/assetscrap.xhtml</to-view-id>

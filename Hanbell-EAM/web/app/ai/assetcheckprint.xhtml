@@ -33,6 +33,10 @@
                 <f:facet name="right">
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCheckPrintManagedBean.print()}" icon="ui-icon-print"
                                      rendered="#{assetCheckPrintManagedBean.doPrt}"/>
+                    <p:commandButton id="btnVerify" value="审核" actionListener="#{assetCheckPrintManagedBean.verify()}" icon="ui-icon-check"
+                                     rendered="#{assetCheckPrintManagedBean.doCfm}" update="formList">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{assetCheckPrintManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{assetCheckPrintManagedBean.query()}" icon="ui-icon-search"
@@ -88,7 +92,7 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnPrint">
+            <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnPrint,btnVerify">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>

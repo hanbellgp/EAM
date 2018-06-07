@@ -9,14 +9,11 @@
         <script-data-source name="scriptDS" id="6">
             <method name="open"><![CDATA[importPackage(Packages.cn.hanbell.eam.rpt);
 
-ejbClient = new AssetCheckReport();
+ejbClient = new AssetCheckExport();
 ejbClient.setEJB(params["JNDIName"]);
 
-master = ejbClient.getEntity(params["id"]);
+detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],true);
 
-if(master!=null){
-	detail = ejbClient.getDetail(params["formid"]); 
-}
 ]]></method>
             <method name="close"><![CDATA[ejbClient = null;]]></method>
         </script-data-source>
@@ -41,132 +38,117 @@ if(master!=null){
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">relobject</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">optusername</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">cfmusername</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">remark</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
                     <property name="name">seq</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">5</property>
                     <property name="name">itemno</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">6</property>
                     <property name="name">itemdesc</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
-                    <property name="name">deptno</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">12</property>
-                    <property name="name">deptname</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
-                    <property name="name">userno</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">14</property>
-                    <property name="name">username</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">15</property>
+                    <property name="position">7</property>
                     <property name="name">assetno</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
-                    <property name="name">assetdesc</property>
+                    <property name="position">8</property>
+                    <property name="name">assetDesc</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
-                    <property name="name">assetspec</property>
+                    <property name="position">9</property>
+                    <property name="name">assetSpec</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">10</property>
+                    <property name="name">deptno</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">deptname</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">userno</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">username</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
                     <property name="name">position1</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">15</property>
                     <property name="name">position2</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">16</property>
                     <property name="name">position3</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">17</property>
                     <property name="name">position4</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">18</property>
                     <property name="name">position5</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">19</property>
                     <property name="name">position6</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">20</property>
                     <property name="name">qty</property>
                     <property name="dataType">float</property>
                 </structure>
                 <structure>
-                    <property name="position">25</property>
+                    <property name="position">21</property>
                     <property name="name">actqty</property>
                     <property name="dataType">float</property>
                 </structure>
                 <structure>
-                    <property name="position">26</property>
-                    <property name="name">unit</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">27</property>
+                    <property name="position">22</property>
                     <property name="name">diffqty</property>
                     <property name="dataType">float</property>
                 </structure>
                 <structure>
-                    <property name="position">28</property>
+                    <property name="position">23</property>
+                    <property name="name">unit</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">warehouseno</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
                     <property name="name">warehouse</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">29</property>
-                    <property name="name">status</property>
+                    <property name="position">26</property>
+                    <property name="name">remark</property>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -181,18 +163,6 @@ if(master!=null){
                     <property name="columnName">formdate</property>
                 </structure>
                 <structure>
-                    <property name="columnName">relobject</property>
-                </structure>
-                <structure>
-                    <property name="columnName">optusername</property>
-                </structure>
-                <structure>
-                    <property name="columnName">cfmusername</property>
-                </structure>
-                <structure>
-                    <property name="columnName">remark</property>
-                </structure>
-                <structure>
                     <property name="columnName">seq</property>
                 </structure>
                 <structure>
@@ -200,6 +170,15 @@ if(master!=null){
                 </structure>
                 <structure>
                     <property name="columnName">itemdesc</property>
+                </structure>
+                <structure>
+                    <property name="columnName">assetno</property>
+                </structure>
+                <structure>
+                    <property name="columnName">assetDesc</property>
+                </structure>
+                <structure>
+                    <property name="columnName">assetSpec</property>
                 </structure>
                 <structure>
                     <property name="columnName">deptno</property>
@@ -212,15 +191,6 @@ if(master!=null){
                 </structure>
                 <structure>
                     <property name="columnName">username</property>
-                </structure>
-                <structure>
-                    <property name="columnName">assetno</property>
-                </structure>
-                <structure>
-                    <property name="columnName">assetdesc</property>
-                </structure>
-                <structure>
-                    <property name="columnName">assetspec</property>
                 </structure>
                 <structure>
                     <property name="columnName">position1</property>
@@ -247,16 +217,19 @@ if(master!=null){
                     <property name="columnName">actqty</property>
                 </structure>
                 <structure>
+                    <property name="columnName">diffqty</property>
+                </structure>
+                <structure>
                     <property name="columnName">unit</property>
                 </structure>
                 <structure>
-                    <property name="columnName">diffqty</property>
+                    <property name="columnName">warehouseno</property>
                 </structure>
                 <structure>
                     <property name="columnName">warehouse</property>
                 </structure>
                 <structure>
-                    <property name="columnName">status</property>
+                    <property name="columnName">remark</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -278,132 +251,117 @@ if(master!=null){
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">relobject</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">optusername</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">cfmusername</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">remark</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
                         <property name="name">seq</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">5</property>
                         <property name="name">itemno</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">6</property>
                         <property name="name">itemdesc</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
-                        <property name="name">deptno</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">deptname</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">userno</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">username</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
+                        <property name="position">7</property>
                         <property name="name">assetno</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
-                        <property name="name">assetdesc</property>
+                        <property name="position">8</property>
+                        <property name="name">assetDesc</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
-                        <property name="name">assetspec</property>
+                        <property name="position">9</property>
+                        <property name="name">assetSpec</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">10</property>
+                        <property name="name">deptno</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">deptname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">userno</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">username</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
                         <property name="name">position1</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">15</property>
                         <property name="name">position2</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">16</property>
                         <property name="name">position3</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">17</property>
                         <property name="name">position4</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">18</property>
                         <property name="name">position5</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">19</property>
                         <property name="name">position6</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">20</property>
                         <property name="name">qty</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">21</property>
                         <property name="name">actqty</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">26</property>
-                        <property name="name">unit</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">27</property>
+                        <property name="position">22</property>
                         <property name="name">diffqty</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">28</property>
+                        <property name="position">23</property>
+                        <property name="name">unit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">warehouseno</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
                         <property name="name">warehouse</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">29</property>
-                        <property name="name">status</property>
+                        <property name="position">26</property>
+                        <property name="name">remark</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -412,23 +370,19 @@ if(master!=null){
             <method name="open"><![CDATA[currentRow = 0;]]></method>
             <method name="fetch"><![CDATA[if(currentRow < detail.size()){
 	dataSetRow["company"] = params["companyFullName"];
-	dataSetRow["formid"] = master.getFormid();
-	dataSetRow["formdate"] = master.getFormdate();
-	dataSetRow["relobject"] = master.getDeptno();
-	dataSetRow["optusername"] = master.getCreator();
-	dataSetRow["cfmusername"] = master.getCfmuser();
-	dataSetRow["remark"] = master.getRemark();
-	dataSetRow["status"] = master.getStatus();
+	dataSetRow["formid"] = detail.get(currentRow).getAssetCheck().getFormid();
+	dataSetRow["formdate"] = detail.get(currentRow).getAssetCheck().getFormdate();
+
 	dataSetRow["seq"] = detail.get(currentRow).getSeq();
 	dataSetRow["itemno"] = detail.get(currentRow).getAssetItem().getItemno();
 	dataSetRow["itemdesc"] = detail.get(currentRow).getAssetItem().getItemdesc();
 	dataSetRow["assetno"] = detail.get(currentRow).getAssetno();
 	if(detail.get(currentRow).getAssetCard()!=null){
-		dataSetRow["assetdesc"] = detail.get(currentRow).getAssetCard().getAssetDesc();
-		dataSetRow["assetspec"] = detail.get(currentRow).getAssetCard().getAssetSpec();
+		dataSetRow["assetDesc"] = detail.get(currentRow).getAssetCard().getAssetDesc();
+		dataSetRow["assetSpec"] = detail.get(currentRow).getAssetCard().getAssetSpec();
 	}else{
-		dataSetRow["assetdesc"] = detail.get(currentRow).getAssetItem().getItemdesc();
-		dataSetRow["assetspec"] = detail.get(currentRow).getAssetItem().getItemspec();
+		dataSetRow["assetDesc"] = detail.get(currentRow).getAssetItem().getItemdesc();
+		dataSetRow["assetSpec"] = detail.get(currentRow).getAssetItem().getItemspec();
 	}
 	dataSetRow["userno"] = detail.get(currentRow).getUserno();
 	dataSetRow["username"] = detail.get(currentRow).getUsername();
@@ -451,20 +405,23 @@ if(master!=null){
 	dataSetRow["diffqty"] = detail.get(currentRow).getDiffqty();
 	dataSetRow["unit"] = detail.get(currentRow).getUnit();
 	dataSetRow["warehouse"] = detail.get(currentRow).getWarehouse().getName();
-	currentRow++;
-	return true;
+
+    currentRow++;
+    return true;
 }
-return false;]]></method>
+
+return false;
+]]></method>
         </script-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
-            <property name="type">a4</property>
+            <property name="type">a3</property>
             <property name="orientation">landscape</property>
             <property name="height">14.5cm</property>
             <property name="width">21cm</property>
             <property name="headerHeight">0.3in</property>
-            <property name="footerHeight">0.3in</property>
+            <property name="footerHeight">0in</property>
             <page-header>
                 <image id="5">
                     <property name="height">0.23333333333333334in</property>
@@ -473,281 +430,12 @@ return false;]]></method>
                     <property name="imageName">HanbellLogo.png</property>
                 </image>
             </page-header>
-            <page-footer>
-                <grid id="582">
-                    <column id="583"/>
-                    <column id="584"/>
-                    <column id="585"/>
-                    <row id="586">
-                        <cell id="587"/>
-                        <cell id="588"/>
-                        <cell id="589">
-                            <property name="textAlign">right</property>
-                            <grid id="552">
-                                <column id="590">
-                                    <property name="width">0.3in</property>
-                                </column>
-                                <column id="553">
-                                    <property name="width">0.3in</property>
-                                </column>
-                                <column id="554">
-                                    <property name="width">0.5in</property>
-                                </column>
-                                <column id="555">
-                                    <property name="width">0.3in</property>
-                                </column>
-                                <column id="568">
-                                    <property name="width">0.3in</property>
-                                </column>
-                                <row id="556">
-                                    <cell id="591">
-                                        <property name="textAlign">left</property>
-                                        <label id="592">
-                                            <property name="textAlign">right</property>
-                                            <text-property name="text">第</text-property>
-                                        </label>
-                                    </cell>
-                                    <cell id="557">
-                                        <property name="textAlign">left</property>
-                                        <auto-text id="558">
-                                            <property name="textAlign">center</property>
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="559">
-                                        <property name="textAlign">left</property>
-                                        <text id="560">
-                                            <property name="textAlign">center</property>
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[页/共]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="561">
-                                        <property name="textAlign">left</property>
-                                        <auto-text id="578">
-                                            <property name="textAlign">center</property>
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="567">
-                                        <property name="textAlign">left</property>
-                                        <label id="569">
-                                            <text-property name="text">页</text-property>
-                                        </label>
-                                    </cell>
-                                </row>
-                            </grid>
-                        </cell>
-                    </row>
-                </grid>
-            </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
-        <grid id="8">
-            <property name="fontFamily">"微软雅黑"</property>
-            <property name="width">10.9in</property>
-            <column id="9"/>
-            <column id="10"/>
-            <column id="11"/>
-            <column id="12"/>
-            <column id="13"/>
-            <column id="14"/>
-            <row id="347">
-                <cell id="348">
-                    <property name="colSpan">4</property>
-                    <property name="rowSpan">1</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <data id="411">
-                        <property name="fontSize">12pt</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">dataDetail</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">company</property>
-                                <text-property name="displayName">company</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">company</property>
-                    </data>
-                </cell>
-                <cell id="579">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <label id="354">
-                        <property name="fontSize">12pt</property>
-                        <property name="textAlign">center</property>
-                        <text-property name="text">EAM盘点单</text-property>
-                    </label>
-                </cell>
-            </row>
-            <row id="15">
-                <cell id="16">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <label id="36">
-                        <text-property name="text">盘点单号</text-property>
-                    </label>
-                </cell>
-                <cell id="17">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <data id="341">
-                        <property name="dataSet">dataDetail</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">formid</property>
-                                <text-property name="displayName">formid</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["formid"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">formid</property>
-                    </data>
-                </cell>
-                <cell id="18">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <label id="39">
-                        <text-property name="text">单据日期</text-property>
-                    </label>
-                </cell>
-                <cell id="19">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <data id="342">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Custom</property>
-                            <property name="pattern">yyyy/MM/dd</property>
-                        </structure>
-                        <property name="dataSet">dataDetail</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">formdate</property>
-                                <text-property name="displayName">formdate</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["formdate"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">formdate</property>
-                    </data>
-                </cell>
-                <cell id="20">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <label id="338">
-                        <text-property name="text">填表人员</text-property>
-                    </label>
-                </cell>
-                <cell id="21">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <data id="346">
-                        <property name="dataSet">dataDetail</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">optusername</property>
-                                <text-property name="displayName">optusername</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["optusername"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">optusername</property>
-                    </data>
-                </cell>
-            </row>
-            <row id="22">
-                <cell id="23">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <label id="37">
-                        <text-property name="text">盘点对象</text-property>
-                    </label>
-                </cell>
-                <cell id="24">
-                    <property name="colSpan">5</property>
-                    <property name="rowSpan">1</property>
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <data id="542">
-                        <property name="dataSet">dataDetail</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">relobject</property>
-                                <text-property name="displayName">relobject</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["relobject"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">relobject</property>
-                    </data>
-                </cell>
-            </row>
-        </grid>
         <table id="189">
             <property name="fontFamily">"微软雅黑"</property>
-            <property name="width">10.9in</property>
+            <property name="width">16in</property>
             <property name="dataSet">dataDetail</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -769,30 +457,6 @@ return false;]]></method>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">relobject</property>
-                    <text-property name="displayName">relobject</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["relobject"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">optusername</property>
-                    <text-property name="displayName">optusername</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["optusername"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">cfmusername</property>
-                    <text-property name="displayName">cfmusername</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cfmusername"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">remark</property>
-                    <text-property name="displayName">remark</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["remark"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">seq</property>
                     <text-property name="displayName">seq</text-property>
                     <expression name="expression" type="javascript">dataSetRow["seq"]</expression>
@@ -808,6 +472,24 @@ return false;]]></method>
                     <property name="name">itemdesc</property>
                     <text-property name="displayName">itemdesc</text-property>
                     <expression name="expression" type="javascript">dataSetRow["itemdesc"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">assetno</property>
+                    <text-property name="displayName">assetno</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["assetno"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">assetDesc</property>
+                    <text-property name="displayName">assetDesc</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["assetDesc"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">assetSpec</property>
+                    <text-property name="displayName">assetSpec</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["assetSpec"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -832,24 +514,6 @@ return false;]]></method>
                     <property name="name">username</property>
                     <text-property name="displayName">username</text-property>
                     <expression name="expression" type="javascript">dataSetRow["username"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">assetno</property>
-                    <text-property name="displayName">assetno</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["assetno"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">assetdesc</property>
-                    <text-property name="displayName">assetdesc</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["assetdesc"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">assetspec</property>
-                    <text-property name="displayName">assetspec</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["assetspec"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -901,16 +565,22 @@ return false;]]></method>
                     <property name="dataType">float</property>
                 </structure>
                 <structure>
+                    <property name="name">diffqty</property>
+                    <text-property name="displayName">diffqty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["diffqty"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
                     <property name="name">unit</property>
                     <text-property name="displayName">unit</text-property>
                     <expression name="expression" type="javascript">dataSetRow["unit"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">diffqty</property>
-                    <text-property name="displayName">diffqty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["diffqty"]</expression>
-                    <property name="dataType">float</property>
+                    <property name="name">warehouseno</property>
+                    <text-property name="displayName">warehouseno</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["warehouseno"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">warehouse</property>
@@ -919,65 +589,72 @@ return false;]]></method>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">status</property>
-                    <text-property name="displayName">status</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["status"]</expression>
+                    <property name="name">remark</property>
+                    <text-property name="displayName">remark</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["remark"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+            </list-property>
+            <list-property name="sort">
                 <structure>
-                    <property name="name">totalqty</property>
-                    <property name="dataType">float</property>
-                    <property name="aggregateFunction">SUM</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["qty"]</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
+                    <expression name="key" type="javascript">row["itemno"]</expression>
+                    <property name="direction">asc</property>
+                    <property name="strength">-1</property>
+                </structure>
+                <structure>
+                    <expression name="key" type="javascript">row["formid"]</expression>
+                    <property name="direction">asc</property>
+                    <property name="strength">-1</property>
                 </structure>
             </list-property>
-            <column id="336">
-                <property name="width">0.4in</property>
+            <column id="530">
+                <property name="width">1in</property>
             </column>
-            <column id="288">
-                <property name="width">1.4in</property>
+            <column id="535">
+                <property name="width">0.9in</property>
             </column>
-            <column id="450">
-                <property name="repeat">1</property>
-                <property name="width">1.5in</property>
-            </column>
-            <column id="615">
-                <property name="repeat">1</property>
-            </column>
-            <column id="539">
+            <column id="562">
                 <property name="width">0.6in</property>
             </column>
-            <column id="440">
-                <property name="width">0.7in</property>
+            <column id="288">
+                <property name="width">1.5in</property>
+            </column>
+            <column id="518">
+                <property name="width">1.6in</property>
+            </column>
+            <column id="461">
+                <property name="width">1.5in</property>
             </column>
             <column id="426">
+                <property name="width">1.5in</property>
+            </column>
+            <column id="433">
+                <property name="width">1in</property>
+            </column>
+            <column id="447">
+                <property name="width">0.8in</property>
+            </column>
+            <column id="500">
                 <property name="width">2in</property>
             </column>
             <column id="303">
-                <property name="width">0.5in</property>
+                <property name="width">0.6in</property>
             </column>
-            <column id="532">
-                <property name="width">0.5in</property>
+            <column id="556">
+                <property name="width">0.6in</property>
             </column>
-            <column id="514">
-                <property name="width">0.5in</property>
+            <column id="522">
+                <property name="width">0.6in</property>
             </column>
-            <column id="519">
-                <property name="width">0.5in</property>
+            <column id="526">
+                <property name="width">0.6in</property>
             </column>
-            <column id="524">
-                <property name="width">0.5in</property>
+            <column id="305">
+                <property name="width">1.2in</property>
             </column>
-            <column id="565"/>
             <header>
                 <row id="190">
-                    <cell id="332">
+                    <cell id="527">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -986,7 +663,33 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="337">
+                        <label id="531">
+                            <text-property name="text">盘点单号</text-property>
+                        </label>
+                    </cell>
+                    <cell id="532">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="536">
+                            <text-property name="text">盘点日期</text-property>
+                        </label>
+                    </cell>
+                    <cell id="560">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="563">
                             <text-property name="text">序号</text-property>
                         </label>
                     </cell>
@@ -999,11 +702,11 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="200">
-                            <text-property name="text">品号</text-property>
+                        <label id="501">
+                            <text-property name="text">件号</text-property>
                         </label>
                     </cell>
-                    <cell id="444">
+                    <cell id="515">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1012,11 +715,11 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="451">
+                        <label id="504">
                             <text-property name="text">名称</text-property>
                         </label>
                     </cell>
-                    <cell id="612">
+                    <cell id="455">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1025,34 +728,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="616">
-                            <text-property name="text">规格</text-property>
-                        </label>
-                    </cell>
-                    <cell id="535">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="540">
-                            <text-property name="text">工号</text-property>
-                        </label>
-                    </cell>
-                    <cell id="434">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="442">
-                            <text-property name="text">姓名</text-property>
+                        <label id="200">
+                            <text-property name="text">编号</text-property>
                         </label>
                     </cell>
                     <cell id="420">
@@ -1064,8 +741,47 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="441">
-                            <text-property name="text">位置</text-property>
+                        <label id="558">
+                            <text-property name="text">规格</text-property>
+                        </label>
+                    </cell>
+                    <cell id="427">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="465">
+                            <text-property name="text">使用部门</text-property>
+                        </label>
+                    </cell>
+                    <cell id="441">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="464">
+                            <text-property name="text">姓名</text-property>
+                        </label>
+                    </cell>
+                    <cell id="494">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="206">
+                            <text-property name="text">位置信息</text-property>
                         </label>
                     </cell>
                     <cell id="221">
@@ -1081,6 +797,62 @@ return false;]]></method>
                             <text-property name="text">数量</text-property>
                         </label>
                     </cell>
+                    <cell id="553">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="557">
+                            <text-property name="text">初盘</text-property>
+                        </label>
+                    </cell>
+                    <cell id="519">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="549">
+                            <text-property name="text">实盘</text-property>
+                        </label>
+                    </cell>
+                    <cell id="523">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="551">
+                            <text-property name="text">差异</text-property>
+                        </label>
+                    </cell>
+                    <cell id="225">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="226">
+                            <text-property name="text">仓库</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="229">
                     <cell id="528">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -1090,11 +862,11 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="533">
-                            <text-property name="text">单位</text-property>
-                        </label>
+                        <data id="462">
+                            <property name="resultSetColumn">formid</property>
+                        </data>
                     </cell>
-                    <cell id="510">
+                    <cell id="533">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1103,11 +875,15 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="526">
-                            <text-property name="text">初盘</text-property>
-                        </label>
+                        <data id="537">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">yyyy-MM-dd</property>
+                            </structure>
+                            <property name="resultSetColumn">formdate</property>
+                        </data>
                     </cell>
-                    <cell id="515">
+                    <cell id="561">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1116,51 +892,7 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="527">
-                            <text-property name="text">复盘</text-property>
-                        </label>
-                    </cell>
-                    <cell id="520">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="525">
-                            <text-property name="text">差异</text-property>
-                        </label>
-                    </cell>
-                    <cell id="563">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="575">
-                            <text-property name="text">备注</text-property>
-                        </label>
-                    </cell>
-                </row>
-            </header>
-            <detail>
-                <row id="229">
-                    <cell id="333">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="340">
-                            <property name="textAlign">center</property>
+                        <data id="564">
                             <property name="resultSetColumn">seq</property>
                         </data>
                     </cell>
@@ -1177,7 +909,7 @@ return false;]]></method>
                             <property name="resultSetColumn">itemno</property>
                         </data>
                     </cell>
-                    <cell id="445">
+                    <cell id="516">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1186,11 +918,11 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="618">
-                            <property name="resultSetColumn">assetdesc</property>
+                        <data id="505">
+                            <property name="resultSetColumn">assetDesc</property>
                         </data>
                     </cell>
-                    <cell id="613">
+                    <cell id="456">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1199,11 +931,11 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="617">
-                            <property name="resultSetColumn">assetspec</property>
+                        <data id="548">
+                            <property name="resultSetColumn">assetno</property>
                         </data>
                     </cell>
-                    <cell id="536">
+                    <cell id="421">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1212,11 +944,24 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="541">
-                            <property name="resultSetColumn">userno</property>
+                        <data id="559">
+                            <property name="resultSetColumn">assetSpec</property>
                         </data>
                     </cell>
-                    <cell id="435">
+                    <cell id="428">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="233">
+                            <property name="resultSetColumn">deptname</property>
+                        </data>
+                    </cell>
+                    <cell id="442">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1229,7 +974,7 @@ return false;]]></method>
                             <property name="resultSetColumn">username</property>
                         </data>
                     </cell>
-                    <cell id="421">
+                    <cell id="495">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1240,7 +985,7 @@ return false;]]></method>
                         <property name="borderTopWidth">thin</property>
                         <text id="508">
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["position2"]</VALUE-OF>-<VALUE-OF>row["position3"]</VALUE-OF>-<VALUE-OF>row["position4"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["position1"]</VALUE-OF>-<VALUE-OF>row["position2"]</VALUE-OF>-<VALUE-OF>row["position3"]</VALUE-OF>-<VALUE-OF>row["position4"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="260">
@@ -1261,21 +1006,7 @@ return false;]]></method>
                             <property name="resultSetColumn">qty</property>
                         </data>
                     </cell>
-                    <cell id="529">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="263">
-                            <property name="textAlign">right</property>
-                            <property name="resultSetColumn">unit</property>
-                        </data>
-                    </cell>
-                    <cell id="511">
+                    <cell id="554">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1285,7 +1016,7 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                     </cell>
-                    <cell id="516">
+                    <cell id="520">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1294,165 +1025,16 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="580">
-                            <property name="color">#FFFFFF</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">#.00</property>
-                            </structure>
-                            <property name="textAlign">right</property>
-                            <list-property name="highlightRules">
-                                <structure>
-                                    <property name="operator">eq</property>
-                                    <property name="color">#000000</property>
-                                    <expression name="testExpr" type="javascript">row["status"]</expression>
-                                    <simple-property-list name="value1">
-                                        <value type="javascript">"V"</value>
-                                    </simple-property-list>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">actqty</property>
-                        </data>
-                    </cell>
-                    <cell id="521">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="581">
-                            <property name="color">#FFFFFF</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">#.00</property>
-                            </structure>
-                            <structure name="stringFormat">
-                                <property name="category">Unformatted</property>
-                            </structure>
-                            <property name="textAlign">right</property>
-                            <list-property name="highlightRules">
-                                <structure>
-                                    <property name="operator">eq</property>
-                                    <property name="color">#000000</property>
-                                    <expression name="testExpr" type="javascript">row["status"]</expression>
-                                    <simple-property-list name="value1">
-                                        <value type="javascript">"V"</value>
-                                    </simple-property-list>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">diffqty</property>
-                        </data>
-                    </cell>
-                    <cell id="564">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                </row>
-            </detail>
-            <footer>
-                <row id="593">
-                    <cell id="594">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="595">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="596">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="614">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="597">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="598">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="599">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="619">
-                            <property name="textAlign">right</property>
-                            <text-property name="text">合计</text-property>
-                        </label>
-                    </cell>
-                    <cell id="600">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="609">
+                        <data id="550">
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">#0.00</property>
                             </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">totalqty</property>
+                            <property name="resultSetColumn">actqty</property>
                         </data>
                     </cell>
-                    <cell id="601">
+                    <cell id="524">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1461,8 +1043,16 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
+                        <data id="552">
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">#0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">diffqty</property>
+                        </data>
                     </cell>
-                    <cell id="602">
+                    <cell id="264">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1471,91 +1061,13 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="603">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="604">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="605">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <data id="265">
+                            <property name="resultSetColumn">warehouse</property>
+                        </data>
                     </cell>
                 </row>
-            </footer>
+            </detail>
         </table>
-        <grid id="382">
-            <property name="width">10.9in</property>
-            <column id="383"/>
-            <column id="384"/>
-            <column id="385"/>
-            <column id="386"/>
-            <column id="387"/>
-            <column id="388"/>
-            <row id="398">
-                <cell id="399">
-                    <label id="405"/>
-                </cell>
-                <cell id="400"/>
-                <cell id="401"/>
-                <cell id="402"/>
-                <cell id="403"/>
-                <cell id="404"/>
-            </row>
-            <row id="389">
-                <cell id="390">
-                    <label id="562">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">审核人</text-property>
-                    </label>
-                </cell>
-                <cell id="391">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
-                <cell id="392">
-                    <label id="534">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">复盘人</text-property>
-                    </label>
-                </cell>
-                <cell id="393">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
-                <cell id="394">
-                    <label id="396">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">初盘人</text-property>
-                    </label>
-                </cell>
-                <cell id="395">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
-            </row>
-        </grid>
     </body>
     <list-property name="images">
         <structure>

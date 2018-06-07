@@ -398,7 +398,7 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
             //更新库存
             assetInventoryBean.add(inventoryList);
             List<AssetCard> deletedAssetCard = assetCardBean.findByRelformidAndNeedDelete(e.getFormid());
-            if (deletedAssetCard != null) {
+            if (deletedAssetCard != null && !deletedAssetCard.isEmpty()) {
                 assetCardBean.delete(deletedAssetCard);
             }
             return e;

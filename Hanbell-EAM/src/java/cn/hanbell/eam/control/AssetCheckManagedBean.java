@@ -5,6 +5,7 @@
  */
 package cn.hanbell.eam.control;
 
+import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.ejb.AssetCheckBean;
 import cn.hanbell.eam.ejb.AssetCheckDetailBean;
 import cn.hanbell.eam.entity.AssetCard;
@@ -35,6 +36,9 @@ import org.primefaces.event.SelectEvent;
 public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckDetail> {
 
     @EJB
+    private AssetCardBean assetCardBean;
+
+    @EJB
     protected AssetCheckDetailBean assetCheckDetailBean;
 
     @EJB
@@ -49,6 +53,16 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
      */
     public AssetCheckManagedBean() {
         super(AssetCheck.class, AssetCheckDetail.class);
+    }
+
+    @Override
+    protected boolean doBeforeDelete(AssetCheck entity) throws Exception {
+        //删除非A类资产已合并数量后的待删除资料，正常是盘点单审核时删除
+        List<AssetCard> deletedAssetCard = assetCardBean.findByRelformidAndNeedDelete(entity.getFormid());
+        if (deletedAssetCard != null && !deletedAssetCard.isEmpty()) {
+            assetCardBean.delete(deletedAssetCard);
+        }
+        return super.doBeforeDelete(entity);
     }
 
     @Override
