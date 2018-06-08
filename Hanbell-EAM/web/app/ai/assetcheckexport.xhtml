@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">查询条件</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputLabel value="盘点单号" for="queryFormId" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="queryFormId" value="#{assetCheckDetailQueryBean.queryFormId}" title="单号" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputLabel value="状态" for="queryState" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="queryState" value="#{assetCheckDetailQueryBean.queryState}" title="状态" >
+                            <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                            <f:selectItem itemLabel="未审核" itemValue="N"/>
+                            <f:selectItem itemLabel="已审核" itemValue="V"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="盘点日期" for="queryDateBegin" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateBegin" value="#{assetCheckDetailQueryBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                    <p:column><h:outputLabel value="截止日期" for="queryDateEnd" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateEnd" value="#{assetCheckDetailQueryBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
+                    <p:column>
+                        <p:inputText id="queryCategory" value="#{assetCheckDetailQueryBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCheckDetailQueryBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCheckDetailQueryBean.handleDialogReturnCategoryWhenNew}"
+                                    update="queryCategory" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column></p:column>
+                    <p:column></p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetCheckDetailQueryBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出" actionListener="#{assetCheckDetailQueryBean.print()}" icon="ui-icon-print"
+                                     rendered="#{assetCheckDetailQueryBean.doPrt}" update="formList"/>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetCheckDetailQueryBean.reset()}" icon="ui-icon-refresh"
+                                     update="formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetCheckDetailQueryBean.query()}" icon="ui-icon-search"
+                                     update="formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{assetCheckDetailQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                         selectionMode="single"  selection="#{assetCheckDetailQueryBean.currentEntity}" rowKey="#{item.id}" >
+                <f:facet name="header">
+                    资产盘点导出
+                </f:facet>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="盘点单号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetCheck.formid}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="盘点日期"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetCheck.formdate}">
+                        <f:convertDateTime pattern="yyyy/MM/dd" />
+                    </h:outputText>
+                </p:column>
+                <p:column  styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetCheck.category.name}"/>
+                </p:column>
+                <p:column  styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="品号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.itemno}"/>
+                </p:column>
+                <p:column  styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="品名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.itemdesc}"/>
+                </p:column>
+                <p:column  styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="编号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetno}"/>
+                </p:column>
+                <p:column  styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="数量"/>
+                    </f:facet>
+                    <h:outputText value="#{item.qty}"/>
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnPrint">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

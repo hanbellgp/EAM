@@ -208,15 +208,15 @@ public abstract class SuperSingleBean<T extends SuperEntity> extends SuperSingle
                     currentEntity.setCfmdate(null);
                     superEJB.unverify(currentEntity);
                     doAfterUnverify();
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "更新成功!"));
+                    showInfoMsg("Info", "更新成功!");
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "还原前检查失败!"));
+                    showWarnMsg("Warn", "还原前检查失败!");
                 }
-            } catch (Exception e) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(null, e.getMessage()));
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "没有可更新数据!"));
+            showWarnMsg("Warn", "没有可更新数据!");
         }
     }
 
@@ -230,15 +230,15 @@ public abstract class SuperSingleBean<T extends SuperEntity> extends SuperSingle
                     currentEntity.setCfmdateToNow();
                     superEJB.verify(currentEntity);
                     doAfterVerify();
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "更新成功!"));
+                    showInfoMsg("Info", "更新成功!");
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "审核前检查失败!"));
+                    showWarnMsg("Warn", "审核前检查失败!");
                 }
-            } catch (Exception e) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(null, e.getMessage()));
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "没有可更新数据!"));
+            showWarnMsg("Warn", "没有可更新数据!");
         }
     }
 

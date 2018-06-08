@@ -83,6 +83,18 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
     }
 
     @Override
+    protected boolean doAfterVerify() throws Exception {
+        //验收入库以后产生条码
+        List<AssetCard> assetCardList = assetCardBean.findBySrcformid(currentEntity.getFormid());
+        for (AssetCard ac : assetCardList) {
+            fileName = this.getAppResPath() + ac.getFormid() + ".png";
+            assetCardBean.generateCode128(ac.getFormid(), 1.0f, 8d, fileName);
+            assetCardBean.generateQRCode(ac.getFormid(), 300, 300, this.getAppResPath(), "QR" + ac.getFormid() + ".png");
+        }
+        return super.doAfterVerify();
+    }
+
+    @Override
     protected boolean doBeforeUnverify() throws Exception {
         if (super.doBeforeUnverify()) {
             AssetInventory ai;

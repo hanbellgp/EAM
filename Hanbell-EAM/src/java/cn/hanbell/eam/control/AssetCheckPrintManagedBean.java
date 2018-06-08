@@ -116,4 +116,28 @@ public class AssetCheckPrintManagedBean extends AssetCheckManagedBean {
         }
     }
 
+    @Override
+    public void verify() {
+        if (entityList == null || entityList.isEmpty()) {
+            showInfoMsg("Info", "没有可审核资料");
+            return;
+        }
+        try {
+            entityList.stream().forEach((ac) -> {
+                AssetCheck t = assetCheckBean.findById(ac.getId());
+                if (t != null && "N".equals(t.getStatus())) {
+                    ac.setStatus("V");
+                    ac.setCfmuser(userManagedBean.getCurrentUser().getUsername());
+                    ac.setCfmdateToNow();
+                    assetCheckBean.verify(ac);
+                } else {
+                    showWarnMsg("Warn", ac.getFormid() + "已审核或不存在");
+                }
+            });
+            showInfoMsg("Info", "批量审核成功");
+        } catch (Exception ex) {
+            showErrorMsg("Error", ex.toString());
+        }
+    }
+
 }

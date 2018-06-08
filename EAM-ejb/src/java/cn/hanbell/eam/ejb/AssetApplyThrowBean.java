@@ -210,8 +210,11 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         ad.setCompany(entity.getAssetApply().getCompany());
         ad.setFormid(formid);
         ad.setFormdate(day);
-        ad.setDeptno(entity.getAssetApply().getApplyDeptno());
-        ad.setDeptname(entity.getAssetApply().getApplyDeptname());
+        //ad.setDeptno(entity.getAssetApply().getApplyDeptno());
+        //ad.setDeptname(entity.getAssetApply().getApplyDeptname());
+        //领用部门改成需求部门更加符合预算管控
+        ad.setDeptno(entity.getAssetApply().getRequireDeptno());
+        ad.setDeptname(entity.getAssetApply().getRequireDeptname());
         ad.setRemark(entity.getRemark());
         if (ad.getRemark() == null) {
             ad.setRemark(entity.getRequireDeptname() + "_" + entity.getRequireUsername());
@@ -278,8 +281,9 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         ad.setCompany(e.getAssetApply().getCompany());
         ad.setFormid(formid);
         ad.setFormdate(day);
-        ad.setDeptno(e.getAssetApply().getApplyDeptno());
-        ad.setDeptname(e.getAssetApply().getApplyDeptname());
+        //领用部门改成需求部门更加符合预算管控
+        ad.setDeptno(e.getAssetApply().getRequireDeptno());
+        ad.setDeptname(e.getAssetApply().getRequireDeptname());
         ad.setRemark(e.getRemark());
         ad.setStatusToNew();
         ad.setCreator(user.getUsername());
