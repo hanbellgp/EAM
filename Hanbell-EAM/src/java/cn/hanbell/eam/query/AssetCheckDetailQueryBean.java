@@ -62,6 +62,7 @@ public class AssetCheckDetailQueryBean extends SuperQueryBean<AssetCheckDetailFo
             return;
         }
         if (model != null) {
+            model.getFilterFields().clear();
             if (queryFormId != null && !"".equals(queryFormId)) {
                 model.getFilterFields().put("assetCheck.formid", queryFormId);
             }

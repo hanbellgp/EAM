@@ -413,9 +413,10 @@ detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],tru
 	dataSetRow["formdate"] = detail.get(currentRow).getFormdate();
 	dataSetRow["assetDesc"] = detail.get(currentRow).getAssetDesc();
 	dataSetRow["assetSpec"] = detail.get(currentRow).getAssetSpec();
-	dataSetRow["itemno"] = detail.get(currentRow).getAssetItem().getItemno();
-	dataSetRow["itemdesc"] = detail.get(currentRow).getAssetItem().getItemdesc();
-	
+	if(detail.get(currentRow).getAssetItem()!=null){
+		dataSetRow["itemno"] = detail.get(currentRow).getAssetItem().getItemno();
+		dataSetRow["itemdesc"] = detail.get(currentRow).getAssetItem().getItemdesc();	
+	}
 	dataSetRow["userno"] = detail.get(currentRow).getUserno();
 	dataSetRow["username"] = detail.get(currentRow).getUsername();
 	dataSetRow["deptno"] = detail.get(currentRow).getDeptno();

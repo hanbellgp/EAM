@@ -84,7 +84,7 @@ currentRow = 0;]]></method>
     dataSetRow["formid"] = detail.get(currentRow).getFormid();
     dataSetRow["assetdesc"] = detail.get(currentRow).getAssetDesc();
     dataSetRow["itemno"] ="";
-    dataSetRow["code"] = "http://127.0.0.1:8480/Hanbell-EAM/resources/app/res/QR" + detail.get(currentRow).getFormid() + ".png";
+    dataSetRow["code"] = "http://eam.hanbell.com.cn:8480/Hanbell-EAM/resources/app/res/QR" + detail.get(currentRow).getFormid() + ".png";
     currentRow++;
     return true;
 }
@@ -157,6 +157,7 @@ return false;
                             <data id="72">
                                 <property name="fontFamily">"微软雅黑"</property>
                                 <property name="fontSize">10pt</property>
+                                <property name="marginTop">15pt</property>
                                 <property name="paddingTop">5pt</property>
                                 <property name="textAlign">left</property>
                                 <property name="resultSetColumn">assetdesc</property>

@@ -610,19 +610,18 @@ return false;
             <column id="530">
                 <property name="width">1in</property>
             </column>
-            <column id="535">
-                <property name="width">0.9in</property>
-            </column>
             <column id="562">
                 <property name="width">0.6in</property>
             </column>
-            <column id="288">
+            <column id="461">
+                <property name="repeat">1</property>
                 <property name="width">1.5in</property>
             </column>
             <column id="518">
                 <property name="width">1.6in</property>
             </column>
-            <column id="461">
+            <column id="288">
+                <property name="repeat">1</property>
                 <property name="width">1.5in</property>
             </column>
             <column id="426">
@@ -631,6 +630,9 @@ return false;
             <column id="433">
                 <property name="width">1in</property>
             </column>
+            <column id="576">
+                <property name="width">0.8in</property>
+            </column>
             <column id="447">
                 <property name="width">0.8in</property>
             </column>
@@ -638,7 +640,12 @@ return false;
                 <property name="width">2in</property>
             </column>
             <column id="303">
+                <property name="repeat">1</property>
                 <property name="width">0.6in</property>
+            </column>
+            <column id="305">
+                <property name="repeat">1</property>
+                <property name="width">1.2in</property>
             </column>
             <column id="556">
                 <property name="width">0.6in</property>
@@ -648,9 +655,6 @@ return false;
             </column>
             <column id="526">
                 <property name="width">0.6in</property>
-            </column>
-            <column id="305">
-                <property name="width">1.2in</property>
             </column>
             <header>
                 <row id="190">
@@ -667,19 +671,6 @@ return false;
                             <text-property name="text">盘点单号</text-property>
                         </label>
                     </cell>
-                    <cell id="532">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="536">
-                            <text-property name="text">盘点日期</text-property>
-                        </label>
-                    </cell>
                     <cell id="560">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -693,7 +684,7 @@ return false;
                             <text-property name="text">序号</text-property>
                         </label>
                     </cell>
-                    <cell id="191">
+                    <cell id="455">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -702,8 +693,8 @@ return false;
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="501">
-                            <text-property name="text">件号</text-property>
+                        <label id="200">
+                            <text-property name="text">编号</text-property>
                         </label>
                     </cell>
                     <cell id="515">
@@ -719,7 +710,7 @@ return false;
                             <text-property name="text">名称</text-property>
                         </label>
                     </cell>
-                    <cell id="455">
+                    <cell id="191">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -728,8 +719,8 @@ return false;
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <label id="200">
-                            <text-property name="text">编号</text-property>
+                        <label id="501">
+                            <text-property name="text">件号</text-property>
                         </label>
                     </cell>
                     <cell id="420">
@@ -756,6 +747,19 @@ return false;
                         <property name="borderTopWidth">thin</property>
                         <label id="465">
                             <text-property name="text">使用部门</text-property>
+                        </label>
+                    </cell>
+                    <cell id="574">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="577">
+                            <text-property name="text">工号</text-property>
                         </label>
                     </cell>
                     <cell id="441">
@@ -797,6 +801,19 @@ return false;
                             <text-property name="text">数量</text-property>
                         </label>
                     </cell>
+                    <cell id="225">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="226">
+                            <text-property name="text">仓库</text-property>
+                        </label>
+                    </cell>
                     <cell id="553">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -820,7 +837,7 @@ return false;
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <label id="549">
-                            <text-property name="text">实盘</text-property>
+                            <text-property name="text">复盘</text-property>
                         </label>
                     </cell>
                     <cell id="523">
@@ -834,19 +851,6 @@ return false;
                         <property name="borderTopWidth">thin</property>
                         <label id="551">
                             <text-property name="text">差异</text-property>
-                        </label>
-                    </cell>
-                    <cell id="225">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="226">
-                            <text-property name="text">仓库</text-property>
                         </label>
                     </cell>
                 </row>
@@ -866,23 +870,6 @@ return false;
                             <property name="resultSetColumn">formid</property>
                         </data>
                     </cell>
-                    <cell id="533">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="537">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">yyyy-MM-dd</property>
-                            </structure>
-                            <property name="resultSetColumn">formdate</property>
-                        </data>
-                    </cell>
                     <cell id="561">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -896,7 +883,7 @@ return false;
                             <property name="resultSetColumn">seq</property>
                         </data>
                     </cell>
-                    <cell id="230">
+                    <cell id="456">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -905,8 +892,8 @@ return false;
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="239">
-                            <property name="resultSetColumn">itemno</property>
+                        <data id="548">
+                            <property name="resultSetColumn">assetno</property>
                         </data>
                     </cell>
                     <cell id="516">
@@ -922,7 +909,7 @@ return false;
                             <property name="resultSetColumn">assetDesc</property>
                         </data>
                     </cell>
-                    <cell id="456">
+                    <cell id="230">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -931,8 +918,8 @@ return false;
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="548">
-                            <property name="resultSetColumn">assetno</property>
+                        <data id="239">
+                            <property name="resultSetColumn">itemno</property>
                         </data>
                     </cell>
                     <cell id="421">
@@ -959,6 +946,19 @@ return false;
                         <property name="borderTopWidth">thin</property>
                         <data id="233">
                             <property name="resultSetColumn">deptname</property>
+                        </data>
+                    </cell>
+                    <cell id="575">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="578">
+                            <property name="resultSetColumn">userno</property>
                         </data>
                     </cell>
                     <cell id="442">
@@ -1006,6 +1006,19 @@ return false;
                             <property name="resultSetColumn">qty</property>
                         </data>
                     </cell>
+                    <cell id="264">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="265">
+                            <property name="resultSetColumn">warehouse</property>
+                        </data>
+                    </cell>
                     <cell id="554">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -1050,19 +1063,6 @@ return false;
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">diffqty</property>
-                        </data>
-                    </cell>
-                    <cell id="264">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="265">
-                            <property name="resultSetColumn">warehouse</property>
                         </data>
                     </cell>
                 </row>

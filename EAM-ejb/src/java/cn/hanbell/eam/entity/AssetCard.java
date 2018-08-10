@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetCard.findAll", query = "SELECT a FROM AssetCard a"),
     @NamedQuery(name = "AssetCard.findById", query = "SELECT a FROM AssetCard a WHERE a.id = :id"),
     @NamedQuery(name = "AssetCard.findByCompany", query = "SELECT a FROM AssetCard a WHERE a.company = :company"),
+    @NamedQuery(name = "AssetCard.findByCompanyAndFormid", query = "SELECT a FROM AssetCard a WHERE  a.company = :company AND a.formid = :formid"),
     @NamedQuery(name = "AssetCard.findByFormid", query = "SELECT a FROM AssetCard a WHERE a.formid = :formid"),
     @NamedQuery(name = "AssetCard.findByFilters", query = "SELECT a FROM AssetCard a WHERE a.company = :company AND a.formid = :formid AND a.assetItem.itemno = :itemno AND a.deptno = :deptno AND a.userno = :userno "),
     @NamedQuery(name = "AssetCard.findByFiltersAndNotUsed", query = "SELECT a FROM AssetCard a WHERE a.srcformid = :srcformid AND a.srcseq = :srcseq AND a.used=false "),

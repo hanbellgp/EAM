@@ -317,21 +317,33 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
                         nc.setUsername(d.getUsername2());
                         if (d.getPosition12() != null) {
                             nc.setPosition1(d.getPosition12());
+                        } else {
+                            nc.setPosition1(ac.getPosition1());
                         }
                         if (d.getPosition22() != null) {
                             nc.setPosition2(d.getPosition22());
+                        } else {
+                            nc.setPosition2(ac.getPosition2());
                         }
                         if (d.getPosition32() != null) {
                             nc.setPosition3(d.getPosition32());
+                        } else {
+                            nc.setPosition3(ac.getPosition3());
                         }
                         if (d.getPosition42() != null) {
                             nc.setPosition4(d.getPosition42());
+                        } else {
+                            nc.setPosition4(ac.getPosition4());
                         }
                         if (d.getPosition52() != null) {
-                            ac.setPosition5(d.getPosition52());
+                            nc.setPosition5(d.getPosition52());
+                        } else {
+                            nc.setPosition5(ac.getPosition5());
                         }
                         if (d.getPosition62() != null) {
-                            ac.setPosition6(d.getPosition62());
+                            nc.setPosition6(d.getPosition62());
+                        } else {
+                            nc.setPosition6(ac.getPosition6());
                         }
                         nc.setWarehouse(d.getWarehouse2());
                         nc.setQty(d.getQty());

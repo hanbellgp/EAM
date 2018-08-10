@@ -23,8 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -245,7 +243,7 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
             persist(e, detailAdded, null, null);
             return formid;
         } catch (Exception ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            log4j.error("AssetCheckBean执行initAssetCheck时异常", ex);
             return null;
         }
     }
@@ -305,6 +303,7 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
             assetInventoryBean.subtract(inventoryList);
             return e;
         } catch (Exception ex) {
+            log4j.error("AssetCheckBean执行unverify时异常", ex);
             throw new RuntimeException(ex);
         }
     }
@@ -383,8 +382,9 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 }
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                    AssetCard ac = assetCardBean.findByAssetno(e.getCompany(),d.getAssetno());
                     if (ac == null) {
+                        log4j.error("AssetCheckBean执行verify时异常", "找不到" + d.getAssetno() + "对应的卡片");
                         throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
                     }
                     //更新卡片数量
@@ -403,6 +403,7 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
             }
             return e;
         } catch (Exception ex) {
+            log4j.error("AssetCheckBean执行verify时异常", ex);
             throw new RuntimeException(ex);
         }
     }
