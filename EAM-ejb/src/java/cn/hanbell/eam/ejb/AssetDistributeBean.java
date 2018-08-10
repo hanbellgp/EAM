@@ -219,6 +219,10 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 tt.setFormid(e.getFormid());
                 tt.setFormdate(e.getFormdate());
                 tt.setSeq(d.getSeq());
+                tt.setRequireDeptno(d.getDeptno());
+                tt.setRequireDeptname(d.getDeptname());
+                tt.setRequireUserno(d.getUserno());
+                tt.setRequireUsername(d.getUsername());
                 tt.setAssetItem(d.getAssetItem());
                 tt.setBrand(d.getBrand());
                 tt.setBatch(d.getBatch());

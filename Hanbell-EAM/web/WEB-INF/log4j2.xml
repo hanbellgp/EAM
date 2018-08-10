@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration status="WARN">
+<configuration status="INFO">
+    <properties>
+        <property name="LOG_HOME">D:/EAP-LOG/logs</property>
+    </properties>
     <!--先定义所有的appender-->
     <appenders>
         <!--这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFile" fileName="${web:rootDir}/.././logs/eam.log"
-                     filePattern="${web:rootDir}/.././logs/eam-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="RollingFile" fileName="${LOG_HOME}/eam.log"
+                     filePattern="${LOG_HOME}/eam-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
@@ -16,7 +19,7 @@
     <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
     <loggers>
         <!--建立一个默认的root的logger-->
-        <root level="warn">
+        <root level="info">
             <appender-ref ref="RollingFile"/>
         </root>
     </loggers>

@@ -39,6 +39,18 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         }
     }
 
+    public AssetCard findByAssetno(String company, String value) {
+        Query query = getEntityManager().createNamedQuery("AssetCard.findByCompanyAndFormid");
+        query.setParameter("company", company);
+        query.setParameter("formid", value);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetCard) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public AssetCard findByFilters(String company, String assetno, String itemno, String deptno, String userno) {
         Query query = getEntityManager().createNamedQuery("AssetCard.findByFilters");
         query.setParameter("company", company);

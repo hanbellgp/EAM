@@ -22,8 +22,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.xml.namespace.QName;
@@ -32,6 +30,7 @@ import javax.xml.rpc.ServiceException;
 import static org.apache.axis.Constants.XSD_STRING;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
+import org.apache.logging.log4j.LogManager;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.impl.code128.Code128Constants;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
@@ -45,6 +44,8 @@ public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
 
     protected final String url = "http://127.0.0.1:8480/WebService/SHBERPWebService";
     protected final String nameSpace = "http://jws.hanbell.cn/";
+
+    protected final org.apache.logging.log4j.Logger log4j = LogManager.getLogger();
 
     protected String company = "C";
 
@@ -99,7 +100,7 @@ public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
                 out.close();
             }
         } catch (Exception ex) {
-            Logger.getLogger("AssetCardManagedBean").log(Level.SEVERE, null, ex);
+            log4j.error(ex);
         }
     }
 
@@ -112,7 +113,7 @@ public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
             Path path = FileSystems.getDefault().getPath(filePath, fileName);
             MatrixToImageWriter.writeToPath(bitMatrix, "png", path);
         } catch (WriterException | IOException ex) {
-            Logger.getLogger("AssetCardManagedBean").log(Level.SEVERE, null, ex);
+            log4j.error(ex);
         }
     }
 

@@ -28,7 +28,7 @@ public class AssetCheckDetailForQueryModel extends BaseLazyModel<AssetCheckDetai
 
     @Override
     public List<AssetCheckDetailForQuery> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-        filterFields.put("assetCard.company =", userManagedBean.getCompany());
+        filterFields.put("assetCheck.company =", userManagedBean.getCompany());
         return super.load(first, pageSize, sortField, sortOrder, filters);
     }
 

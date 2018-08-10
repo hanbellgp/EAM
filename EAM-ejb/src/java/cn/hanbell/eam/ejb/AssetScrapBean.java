@@ -222,6 +222,10 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                     st.setAssetCard(d.getAssetCard());
                     st.setAssetno(d.getAssetno());
                     st.setPrice(d.getAssetCard().getAmts());
+                    st.setRequireDeptno(d.getAssetCard().getDeptno());
+                    st.setRequireDeptname(d.getAssetCard().getDeptname());
+                    st.setRequireUserno(d.getAssetCard().getUserno());
+                    st.setRequireUsername(d.getAssetCard().getUsername());
                 } else {
                     st.setPrice(BigDecimal.ZERO);
                 }
@@ -255,6 +259,10 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                 tt.setFormid(e.getFormid());
                 tt.setFormdate(e.getFormdate());
                 tt.setSeq(d.getSeq());
+                tt.setRequireDeptno(d.getDeptno());
+                tt.setRequireDeptname(d.getDeptname());
+                tt.setRequireUserno(d.getUserno());
+                tt.setRequireUsername(d.getUsername());
                 tt.setAssetItem(d.getAssetItem());
                 tt.setBrand(d.getBrand());
                 tt.setBatch(d.getBatch());
