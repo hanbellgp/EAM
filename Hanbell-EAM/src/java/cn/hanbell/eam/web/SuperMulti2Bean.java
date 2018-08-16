@@ -12,8 +12,6 @@ import cn.hanbell.eap.entity.SystemGrantPrg;
 import com.lightshell.comm.SuperDetailEntity;
 import com.lightshell.comm.SuperMulti2ManagedBean;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -38,9 +36,6 @@ public abstract class SuperMulti2Bean<T extends SuperEntity, D1 extends SuperDet
     protected String appDataPath;
     protected String appResPath;
     protected SystemGrantPrg currentPrgGrant;
-
-    protected Map<String, Object> openOptions;
-    protected Map<String, List<String>> openParams;
 
     /**
      * @param entityClass
@@ -104,11 +99,11 @@ public abstract class SuperMulti2Bean<T extends SuperEntity, D1 extends SuperDet
         return this.appDataPath;
     }
 
-    @Override
     public String getAppImgPath() {
         return this.appResPath;
     }
 
+    @Override
     public String getAppResPath() {
         return this.appResPath;
     }
