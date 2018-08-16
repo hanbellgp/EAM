@@ -95,11 +95,11 @@ public abstract class SuperQueryBean<T extends BaseEntity> extends SuperSingleMa
         return this.appDataPath;
     }
 
-    @Override
     public String getAppImgPath() {
         return this.appResPath;
     }
 
+    @Override
     public String getAppResPath() {
         return this.appResPath;
     }
