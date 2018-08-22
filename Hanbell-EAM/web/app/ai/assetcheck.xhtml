@@ -79,56 +79,54 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:panel id="panelList">
-                <p:dataTable value="#{assetCheckManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="15,30,45"  lazy="true"
-                             selectionMode="single" selection="#{assetCheckManagedBean.currentEntity}" rowKey="#{item.id}" >
+            <p:dataTable value="#{assetCheckManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                         selectionMode="single" selection="#{assetCheckManagedBean.currentEntity}" rowKey="#{item.id}" >
+                <f:facet name="header">
+                    资产盘点维护
+                </f:facet>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid10">
                     <f:facet name="header">
-                        资产盘点维护
+                        <h:outputText value="盘点单号"/>
                     </f:facet>
-                    <p:ajax event="rowSelect"  update=":formList:toolbar" />
-                    <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="盘点单号"/>
-                        </f:facet>
-                        <h:outputText value="#{item.formid}"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="盘点日期"/>
-                        </f:facet>
-                        <h:outputText value="#{item.formdate}">
-                            <f:convertDateTime pattern="yyyy/MM/dd" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column  styleClass="Wid5">
-                        <f:facet name="header">
-                            <h:outputText value="方式"/>
-                        </f:facet>
-                        <h:outputText value="#{item.formtype}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid20">
-                        <f:facet name="header">
-                            <h:outputText value="类别"/>
-                        </f:facet>
-                        <h:outputText value="#{item.category.name}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid40">
-                        <f:facet name="header">
-                            <h:outputText value="盘点对象"/>
-                        </f:facet>
-                        <h:outputText value="#{item.deptno}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid5">
-                        <f:facet name="header">
-                            <h:outputText value="状态"/>
-                        </f:facet>
-                        <h:outputText value="#{item.status}"/>
-                    </p:column>
-                </p:dataTable>
-            </p:panel>
+                    <h:outputText value="#{item.formid}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="盘点日期"/>
+                    </f:facet>
+                    <h:outputText value="#{item.formdate}">
+                        <f:convertDateTime pattern="yyyy/MM/dd" />
+                    </h:outputText>
+                </p:column>
+                <p:column  styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="方式"/>
+                    </f:facet>
+                    <h:outputText value="#{item.formtype}"/>
+                </p:column>
+                <p:column  styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.category.name}"/>
+                </p:column>
+                <p:column  styleClass="Wid40">
+                    <f:facet name="header">
+                        <h:outputText value="盘点对象"/>
+                    </f:facet>
+                    <h:outputText value="#{item.deptno}"/>
+                </p:column>
+                <p:column  styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="状态"/>
+                    </f:facet>
+                    <h:outputText value="#{item.status}"/>
+                </p:column>
+            </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />

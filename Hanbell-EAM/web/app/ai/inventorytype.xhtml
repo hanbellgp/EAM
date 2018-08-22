@@ -35,64 +35,62 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:panel id="panelList">
-                <p:dataTable value="#{transactionTypeManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="15,30,45"  lazy="true"
-                             selectionMode="single" selection="#{transactionTypeManagedBean.currentEntity}" rowKey="#{item.id}" >
+            <p:dataTable value="#{transactionTypeManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                         selectionMode="single" selection="#{transactionTypeManagedBean.currentEntity}" rowKey="#{item.id}" >
+                <f:facet name="header">
+                    交易类别维护
+                </f:facet>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid10">
                     <f:facet name="header">
-                        交易类别维护
+                        <h:outputText value="交易代号"/>
                     </f:facet>
-                    <p:ajax event="rowSelect"  update=":formList:toolbar" />
-                    <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="交易代号"/>
-                        </f:facet>
-                        <h:outputText value="#{item.trtype}"/>
-                    </p:column>
-                    <p:column styleClass="Wid30">
-                        <f:facet name="header">
-                            <h:outputText value="交易名称"/>
-                        </f:facet>
-                        <h:outputText value="#{item.trname}"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="出入库"/>
-                        </f:facet>
-                        <p:selectOneMenu id="iocode" value="#{item.iocode}" title="Iocode" disabled="true">
-                            <f:selectItem itemLabel="入库" itemValue="1"/>
-                            <f:selectItem itemLabel="出库" itemValue="-1"/>
-                            <f:selectItem itemLabel="不变" itemValue="0"/>
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="记录成本"/>
-                        </f:facet>
-                        <p:selectBooleanCheckbox value="#{item.hascost}"  disabled="true"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="对象类别"/>
-                        </f:facet>
-                        <h:outputText value="#{item.objtype}"/>
-                    </p:column>
-                    <p:column styleClass="Wid20">
-                        <f:facet name="header">
-                            <h:outputText value="来源类别"/>
-                        </f:facet>
-                        <h:outputText value="#{item.srctype}"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="状态"/>
-                        </f:facet>
-                        <h:outputText value="#{item.status}"/>
-                    </p:column>
-                </p:dataTable>
-            </p:panel>
+                    <h:outputText value="#{item.trtype}"/>
+                </p:column>
+                <p:column styleClass="Wid30">
+                    <f:facet name="header">
+                        <h:outputText value="交易名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.trname}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="出入库"/>
+                    </f:facet>
+                    <p:selectOneMenu id="iocode" value="#{item.iocode}" title="Iocode" disabled="true">
+                        <f:selectItem itemLabel="入库" itemValue="1"/>
+                        <f:selectItem itemLabel="出库" itemValue="-1"/>
+                        <f:selectItem itemLabel="不变" itemValue="0"/>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="记录成本"/>
+                    </f:facet>
+                    <p:selectBooleanCheckbox value="#{item.hascost}"  disabled="true"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="对象类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.objtype}"/>
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="来源类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.srctype}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="状态"/>
+                    </f:facet>
+                    <h:outputText value="#{item.status}"/>
+                </p:column>
+            </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />

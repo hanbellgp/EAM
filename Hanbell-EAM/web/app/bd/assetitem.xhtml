@@ -10,6 +10,9 @@
         <h:form id="formList">
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
             <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
                 <h:outputLabel value="品号" for="queryFormId" />
                 <p:inputText id="queryFormId" value="#{assetItemManagedBean.queryFormId}" title="品号" />
                 <h:outputLabel value="品名" for="queryName" />

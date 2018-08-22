@@ -239,6 +239,15 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 seq++;
                 d.setPid(formid);
                 d.setSeq(seq);//重新设置序号
+                //更新卡片信息
+                if (d.getAssetCard() != null) {
+                    AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
+                    if (ac != null) {
+                        //更新卡片数量,防止启动盘点后没有审核就删除盘点单引起的数量差异
+                        ac.setQty(d.getQty());
+                        assetCardBean.update(ac);
+                    }
+                }
             }
             persist(e, detailAdded, null, null);
             return formid;
@@ -382,7 +391,7 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 }
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(e.getCompany(),d.getAssetno());
+                    AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
                     if (ac == null) {
                         log4j.error("AssetCheckBean执行verify时异常", "找不到" + d.getAssetno() + "对应的卡片");
                         throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
