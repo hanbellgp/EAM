@@ -48,7 +48,6 @@
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetInventoryQueryBean.init()}"  icon="ui-icon-search"  update=":formList"/>
-                    <p:commandButton id="btnView" value="查看" action="#{assetInventoryQueryBean.view('')}"  icon="ui-icon-document"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnReset" value="重置" actionListener="#{assetInventoryQueryBean.reset()}" icon="ui-icon-refresh"
@@ -57,54 +56,52 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:panel id="panelList">
-                <p:dataTable value="#{assetInventoryQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="15,30,45"  lazy="true"
-                             selectionMode="single" selection="#{assetInventoryQueryBean.currentEntity}" rowKey="#{item.id}" >
+            <p:dataTable value="#{assetInventoryQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                         selectionMode="single" selection="#{assetInventoryQueryBean.currentEntity}" rowKey="#{item.id}" >
+                <f:facet name="header">
+                    库存明细
+                </f:facet>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
-                        库存明细
+                        <h:outputText value="件号"/>
                     </f:facet>
-                    <p:ajax event="rowSelect"  update=":formList:toolbar" />
-                    <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                    <p:column styleClass="Wid20">
-                        <f:facet name="header">
-                            <h:outputText value="件号"/>
-                        </f:facet>
-                        <h:outputText value="#{item.assetItem.itemno}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid30">
-                        <f:facet name="header">
-                            <h:outputText value="名称"/>
-                        </f:facet>
-                        <h:outputText value="#{item.assetItem.itemdesc}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="库号"/>
-                        </f:facet>
-                        <h:outputText value="#{item.warehouse.warehouseno}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid20">
-                        <f:facet name="header">
-                            <h:outputText value="库名"/>
-                        </f:facet>
-                        <h:outputText value="#{item.warehouse.name}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid10" style="text-align: right">
-                        <f:facet name="header">
-                            <h:outputText value="数量"/>
-                        </f:facet>
-                        <h:outputText value="#{item.qty}"/>
-                    </p:column>
-                    <p:column  styleClass="Wid10">
-                        <f:facet name="header">
-                            <h:outputText value="单位"/>
-                        </f:facet>
-                        <h:outputText value="#{item.assetItem.unit}"/>
-                    </p:column>
-                </p:dataTable>
-            </p:panel>
+                    <h:outputText value="#{item.assetItem.itemno}"/>
+                </p:column>
+                <p:column  styleClass="Wid30">
+                    <f:facet name="header">
+                        <h:outputText value="名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.itemdesc}"/>
+                </p:column>
+                <p:column  styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="库号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.warehouse.warehouseno}"/>
+                </p:column>
+                <p:column  styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="库名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.warehouse.name}"/>
+                </p:column>
+                <p:column  styleClass="Wid10" style="text-align: right">
+                    <f:facet name="header">
+                        <h:outputText value="数量"/>
+                    </f:facet>
+                    <h:outputText value="#{item.qty}"/>
+                </p:column>
+                <p:column  styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="单位"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.unit}"/>
+                </p:column>
+            </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />

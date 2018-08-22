@@ -66,7 +66,7 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
     }
 
     public List<AssetDistribute> findNeedThrow() {
-        Query query = getEntityManager().createNamedQuery("AssetDistribute.findNeedThrow");
+        Query query = getEntityManager().createNamedQuery("AssetDistribute.findNeedThrow").setFirstResult(0).setMaxResults(5);
         try {
             return query.getResultList();
         } catch (Exception ex) {
