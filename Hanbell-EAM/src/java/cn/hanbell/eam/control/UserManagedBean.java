@@ -60,7 +60,7 @@ public class UserManagedBean implements Serializable {
 
     @PostConstruct
     public void construct() {
-        companyList = companyBean.findAll();
+        companyList = companyBean.findBySystemName("EAM");
     }
 
     public boolean checkUser() {

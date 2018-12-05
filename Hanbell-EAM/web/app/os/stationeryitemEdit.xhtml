@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="stationeryitem" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{stationeryItemManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">办公用品－编辑</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="类别" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="category" value="#{stationeryItemManagedBean.currentEntity.category.category}" title="category" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="类别名称" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="name" value="#{stationeryItemManagedBean.currentEntity.category.name}"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="品号"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemno" value="#{stationeryItemManagedBean.currentEntity.itemno}" title="Itemno"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="品名" for="itemdesc" /></p:column>
+                    <p:column>
+                        <p:inputText id="itemdesc" value="#{stationeryItemManagedBean.currentEntity.itemdesc}" title="Itemdesc"
+                                     required="true" requiredMessage="请输入品名"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="规格" for="itemspec" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="itemspec" value="#{stationeryItemManagedBean.currentEntity.itemspec}" title="Itemspec" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="单价" for="purprice" /></p:column>
+                    <p:column>
+                        <p:inputText id="purprice" value="#{stationeryItemManagedBean.currentEntity.purprice}" title="purprice"
+                                     required="true" requiredMessage="请输入单价"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <p:inputText id="unit" value="#{stationeryItemManagedBean.currentEntity.unit}" title="Unit" styleClass="inputWithButton"
+                                     required="true" requiredMessage="请输入单位"/>
+                        <p:commandButton id="btnUnitSelect" actionListener="#{stationeryItemManagedBean.openDialog('unitSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{stationeryItemManagedBean.handleDialogReturnUnitWhenEdit}"
+                                    update="unit" />
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{stationeryItemManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

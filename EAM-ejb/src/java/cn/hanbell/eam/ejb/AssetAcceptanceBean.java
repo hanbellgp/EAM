@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -107,7 +105,7 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
             this.persist(aa, detailAdded, null, null);
             return formid;
         } catch (Exception ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            log4j.error("initAssetAcceptance异常", ex);
             return null;
         }
 

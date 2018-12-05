@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="stationeryaccept" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{stationeryAcceptanceManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{stationeryAcceptanceManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{stationeryAcceptanceManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{stationeryAcceptanceManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="打印" actionListener="#{stationeryAcceptanceManagedBean.print()}" icon="ui-icon-print"
+                                     process="@this" rendered="#{stationeryAcceptanceManagedBean.doPrt}"/>
+                    <p:commandButton id="btnVerify" value="审核" action="#{stationeryAcceptanceManagedBean.verify()}" icon="ui-icon-check"
+                                     process="@this" rendered="#{stationeryAcceptanceManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{stationeryAcceptanceManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     process="@this" rendered="#{stationeryAcceptanceManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">办公用品验收－查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"> <h:outputText value="验收单号"  /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{stationeryAcceptanceManagedBean.currentEntity.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="验收日期"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formdate" value="#{stationeryAcceptanceManagedBean.currentEntity.formdate}" title="Formdate">
+                            <f:convertDateTime pattern="yyyy/MM/dd"/>
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="验收部门"/></p:column>
+                    <p:column>
+                        <h:outputText id="deptno" value="#{stationeryAcceptanceManagedBean.currentEntity.deptno}" title="Deptno" />
+                    </p:column>
+                    <p:column><h:outputText value="部门名称"/></p:column>
+                    <p:column>
+                        <h:outputText id="deptname" value="#{stationeryAcceptanceManagedBean.currentEntity.deptname}" title="Deptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="备注"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="remark" value="#{stationeryAcceptanceManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="验收明细">
+                    <p:dataTable id="tableList" value="#{stationeryAcceptanceManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{stationeryAcceptanceManagedBean.currentDetail}" rowKey="#{item.id}" >
+                        <p:ajax event="rowSelect"  update="formOne:dlgDetail" oncomplete="PF('dlgDetail').show();" />
+                        <p:ajax event="rowUnselect"  update="formOne:dlgDetail" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="品号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid30">
+                            <f:facet name="header">
+                                <h:outputText value="名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetItem.itemdesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="点收"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="合格"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qcqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.unit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.price}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="金额"/>
+                            </f:facet>
+                            <h:outputText value="#{item.amts}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="仓库"/>
+                            </f:facet>
+                            <h:outputText value="#{item.warehouse.name}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+            <p:dialog id="dlgDetail" widgetVar="dlgDetail" width="80%">
+                <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                    <p:row>
+                        <p:column styleClass="Wid20"><h:outputText value="分类" /></p:column>
+                        <p:column styleClass="Wid30">
+                            <h:outputText id="srcformid" value="#{stationeryAcceptanceManagedBean.currentDetail.srcformid}" title="srcid" />
+                        </p:column>
+                        <p:column styleClass="Wid20"><h:outputText value="品号"/></p:column>
+                        <p:column styleClass="Wid30">
+                            <h:outputText id="assetItem" value="#{stationeryAcceptanceManagedBean.currentDetail.assetItem.itemno}" title="Itemno" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="名称" /></p:column>
+                        <p:column>
+                            <h:outputText id="itemdesc" value="#{stationeryAcceptanceManagedBean.currentDetail.assetItem.itemdesc}" />
+                        </p:column>
+                        <p:column><h:outputText value="规格"/></p:column>
+                        <p:column>
+                            <h:outputText id="itemspec" value="#{stationeryAcceptanceManagedBean.currentDetail.assetItem.itemspec}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="点收数量"/></p:column>
+                        <p:column>
+                            <h:outputText id="qty" value="#{stationeryAcceptanceManagedBean.currentDetail.qty}" title="Qty"/>
+                        </p:column>
+                        <p:column><h:outputText value="单位"/></p:column>
+                        <p:column>
+                            <h:outputText id="unit" value="#{stationeryAcceptanceManagedBean.currentDetail.unit}" title="Unit" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="验收数量"/></p:column>
+                        <p:column>
+                            <h:outputText id="qcqty" value="#{stationeryAcceptanceManagedBean.currentDetail.qcqty}" title="Qcqty"/>
+                        </p:column>
+                        <p:column><h:outputText value="仓库" /></p:column>
+                        <p:column>
+                            <h:outputText id="warehouseno" value="#{stationeryAcceptanceManagedBean.currentDetail.warehouse.name}" title="Warehouseno"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="单价"/></p:column>
+                        <p:column>
+                            <h:outputText id="price" value="#{stationeryAcceptanceManagedBean.currentDetail.price}" title="Price"/>
+                        </p:column>
+                        <p:column><h:outputText value="金额"/></p:column>
+                        <p:column>
+                            <h:outputText id="amts" value="#{stationeryAcceptanceManagedBean.currentDetail.amts}" title="Amts"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="不含税"/></p:column>
+                        <p:column>
+                            <h:outputText id="extax" value="#{stationeryAcceptanceManagedBean.currentDetail.extax}" title="Extax"/>
+                        </p:column>
+                        <p:column><h:outputText value="税额"/></p:column>
+                        <p:column>
+                            <h:outputText id="taxes" value="#{stationeryAcceptanceManagedBean.currentDetail.taxes}" title="Taxes"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="备注"/></p:column>
+                        <p:column colspan="3">
+                            <h:outputText id="dremark" value="#{stationeryAcceptanceManagedBean.currentDetail.remark}" title="Remark" />
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:dialog>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnPrint,btnVerify,btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

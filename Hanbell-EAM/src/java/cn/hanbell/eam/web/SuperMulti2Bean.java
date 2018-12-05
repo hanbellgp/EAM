@@ -88,7 +88,7 @@ public abstract class SuperMulti2Bean<T extends SuperEntity, D1 extends SuperDet
         super.create();
         if (newEntity != null) {
             newEntity.setStatus("N");
-            newEntity.setCreator(getUserManagedBean().getCurrentUser().getUsername());
+            newEntity.setCreator(getUserManagedBean().getCurrentUser().getUserid());
             newEntity.setCredateToNow();
         }
         setCurrentEntity(newEntity);
@@ -196,7 +196,7 @@ public abstract class SuperMulti2Bean<T extends SuperEntity, D1 extends SuperDet
             try {
                 if (doBeforeUnverify()) {
                     currentEntity.setStatus("N");
-                    currentEntity.setOptuser(getUserManagedBean().getCurrentUser().getUsername());
+                    currentEntity.setOptuser(getUserManagedBean().getCurrentUser().getUserid());
                     currentEntity.setOptdateToNow();
                     currentEntity.setCfmuser(null);
                     currentEntity.setCfmdate(null);
@@ -220,7 +220,7 @@ public abstract class SuperMulti2Bean<T extends SuperEntity, D1 extends SuperDet
             try {
                 if (doBeforeVerify()) {
                     currentEntity.setStatus("V");
-                    currentEntity.setCfmuser(getUserManagedBean().getCurrentUser().getUsername());
+                    currentEntity.setCfmuser(getUserManagedBean().getCurrentUser().getUserid());
                     currentEntity.setCfmdateToNow();
                     superEJB.verify(currentEntity);
                     doAfterVerify();

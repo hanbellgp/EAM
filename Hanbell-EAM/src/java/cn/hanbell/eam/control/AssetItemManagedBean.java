@@ -8,6 +8,7 @@ package cn.hanbell.eam.control;
 import cn.hanbell.eam.ejb.AssetItemBean;
 import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.entity.AssetItem;
+import cn.hanbell.eam.entity.Unit;
 import cn.hanbell.eam.lazy.AssetItemModel;
 import cn.hanbell.eam.web.SuperSingleBean;
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ public class AssetItemManagedBean extends SuperSingleBean<AssetItem> {
         newEntity.setPurmin(BigDecimal.ZERO);
         newEntity.setInvmax(BigDecimal.ZERO);
         newEntity.setInvmin(BigDecimal.ZERO);
+        newEntity.setStatus("V");
     }
 
     @Override
@@ -107,15 +109,15 @@ public class AssetItemManagedBean extends SuperSingleBean<AssetItem> {
 
     public void handleDialogReturnUnitWhenEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
-            //Unit e =(Unit)event.getObject();
-            //currentEntity.setUnit(fileName);
+            Unit e = (Unit) event.getObject();
+            currentEntity.setUnit(e.getUnit());
         }
     }
 
     public void handleDialogReturnUnitWhenNew(SelectEvent event) {
         if (event.getObject() != null && newEntity != null) {
-            //Unit e =(Unit)event.getObject();
-            //newEntity.setUnit(fileName);
+            Unit e = (Unit) event.getObject();
+            newEntity.setUnit(e.getUnit());
         }
     }
 
