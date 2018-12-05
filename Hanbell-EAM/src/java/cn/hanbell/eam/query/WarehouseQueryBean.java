@@ -40,11 +40,11 @@ public class WarehouseQueryBean extends SuperQueryBean<Warehouse> {
             if (params.containsKey("hascost")) {
                 queryHascost = Integer.valueOf(params.get("hascost")[0]);
             }
-        }
-        if (queryHascost == 0) {
-            model.getFilterFields().put("hascost", false);
-        } else if (queryHascost > 0) {
-            model.getFilterFields().put("hascost", true);
+            if (queryHascost == 0) {
+                model.getFilterFields().put("hascost", false);
+            } else if (queryHascost > 0) {
+                model.getFilterFields().put("hascost", true);
+            }
         }
         super.init();
     }

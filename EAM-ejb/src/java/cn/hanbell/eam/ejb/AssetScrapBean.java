@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -94,7 +92,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
             persist(e, detailAdded, null, null);
             return formid;
         } catch (Exception ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            log4j.error("initAssetScrap", ex);
             return null;
         }
     }

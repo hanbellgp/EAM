@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT 设计器 V4.5.0.v201506092134 构建 &lt;@建立@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -719,13 +719,16 @@ return false;
                 <property name="width">1.6in</property>
             </column>
             <column id="461">
-                <property name="width">2.5in</property>
+                <property name="width">2in</property>
+            </column>
+            <column id="514">
+                <property name="width">2in</property>
             </column>
             <column id="426">
                 <property name="width">1.5in</property>
             </column>
             <column id="433">
-                <property name="width">1.6in</property>
+                <property name="width">1.2in</property>
             </column>
             <column id="440">
                 <property name="width">0.8in</property>
@@ -769,6 +772,19 @@ return false;
                         <property name="borderTopWidth">thin</property>
                         <label id="504">
                             <text-property name="text">名称</text-property>
+                        </label>
+                    </cell>
+                    <cell id="511">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="515">
+                            <text-property name="text">规格</text-property>
                         </label>
                     </cell>
                     <cell id="420">
@@ -905,6 +921,19 @@ return false;
                             <property name="resultSetColumn">assetDesc</property>
                         </data>
                     </cell>
+                    <cell id="512">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="516">
+                            <property name="resultSetColumn">assetSpec</property>
+                        </data>
+                    </cell>
                     <cell id="421">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -1031,6 +1060,16 @@ return false;
                         <label id="507"/>
                     </cell>
                     <cell id="460">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="513">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>

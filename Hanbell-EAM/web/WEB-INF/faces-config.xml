@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
+              version="2.3">
     <lifecycle>
         <phase-listener>
             cn.hanbell.eam.web.SignCheck
@@ -257,6 +258,91 @@
         <navigation-case>
             <from-outcome>assetdistributenotthrowView</from-outcome>
             <to-view-id>/app/ai/assetdistributenotthrowView.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <description>办公用品一级导航</description>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <description>OS530办公用品入库</description>
+            <from-outcome>stationeryaccept</from-outcome>
+            <to-view-id>/app/os/stationeryaccept.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>OS310办公用品领用</description>
+            <from-outcome>stationerydistribute</from-outcome>
+            <to-view-id>/app/os/stationerydistribute.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>OS150办公用品库存</description>
+            <from-outcome>stationeryinventory</from-outcome>
+            <to-view-id>/app/os/stationeryinventory.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>OS140办公用品登记</description>
+            <from-outcome>stationeryitem</from-outcome>
+            <to-view-id>/app/os/stationeryitem.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <description>办公用品入库</description>
+        <from-view-id>/app/os/stationeryaccept.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>stationeryacceptNew</from-outcome>
+            <to-view-id>/app/os/stationeryacceptNew.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>stationeryacceptEdit</from-outcome>
+            <to-view-id>/app/os/stationeryacceptEdit.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>stationeryacceptView</from-outcome>
+            <to-view-id>/app/os/stationeryacceptView.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <description>办公用品领用</description>
+        <from-view-id>/app/os/stationerydistribute.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>stationerydistributeNew</from-outcome>
+            <to-view-id>/app/os/stationerydistributeNew.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>stationerydistributeEdit</from-outcome>
+            <to-view-id>/app/os/stationerydistributeEdit.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>stationerydistributeView</from-outcome>
+            <to-view-id>/app/os/stationerydistributeView.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <description>OS140办公用品登记</description>
+        <from-view-id>/app/os/stationeryitem.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>stationeryitemNew</from-outcome>
+            <to-view-id>/app/os/stationeryitemNew.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>stationeryitemEdit</from-outcome>
+            <to-view-id>/app/os/stationeryitemEdit.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>stationeryitemView</from-outcome>
+            <to-view-id>/app/os/stationeryitemView.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

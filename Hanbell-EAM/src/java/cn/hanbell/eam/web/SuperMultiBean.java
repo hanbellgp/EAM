@@ -85,7 +85,7 @@ public abstract class SuperMultiBean<T extends SuperEntity, D1 extends SuperDeta
         super.create();
         if (newEntity != null) {
             newEntity.setStatus("N");
-            newEntity.setCreator(getUserManagedBean().getCurrentUser().getUsername());
+            newEntity.setCreator(getUserManagedBean().getCurrentUser().getUserid());
             newEntity.setCredateToNow();
         }
         setCurrentEntity(newEntity);
@@ -199,7 +199,7 @@ public abstract class SuperMultiBean<T extends SuperEntity, D1 extends SuperDeta
             try {
                 if (doBeforeUnverify()) {
                     currentEntity.setStatus("N");//简化查询条件,此处不再提供修改状态(M)
-                    currentEntity.setOptuser(getUserManagedBean().getCurrentUser().getUsername());
+                    currentEntity.setOptuser(getUserManagedBean().getCurrentUser().getUserid());
                     currentEntity.setOptdateToNow();
                     currentEntity.setCfmuser(null);
                     currentEntity.setCfmdate(null);
@@ -223,7 +223,7 @@ public abstract class SuperMultiBean<T extends SuperEntity, D1 extends SuperDeta
             try {
                 if (doBeforeVerify()) {
                     currentEntity.setStatus("V");
-                    currentEntity.setCfmuser(getUserManagedBean().getCurrentUser().getUsername());
+                    currentEntity.setCfmuser(getUserManagedBean().getCurrentUser().getUserid());
                     currentEntity.setCfmdateToNow();
                     superEJB.verify(currentEntity);
                     doAfterVerify();

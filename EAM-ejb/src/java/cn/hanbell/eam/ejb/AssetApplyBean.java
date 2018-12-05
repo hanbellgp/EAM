@@ -15,8 +15,6 @@ import com.lightshell.comm.SuperEJB;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -65,7 +63,7 @@ public class AssetApplyBean extends SuperEJBForEAM<AssetApply> {
             persist(e, detailAdded, null, null);
             return formid;
         } catch (Exception ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            log4j.error("initAssetApply", ex);
             return null;
         }
     }

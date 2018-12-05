@@ -183,6 +183,9 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
         model = new AssetAcceptanceModel(assetAcceptanceBean, userManagedBean);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
+        if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+            model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+        }
         trtype = transactoinTypeBean.findByTrtype("PAA");
         if (trtype == null) {
             showErrorMsg("Error", "PAA验收类别未设置");
@@ -206,6 +209,17 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
             if (queryState != null && !"ALL".equals(queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
+            if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+                model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+            }
+        }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+            model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
         }
     }
 

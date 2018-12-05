@@ -31,6 +31,7 @@ import static org.apache.axis.Constants.XSD_STRING;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.impl.code128.Code128Constants;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
@@ -45,7 +46,7 @@ public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
     protected final String url = "http://127.0.0.1:8480/WebService/SHBERPWebService";
     protected final String nameSpace = "http://jws.hanbell.cn/";
 
-    protected final org.apache.logging.log4j.Logger log4j = LogManager.getLogger();
+    protected final Logger log4j = LogManager.getLogger();
 
     protected String company = "C";
 

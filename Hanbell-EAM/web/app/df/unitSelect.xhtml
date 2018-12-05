@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/df.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="2" columnClasses="Wid20,Wid8" styleClass="plgQuery Wid100">
+                <h:outputLabel value="单位" for="queryformid" />
+                <p:inputText id="queryformid" value="#{unitQueryBean.queryFormId}" title="单位" />
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{unitQueryBean.reset()}"  icon="ui-icon-refresh"  
+                                     update=":formList"/> 
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{unitQueryBean.query()}"  icon="ui-icon-search"  
+                                     update=":formList"/>
+                    <p:commandButton id="btnSelected" value="确定" actionListener="#{unitQueryBean.closeDialog()}" icon="ui-icon-plus" />                                                     
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{unitQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="10"  
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                         rowsPerPageTemplate="10,20,30"  lazy="true" 
+                         selectionMode="single" selection="#{unitQueryBean.currentEntity}" rowKey="#{item.id}" >
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="单位"/>
+                    </f:facet>
+                    <h:outputText value="#{item.unit}"/>
+                </p:column>
+                <p:column styleClass="Wid40">
+                    <f:facet name="header">
+                        <h:outputText value="英文单位"/>
+                    </f:facet>
+                    <h:outputText value="#{item.enunit}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

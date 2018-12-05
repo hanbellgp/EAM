@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="stationeryitem" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{stationeryItemManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{stationeryItemManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{stationeryItemManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{stationeryItemManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="打印" actionListener="#{stationeryItemManagedBean.print()}" icon="ui-icon-print"
+                                     process="@this" rendered="#{stationeryItemManagedBean.doPrt}"/>
+                    <p:commandButton id="btnVerify" value="审核" action="#{stationeryItemManagedBean.verify()}" icon="ui-icon-check"
+                                     process="@this" rendered="#{stationeryItemManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{stationeryItemManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     rendered="#{stationeryItemManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">办公用品－查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="类别" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="category" value="#{stationeryItemManagedBean.currentEntity.category.category}" title="category" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="类别名称" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="name" value="#{stationeryItemManagedBean.currentEntity.category.name}"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="品号"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemno" value="#{stationeryItemManagedBean.currentEntity.itemno}" title="Itemno"/>
+                    </p:column>
+                    <p:column><h:outputText value="品名"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemdesc" value="#{stationeryItemManagedBean.currentEntity.itemdesc}" title="Itemdesc"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="规格"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="itemspec" value="#{stationeryItemManagedBean.currentEntity.itemspec}" title="Itemspec" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="单价"  /></p:column>
+                    <p:column>
+                        <h:outputText id="purprice" value="#{stationeryItemManagedBean.currentEntity.purprice}" title="purprice"/>
+                    </p:column>
+                    <p:column><h:outputText value="单位"/></p:column>
+                    <p:column>
+                        <h:outputText id="unit" value="#{stationeryItemManagedBean.currentEntity.unit}" title="Unit" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="备注"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="remark" value="#{stationeryItemManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnPrint,btnVerify,btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

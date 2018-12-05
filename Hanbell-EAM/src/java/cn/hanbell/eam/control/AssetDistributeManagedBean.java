@@ -322,6 +322,9 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
         model.getFilterFields().put("status", "N");
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
+        if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+            model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+        }
         super.init();
         openParams = new HashMap<>();
     }
@@ -451,6 +454,17 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
             if (queryState != null && !"ALL".equals(queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
+            if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+                model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+            }
+        }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+            model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
         }
     }
 

@@ -25,6 +25,7 @@ public class AssetCategoryQueryBean extends SuperQueryBean<AssetCategory> {
     @EJB
     private AssetCategoryBean assetCategoryBean;
     private Integer queryPId = -1;
+    private String queryCategory = null;
 
     public AssetCategoryQueryBean() {
         super(AssetCategory.class);
@@ -39,11 +40,17 @@ public class AssetCategoryQueryBean extends SuperQueryBean<AssetCategory> {
             if (params.containsKey("pid")) {
                 queryPId = Integer.valueOf(params.get("pid")[0]);
             }
+            if (params.containsKey("category")) {
+                queryCategory = params.get("category")[0];
+            }
         }
         if (queryPId == 0) {
             model.getFilterFields().put("parentCategory IS NULL", "");
         } else if (queryPId > 0) {
             model.getFilterFields().put("parentCategory.id", queryPId);
+        }
+        if (queryCategory != null && !"".equals(queryCategory)) {
+            model.getFilterFields().put("category", queryCategory);
         }
         super.init();
     }

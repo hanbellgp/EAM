@@ -12,6 +12,7 @@ import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -24,6 +25,8 @@ public class AssetItemQueryBean extends SuperQueryBean<AssetItem> {
     @EJB
     private AssetItemBean assetItemBean;
 
+    private String queryCategory;
+
     public AssetItemQueryBean() {
         super(AssetItem.class);
     }
@@ -32,6 +35,15 @@ public class AssetItemQueryBean extends SuperQueryBean<AssetItem> {
     public void init() {
         superEJB = assetItemBean;
         model = new AssetItemModel(assetItemBean);
+        params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+        if (params != null) {
+            if (params.containsKey("category")) {
+                queryCategory = params.get("category")[0];
+            }
+            if (this.queryCategory != null && !"".equals(this.queryCategory)) {
+                this.model.getFilterFields().put("category.category", this.queryCategory);
+            }
+        }
         super.init();
     }
 
@@ -45,6 +57,17 @@ public class AssetItemQueryBean extends SuperQueryBean<AssetItem> {
             if (this.queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("itemdesc", this.queryName);
             }
+            if (this.queryCategory != null && !"".equals(this.queryCategory)) {
+                this.model.getFilterFields().put("category.category", this.queryCategory);
+            }
+        }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        if (this.queryCategory != null && !"".equals(this.queryCategory)) {
+            this.model.getFilterFields().put("category.category", this.queryCategory);
         }
     }
 
