@@ -6,6 +6,7 @@
 package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.entity.AssetCategory;
+import cn.hanbell.eam.entity.AssetItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,16 @@ public class StationeryAcceptanceManagedBean extends AssetAcceptanceManagedBean 
             if (e.getWarehouse() != null) {
                 currentDetail.setWarehouse(e.getWarehouse());
             }
+        }
+    }
+
+    @Override
+    public void handleDialogReturnAssetItemWhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            AssetItem e = (AssetItem) event.getObject();
+            currentDetail.setAssetItem(e);
+            currentDetail.setUnit(e.getUnit());
+            currentDetail.setPrice(e.getPurprice());
         }
     }
 

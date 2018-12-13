@@ -58,6 +58,14 @@ public class AssetDistributeDetail extends FormDetailEntity {
     @NotNull
     @Column(name = "qty")
     private BigDecimal qty;
+    @NotNull
+    @Column(name = "price")
+    private BigDecimal price;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "amts")
+    private BigDecimal amts;
+    @Basic(optional = false)
     @Size(max = 10)
     @Column(name = "unit")
     private String unit;
@@ -122,6 +130,8 @@ public class AssetDistributeDetail extends FormDetailEntity {
     private String remark;
 
     public AssetDistributeDetail() {
+        this.price = BigDecimal.ZERO;
+        this.amts = BigDecimal.ZERO;
     }
 
     public AssetCard getAssetCard() {
@@ -178,6 +188,34 @@ public class AssetDistributeDetail extends FormDetailEntity {
 
     public void setQty(BigDecimal qty) {
         this.qty = qty;
+    }
+
+    /**
+     * @return the price
+     */
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    /**
+     * @param price the price to set
+     */
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    /**
+     * @return the amts
+     */
+    public BigDecimal getAmts() {
+        return amts;
+    }
+
+    /**
+     * @param amts the amts to set
+     */
+    public void setAmts(BigDecimal amts) {
+        this.amts = amts;
     }
 
     public String getUnit() {

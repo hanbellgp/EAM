@@ -95,36 +95,60 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
     }
 
     @Override
-    protected boolean doBeforeVerify() throws Exception {
-        if (super.doBeforeVerify()) {
-            int i;
-            boolean flag;
-            String wareh;
-            AssetInventory ai;
-            List<AssetDistributeDetail> details = new ArrayList<>();
-            for (AssetDistributeDetail add : detailList) {
-                //数量累加后再判断库存可利用量
-                flag = true;
-                for (AssetDistributeDetail d : details) {
-                    if (d.getAssetItem().getItemno().equals(add.getAssetItem().getItemno())) {
-                        d.setQty(d.getQty().add(add.getQty()));
-                        flag = false;
-                    }
-                }
-                if (flag) {
-                    details.add(add);
-                }
-            }
-            for (AssetDistributeDetail add : details) {
-                ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
-                if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
-                    showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
-                    return false;
-                }
-            }
-            return true;
+    protected boolean doBeforeUnverify() throws Exception {
+        if (currentEntity == null) {
+            showWarnMsg("Warn", "没有可更新数据");
+            return false;
         }
-        return false;
+        AssetDistribute e = stationeryDistributeBean.findById(currentEntity.getId());
+        if (!"T".equals(e.getStatus())) {
+            showWarnMsg("Warn", "状态已变更");
+            return false;
+        }
+        if (detailList != null && !detailList.isEmpty()) {
+            detailList.clear();
+        }
+        detailList = detailEJB.findByPId(currentEntity.getFormid());
+        return true;
+    }
+
+    @Override
+    protected boolean doBeforeVerify() throws Exception {
+        if (currentEntity == null) {
+            showWarnMsg("Warn", "没有可更新数据");
+            return false;
+        }
+        AssetDistribute e = stationeryDistributeBean.findById(currentEntity.getId());
+        if ("V".equals(e.getStatus()) || "T".equals(e.getStatus())) {
+            showWarnMsg("Warn", "状态已变更");
+            return false;
+        }
+        int i;
+        boolean flag;
+        String wareh;
+        AssetInventory ai;
+        List<AssetDistributeDetail> details = new ArrayList<>();
+        for (AssetDistributeDetail add : detailList) {
+            //数量累加后再判断库存可利用量
+            flag = true;
+            for (AssetDistributeDetail d : details) {
+                if (d.getAssetItem().getItemno().equals(add.getAssetItem().getItemno())) {
+                    d.setQty(d.getQty().add(add.getQty()));
+                    flag = false;
+                }
+            }
+            if (flag) {
+                details.add(add);
+            }
+        }
+        for (AssetDistributeDetail add : details) {
+            ai = assetInventoryBean.findAssetInventory(currentEntity.getCompany(), add.getAssetItem().getItemno(), "", "", "", add.getWarehouse().getWarehouseno());
+            if ((ai == null) || ai.getQty().compareTo(add.getQty()) == -1) {
+                showErrorMsg("Error", add.getAssetItem().getItemno() + "库存可利用量不足");
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -262,6 +286,10 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             this.model.getFilterFields().clear();
             if (queryFormId != null && !"".equals(queryFormId)) {
                 this.model.getFilterFields().put("formid", queryFormId);
+            } else {
+                if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+                    model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+                }
             }
             if (queryDateBegin != null) {
                 this.model.getFilterFields().put("formdateBegin", queryDateBegin);
@@ -272,9 +300,6 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             if (queryState != null && !"ALL".equals(queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
-            if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
-                model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
-            }
         }
     }
 
@@ -283,6 +308,52 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
         super.reset();
         if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
             model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+        }
+    }
+
+    @Override
+    protected void setToolBar() {
+        if (currentEntity != null && getCurrentPrgGrant() != null && currentEntity.getStatus() != null) {
+            switch (currentEntity.getStatus()) {
+                case "T":
+                    this.doEdit = false;
+                    this.doDel = false;
+                    this.doCfm = false;
+                    this.doUnCfm = true;
+                    break;
+                default:
+                    this.doEdit = getCurrentPrgGrant().getDoedit() && true;
+                    this.doDel = getCurrentPrgGrant().getDodel() && true;
+                    this.doCfm = getCurrentPrgGrant().getDocfm() && true;
+                    this.doUnCfm = false;
+            }
+        } else {
+            this.doEdit = false;
+            this.doDel = false;
+            this.doCfm = false;
+            this.doUnCfm = false;
+        }
+    }
+
+    @Override
+    public void verify() {
+        if (null != getCurrentEntity()) {
+            try {
+                if (doBeforeVerify()) {
+                    currentEntity.setStatus("T");
+                    currentEntity.setCfmuser(getUserManagedBean().getCurrentUser().getUsername());
+                    currentEntity.setCfmdateToNow();
+                    superEJB.verify(currentEntity);
+                    doAfterVerify();
+                    showInfoMsg("Info", "更新成功");
+                } else {
+                    showErrorMsg("Error", "审核前检查失败");
+                }
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        } else {
+            showWarnMsg("Warn", "没有可更新数据");
         }
     }
 
