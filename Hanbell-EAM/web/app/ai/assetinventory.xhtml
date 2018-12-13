@@ -50,6 +50,10 @@
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetInventoryQueryBean.init()}"  icon="ui-icon-search"  update=":formList"/>
                 </f:facet>
                 <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnPrint" value="导出" actionListener="#{assetInventoryQueryBean.print()}" icon="ui-icon-print"
+                                    process="@this" rendered="#{assetInventoryQueryBean.doPrt}"/>
+                    </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{assetInventoryQueryBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{assetInventoryQueryBean.query()}" icon="ui-icon-search"
@@ -106,7 +110,7 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnReset,btnQuery">
+            <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnPrint,btnReset,btnQuery">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>

@@ -199,6 +199,10 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
             this.model.getFilterFields().clear();
             if (queryFormId != null && !"".equals(queryFormId)) {
                 this.model.getFilterFields().put("formid", queryFormId);
+            } else {
+                if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
+                    model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
+                }
             }
             if (queryDateBegin != null) {
                 this.model.getFilterFields().put("formdateBegin", queryDateBegin);
@@ -208,9 +212,6 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
             }
             if (queryState != null && !"ALL".equals(queryState)) {
                 this.model.getFilterFields().put("status", queryState);
-            }
-            if (this.getCurrentPrgGrant() != null && this.getCurrentPrgGrant().getSysprg().getNoauto()) {
-                model.getFilterFields().put("formid", this.getCurrentPrgGrant().getSysprg().getNolead());
             }
         }
     }
