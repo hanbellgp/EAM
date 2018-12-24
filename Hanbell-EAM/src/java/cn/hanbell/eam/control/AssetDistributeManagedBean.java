@@ -69,6 +69,10 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     protected boolean doBeforePersist() throws Exception {
         if (super.doBeforePersist()) {
+            if (newEntity.getDeptno() == null || "".equals(newEntity.getDeptno())) {
+                showErrorMsg("Error", "请输入领用部门");
+                return false;
+            }
             for (AssetDistributeDetail add : detailList) {
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要输入编号");
@@ -91,6 +95,10 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     protected boolean doBeforeUpdate() throws Exception {
         if (super.doBeforeUpdate()) {
+            if (currentEntity.getDeptno() == null || "".equals(currentEntity.getDeptno())) {
+                showErrorMsg("Error", "请输入领用部门");
+                return false;
+            }
             for (AssetDistributeDetail add : detailList) {
                 if (add.getAssetItem().getCategory().getNoauto() && add.getAssetCard() == null) {
                     showErrorMsg("Error", add.getAssetItem().getItemno() + "需要输入编号");
