@@ -261,7 +261,8 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
 
                 //有卡片的更新卡片信息，没卡片的生成卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                    //AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                    AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
                     if (ac == null) {
                         throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
                     }

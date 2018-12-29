@@ -153,7 +153,8 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
                     if (d.getAssetItem().getCategory().getNoauto()) {
-                        AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                        //AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                        AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
                         ac.setWarehouse(d.getWarehouse());
                         ac.setScrap(Boolean.FALSE);
                         ac.setScrapDate(null);

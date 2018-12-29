@@ -6,7 +6,6 @@
 package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
-import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetDistribute;
 import cn.hanbell.eam.entity.AssetDistributeDetail;
 import cn.hanbell.eam.entity.AssetInventory;
@@ -37,7 +36,7 @@ public class StationeryDistributeBean extends SuperEJBForEAM<AssetDistribute> {
     private SystemProgramBean systemProgramBean;
 
     @EJB
-    private AssetDistributeDetailBean assetDistributeDetailBean;
+    private StationeryDistributeDetailBean assetDistributeDetailBean;
 
     @EJB
     private AssetInventoryBean assetInventoryBean;
@@ -54,6 +53,17 @@ public class StationeryDistributeBean extends SuperEJBForEAM<AssetDistribute> {
 
     public StationeryDistributeBean() {
         super(AssetDistribute.class);
+    }
+
+    public AssetDistribute findByFormId(String formid) {
+        Query query = getEntityManager().createNamedQuery("AssetDistribute.findByFormid");
+        query.setParameter("formid", formid);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetDistribute) o;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public String getFormId(Date day) {
@@ -148,7 +158,7 @@ public class StationeryDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 throw new RuntimeException("交易类别设置错误");
             }
             AssetDistribute e = getEntityManager().merge(entity);
-            detailList = assetDistributeDetailBean.findByPId(e.getFormid());
+            setDetail(e.getFormid());
             for (AssetDistributeDetail d : detailList) {
                 //更新库存交易出库
                 AssetTransaction st = new AssetTransaction();
@@ -163,7 +173,7 @@ public class StationeryDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 st.setSn(d.getSn());
                 st.setQty(d.getQty());
                 st.setUnit(d.getUnit());
-                st.setPrice(d.getAssetItem().getPurprice());
+                st.setPrice(d.getAmts());
                 st.setWarehouse(d.getWarehouse());
                 st.setIocode(AIA.getIocode());
                 st.setSrcapi(d.getSrcapi());
@@ -183,12 +193,12 @@ public class StationeryDistributeBean extends SuperEJBForEAM<AssetDistribute> {
                 si.setSn(d.getSn());
                 si.setWarehouse(d.getWarehouse());
                 si.setPreqty(BigDecimal.ZERO);
-                si.setQty(d.getQty().multiply(BigDecimal.valueOf(AIA.getIocode())));//出库就 x(-1)
+                si.setQty(d.getQty());
                 si.setStatusToNew();
                 inventoryList.add(si);
             }
             //更新库存
-            assetInventoryBean.add(inventoryList);
+            assetInventoryBean.subtract(inventoryList);
             return e;
         } catch (Exception ex) {
             throw new RuntimeException(ex);

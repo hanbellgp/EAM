@@ -42,7 +42,7 @@
                         <p:inputText id="deptno" value="#{assetDistributeManagedBean.newEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnRequireDeptSelect" actionListener="#{assetDistributeManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWhenEdit}"
+                            <p:ajax event="dialogReturn" listener="#{assetDistributeManagedBean.handleDialogReturnWhenNew}"
                                     update="deptno,deptname" />
                         </p:commandButton>
                     </p:column>

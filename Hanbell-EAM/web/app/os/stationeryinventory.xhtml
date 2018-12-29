@@ -44,6 +44,10 @@
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{stationeryInventoryQueryBean.init()}"  icon="ui-icon-search"  update=":formList"/>
                 </f:facet>
                 <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnPrint" value="导出" actionListener="#{stationeryInventoryQueryBean.print()}" icon="ui-icon-print"
+                                    process="@this" rendered="#{stationeryInventoryQueryBean.doPrt}"/>
+                    </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{stationeryInventoryQueryBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{stationeryInventoryQueryBean.query()}" icon="ui-icon-search"

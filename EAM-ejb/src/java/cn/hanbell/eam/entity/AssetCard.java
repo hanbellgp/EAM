@@ -138,8 +138,7 @@ public class AssetCard extends FormEntity {
     @NotNull
     @Column(name = "amts")
     private BigDecimal amts;
-    @Basic(optional = false)
-    @NotNull
+
     @Column(name = "buyDate")
     @Temporal(TemporalType.DATE)
     private Date buyDate;

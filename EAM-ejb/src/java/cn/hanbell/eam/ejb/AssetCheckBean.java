@@ -241,7 +241,8 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 d.setSeq(seq);//重新设置序号
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
+                    //AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
+                    AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
                     if (ac != null) {
                         //更新卡片数量,防止启动盘点后没有审核就删除盘点单引起的数量差异
                         ac.setQty(d.getQty());
@@ -296,7 +297,8 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 }
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                    //AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
+                    AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
                     if (ac == null) {
                         throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
                     }
@@ -391,7 +393,8 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 }
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
-                    AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
+                    //AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
+                    AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
                     if (ac == null) {
                         log4j.error("AssetCheckBean执行verify时异常", "找不到" + d.getAssetno() + "对应的卡片");
                         throw new RuntimeException("找不到" + d.getAssetno() + "对应的卡片");
