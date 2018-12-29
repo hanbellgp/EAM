@@ -148,6 +148,10 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
     @Override
     protected boolean doBeforeVerify() throws Exception {
         if (super.doBeforeVerify()) {
+            if (currentEntity.getDeptno() == null || "".equals(currentEntity.getDeptno())) {
+                showErrorMsg("Error", "请输入领用部门");
+                return false;
+            }
             int i;
             boolean flag;
             String wareh;

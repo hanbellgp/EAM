@@ -216,8 +216,12 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
             reportFormat = reportOutputFormat;
         }
         String reportName;
-        if (currentEntity.getCategory().getNoauto()) {
-            reportName = reportPath + currentPrgGrant.getSysprg().getRptdesign();
+        if (currentEntity.getFormtype().equals("AC")) {
+            if (currentEntity.getCategory().getNoauto()) {
+                reportName = reportPath + currentPrgGrant.getSysprg().getRptdesign();
+            } else {
+                reportName = reportPath + "assetcheckB.rptdesign";
+            }
         } else {
             reportName = reportPath + "assetcheckB.rptdesign";
         }
@@ -254,8 +258,12 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
         reportParams.put("JNDIName", this.currentPrgGrant.getSysprg().getRptjndi());
         //设置报表名称
         String reportName;
-        if (currentEntity.getCategory().getNoauto()) {
-            reportName = reportPath + currentPrgGrant.getSysprg().getRptdesign();
+        if (currentEntity.getFormtype().equals("AC")) {
+            if (currentEntity.getCategory().getNoauto()) {
+                reportName = reportPath + currentPrgGrant.getSysprg().getRptdesign();
+            } else {
+                reportName = reportPath + "assetcheckB.rptdesign";
+            }
         } else {
             reportName = reportPath + "assetcheckB.rptdesign";
         }
