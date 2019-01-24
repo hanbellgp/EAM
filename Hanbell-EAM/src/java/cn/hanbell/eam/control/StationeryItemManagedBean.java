@@ -48,7 +48,11 @@ public class StationeryItemManagedBean extends AssetItemManagedBean {
     public void init() {
         super.init();
         openParams = new HashMap<>();
-        this.model.getFilterFields().put("category.category", "C1");
+        model.getFilterFields().put("category.category", "C1");
+        model.getSortFields().clear();
+        model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("category.category", "ASC");
+        model.getSortFields().put("itemno", "ASC");
     }
 
     @Override
