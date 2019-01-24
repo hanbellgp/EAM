@@ -113,11 +113,11 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
 
     @Override
     public void init() {
+        openParams = new HashMap<>();
         superEJB = assetCategoryBean;
         model = new AssetCategoryModel(assetCategoryBean);
         super.init();
-        openParams = new HashMap<>();
-        initTree();
+        //initTree();
     }
 
     private void initTree() {
@@ -171,6 +171,22 @@ public class AssetCategoryManagedBean extends SuperSingleBean<AssetCategory> {
                 break;
             default:
                 super.openDialog(view);
+        }
+    }
+
+    @Override
+    public void query() {
+        if (this.model != null) {
+            this.model.getFilterFields().clear();
+            if (queryFormId != null && !"".equals(queryFormId)) {
+                this.model.getFilterFields().put("category", queryFormId);
+            }
+            if (queryName != null && !"".equals(this.queryName)) {
+                this.model.getFilterFields().put("name", queryName);
+            }
+            if (queryState != null && !"ALL".equals(queryState)) {
+                this.model.getFilterFields().put("status", queryState);
+            }
         }
     }
 

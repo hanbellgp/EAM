@@ -9,6 +9,21 @@
     <ui:define name="content">
         <h:form id="formList">
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <h:outputLabel value="编号" for="queryFormId" />
+                <p:inputText id="queryFormId" value="#{assetCategoryManagedBean.queryFormId}" title="编号" />
+                <h:outputLabel value="名称" for="queryName" />
+                <p:inputText id="queryName" value="#{assetCategoryManagedBean.queryName}" title="名称" />
+                <h:outputLabel value="状态" for="queryState" />
+                <p:selectOneMenu id="queryState" value="#{assetCategoryManagedBean.queryState}" title="状态" >
+                    <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                    <f:selectItem itemLabel="未审核" itemValue="N"/>
+                    <f:selectItem itemLabel="已审核" itemValue="V"/>
+                </p:selectOneMenu>
+            </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetCategoryManagedBean.init()}" icon="ui-icon-sync"
@@ -34,13 +49,15 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:treeTable value="#{assetCategoryManagedBean.rootNode}" var="item" tableStyleClass="tableList"
-                         selectionMode="single" selection="#{assetCategoryManagedBean.selectedNode}">
+            <p:dataTable value="#{assetCategoryManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                         selectionMode="single" selection="#{assetCategoryManagedBean.currentEntity}" rowKey="#{item.id}" >
                 <f:facet name="header">
                     资产类别维护
                 </f:facet>
-                <p:ajax event="select"  update=":formList:toolbar" />
-                <p:ajax event="unselect" update=":formList:toolbar" />
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="类别"/>
@@ -83,7 +100,7 @@
                     </f:facet>
                     <h:outputText value="#{item.status}"/>
                 </p:column>
-            </p:treeTable>
+            </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
