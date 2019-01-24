@@ -7,7 +7,6 @@ package cn.hanbell.eam.query;
 
 import cn.hanbell.eam.ejb.AssetDistributeDetailForQueryBean;
 import cn.hanbell.eam.entity.AssetDistributeDetailForQuery;
-import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetDistributeDetailForQueryModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
@@ -34,14 +33,8 @@ public class StationeryDistributeQueryBean extends SuperQueryBean<AssetDistribut
         if (this.model != null) {
             this.model.getFilterFields().clear();
         }
-        queryFormId ="";
-        queryDateBegin=null;
-        queryDateEnd =null;
-        queryState="ALL";
-        superEJB = assetDistributeDetailForQueryBean;
-        model = new AssetDistributeDetailForQueryModel(assetDistributeDetailForQueryBean, userManagedBean);
         if (currentPrgGrant != null && currentPrgGrant.getSysprg().getNoauto()) {
-            model.getFilterFields().put("assetDistribute.formid", currentPrgGrant.getSysprg().getNolead());
+            this.model.getFilterFields().put("assetDistribute.formid", currentPrgGrant.getSysprg().getNolead());
         }
     }
 
