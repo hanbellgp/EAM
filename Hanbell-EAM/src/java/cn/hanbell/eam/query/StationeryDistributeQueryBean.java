@@ -30,10 +30,26 @@ public class StationeryDistributeQueryBean extends SuperQueryBean<AssetDistribut
     }
 
     @Override
+    public void reset() {
+        if (this.model != null) {
+            this.model.getFilterFields().clear();
+        }
+        queryFormId ="";
+        queryDateBegin=null;
+        queryDateEnd =null;
+        queryState="ALL";
+        superEJB = assetDistributeDetailForQueryBean;
+        model = new AssetDistributeDetailForQueryModel(assetDistributeDetailForQueryBean, userManagedBean);
+        if (currentPrgGrant != null && currentPrgGrant.getSysprg().getNoauto()) {
+            model.getFilterFields().put("assetDistribute.formid", currentPrgGrant.getSysprg().getNolead());
+        }
+    }
+
+    @Override
     public void init() {
         superEJB = assetDistributeDetailForQueryBean;
         model = new AssetDistributeDetailForQueryModel(assetDistributeDetailForQueryBean, userManagedBean);
-         if (currentPrgGrant != null && currentPrgGrant.getSysprg().getNoauto()) {
+        if (currentPrgGrant != null && currentPrgGrant.getSysprg().getNoauto()) {
             model.getFilterFields().put("assetDistribute.formid", currentPrgGrant.getSysprg().getNolead());
         }
         super.init();
