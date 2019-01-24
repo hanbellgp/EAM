@@ -277,6 +277,12 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <description>OS315办公用品领用查询</description>
+            <from-outcome>stationeryquery</from-outcome>
+            <to-view-id>/app/os/stationeryquery.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <description>OS150办公用品库存</description>
             <from-outcome>stationeryinventory</from-outcome>
             <to-view-id>/app/os/stationeryinventory.xhtml</to-view-id>
