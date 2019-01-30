@@ -180,6 +180,7 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             showErrorMsg("Error", "请输入数量");
             return;
         }
+        currentDetail.setAmts(currentDetail.getQty().multiply(currentDetail.getPrice()));
         super.doConfirmDetail();
     }
 

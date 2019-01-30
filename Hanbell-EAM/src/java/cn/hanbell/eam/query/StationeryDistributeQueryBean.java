@@ -45,6 +45,8 @@ public class StationeryDistributeQueryBean extends SuperQueryBean<AssetDistribut
         if (currentPrgGrant != null && currentPrgGrant.getSysprg().getNoauto()) {
             model.getFilterFields().put("assetDistribute.formid", currentPrgGrant.getSysprg().getNolead());
         }
+        model.getSortFields().put("assetDistribute.status", "ASC");
+        model.getSortFields().put("assetDistribute.formid", "ASC");
         super.init();
     }
 
