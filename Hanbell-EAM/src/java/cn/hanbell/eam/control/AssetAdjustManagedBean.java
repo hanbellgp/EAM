@@ -57,6 +57,8 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     private List<String> paramUsed = null;
     private List<String> paramHascost = null;
 
+    private AssetAdjustDetail assetAdjustDetail;
+
     public AssetAdjustManagedBean() {
         super(AssetAdjust.class, AssetAdjustDetail.class);
     }
@@ -66,6 +68,8 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
+        assetAdjustDetail = new AssetAdjustDetail();
+        this.createDetail();
     }
 
     @Override
@@ -236,11 +240,51 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         }
     }
 
+    public void handleDialogReturnWhenDetailEditCheck(SelectEvent event) {
+        if (assetAdjustDetail.getDeptno2() == null || "".equals(assetAdjustDetail.getDeptno2())) {
+            showErrorMsg("Error", "请输入领用部门");
+            return;
+        }
+        if (assetAdjustDetail.getUserno2() == null || "".equals(assetAdjustDetail.getUserno2())) {
+            showErrorMsg("Error", "请输入变更人");
+            return;
+        }
+        if (event.getObject() != null) {
+            List<AssetCard> cardList = (List<AssetCard>) event.getObject();
+            for (AssetCard e : cardList) {
+                this.createDetail();
+                currentDetail.setAssetCard(e);
+                currentDetail.setAssetno(e.getFormid());
+                currentDetail.setAssetItem(e.getAssetItem());
+                currentDetail.setDeptno(e.getDeptno());
+                currentDetail.setDeptname(e.getDeptname());
+                currentDetail.setUserno(e.getUserno());
+                currentDetail.setUsername(e.getUsername());
+                currentDetail.setUnit(e.getUnit());
+                currentDetail.setQty(e.getQty());
+                currentDetail.setPosition1(e.getPosition1());
+                currentDetail.setPosition2(e.getPosition2());
+                currentDetail.setPosition3(e.getPosition3());
+                currentDetail.setPosition4(e.getPosition4());
+                currentDetail.setWarehouse(e.getWarehouse());
+                currentDetail.setDeptno2(assetAdjustDetail.getDeptno2());
+                currentDetail.setDeptname2(assetAdjustDetail.getDeptname2());
+                currentDetail.setUserno2(assetAdjustDetail.getUserno2());
+                currentDetail.setUsername2(assetAdjustDetail.getUsername2());
+                currentDetail.setWarehouse2(e.getWarehouse());
+                super.doConfirmDetail();
+            }
+            this.createDetail();
+        }
+    }
+
     public void handleDialogReturnDeptWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             Department d = (Department) event.getObject();
             currentDetail.setDeptno2(d.getDeptno());
             currentDetail.setDeptname2(d.getDept());
+            assetAdjustDetail.setDeptno2(d.getDeptno());
+            assetAdjustDetail.setDeptname2(d.getDept());
         }
     }
 
@@ -283,6 +327,8 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             SystemUser u = (SystemUser) event.getObject();
             currentDetail.setUserno2(u.getUserid());
             currentDetail.setUsername2(u.getUsername());
+            assetAdjustDetail.setUserno2(u.getUserid());
+            assetAdjustDetail.setUsername2(u.getUsername());
         }
     }
 
@@ -318,6 +364,28 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     @Override
     public void openDialog(String view) {
         switch (view) {
+            case "assetcardMultiSelect":
+                openParams.clear();
+                if (paramUsed == null) {
+                    paramUsed = new ArrayList<>();
+                } else {
+                    paramUsed.clear();
+                }
+                paramUsed.add("1");
+                openParams.put("used", paramUsed);
+                openParams.clear();
+                if (paramUsed == null) {
+                    paramUsed = new ArrayList<>();
+                } else {
+                    paramUsed.clear();
+                }
+                if (openOptions == null) {
+                    openOptions = new HashMap();
+                    openOptions.put("modal", true);
+                    openOptions.put("contentWidth", "1000");
+                }
+                super.openDialog("assetcardMultiSelect", openOptions, openParams);
+                break;
             case "assetcardSelect":
                 openParams.clear();
                 if (paramUsed == null) {
@@ -434,6 +502,28 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 this.model.getFilterFields().put("status", queryState);
             }
         }
+    }
+
+    @Override
+    public void setCurrentEntity(AssetAdjust currentEntity) {
+        this.deletedDetailList.clear();
+        this.editedDetailList.clear();
+        this.addedDetailList.clear();
+        super.setCurrentEntity(currentEntity);
+    }
+
+    /**
+     * @return the assetAdjustDetail
+     */
+    public AssetAdjustDetail getAssetAdjustDetail() {
+        return assetAdjustDetail;
+    }
+
+    /**
+     * @param assetAdjustDetail the assetAdjustDetail to set
+     */
+    public void setAssetAdjustDetail(AssetAdjustDetail assetAdjustDetail) {
+        this.assetAdjustDetail = assetAdjustDetail;
     }
 
 }

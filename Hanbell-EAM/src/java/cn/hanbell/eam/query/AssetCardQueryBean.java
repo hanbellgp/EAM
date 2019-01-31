@@ -9,10 +9,15 @@ import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.SuperQueryBean;
+import cn.hanbell.eap.entity.Department;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -28,11 +33,22 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     private String queryItemno;
     private String queryUsername;
 
+    protected String queryDeptno;
+    protected String queryDeptnoname;
+
     private Integer queryUsed = -1;
     private Integer queryScrap = -1;
 
     public AssetCardQueryBean() {
         super(AssetCard.class);
+    }
+
+    public void closeMultiSelect() {
+        if (entityList != null && !entityList.isEmpty()) {
+            RequestContext.getCurrentInstance().closeDialog(entityList);
+        } else {
+            showErrorMsg("Error", "没有选择数据源");
+        }
     }
 
     @Override
@@ -50,6 +66,12 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (params.containsKey("scrap")) {
                 queryScrap = Integer.valueOf(params.get("used")[0]);
             }
+//            if (params.containsKey("queryDeptno")) {
+//                queryDeptno = String.valueOf(params.get("queryDeptno")[0]);
+//            }
+//            if (params.containsKey("queryDeptnoname")) {
+//                queryDeptnoname = String.valueOf(params.get("queryDeptnoname")[0]);
+//            }
         }
         if (queryItemno != null && !"".equals(queryItemno)) {
             model.getFilterFields().put("assetItem.itemno", queryItemno);
@@ -80,6 +102,12 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (this.queryItemno != null && !"".equals(this.queryItemno)) {
                 this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
             }
+//            if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
+//                this.model.getFilterFields().put("deptno", this.getQueryDeptno());
+//            }
+//            if (this.queryDeptnoname != null && !"".equals(this.queryDeptnoname)) {
+//                this.model.getFilterFields().put("deptname", this.queryDeptnoname);
+//            }
             if (this.getQueryUsername() != null && !"".equals(this.queryUsername)) {
                 this.model.getFilterFields().put("username", this.getQueryUsername());
             }
@@ -88,6 +116,14 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             } else if (queryUsed > 0) {
                 model.getFilterFields().put("used", true);
             }
+        }
+    }
+
+    public void handleDialogReturnDeptWhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null) {
+            Department d = (Department) event.getObject();
+            queryDeptno = d.getDeptno();
+            queryDeptnoname = d.getDept();
         }
     }
 
@@ -117,6 +153,34 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
      */
     public void setQueryUsername(String queryUsername) {
         this.queryUsername = queryUsername;
+    }
+
+    /**
+     * @return the queryDeptno
+     */
+    public String getQueryDeptno() {
+        return queryDeptno;
+    }
+
+    /**
+     * @param queryDeptno the queryDeptno to set
+     */
+    public void setQueryDeptno(String queryDeptno) {
+        this.queryDeptno = queryDeptno;
+    }
+
+    /**
+     * @return the queryDeptnoname
+     */
+    public String getQueryDeptnoname() {
+        return queryDeptnoname;
+    }
+
+    /**
+     * @param queryDeptnoname the queryDeptnoname to set
+     */
+    public void setQueryDeptnoname(String queryDeptnoname) {
+        this.queryDeptnoname = queryDeptnoname;
     }
 
 }

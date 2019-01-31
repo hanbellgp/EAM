@@ -361,6 +361,11 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>assetcardMultiSelect</from-outcome>
+            <to-view-id>/app/df/assetcardMultiSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>assetcategorySelect</from-outcome>
             <to-view-id>/app/df/assetcategorySelect.xhtml</to-view-id>
             <redirect/>
