@@ -14,15 +14,22 @@
                 <p:inputText id="queryDeptno" value="#{assetCardQueryBean.queryDeptno}" title="部门代号" />
                 <h:outputLabel value="部门名称" for="queryDeptnoname" />
                 <p:column>
-                    <p:inputText id="queryDeptnoname" value="#{assetCardQueryBean.queryDeptnoname}" title="部门名称" style="width: 80%;display: inline-block" />
+                    <p:inputText id="queryDeptnoname" value="#{assetCardQueryBean.queryDeptname}" title="部门名称" style="width: 80%;display: inline-block" />
                     <p:commandButton id="btnDepartmentSelect" actionListener="#{assetCardQueryBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                      process="@this" >
                         <p:ajax event="dialogReturn" listener="#{assetCardQueryBean.handleDialogReturnDeptWhenDetailEdit}"
                                 update="queryDeptno,queryDeptnoname" />
                     </p:commandButton>
                 </p:column>
-                <h:outputLabel value="编号" for="queryFormId" />
-                <p:inputText id="queryFormId" value="#{assetCardQueryBean.queryFormId}" title="编号" />
+                    <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
+                    <p:column>
+                        <p:inputText id="queryCategory" value="#{assetCardQueryBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCardQueryBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetCardQueryBean.handleDialogReturnCategoryWhenNew}"
+                                    update="queryCategory" />
+                        </p:commandButton>
+                    </p:column>
                 <h:outputLabel value="姓名" for="queryUsername" />
                 <p:inputText id="queryUsername" value="#{assetCardQueryBean.queryUsername}" title="姓名" />
             </p:panelGrid>

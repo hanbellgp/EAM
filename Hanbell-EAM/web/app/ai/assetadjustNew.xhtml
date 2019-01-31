@@ -52,15 +52,9 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
-                    <p:column colspan="3">
-                        <p:inputText id="remark" value="#{assetAdjustManagedBean.newEntity.remark}" title="Remark" />
-                    </p:column>
-                </p:row>
-                <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptnoF" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:inputText id="deptnoF" value="#{assetAdjustManagedBean.assetAdjustDetail.deptno2}" title="RequireDeptno" styleClass="inputWithButton"
+                        <p:inputText id="deptnoF" value="#{assetAdjustManagedBean.assetAdjust.deptno2}" title="RequireDeptno" styleClass="inputWithButton"
                                      required="true" readonly="true"/>
                         <p:commandButton id="btnDepartmentSelect" actionListener="#{assetAdjustManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
@@ -70,7 +64,7 @@
                     </p:column>
                     <p:column><p:outputLabel value="新使用人" for="userT" /></p:column>
                     <p:column>
-                        <p:inputText id="userT" value="#{assetAdjustManagedBean.assetAdjustDetail.userno2}" title="userno2" styleClass="inputWithButton"
+                        <p:inputText id="userT" value="#{assetAdjustManagedBean.assetAdjust.userno2}" title="userno2" styleClass="inputWithButton"
                                      required="true" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{assetAdjustManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
@@ -82,11 +76,17 @@
                 <p:row>
                     <p:column><p:outputLabel value="部门名称" for="deptnameF" /></p:column>
                     <p:column>
-                        <h:outputText id="deptnameF" value="#{assetAdjustManagedBean.assetAdjustDetail.deptname2}" title="deptname2" />
+                        <h:outputText id="deptnameF" value="#{assetAdjustManagedBean.assetAdjust.deptname2}" title="deptname2" />
                     </p:column>
                     <p:column><h:outputText value="姓名"/></p:column>
                     <p:column>
-                        <h:outputText id="usernameT" value="#{assetAdjustManagedBean.assetAdjustDetail.username2}" title="username2" />
+                        <h:outputText id="usernameT" value="#{assetAdjustManagedBean.assetAdjust.username2}" title="username2" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{assetAdjustManagedBean.newEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -95,20 +95,20 @@
                     <p:toolbar id="detailToolbar" styleClass="detailToolbar">
                         <f:facet name="left">
                             <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAdjustManagedBean.createDetail()}" icon="ui-icon-plus"
-                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();PF('btnMulitiSelect').disable();"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
                                              process="@this" update=":formOne:tabView:plgDetail"/>
                             <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetAdjustManagedBean.deleteDetail()}" icon="ui-icon-trash"
                                              oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();PF('btnMulitiSelect').enable();"
                                              process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
                         </f:facet>
                         <f:facet name="right">
-                            <p:commandButton id="btnMulitiSelect" widgetVar="btnMulitiSelect" value="批量导入" actionListener="#{assetAdjustManagedBean.openDialog('assetcardMultiSelect')}" icon="ui-icon-plus"
+                            <p:commandButton id="btnMulitiSelect" widgetVar="btnMulitiSelect" value="批量" actionListener="#{assetAdjustManagedBean.openDialog('assetcardMultiSelect')}" icon="ui-icon-plus"
                                              process="@this,:formOne:plgHead" update=":formOne:plgHead" >
                                 <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnWhenDetailEditCheck}"
                                         update=":formOne:tabView:tableList" />
                             </p:commandButton>
                             <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetAdjustManagedBean.doConfirmDetail()}" icon="ui-icon-check"
-                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();PF('btnMulitiSelect').enable();"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
                                              process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
                         </f:facet>
                     </p:toolbar>

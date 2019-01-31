@@ -45,6 +45,18 @@ public class AssetAdjust extends FormEntity {
     @Size(max = 45)
     @Column(name = "deptname")
     private String deptname;
+    @Size(max = 20)
+    @Column(name = "deptno2")
+    protected String deptno2;
+    @Size(max = 45)
+    @Column(name = "deptname2")
+    protected String deptname2;
+    @Size(max = 20)
+    @Column(name = "userno2")
+    protected String userno2;
+    @Size(max = 45)
+    @Column(name = "username2")
+    protected String username2;
     @Size(max = 45)
     @Column(name = "objtype")
     private String objtype;
@@ -86,6 +98,38 @@ public class AssetAdjust extends FormEntity {
 
     public void setDeptname(String deptname) {
         this.deptname = deptname;
+    }
+
+    public String getDeptno2() {
+        return deptno2;
+    }
+
+    public void setDeptno2(String deptno2) {
+        this.deptno2 = deptno2;
+    }
+
+    public String getDeptname2() {
+        return deptname2;
+    }
+
+    public void setDeptname2(String deptname2) {
+        this.deptname2 = deptname2;
+    }
+
+    public String getUserno2() {
+        return userno2;
+    }
+
+    public void setUserno2(String userno2) {
+        this.userno2 = userno2;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public void setUsername2(String username2) {
+        this.username2 = username2;
     }
 
     public String getObjtype() {

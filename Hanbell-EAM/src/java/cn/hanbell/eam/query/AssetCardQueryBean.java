@@ -7,11 +7,10 @@ package cn.hanbell.eam.query;
 
 import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.entity.AssetCard;
+import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import cn.hanbell.eap.entity.Department;
-import java.util.ArrayList;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -30,17 +29,20 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     @EJB
     private AssetCardBean assetCardBean;
 
+    protected AssetCategory queryCategory;
+
     private String queryItemno;
     private String queryUsername;
 
     protected String queryDeptno;
-    protected String queryDeptnoname;
+    protected String queryDeptname;
 
     private Integer queryUsed = -1;
-    private Integer queryScrap = -1;
+    protected Integer queryScrap = -1;
 
     public AssetCardQueryBean() {
         super(AssetCard.class);
+        queryCategory = new AssetCategory();
     }
 
     public void closeMultiSelect() {
@@ -66,12 +68,6 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (params.containsKey("scrap")) {
                 queryScrap = Integer.valueOf(params.get("used")[0]);
             }
-//            if (params.containsKey("queryDeptno")) {
-//                queryDeptno = String.valueOf(params.get("queryDeptno")[0]);
-//            }
-//            if (params.containsKey("queryDeptnoname")) {
-//                queryDeptnoname = String.valueOf(params.get("queryDeptnoname")[0]);
-//            }
         }
         if (queryItemno != null && !"".equals(queryItemno)) {
             model.getFilterFields().put("assetItem.itemno", queryItemno);
@@ -102,12 +98,15 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (this.queryItemno != null && !"".equals(this.queryItemno)) {
                 this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
             }
-//            if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
-//                this.model.getFilterFields().put("deptno", this.getQueryDeptno());
-//            }
-//            if (this.queryDeptnoname != null && !"".equals(this.queryDeptnoname)) {
-//                this.model.getFilterFields().put("deptname", this.queryDeptnoname);
-//            }
+            if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
+                this.model.getFilterFields().put("deptno", this.getQueryDeptno());
+            }
+            if (this.queryDeptname != null && !"".equals(this.queryDeptname)) {
+                this.model.getFilterFields().put("deptname", this.queryDeptname);
+            }
+            if (this.queryCategory.getName() != null && !"".equals(this.queryCategory.getName())) {
+                this.model.getFilterFields().put("assetItem.category", this.queryCategory);
+            }
             if (this.getQueryUsername() != null && !"".equals(this.queryUsername)) {
                 this.model.getFilterFields().put("username", this.getQueryUsername());
             }
@@ -123,7 +122,14 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
         if (event.getObject() != null) {
             Department d = (Department) event.getObject();
             queryDeptno = d.getDeptno();
-            queryDeptnoname = d.getDept();
+            queryDeptname = d.getDept();
+        }
+    }
+
+    public void handleDialogReturnCategoryWhenNew(SelectEvent event) {
+        if (event.getObject() != null) {
+            AssetCategory e = (AssetCategory) event.getObject();
+            setQueryCategory(e);
         }
     }
 
@@ -170,17 +176,31 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     }
 
     /**
-     * @return the queryDeptnoname
+     * @return the queryDeptname
      */
-    public String getQueryDeptnoname() {
-        return queryDeptnoname;
+    public String getQueryDeptname() {
+        return queryDeptname;
     }
 
     /**
-     * @param queryDeptnoname the queryDeptnoname to set
+     * @param queryDeptname the queryDeptname to set
      */
-    public void setQueryDeptnoname(String queryDeptnoname) {
-        this.queryDeptnoname = queryDeptnoname;
+    public void setQueryDeptname(String queryDeptname) {
+        this.queryDeptname = queryDeptname;
+    }
+
+    /**
+     * @return the queryCategory
+     */
+    public AssetCategory getQueryCategory() {
+        return queryCategory;
+    }
+
+    /**
+     * @param queryCategory the queryCategory to set
+     */
+    public void setQueryCategory(AssetCategory queryCategory) {
+        this.queryCategory = queryCategory;
     }
 
 }
