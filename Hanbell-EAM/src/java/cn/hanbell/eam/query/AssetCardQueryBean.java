@@ -7,12 +7,16 @@ package cn.hanbell.eam.query;
 
 import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.entity.AssetCard;
+import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.SuperQueryBean;
+import cn.hanbell.eap.entity.Department;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -25,14 +29,28 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     @EJB
     private AssetCardBean assetCardBean;
 
+    protected AssetCategory queryCategory;
+
     private String queryItemno;
     private String queryUsername;
 
+    protected String queryDeptno;
+    protected String queryDeptname;
+
     private Integer queryUsed = -1;
-    private Integer queryScrap = -1;
+    protected Integer queryScrap = -1;
 
     public AssetCardQueryBean() {
         super(AssetCard.class);
+        queryCategory = new AssetCategory();
+    }
+
+    public void closeMultiSelect() {
+        if (entityList != null && !entityList.isEmpty()) {
+            RequestContext.getCurrentInstance().closeDialog(entityList);
+        } else {
+            showErrorMsg("Error", "没有选择数据源");
+        }
     }
 
     @Override
@@ -80,6 +98,15 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (this.queryItemno != null && !"".equals(this.queryItemno)) {
                 this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
             }
+            if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
+                this.model.getFilterFields().put("deptno", this.getQueryDeptno());
+            }
+            if (this.queryDeptname != null && !"".equals(this.queryDeptname)) {
+                this.model.getFilterFields().put("deptname", this.queryDeptname);
+            }
+            if (this.queryCategory.getName() != null && !"".equals(this.queryCategory.getName())) {
+                this.model.getFilterFields().put("assetItem.category", this.queryCategory);
+            }
             if (this.getQueryUsername() != null && !"".equals(this.queryUsername)) {
                 this.model.getFilterFields().put("username", this.getQueryUsername());
             }
@@ -88,6 +115,21 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             } else if (queryUsed > 0) {
                 model.getFilterFields().put("used", true);
             }
+        }
+    }
+
+    public void handleDialogReturnDeptWhenDetailEdit(SelectEvent event) {
+        if (event.getObject() != null) {
+            Department d = (Department) event.getObject();
+            queryDeptno = d.getDeptno();
+            queryDeptname = d.getDept();
+        }
+    }
+
+    public void handleDialogReturnCategoryWhenNew(SelectEvent event) {
+        if (event.getObject() != null) {
+            AssetCategory e = (AssetCategory) event.getObject();
+            setQueryCategory(e);
         }
     }
 
@@ -117,6 +159,48 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
      */
     public void setQueryUsername(String queryUsername) {
         this.queryUsername = queryUsername;
+    }
+
+    /**
+     * @return the queryDeptno
+     */
+    public String getQueryDeptno() {
+        return queryDeptno;
+    }
+
+    /**
+     * @param queryDeptno the queryDeptno to set
+     */
+    public void setQueryDeptno(String queryDeptno) {
+        this.queryDeptno = queryDeptno;
+    }
+
+    /**
+     * @return the queryDeptname
+     */
+    public String getQueryDeptname() {
+        return queryDeptname;
+    }
+
+    /**
+     * @param queryDeptname the queryDeptname to set
+     */
+    public void setQueryDeptname(String queryDeptname) {
+        this.queryDeptname = queryDeptname;
+    }
+
+    /**
+     * @return the queryCategory
+     */
+    public AssetCategory getQueryCategory() {
+        return queryCategory;
+    }
+
+    /**
+     * @param queryCategory the queryCategory to set
+     */
+    public void setQueryCategory(AssetCategory queryCategory) {
+        this.queryCategory = queryCategory;
     }
 
 }
