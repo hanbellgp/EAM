@@ -69,7 +69,6 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
         setAssetAdjust(new AssetAdjust());
-        this.createDetail();
     }
 
     @Override
@@ -223,6 +222,38 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         handleDialogReturnWhenEdit(event);
     }
 
+    public void handleDialogReturnDeptWhenEdit(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            Department d = (Department) event.getObject();
+            currentEntity.setDeptno2(d.getDeptno());
+            currentEntity.setDeptname2(d.getDept());
+        }
+    }
+
+    public void handleDialogReturnDeptWhenNew(SelectEvent event) {
+        if (event.getObject() != null && assetAdjust != null) {
+            Department d = (Department) event.getObject();
+            assetAdjust.setDeptno2(d.getDeptno());
+            assetAdjust.setDeptname2(d.getDept());
+        }
+    }
+
+    public void handleDialogReturnUserWhenEdit(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            currentEntity.setUserno2(u.getUserid());
+            currentEntity.setUsername2(u.getUsername());
+        }
+    }
+
+    public void handleDialogReturnUserWhenNew(SelectEvent event) {
+        if (event.getObject() != null && assetAdjust != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            assetAdjust.setUserno2(u.getUserid());
+            assetAdjust.setUsername2(u.getUsername());
+        }
+    }
+
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
@@ -264,20 +295,20 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         return aa;
     }
 
-    public void handleDialogReturnWhenDetailEditCheck(SelectEvent event) {
-        if (getAssetAdjust().getDeptno2() == null || "".equals(getAssetAdjust().getDeptno2())) {
+    public void handleDialogReturnWhenDetailAllNew(SelectEvent event) {
+        if (assetAdjust.getDeptno2() == null || "".equals(assetAdjust.getDeptno2())) {
             showErrorMsg("Error", "请输入领用部门");
             return;
         }
-        if (getAssetAdjust().getUserno2() == null || "".equals(getAssetAdjust().getUserno2())) {
+        if (assetAdjust.getUserno2() == null || "".equals(assetAdjust.getUserno2())) {
             showErrorMsg("Error", "请输入变更人");
             return;
         }
         if (event.getObject() != null) {
             List<AssetCard> cardList = (List<AssetCard>) event.getObject();
             for (AssetCard e : cardList) {
-                this.createDetail();
                 if (!isExist(e)) {
+                    this.createDetail();
                     currentDetail.setAssetCard(e);
                     currentDetail.setAssetno(e.getFormid());
                     currentDetail.setAssetItem(e.getAssetItem());
@@ -292,17 +323,57 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                     currentDetail.setPosition3(e.getPosition3());
                     currentDetail.setPosition4(e.getPosition4());
                     currentDetail.setWarehouse(e.getWarehouse());
-                    currentDetail.setDeptno2(getAssetAdjust().getDeptno2());
-                    currentDetail.setDeptname2(getAssetAdjust().getDeptname2());
-                    currentDetail.setUserno2(getAssetAdjust().getUserno2());
-                    currentDetail.setUsername2(getAssetAdjust().getUsername2());
+                    currentDetail.setDeptno2(assetAdjust.getDeptno2());
+                    currentDetail.setDeptname2(assetAdjust.getDeptname2());
+                    currentDetail.setUserno2(assetAdjust.getUserno2());
+                    currentDetail.setUsername2(assetAdjust.getUsername2());
                     currentDetail.setWarehouse2(e.getWarehouse());
                     super.doConfirmDetail();
                 } else {
                     showErrorMsg("Error", "异动编号为" + e.getFormid() + "不能重复存在,");
                 }
             }
-            this.createDetail();
+        }
+    }
+
+    public void handleDialogReturnWhenDetailAllEdit(SelectEvent event) {
+        if (currentEntity.getDeptno2() == null || "".equals(currentEntity.getDeptno2())) {
+            showErrorMsg("Error", "请输入领用部门");
+            return;
+        }
+        if (currentEntity.getUserno2() == null || "".equals(currentEntity.getUserno2())) {
+            showErrorMsg("Error", "请输入变更人");
+            return;
+        }
+        if (event.getObject() != null) {
+            List<AssetCard> cardList = (List<AssetCard>) event.getObject();
+            for (AssetCard e : cardList) {
+                if (!isExist(e)) {
+                    this.createDetail();
+                    currentDetail.setAssetCard(e);
+                    currentDetail.setAssetno(e.getFormid());
+                    currentDetail.setAssetItem(e.getAssetItem());
+                    currentDetail.setDeptno(e.getDeptno());
+                    currentDetail.setDeptname(e.getDeptname());
+                    currentDetail.setUserno(e.getUserno());
+                    currentDetail.setUsername(e.getUsername());
+                    currentDetail.setUnit(e.getUnit());
+                    currentDetail.setQty(e.getQty());
+                    currentDetail.setPosition1(e.getPosition1());
+                    currentDetail.setPosition2(e.getPosition2());
+                    currentDetail.setPosition3(e.getPosition3());
+                    currentDetail.setPosition4(e.getPosition4());
+                    currentDetail.setWarehouse(e.getWarehouse());
+                    currentDetail.setDeptno2(currentEntity.getDeptno2());
+                    currentDetail.setDeptname2(currentEntity.getDeptname2());
+                    currentDetail.setUserno2(currentEntity.getUserno2());
+                    currentDetail.setUsername2(currentEntity.getUsername2());
+                    currentDetail.setWarehouse2(e.getWarehouse());
+                    super.doConfirmDetail();
+                } else {
+                    showErrorMsg("Error", "异动编号为" + e.getFormid() + "不能重复存在,");
+                }
+            }
         }
     }
 
@@ -311,16 +382,6 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             Department d = (Department) event.getObject();
             currentDetail.setDeptno2(d.getDeptno());
             currentDetail.setDeptname2(d.getDept());
-            getAssetAdjust().setDeptno2(d.getDeptno());
-            getAssetAdjust().setDeptname2(d.getDept());
-        }
-    }
-
-    public void handleDialogReturnDeptWhenDetailEdit2(SelectEvent event) {
-        if (event.getObject() != null && currentDetail != null) {
-            Department d = (Department) event.getObject();
-            currentEntity.setDeptno2(d.getDeptno());
-            currentEntity.setDeptname2(d.getDept());
         }
     }
 
@@ -363,16 +424,6 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             SystemUser u = (SystemUser) event.getObject();
             currentDetail.setUserno2(u.getUserid());
             currentDetail.setUsername2(u.getUsername());
-            getAssetAdjust().setUserno2(u.getUserid());
-            getAssetAdjust().setUsername2(u.getUsername());
-        }
-    }
-
-    public void handleDialogReturnUserWhenDetailEdit2(SelectEvent event) {
-        if (event.getObject() != null && currentDetail != null) {
-            SystemUser u = (SystemUser) event.getObject();
-            currentEntity.setUserno2(u.getUserid());
-            currentEntity.setUsername2(u.getUsername());
         }
     }
 

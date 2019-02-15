@@ -57,7 +57,7 @@
                                      required="true" readonly="true"/>
                         <p:commandButton id="btnDepartmentSelect" actionListener="#{assetAdjustManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnDeptWhenDetailEdit2}"
+                            <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnDeptWhenEdit}"
                                     update="deptnoF,deptnameF" />
                         </p:commandButton>
                     </p:column>
@@ -67,7 +67,7 @@
                                      required="true" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{assetAdjustManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnUserWhenDetailEdit2}"
+                            <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnUserWhenEdit}"
                                     update="userT,usernameT" />
                         </p:commandButton>
                     </p:column>
@@ -103,7 +103,7 @@
                         <f:facet name="right">
                             <p:commandButton id="btnMulitiSelect" widgetVar="btnMulitiSelect" value="批量" actionListener="#{assetAdjustManagedBean.openDialog('assetcardMultiSelect')}" icon="ui-icon-plus"
                                              process="@this,:formOne:plgHead" update=":formOne:plgHead" >
-                                <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnWhenDetailEditCheck}"
+                                <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnWhenDetailAllEdit}"
                                         update=":formOne:tabView:tableList" />
                             </p:commandButton>
                             <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetAdjustManagedBean.doConfirmDetail()}" icon="ui-icon-check"
