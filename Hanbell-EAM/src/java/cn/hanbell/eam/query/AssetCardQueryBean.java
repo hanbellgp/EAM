@@ -11,6 +11,7 @@ import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import cn.hanbell.eap.entity.Department;
+import java.math.BigDecimal;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -39,6 +40,8 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
 
     private Integer queryUsed = -1;
     protected Integer queryScrap = -1;
+
+    protected boolean checkbox;
 
     public AssetCardQueryBean() {
         super(AssetCard.class);
@@ -82,6 +85,7 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
         } else if (queryScrap > 0) {
             model.getFilterFields().put("scrap", true);
         }
+        checkbox = false;
         super.init();
     }
 
@@ -106,6 +110,9 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             }
             if (this.queryCategory.getName() != null && !"".equals(this.queryCategory.getName())) {
                 this.model.getFilterFields().put("assetItem.category", this.queryCategory);
+            }
+            if(this.checkbox){
+                 this.model.getFilterFields().put("qty <>",0);
             }
             if (this.getQueryUsername() != null && !"".equals(this.queryUsername)) {
                 this.model.getFilterFields().put("username", this.getQueryUsername());
@@ -201,6 +208,20 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
      */
     public void setQueryCategory(AssetCategory queryCategory) {
         this.queryCategory = queryCategory;
+    }
+
+    /**
+     * @return the checkbox
+     */
+    public boolean isCheckbox() {
+        return checkbox;
+    }
+
+    /**
+     * @param checkbox the checkbox to set
+     */
+    public void setCheckbox(boolean checkbox) {
+        this.checkbox = checkbox;
     }
 
 }
