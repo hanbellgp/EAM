@@ -35,7 +35,7 @@
                         <p:inputText id="queryDeptno" value="#{assetCardQueryBean.queryDeptno}" title="部门代号" styleClass="inputWithButton" />
                         <p:commandButton id="btnDepartmentSelect" actionListener="#{assetCardQueryBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
-                            <p:ajax event="dialogReturn" listener="#{assetCardQueryBean.handleDialogReturnDeptWhenDetailEdit}"
+                            <p:ajax event="dialogReturn" listener="#{assetCardQueryBean.handleDialogReturnWhenNew}"
                                     update="queryDeptno,queryDeptname" />
                         </p:commandButton>
                     </p:column>

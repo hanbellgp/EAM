@@ -34,13 +34,12 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
     private String queryItemno;
     private String queryUserno;
     private String queryUsername;
-
     private String queryDeptno;
     private String queryDeptname;
 
     private Integer queryUsed = -1;
-    private Integer queryScrap = -1;
     private Integer queryPause = -1;
+    private Integer queryScrap = -1;
 
     private boolean queryZero = false;
 
@@ -58,7 +57,8 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
         }
     }
 
-    public void handleDialogReturnDeptWhenDetailEdit(SelectEvent event) {
+    @Override
+    public void handleDialogReturnWhenNew(SelectEvent event) {
         if (event.getObject() != null) {
             Department d = (Department) event.getObject();
             queryDeptno = d.getDeptno();
