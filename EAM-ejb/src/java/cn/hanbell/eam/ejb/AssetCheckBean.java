@@ -138,11 +138,14 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                     acd.setWarehouse(c.getWarehouse());
                     //相同品号、部门和使用人进行合并
                     flag = true;
-                    for (AssetCheckDetail d : addedDetail) {
-                        if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && Objects.equals(d.getDeptno(), acd.getDeptno()) && Objects.equals(d.getUserno(), acd.getUserno())) {
-                            d.setQty(d.getQty().add(acd.getQty()));
-                            d.setActqty(d.getQty());
-                            flag = false;
+                    //2019/2/28增加pause==false判断，避免报废申请签核中的卡片被合并，导致后续无法产生报废资料
+                    if (!acd.getAssetCard().getPause()) {
+                        for (AssetCheckDetail d : addedDetail) {
+                            if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && Objects.equals(d.getDeptno(), acd.getDeptno()) && Objects.equals(d.getUserno(), acd.getUserno())) {
+                                d.setQty(d.getQty().add(acd.getQty()));
+                                d.setActqty(d.getQty());
+                                flag = false;
+                            }
                         }
                     }
                     if (flag) {
@@ -242,12 +245,14 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                 //更新卡片信息
                 if (d.getAssetCard() != null) {
                     //AssetCard ac = assetCardBean.findByAssetno(e.getCompany(), d.getAssetno());
-                    AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
-                    if (ac != null) {
-                        //更新卡片数量,防止启动盘点后没有审核就删除盘点单引起的数量差异
-                        ac.setQty(d.getQty());
-                        assetCardBean.update(ac);
-                    }
+                    //AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
+                    //if (ac != null) {
+                    //    //更新卡片数量,防止启动盘点后没有审核就删除盘点单引起的数量差异
+                    //    ac.setQty(d.getQty());
+                    //    assetCardBean.update(ac);
+                    //}
+                    d.getAssetCard().setQty(d.getQty());
+                    assetCardBean.update(d.getAssetCard());
                 }
             }
             persist(e, detailAdded, null, null);
