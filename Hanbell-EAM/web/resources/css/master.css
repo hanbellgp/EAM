@@ -59,16 +59,25 @@ body .ui-panelgrid .ui-panelgrid-cell {
     width: 100%;
 }
 
-.Wid30 input,.Wid40 input,.Wid50 input,.Wid60 input,.Wid70 input,.Wid80 input,.Wid90 input,.Wid100 input
+.Wid10 input,.Wid20 input,.Wid30 input,.Wid40 input,.Wid50 input,.Wid60 input,.Wid70 input,.Wid80 input,.Wid90 input,.Wid100 input
 {
     width:100%;
 }
 
+.Wid10 input.inputWithButton,.Wid20 input.inputWithButton,
 .Wid30 input.inputWithButton,.Wid40 input.inputWithButton,
 .Wid50 input.inputWithButton,.Wid60 input.inputWithButton,
 .Wid70 input.inputWithButton,.Wid80 input.inputWithButton,
 .Wid90 input.inputWithButton,.Wid100 input.inputWithButton{
     width: 80%;
+}
+
+.Wid10 input.inputWithButton2,.Wid20 input.inputWithButton2,
+.Wid30 input.inputWithButton2,.Wid40 input.inputWithButton2,
+.Wid50 input.inputWithButton2,.Wid60 input.inputWithButton2,
+.Wid70 input.inputWithButton2,.Wid80 input.inputWithButton2,
+.Wid90 input.inputWithButton2,.Wid100 input.inputWithButton2{
+    width: 70%;
 }
 
 button.inputWithButton{
@@ -96,7 +105,7 @@ button.inputWithButton{
 /*-------------------------------MainFrameStyle*/
 
 .tableList td,.plgHead td,.plgBase td,.plgDetail td,.plgQuery td{
-    height: 42px;
+    height: 32px;
 }
 
 .plgHead .Wid30 img,.plgBase .Wid30 img,.plgDetail .Wid30 img,

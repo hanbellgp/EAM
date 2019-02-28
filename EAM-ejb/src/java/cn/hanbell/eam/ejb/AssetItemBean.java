@@ -59,6 +59,17 @@ public class AssetItemBean extends SuperEJBForEAM<AssetItem> {
         } catch (Exception ex) {
             return false;
         }
+        //库存
+        query = getEntityManager().createNativeQuery("SELECT COUNT(*) FROM assetinventory WHERE qty<>0 AND itemno = ?1");
+        query.setParameter(1, value);
+        try {
+            count = Integer.valueOf(query.getSingleResult().toString());
+            if (count > 0) {
+                return false;
+            }
+        } catch (Exception ex) {
+            return false;
+        }
         return true;
     }
 

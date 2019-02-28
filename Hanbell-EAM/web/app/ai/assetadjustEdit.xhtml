@@ -51,35 +51,35 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptnoF" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptnoTo" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:inputText id="deptnoF" value="#{assetAdjustManagedBean.currentEntity.deptno2}" title="RequireDeptno" styleClass="inputWithButton"
+                        <p:inputText id="deptnoTo" value="#{assetAdjustManagedBean.currentEntity.deptno2}" title="deptno2" styleClass="inputWithButton"
                                      required="true" readonly="true"/>
                         <p:commandButton id="btnDepartmentSelect" actionListener="#{assetAdjustManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnDeptWhenEdit}"
-                                    update="deptnoF,deptnameF" />
+                                    update="deptnoTo,deptnameTo" />
                         </p:commandButton>
                     </p:column>
-                    <p:column><p:outputLabel value="新使用人" for="userT" /></p:column>
+                    <p:column><p:outputLabel value="部门名称" for="deptnameTo" /></p:column>
                     <p:column>
-                        <p:inputText id="userT" value="#{assetAdjustManagedBean.currentEntity.userno2}" title="userno2" styleClass="inputWithButton"
+                        <h:outputText id="deptnameTo" value="#{assetAdjustManagedBean.currentEntity.deptname2}" title="deptname2" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="新使用人" for="userTo" /></p:column>
+                    <p:column>
+                        <p:inputText id="userTo" value="#{assetAdjustManagedBean.currentEntity.userno2}" title="userno2" styleClass="inputWithButton"
                                      required="true" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{assetAdjustManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnUserWhenEdit}"
-                                    update="userT,usernameT" />
+                                    update="userTo,usernameTo" />
                         </p:commandButton>
-                    </p:column>
-                </p:row>
-                <p:row>
-                    <p:column><p:outputLabel value="部门名称" for="deptnameF" /></p:column>
-                    <p:column>
-                        <h:outputText id="deptnameF" value="#{assetAdjustManagedBean.currentEntity.deptname2}" title="deptname2" />
                     </p:column>
                     <p:column><h:outputText value="姓名"/></p:column>
                     <p:column>
-                        <h:outputText id="usernameT" value="#{assetAdjustManagedBean.currentEntity.username2}" title="username2" />
+                        <h:outputText id="usernameTo" value="#{assetAdjustManagedBean.currentEntity.username2}" title="username2" />
                     </p:column>
                 </p:row>
                 <p:row>
