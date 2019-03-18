@@ -315,6 +315,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                     } else {
                         //扣减报废来源数量
                         ac.setQty(ac.getQty().subtract(d.getQty()));
+                        ac.setPause(Boolean.FALSE);//还原来源卡片状态允许多次报废或剩余数量异动
                         ac.setRelapi("assetscrap");
                         ac.setRelformid(d.getPid());
                         ac.setRelseq(d.getSeq());

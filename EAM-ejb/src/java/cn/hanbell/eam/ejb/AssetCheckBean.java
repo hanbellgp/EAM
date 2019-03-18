@@ -136,12 +136,12 @@ public class AssetCheckBean extends SuperEJBForEAM<AssetCheck> {
                     acd.setUserno(c.getUserno());
                     acd.setUsername(c.getUsername());
                     acd.setWarehouse(c.getWarehouse());
-                    //相同品号、部门和使用人进行合并
+                    //相同库号、品号、部门和使用人进行合并，20190318加入库号判断
                     flag = true;
                     //2019/2/28增加pause==false判断，避免报废申请签核中的卡片被合并，导致后续无法产生报废资料
                     if (!acd.getAssetCard().getPause()) {
                         for (AssetCheckDetail d : addedDetail) {
-                            if (d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && Objects.equals(d.getDeptno(), acd.getDeptno()) && Objects.equals(d.getUserno(), acd.getUserno())) {
+                            if (d.getWarehouse().equals(acd.getWarehouse()) && d.getAssetItem().getItemno().equals(acd.getAssetItem().getItemno()) && Objects.equals(d.getDeptno(), acd.getDeptno()) && Objects.equals(d.getUserno(), acd.getUserno())) {
                                 d.setQty(d.getQty().add(acd.getQty()));
                                 d.setActqty(d.getQty());
                                 flag = false;
