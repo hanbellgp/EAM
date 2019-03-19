@@ -75,6 +75,23 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         currentDetail.setTrtype(trtype);
     }
 
+    public void createDetailNew() {
+        createDetail();
+        currentDetail.setDeptno2(newEntity.getDeptno2());
+        currentDetail.setDeptname2(newEntity.getDeptname2());
+        currentDetail.setUserno2(newEntity.getUserno2());
+        currentDetail.setUsername2(newEntity.getUsername2());
+        
+    }
+
+    public void createDetailEdit() {       
+        createDetail();
+        currentDetail.setDeptno2(currentEntity.getDeptno2());
+        currentDetail.setDeptname2(currentEntity.getDeptname2());
+        currentDetail.setUserno2(currentEntity.getUserno2());
+        currentDetail.setUsername2(currentEntity.getUsername2());
+    }
+
     @Override
     protected boolean doBeforePersist() throws Exception {
         if (super.doBeforePersist()) {
