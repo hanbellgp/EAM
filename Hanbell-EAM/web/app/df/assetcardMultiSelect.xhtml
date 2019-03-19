@@ -60,9 +60,9 @@
                     <p:commandButton id="btnSelected" value="确定" actionListener="#{assetCardQueryBean.closeMultiSelect()}" icon="ui-icon-plus"/>
                 </f:facet>
             </p:toolbar>
-            <p:dataTable value="#{assetCardQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="20"
+            <p:dataTable value="#{assetCardQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="20,30,50,100"  lazy="true" selection="#{assetCardQueryBean.entityList}" rowKey="#{item.id}">
+                         rowsPerPageTemplate="10,50,100"  lazy="true" selection="#{assetCardQueryBean.entityList}" rowKey="#{item.id}">
                 <p:column selectionMode="multiple" style="width:20px;text-align:center"/>
                 <p:column styleClass="Wid20">
                     <f:facet name="header">
