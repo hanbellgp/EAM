@@ -114,6 +114,8 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
         if (!queryZero) {
             this.model.getFilterFields().put("qty <>", 0);
         }
+        model.getSortFields().put("assetItem.itemno", "ASC");
+        model.getSortFields().put("formid", "ASC");
         super.init();
     }
 
@@ -163,6 +165,8 @@ public class AssetCardQueryBean extends SuperQueryBean<AssetCard> {
             if (!queryZero) {
                 this.model.getFilterFields().put("qty <>", 0);
             }
+            model.getSortFields().put("assetItem.itemno", "ASC");
+            model.getSortFields().put("formid", "ASC");
         }
     }
 

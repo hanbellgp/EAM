@@ -94,7 +94,7 @@
                 <p:tab title="异动明细">
                     <p:toolbar id="detailToolbar" styleClass="detailToolbar">
                         <f:facet name="left">
-                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAdjustManagedBean.createDetail()}" icon="ui-icon-plus"
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAdjustManagedBean.createDetailNew()}" icon="ui-icon-plus"
                                              oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
                                              process="@this" update=":formOne:tabView:plgDetail"/>
                             <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetAdjustManagedBean.deleteDetail()}" icon="ui-icon-trash"
