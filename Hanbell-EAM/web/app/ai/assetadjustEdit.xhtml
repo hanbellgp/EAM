@@ -93,7 +93,7 @@
                 <p:tab title="异动明细">
                     <p:toolbar id="detailToolbar" styleClass="detailToolbar">
                         <f:facet name="left">
-                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAdjustManagedBean.createDetail()}" icon="ui-icon-plus"
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAdjustManagedBean.createDetailEdit()}" icon="ui-icon-plus"
                                              oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
                                              process="@this" update=":formOne:tabView:plgDetail"/>
                             <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetAdjustManagedBean.deleteDetail()}" icon="ui-icon-trash"
@@ -194,7 +194,7 @@
                             <p:column><p:outputLabel value="数量" for="qty" /></p:column>
                             <p:column>
                                 <p:spinner id="qty" value="#{assetAdjustManagedBean.currentDetail.qty}" title="Qty"
-                                           required="true" requiredMessage="请输入数量"/>
+                                           required="true" max="#{assetAdjustManagedBean.currentDetail.qty}" min="1" requiredMessage="请输入数量"/>
                             </p:column>
                             <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                             <p:column>

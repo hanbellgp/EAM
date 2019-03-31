@@ -62,8 +62,8 @@
             </p:toolbar>
             <p:dataTable value="#{assetCardQueryBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="10,20,30"  lazy="true" selection="#{assetCardQueryBean.entityList}" rowKey="#{item.id}">
-                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                         rowsPerPageTemplate="10,50,100"  lazy="true" selection="#{assetCardQueryBean.entityList}" rowKey="#{item.id}">
+                <p:column selectionMode="multiple" style="width:20px;text-align:center"/>
                 <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="品号"/>
