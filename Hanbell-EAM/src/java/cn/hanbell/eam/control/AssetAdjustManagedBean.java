@@ -81,10 +81,10 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         currentDetail.setDeptname2(newEntity.getDeptname2());
         currentDetail.setUserno2(newEntity.getUserno2());
         currentDetail.setUsername2(newEntity.getUsername2());
-        
+
     }
 
-    public void createDetailEdit() {       
+    public void createDetailEdit() {
         createDetail();
         currentDetail.setDeptno2(currentEntity.getDeptno2());
         currentDetail.setDeptname2(currentEntity.getDeptname2());
@@ -279,11 +279,11 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                 currentDetail.setPosition3(e.getPosition3());
                 currentDetail.setPosition4(e.getPosition4());
                 currentDetail.setWarehouse(e.getWarehouse());
-                currentDetail.setDeptno2(e.getDeptno());
-                currentDetail.setDeptname2(e.getDeptname());
-                currentDetail.setUserno2(e.getUserno());
-                currentDetail.setUsername2(e.getUsername());
                 currentDetail.setWarehouse2(e.getWarehouse());
+                currentDetail.setPosition12(e.getPosition1());
+                currentDetail.setPosition22(e.getPosition2());
+                currentDetail.setPosition32(e.getPosition3());
+                currentDetail.setPosition42(e.getPosition4());
             } else {
                 showErrorMsg("Error", "异动明细已存在");
             }
@@ -334,6 +334,10 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                     currentDetail.setUserno2(newEntity.getUserno2());
                     currentDetail.setUsername2(newEntity.getUsername2());
                     currentDetail.setWarehouse2(e.getWarehouse());
+                    currentDetail.setPosition12(e.getPosition1());
+                    currentDetail.setPosition22(e.getPosition2());
+                    currentDetail.setPosition32(e.getPosition3());
+                    currentDetail.setPosition42(e.getPosition4());
                     super.doConfirmDetail();
                 } else {
                     showErrorMsg("Error", "异动编号为" + e.getFormid() + "不能重复存在,");
@@ -375,6 +379,10 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
                     currentDetail.setUserno2(currentEntity.getUserno2());
                     currentDetail.setUsername2(currentEntity.getUsername2());
                     currentDetail.setWarehouse2(e.getWarehouse());
+                    currentDetail.setPosition12(e.getPosition1());
+                    currentDetail.setPosition22(e.getPosition2());
+                    currentDetail.setPosition32(e.getPosition3());
+                    currentDetail.setPosition42(e.getPosition4());
                     super.doConfirmDetail();
                 } else {
                     showErrorMsg("Error", "异动编号为" + e.getFormid() + "不能重复存在,");
