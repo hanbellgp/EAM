@@ -156,6 +156,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                         //AssetCard ac = assetCardBean.findByAssetno(d.getAssetno());
                         AssetCard ac = assetCardBean.findById(d.getAssetCard().getId());
                         ac.setWarehouse(d.getWarehouse());
+                        ac.setPause(Boolean.FALSE);
                         ac.setScrap(Boolean.FALSE);
                         ac.setScrapDate(null);
                         assetCardBean.update(ac);
@@ -306,6 +307,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                     }
                     if (d.getAssetItem().getCategory().getNoauto()) {
                         ac.setWarehouse(d.getWarehouse2());
+                        ac.setPause(Boolean.TRUE);
                         ac.setScrap(Boolean.TRUE);
                         ac.setScrapDate(e.getFormdate());
                         ac.setRelapi("assetscrap");
@@ -315,6 +317,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                     } else {
                         //扣减报废来源数量
                         ac.setQty(ac.getQty().subtract(d.getQty()));
+                        ac.setPause(Boolean.FALSE);//还原来源卡片状态允许多次报废或剩余数量异动
                         ac.setRelapi("assetscrap");
                         ac.setRelformid(d.getPid());
                         ac.setRelseq(d.getSeq());
@@ -354,6 +357,7 @@ public class AssetScrapBean extends SuperEJBForEAM<AssetScrap> {
                         }
                         nc.setBuyDate(d.getBuyDate());
                         nc.setUsed(true);
+                        nc.setPause(Boolean.TRUE);
                         nc.setScrap(Boolean.TRUE);
                         nc.setScrapDate(e.getFormdate());
                         nc.setStatus("V");

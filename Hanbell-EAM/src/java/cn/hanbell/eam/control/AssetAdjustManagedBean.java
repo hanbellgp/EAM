@@ -601,9 +601,15 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
 
     @Override
     public void setCurrentEntity(AssetAdjust currentEntity) {
-        this.deletedDetailList.clear();
-        this.editedDetailList.clear();
-        this.addedDetailList.clear();
+        if (deletedDetailList != null) {
+            this.deletedDetailList.clear();
+        }
+        if (editedDetailList != null) {
+            this.editedDetailList.clear();
+        }
+        if (addedDetailList != null) {
+            this.addedDetailList.clear();
+        }
         super.setCurrentEntity(currentEntity);
     }
 
