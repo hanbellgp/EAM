@@ -173,7 +173,7 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
                 //数量累加后再判断库存可利用量
                 flag = true;
                 for (AssetDistributeDetail d : details) {
-                    if (d.getAssetItem().getItemno().equals(add.getAssetItem().getItemno())) {
+                    if (d.getAssetItem().getItemno().equals(add.getAssetItem().getItemno()) && d.getWarehouse().getWarehouseno().equals(add.getWarehouse().getWarehouseno())) {
                         d.setQty(d.getQty().add(add.getQty()));
                         flag = false;
                     }
