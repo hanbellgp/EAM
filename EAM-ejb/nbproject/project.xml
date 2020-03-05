@@ -6,10 +6,9 @@
             <name>EAM-ejb</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <included-library dirs="200">libs.axis.classpath</included-library>
-            <included-library dirs="200">libs.Lightshell-JDK.classpath</included-library>
-            <included-library dirs="200">libs.Hanbell-JDK.classpath</included-library>
             <included-library dirs="200">libs.Barcode4j.classpath</included-library>
             <included-library dirs="200">libs.zxing-3.3.1.classpath</included-library>
+            <included-library dirs="200">libs.Log4j2.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
