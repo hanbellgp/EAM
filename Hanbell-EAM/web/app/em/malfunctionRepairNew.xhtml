@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="malfunctionRepair" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentRepairManagedBean.persist()}" onstart="var fireOnThis = document.getElementsByClassName('ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left ui-state-disabled ui-fileupload-upload');
+                                     if (document.createEvent)
+                                     {
+                                     var evObj = document.createEvent('MouseEvents');
+                                     evObj.initEvent( 'click', true, false );
+                                     fireOnThis.dispatchEvent(evObj);
+                                     }
+                                     else if (document.createEventObject)
+                                     {
+                                     fireOnThis.fireEvent('onclick');
+                                     }"  icon="ui-icon-save"  update="plgHead"/>
+
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">发起故障报修</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
+                    <p:column >
+                        <p:inputText id="assetno" value="#{equipmentRepairManagedBean.newEntity.assetno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnWhenNew}"
+                                    update="assetno,itemno,deptname,position2" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备名称" for="itemno" /></p:column>
+                    <p:column>
+                        <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.itemno.assetDesc}" title="itemno" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="使用部门" for="deptname"/></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText   id="deptname" value="#{equipmentRepairManagedBean.newEntity.itemno.deptname}" title="deptname"
+                                        />
+                    </p:column>
+                </p:row>
+
+                <p:row>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="存放地址" for="position2"/></p:column>
+                    <p:column >
+                        <h:outputText id="position2" value="#{equipmentRepairManagedBean.newEntity.itemno.position2.name}" title="position2" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="报修人" for="repairusername"/></p:column>
+                    <p:column >
+                        <h:outputText id="repairusername" value="#{equipmentRepairManagedBean.newEntity.repairusername}" title="repairusername"
+                                      />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="维修人" for="serviceuser" /></p:column>
+                    <p:column>
+                        <p:inputText id="serviceuser" value="#{equipmentRepairManagedBean.newEntity.serviceusername}" title="serviceuser" styleClass="inputWithButton" 
+                                     readonly="true"  />
+                        <p:commandButton id="queryCategory" actionListener="#{equipmentRepairManagedBean.openDialog('repairuserSelect')}" icon="ui-icon-extlink"
+                                         process="@this">
+                            <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnSysuserWhenNew}"
+                                    update="serviceuser"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="故障来源" for="troublefrom"/>
+                    </p:column>
+                    <p:column>
+                        <p:selectOneMenu id="troublefrom" value="#{equipmentRepairManagedBean.newEntity.troublefrom}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
+                            <f:selectItem itemLabel="请选择故障来源" itemValue=""/>
+                            <f:selectItem itemLabel="操作员点检" itemValue="操作员点检"/>
+                            <f:selectItem itemLabel="设备突发故障" itemValue="设备突发故障"/>
+                            <f:selectItem itemLabel="维修工巡检" itemValue="维修工巡检"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="发生时间" for="formdate"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText id="formdate" value="#{equipmentRepairManagedBean.newEntity.formdate}">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column rowspan="2" style="background-color: #EEEEEE"><p:outputLabel value="故障部位及详细情况"  /></p:column>
+                    <p:column colspan="7" style="height: 40px">
+                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" required="true" requiredMessage="请输入故障描述" width="600" height="150"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column colspan="7" style="height: 180px; ">
+                        <p:fileUpload id="fileUploadDetail" fileUploadListener="#{equipmentRepairManagedBean.handleFileUploadWhenDetailNew}"
+                                      sizeLimit="10000000" fileLimit="5"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" multiple="true" sequential="true" update=":formOne:tabView:tableList"
+                                      label="选择" uploadLabel="上传" cancelLabel="取消"  />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="图片预览">
+                    <p:toolbar id="toolbar" styleClass="topToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnDeleteDetail" value="删除" actionListener="#{equipmentRepairManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             process="@this" update="tableList" />
+                        </f:facet>
+                    </p:toolbar>
+                    <p:dataTable id="tableList" value="#{equipmentRepairManagedBean.addedDetailList}" var="item"  styleClass="tableList Mtop10" 
+                                 selectionMode="single" selection="#{equipmentRepairManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"     update=":formOne:tabView:toolbar"/>
+                        <p:ajax event="rowUnselect"   update=":formOne:tabView:toolbar"/>
+                        <p:column>
+                            <img src="../../resources/app/res/#{item.filename}" width="50" height="50" />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

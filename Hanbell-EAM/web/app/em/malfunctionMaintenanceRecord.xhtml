@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="malfunctionMaintenance" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{equipmentMaintenanceManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{equipmentMaintenanceManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{equipmentMaintenanceManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{equipmentMaintenanceManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentMaintenanceManagedBean.updateRstatus()}" icon="ui-icon-save"  update="plgHead"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6">故障维修单</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="进度"  /></p:column>
+                    <p:column colspan="6">
+                        <h:outputText  id="rstatus" value="#{equipmentMaintenanceManagedBean.getStateName(equipmentMaintenanceManagedBean.currentEntity.rstatus)}" title="category" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="报修记录号"/></p:column>
+                    <p:column>
+                        <h:outputText id="formid" value="#{equipmentMaintenanceManagedBean.currentEntity.formid}" title="formid"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="设备名称"/></p:column>
+                    <p:column>
+                        <h:outputText id="assetDesc" value="#{equipmentMaintenanceManagedBean.currentEntity.itemno.assetDesc}" title="assetDesc" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="使用部门"/></p:column>
+                    <p:column>
+                        <h:outputText id="deptname" value="#{equipmentMaintenanceManagedBean.currentEntity.itemno.deptname}" title="deptname"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="存放地址"/></p:column>
+                    <p:column>
+                        <h:outputText id="position2" value="#{equipmentMaintenanceManagedBean.currentEntity.itemno.position2.name}" title="position2" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="报修人"/></p:column>
+                    <p:column >
+                        <h:outputText id="repairusername" value="#{equipmentMaintenanceManagedBean.currentEntity.repairusername}" title="repairusername" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修人"/></p:column>
+                    <p:column>
+                        <h:outputText id="serviceuser" value="#{equipmentMaintenanceManagedBean.currentEntity.serviceusername}" title="serviceuser" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" ><h:outputText value="故障来源"/></p:column>
+                    <p:column>
+                        <h:outputText  id="troublefrom" value="#{equipmentMaintenanceManagedBean.currentEntity.troublefrom}" title="troublefrom" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="发生时间"/></p:column>
+                    <p:column>
+                        <h:outputText id="credate" value="#{equipmentMaintenanceManagedBean.currentEntity.credate}" title="credate">
+                            <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputLabel value="维修工到达现场时间" for="queryDateEnd" /></p:column>
+                    <p:column colspan="6" styleClass="Wid20">
+                        <h:outputText id="servicearrivetime" value="#{equipmentMaintenanceManagedBean.currentEntity.servicearrivetime}" title="servicearrivetime">
+                            <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column rowspan="8" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
+                    <p:column  colspan="6">
+                           <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdesc}" 
+                                  width="600" height="150"  />
+                    </p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column colspan="6">
+                        <c:if test="${empty equipmentMaintenanceManagedBean.detailList}">   
+                            <p:outputLabel value="暂无图片"/>
+                        </c:if>  
+                        <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
+                            <c:if test="${li.filefrom=='报修图片'}">  
+                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                            </c:if> 
+                        </c:forEach>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6">计划维修方式及故障类型</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障类型"  /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="hitchtype" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchtype}" title="hitchtype" >
+                            <f:selectItem itemLabel="一般故障" itemValue="0"/>
+                            <f:selectItem itemLabel="严重故障" itemValue="1"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修方式说明"  /></p:column>
+                    <p:column colspan="7">
+                        <p:editor id="repairmethod" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairmethod}" 
+                                  width="600" height="150" required="true" requiredMessage="请输入维修方式说明" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnSave">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
