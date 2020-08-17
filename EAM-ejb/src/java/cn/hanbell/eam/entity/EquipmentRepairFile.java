@@ -48,13 +48,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepairFile.findByCfmdate", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentRepairFile extends FormDetailEntity {
 
-   
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-  
+
     @Size(max = 10)
     @Column(name = "filefrom")
     private String filefrom;
@@ -114,7 +113,6 @@ public class EquipmentRepairFile extends FormDetailEntity {
         this.status = status;
     }
 
-
     public String getCompany() {
         return company;
     }
@@ -122,8 +120,6 @@ public class EquipmentRepairFile extends FormDetailEntity {
     public void setCompany(String company) {
         this.company = company;
     }
-
-
 
     public String getFilefrom() {
         return filefrom;
@@ -236,7 +232,6 @@ public class EquipmentRepairFile extends FormDetailEntity {
         return hash;
     }
 
-
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -244,7 +239,7 @@ public class EquipmentRepairFile extends FormDetailEntity {
             return false;
         }
         EquipmentRepairFile other = (EquipmentRepairFile) object;
-          if (this.id != null && other.id != null) {
+        if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
         return this.seq == other.seq;
@@ -254,5 +249,5 @@ public class EquipmentRepairFile extends FormDetailEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepairFile[ id=" + id + " ]";
     }
-    
+
 }

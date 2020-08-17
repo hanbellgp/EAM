@@ -51,7 +51,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findByCfmdate", query = "SELECT e FROM EquipmentSpare e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentSpare extends SuperEntity {
 
-  
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -126,7 +125,6 @@ public class EquipmentSpare extends SuperEntity {
         this.sparenum = sparenum;
         this.status = status;
     }
-
 
     public String getCompany() {
         return company;
@@ -224,15 +222,12 @@ public class EquipmentSpare extends SuperEntity {
         this.remark = remark;
     }
 
- 
-
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-
 
     @Override
     public boolean equals(Object object) {
@@ -248,5 +243,5 @@ public class EquipmentSpare extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentSpare[ id=" + id + " ]";
     }
-    
+
 }

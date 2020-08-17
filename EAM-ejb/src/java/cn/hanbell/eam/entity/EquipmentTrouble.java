@@ -56,7 +56,7 @@ public class EquipmentTrouble  extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-  
+
 
     public EquipmentTrouble() {
     }
@@ -72,7 +72,7 @@ public class EquipmentTrouble  extends SuperEntity {
         this.status = status;
     }
 
- 
+
 
     public String getTroubleid() {
         return troubleid;
@@ -106,7 +106,7 @@ public class EquipmentTrouble  extends SuperEntity {
         this.remark = remark;
     }
 
- 
+
 
     @Override
     public int hashCode() {
@@ -129,5 +129,5 @@ public class EquipmentTrouble  extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentTrouble[ id=" + id + " ]";
     }
-    
+
 }

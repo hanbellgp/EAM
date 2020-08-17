@@ -67,7 +67,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepair.findByCfmdate", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentRepair extends FormEntity {
 
- 
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -168,7 +168,7 @@ public class EquipmentRepair extends FormEntity {
         this.status = status;
     }
 
- 
+
 
     public String getCompany() {
         return company;
@@ -178,6 +178,8 @@ public class EquipmentRepair extends FormEntity {
         this.company = company;
     }
 
+
+
     public AssetCard getItemno() {
         return itemno;
     }
@@ -186,7 +188,7 @@ public class EquipmentRepair extends FormEntity {
         this.itemno = itemno;
     }
 
- 
+
 
 
 
@@ -198,7 +200,7 @@ public class EquipmentRepair extends FormEntity {
         this.assetno = assetno;
     }
 
-   
+
 
     public String getRepairuser() {
         return repairuser;
@@ -386,12 +388,15 @@ public class EquipmentRepair extends FormEntity {
         this.downtime = downtime;
     }
 
+
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
+
 
     @Override
     public boolean equals(Object object) {
@@ -402,10 +407,9 @@ public class EquipmentRepair extends FormEntity {
         EquipmentRepair other = (EquipmentRepair) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
-
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepair[ id=" + id + " ]";
     }
-    
+
 }

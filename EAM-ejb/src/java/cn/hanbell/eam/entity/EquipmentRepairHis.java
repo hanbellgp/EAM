@@ -42,16 +42,15 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepairHis.findByOptuser", query = "SELECT e FROM EquipmentRepairHis e WHERE e.optuser = :optuser"),
     @NamedQuery(name = "EquipmentRepairHis.findByOptdate", query = "SELECT e FROM EquipmentRepairHis e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentRepairHis.findByCfmuser", query = "SELECT e FROM EquipmentRepairHis e WHERE e.cfmuser = :cfmuser"),
-      @NamedQuery(name = "EquipmentRepairHis.findByPId", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid")})
-public class EquipmentRepairHis extends FormDetailEntity  {
-
+    @NamedQuery(name = "EquipmentRepairHis.findByPId", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid")})
+public class EquipmentRepairHis extends FormDetailEntity {
 
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-  
+
     @Size(max = 45)
     @Column(name = "userno")
     private String userno;
@@ -105,8 +104,6 @@ public class EquipmentRepairHis extends FormDetailEntity  {
         this.status = status;
     }
 
-
-
     public String getCompany() {
         return company;
     }
@@ -114,8 +111,6 @@ public class EquipmentRepairHis extends FormDetailEntity  {
     public void setCompany(String company) {
         this.company = company;
     }
-
- 
 
     public String getUserno() {
         return userno;
@@ -211,6 +206,7 @@ public class EquipmentRepairHis extends FormDetailEntity  {
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -218,14 +214,15 @@ public class EquipmentRepairHis extends FormDetailEntity  {
             return false;
         }
         EquipmentRepairHis other = (EquipmentRepairHis) object;
-          if (this.id != null && other.id != null) {
+        if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
         return this.seq == other.seq;
     }
+
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepairHis[ id=" + id + " ]";
     }
-    
+
 }
