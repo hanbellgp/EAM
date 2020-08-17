@@ -1,0 +1,298 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentHistoryQuery" icon="ui-icon-restore"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="11">维修历史查询</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="设备名称"  /></p:column>
+                    <p:column>
+                        <h:outputText  id="category" value="#{equipmentRepairManagedBean.currentEntity.item.assetDesc}" title="category" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="设备编号"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemno" value="#{equipmentRepairManagedBean.currentEntity.assetno}" title="Itemno"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="使用部门"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemdesc" value="#{equipmentRepairManagedBean.currentEntity.item.deptname}" title="Itemdesc"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="设备ABC及进口分类"/></p:column>
+                    <p:column>
+                        <h:outputText id="unit" value="A" title="Unit" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="存放地址"/></p:column>
+                    <p:column>
+                        <h:outputText id="userid" value="001" title="Remark" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="报修人"/></p:column>
+                    <p:column >
+                        <h:outputText id="username" value="#{equipmentRepairManagedBean.currentEntity.repairuser}" title="Remark" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修工"/></p:column>
+                    <p:column>
+                        <h:outputText id="itemspec" value="#{equipmentRepairManagedBean.currentEntity.userno}" title="Itemspec" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修班长"/></p:column>
+                    <p:column>
+                        <h:outputText id="formList" value="" title="Unit" />
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="发生时间"/></p:column>
+                    <p:column  colspan="6">
+                        <h:outputText id="repairdate" value="#{equipmentRepairManagedBean.currentEntity.repairdate}" title="Remark">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:dd:ss" />
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修工到达现场时间"/></p:column>
+                    <p:column>
+                        <h:outputText value="#{equipmentRepairManagedBean.currentEntity.username}" title="Remark">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:dd:ss" />
+                        </h:outputText>
+                    </p:column>
+
+
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修完成时间"/></p:column>
+                    <p:column>
+                        <h:outputText value="#{equipmentRepairManagedBean.currentEntity.completetime}" title="Remark">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:dd:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间"/></p:column>
+                    <p:column>
+                        <h:outputText id="formid" value="0" title="Remark" /><h:outputLabel>分</h:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+
+
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="联络时间"/></p:column>
+                    <p:column>
+                        <h:outputText id="formdate" value="1天0小时46分钟" title="Remark" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修时间"/></p:column>
+                    <p:column>
+                        <h:outputText id="features" value="#{equipmentRepairManagedBean.currentEntity.diffDate}"  title="Remark" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间总计"/></p:column>
+                    <p:column>
+                        <h:outputText  value="#{equipmentRepairManagedBean.currentEntity.diffDate}"  title="Remark" />
+                    </p:column>
+                </p:row>
+
+
+            </p:panelGrid>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6">故障原因分析</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="磨损性故障"  /></p:column>
+                    <p:column>
+                        <h:outputText value="#{equipmentRepairManagedBean.currentEntity.abrasehitch}"  title="Remark" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型1"  /></p:column>
+                    <p:column>
+                        <h:outputText  value="#{equipmentRepairManagedBean.currentEntity.hitchsort1}"  title="Remark" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型2"  /></p:column>
+                    <p:column>
+                        <h:outputText  value="#{equipmentRepairManagedBean.currentEntity.hitchsort2}"  title="Remark" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
+                    <p:column colspan="6" >
+                        <p:graphicImage name="images/轴承.jpg" library="ultima-layout" />
+                        <p:graphicImage name="images/轴承.jpg" library="ultima-layout" />
+                    </p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column colspan="6">
+                        <h:outputText id="remark" value="机器黑屏无法启动" title="Remark" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障判断过程及原因描述"  /></p:column>
+                    <p:column colspan="7">
+                        <h:outputText value="#{equipmentRepairManagedBean.currentEntity.repairprocess}"  title="Remark" />
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
+                    <p:column colspan="5" style="height: 160px; ">
+                        <span class="textOverflow220">
+                            <p:outputLabel id="uploadFileInfo" value="#{mainVM.file.fileName}"></p:outputLabel>
+                        </span>
+                        <p:spacer/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="7">
+                        <p:inputTextarea value=""></p:inputTextarea>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
+                    <p:column colspan="7">
+                        <p:inputTextarea value="定期检查"></p:inputTextarea>
+                    </p:column> 
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="备件使用清单">
+                    <p:dataTable value="#{equipmentRepairManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentRepairManagedBean.currentDetail}" rowKey="#{item.id}" >
+                        <p:column styleClass="Wid15">
+                          <f:facet name="header">
+                                <h:outputText value="编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="品号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.spareno}"/>
+                        </p:column>
+                       
+                       
+                          <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                         <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uprice}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="故障维修验收审批">
+                    <p:panelGrid id="plgBase"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid10" style="background-color: #EEEEEE"><p:outputLabel value="审批配置部门" /></p:column>
+                            <p:column colspan="5" style="background-color: #EEEEEE">
+                                 <h:outputText  value="000-001" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
+                               <p:outputLabel value="验收/审批职位"/>
+                            </p:column>
+                           <p:column styleClass="Wid10" style="background-color: #EEEEEE">
+                               <p:outputLabel value="验收/审批人" />
+                            </p:column>
+                             <p:column styleClass="Wid10" style="background-color: #EEEEEE">
+                               <p:outputLabel value="实际审批人" />
+                            </p:column>
+                             <p:column styleClass="Wid10" style="background-color: #EEEEEE">
+                               <p:outputLabel value="验收审批结果" />
+                            </p:column>
+                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
+                               <p:outputLabel value="审批时间"/>
+                            </p:column>
+                             <p:column styleClass="Wid10" style="background-color: #EEEEEE">
+                               <p:outputLabel value="审批意见"  />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                             <p:column styleClass="Wid10">
+                               <p:outputLabel value="操作者"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value="操作工"/>
+                            </p:column>
+                              <p:column styleClass="Wid10">
+                               <p:outputLabel value="符合"/>
+                            </p:column>
+                              <p:column styleClass="Wid10">
+                               <p:outputLabel value="2020-6-17 16：25：33"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value="审批意见：暂无"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value="维修班长"/>
+                            </p:column>
+                             <p:column styleClass="Wid10">
+                               <p:outputLabel value="维修工"/>
+                            </p:column>
+                             <p:column styleClass="Wid10">
+                               <p:outputLabel value=""/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value="符合"/>
+                            </p:column>
+                             <p:column styleClass="Wid10">
+                               <p:outputLabel value=""/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value=""/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value="报修人"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value="等待配置人员"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value=""/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value=""/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                               <p:outputLabel value=""/>
+                            </p:column>
+                            
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnReturn">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
