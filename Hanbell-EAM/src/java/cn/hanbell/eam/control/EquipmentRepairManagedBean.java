@@ -12,7 +12,7 @@ import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import cn.hanbell.eam.lazy.EquipmentRepairModel2;
+import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
@@ -74,7 +74,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel2(equipmentRepairBean, userManagedBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
         detailEJB = equipmentRepairFileBean;
         queryState = "ALL";
         queryRepairuser=getUserName(userManagedBean.getUserid());

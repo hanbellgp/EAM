@@ -17,11 +17,11 @@ import org.primefaces.model.SortOrder;
  *
  * @author C0160
  */
-public class EquipmentSpareModel2 extends BaseLazyModel<EquipmentSpare> {
+public class EquipmentSpareModel extends BaseLazyModel<EquipmentSpare> {
 
     private final UserManagedBean userManagedBean;
 
-    public EquipmentSpareModel2(SuperEJB superEJB, UserManagedBean userManagedBean) {
+    public EquipmentSpareModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
     }
