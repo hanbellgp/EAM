@@ -19,7 +19,7 @@ import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import cn.hanbell.eam.lazy.EquipmentRepairModel;
+import cn.hanbell.eam.lazy.EquipmentRepairModel2;
 import cn.hanbell.eam.web.FormMulti3Bean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
@@ -80,7 +80,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        model = new EquipmentRepairModel2(equipmentRepairBean, userManagedBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;

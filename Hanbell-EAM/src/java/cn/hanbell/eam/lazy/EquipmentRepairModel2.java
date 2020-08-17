@@ -14,11 +14,11 @@ import com.lightshell.comm.SuperEJB;
  *
  * @author C2079
  */
-public class EquipmentRepairModel extends BaseLazyModel<EquipmentRepair> {
+public class EquipmentRepairModel2 extends BaseLazyModel<EquipmentRepair> {
 
     private final UserManagedBean userManagedBean;
   
-    public EquipmentRepairModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
+    public EquipmentRepairModel2(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
     }
