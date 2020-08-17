@@ -50,7 +50,8 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
             if (this.queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("username", this.queryName);
             }
-             this.model.getFilterFields().put("deptno", "1W3");
+              String deptno =sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+             this.model.getFilterFields().put("deptno", deptno);
         }
     }
 

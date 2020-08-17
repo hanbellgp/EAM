@@ -6,7 +6,7 @@
 package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
-import cn.hanbell.eam.entity.Equipmentrepairspare;
+import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 
@@ -16,10 +16,10 @@ import javax.ejb.LocalBean;
  */
 @Stateless
 @LocalBean
-public class EquipmentRepairSpareBean extends SuperEJBForEAM<Equipmentrepairspare> {
+public class EquipmentRepairSpareBean extends SuperEJBForEAM<EquipmentRepairSpare> {
 
     public EquipmentRepairSpareBean() {
-        super(Equipmentrepairspare.class);
+        super(EquipmentRepairSpare.class);
     }
 
   

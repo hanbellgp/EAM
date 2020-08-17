@@ -12,7 +12,7 @@
             <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:button id="btnReturn" value="返回" outcome="malfunctionRepair" icon="ui-icon-restore"/>
+                    <p:button id="btnReturn" value="返回" outcome="equipmentRepair" icon="ui-icon-restore"/>
                     <p:commandButton id="btnPrev" value="向前" actionListener="#{equipmentRepairManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
                                      process="@this" update="formOne"
                                      rendered="#{equipmentRepairManagedBean.hasPrev}"/>

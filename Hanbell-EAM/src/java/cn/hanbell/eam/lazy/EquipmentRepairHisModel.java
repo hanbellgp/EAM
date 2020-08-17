@@ -5,7 +5,7 @@
  */
 package cn.hanbell.eam.lazy;
 
-import cn.hanbell.eam.entity.Equipmentrepairspare;
+import cn.hanbell.eam.entity.EquipmentRepairHis;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
 
@@ -13,11 +13,8 @@ import com.lightshell.comm.SuperEJB;
  *
  * @author C2079
  */
-public class EquipmentrepairspareModel extends BaseLazyModel<Equipmentrepairspare> {
-
-
-
-    public EquipmentrepairspareModel(SuperEJB superEJB) {
+public class EquipmentRepairHisModel extends BaseLazyModel<EquipmentRepairHis> {
+    public EquipmentRepairHisModel(SuperEJB superEJB) {
         this.superEJB = superEJB;
     }
 }

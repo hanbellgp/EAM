@@ -8,11 +8,11 @@ package cn.hanbell.eam.control;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.entity.AssetCard;
-import cn.hanbell.eam.entity.Equipmentrepair;
-import cn.hanbell.eam.entity.Equipmentrepairfile;
+import cn.hanbell.eam.entity.EquipmentRepair;
+import cn.hanbell.eam.entity.EquipmentRepairFile;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import cn.hanbell.eam.lazy.EquipmentrepairModel;
+import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
@@ -51,12 +51,12 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "equipmentRepairManagedBean")
 @SessionScoped
-public class EquipmentRepairManagedBean extends FormMultiBean<Equipmentrepair, Equipmentrepairfile> {
+public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairFile> {
 
     @EJB
-    protected EquipmentRepairBean equipmentrepairBean;
+    protected EquipmentRepairBean equipmentRepairBean;
     @EJB
-    protected EquipmentRepairFileBean equipmentrepairfileBean;
+    protected EquipmentRepairFileBean equipmentRepairFileBean;
     @EJB
     private SystemUserBean systemUserBean;
     private String queryEquipmentName;
@@ -66,16 +66,16 @@ public class EquipmentRepairManagedBean extends FormMultiBean<Equipmentrepair, E
     private List<SystemUser> userList;
 
     public EquipmentRepairManagedBean() {
-        super(Equipmentrepair.class, Equipmentrepairfile.class);
+        super(EquipmentRepair.class, EquipmentRepairFile.class);
     }
 
     //初始化数据筛选
     @Override
     public void init() {
         openParams = new HashMap<>();
-        superEJB = equipmentrepairBean;
-        model = new EquipmentrepairModel(equipmentrepairBean, userManagedBean);
-        detailEJB = equipmentrepairfileBean;
+        superEJB = equipmentRepairBean;
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        detailEJB = equipmentRepairFileBean;
         queryState = "ALL";
         queryRepairuser=getUserName(userManagedBean.getUserid());
         model.getFilterFields().put("rstatus", queryState);
@@ -113,7 +113,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<Equipmentrepair, E
         if (this.addedDetailList != null && !this.addedDetailList.isEmpty()) {
             this.addedDetailList.stream().forEach((detail) -> {
                 detail.setPid(newEntity.getFormid());
-                detail.setFilemark(currentEntity.getFilemark());
+               
             });
         }
 
@@ -200,7 +200,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<Equipmentrepair, E
         if (this.fileName != null) {
             this.createDetail();
             int seq = addedDetailList.size() + 1;
-            Equipmentrepairfile equipmentrepairfile = new Equipmentrepairfile();
+            EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
             equipmentrepairfile.setFilename(imageName);
@@ -237,7 +237,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<Equipmentrepair, E
     }
 
     //确认维修到达时间
-    public void ConfirmRepairmanArrivalTime() {
+    public void confirmRepairmanArrivalTime() {
         if (this.currentEntity == null) {
             showErrorMsg("Error", "没有选择单据");
             return;
@@ -282,10 +282,10 @@ public class EquipmentRepairManagedBean extends FormMultiBean<Equipmentrepair, E
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
-        List<Equipmentrepair> equipmentrepairList = equipmentrepairBean.getEquipmentrepairList(model.getFilterFields(), model.getSortFields());
+        List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
         int j = 1;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (Equipmentrepair equipmentrepair : equipmentrepairList) {
+        for (EquipmentRepair equipmentrepair : equipmentrepairList) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);

@@ -49,17 +49,17 @@
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentRepairManagedBean.init()}" icon="ui-icon-sync"
                                      update=":formList"/>
 
-                    <p:commandButton id="btnView" value="查看" action="#{equipmentRepairManagedBean.view('malfunctionRepairView')}" icon="ui-icon-document"/>
+                    <p:commandButton id="btnView" value="查看" action="#{equipmentRepairManagedBean.view('equipmentRepairView')}" icon="ui-icon-document"/>
                 </f:facet>
 
                 <f:facet name="right">
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentRepairManagedBean.print()}" icon="ui-icon-print"
                                     />
-                        <p:menuitem id="btnCreate" value="发起故障报修" action="#{equipmentRepairManagedBean.create('malfunctionRepairNew')}" icon="ui-icon-plus"
+                        <p:menuitem id="btnCreate" value="发起故障报修" action="#{equipmentRepairManagedBean.create('equipmentRepairNew')}" icon="ui-icon-plus"
                                update=":formList"      />
 
-                        <p:menuitem  actionListener="#{equipmentRepairManagedBean.ConfirmRepairmanArrivalTime()}" icon="ui-icon-check" value="确认维修人员到达" 
+                        <p:menuitem  actionListener="#{equipmentRepairManagedBean.confirmRepairmanArrivalTime()}" icon="ui-icon-check" value="确认维修人员到达" 
                                      update=":formList">
                             <p:confirm header="系统提示" message="维修人员到达了吗?" icon="ui-icon-alert" />
                         </p:menuitem>

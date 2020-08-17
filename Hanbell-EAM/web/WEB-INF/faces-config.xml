@@ -358,33 +358,33 @@
             <from-view-id>/*</from-view-id>
         <navigation-case>
             <description>EM110设备盘点作业</description>
-            <from-outcome>assetchecktemp</from-outcome>
-            <to-view-id>/app/em/assetchecktemp.xhtml</to-view-id>
+            <from-outcome>assetCheckTemp</from-outcome>
+            <to-view-id>/app/em/assetCheckTemp.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
         <navigation-case>
             <description>BD100故障报修管理</description>
-            <from-outcome>malfunctionRepair</from-outcome>
-            <to-view-id>/app/em/malfunctionRepair.xhtml</to-view-id>
+            <from-outcome>equipmentRepair</from-outcome>
+            <to-view-id>/app/em/equipmentRepair.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
          <navigation-case>
             <description>BD102故障维修管理</description>
-            <from-outcome>malfunctionMaintenance</from-outcome>
-            <to-view-id>/app/em/malfunctionMaintenance.xhtml</to-view-id>
+            <from-outcome>equipmentMaintenance</from-outcome>
+            <to-view-id>/app/em/equipmentMaintenance.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
          <navigation-case>
             <description>BD103维修验收管理</description>
-            <from-outcome>maintenanceacceptance</from-outcome>
-            <to-view-id>/app/em/maintenanceacceptance.xhtml</to-view-id>
+            <from-outcome>equipmentAcceptance</from-outcome>
+            <to-view-id>/app/em/equipmentAcceptance.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <description>BD104维修台帐</description>
-            <from-outcome>maintenanceaccount</from-outcome>
-            <to-view-id>/app/em/maintenanceaccount.xhtml</to-view-id>
+            <description>BD104维修历史查询</description>
+            <from-outcome>equipmentHistoryQuery</from-outcome>
+            <to-view-id>/app/em/equipmentHistoryQuery.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
       </navigation-rule>  
@@ -442,13 +442,13 @@
             <redirect/>
         </navigation-case>
            <navigation-case>
-            <from-outcome>repairuserSelect</from-outcome>
-            <to-view-id>/app/df/repairuserSelect.xhtml</to-view-id>
+            <from-outcome>repairUserSelect</from-outcome>
+            <to-view-id>/app/df/repairUserSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
          <navigation-case>
-            <from-outcome>equipmentspareSelect</from-outcome>
-            <to-view-id>/app/df/equipmentspareSelect.xhtml</to-view-id>
+            <from-outcome>equipmentSpareSelect</from-outcome>
+            <to-view-id>/app/df/equipmentSpareSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

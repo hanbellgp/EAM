@@ -7,21 +7,22 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
-import cn.hanbell.eam.web.FormMulti2Bean;
+import cn.hanbell.eam.web.FormMulti3Bean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
-import com.lightshell.comm.BaseLib;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,25 +30,13 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 
@@ -55,9 +44,9 @@ import org.primefaces.event.SelectEvent;
  *
  * @author C2079
  */
-@ManagedBean(name = "equipmentMaintenanceManagedBean")
+@ManagedBean(name = "equipmentAcceptanceManagedBean")
 @SessionScoped
-public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare> {
+public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -65,6 +54,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     protected EquipmentRepairFileBean equipmentRepairFileBean;
     @EJB
     protected EquipmentRepairSpareBean equipmentRepairSpareBean;
+    @EJB
+    protected EquipmentRepairHisBean equipmentRepairHisBean;
     @EJB
     private SystemUserBean systemUserBean;
     @EJB
@@ -80,8 +71,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     private double maintenanceCosts;
     private List<EquipmentTrouble> equipmentTroubleList;
 
-    public EquipmentMaintenanceManagedBean() {
-        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class);
+    public EquipmentAcceptanceManagedBean() {
+        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
     }
 
     //初始化数据筛选
@@ -92,13 +83,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
+        detailEJB3 = equipmentRepairHisBean;
+        
         queryState = "ALL";
         queryServiceuser = getUserName(userManagedBean.getUserid());
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
         model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
         model.getSortFields().put("credate", "DESC");
-
         super.init();
     }
 
@@ -106,44 +98,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     public void saveAcceptance() {
         currentEntity.setRstatus("40");//更新状态
         createDetail();
-
         super.update();//To change body of generated methods, choose Tools | Templates.
     }
 
-    //作废
-    public void invalid() {
-        if (currentEntity == null) {
-            showErrorMsg("Error", "请选择需要作废的单据！");
-            return;
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
-            showErrorMsg("Error", "该单据不能作废！");
-            return;
-        }
-        currentEntity.setStatus("N");//简化查询条件,此处不再提供修改状态(M)
-        currentEntity.setRstatus("98");
-
-        update();
-    }
-
-    //记录维修记录检查是否已维修完成
-    public String recordMaintenanceProcess(String path) {
-        if (currentEntity == null) {
-            showErrorMsg("Error", "请选择单据！");
-            return "";
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) < 20) {
-            showErrorMsg("Error", "维修人员未到达，维修未完成不能记录维修过程！");
-            return "";
-        }
-        if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有对应的维修人员才能填写维修过程！");
-            return "";
-        }
-        return super.edit(path); //To change body of generated methods, choose Tools | Templates.
-    }
 //选择备件数据处理
-
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
@@ -179,54 +137,16 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         getPartsCost();
     }
 
-    //保存时更新状态
-    public void updateRstatus() {
-        currentEntity.setRstatus("30");
-        currentEntity.setCompletetime(getDate());
-        super.update(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    //转派单据前端验证
-    public void openDialogCheck(String view) {
-        if (this.currentEntity == null) {
-            showErrorMsg("Error", "没有选择需要转派的单据");
-            return;
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
-            showErrorMsg("Error", "该单据不能转派");
-            return;
-        }
-        if (currentEntity.getServiceuser() == null ? userManagedBean.getUserid() != null : !currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有维修人才能转派单据");
-            return;
-        }
-        super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    //转派单据
-    public void handleTransferDocuments(SelectEvent event) {
-        if (event.getObject() != null && currentEntity != null) {
-            SystemUser u = (SystemUser) event.getObject();
-            currentEntity.setServiceuser(u.getUserid());
-            currentEntity.setServiceusername(u.getUsername());
-        }
-        super.update();
-    }
-
-    //发起维修验收
-    public String initiateMaintenanceAcceptance(String path) {
+    //修改维修验收单
+    public String editAcceptance(String path) {
         if (currentEntity == null) {
             if (this.currentEntity == null) {
-                showErrorMsg("Error", "请选择一条数据");
+                showErrorMsg("Error", "请选择一条数据！！！");
                 return "";
             }
         }
-        if (Integer.parseInt(currentEntity.getRstatus())<30) {
-            showErrorMsg("Error", "只有维修完成,才能发起验收单");
-            return "";
-        }
-          if (Integer.parseInt(currentEntity.getRstatus())>30) {
-            showErrorMsg("Error", "该单据已发起过验收单");
+        if (Integer.parseInt(currentEntity.getRstatus()) != 40) {
+            showErrorMsg("Error", "请确认选择的单据是否已发起验收单！！！");
             return "";
         }
         addedDetailList.clear();
@@ -262,6 +182,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
+          String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         getPartsCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -272,8 +194,47 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
     }
+//审批前检查数据是否可以审批
 
+    public void approvalCheck(String view) {
+        if (Integer.parseInt(currentEntity.getRstatus()) < 40) {
+            showErrorMsg("Error", "该条数据未验收，不能审批");
+            return;
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
+            showErrorMsg("Error", "该条数据已审批完成,等待报修人结案");
+            return;
+        }
+        //获取维修课长
+        //String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        //String userId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        //if (!userManagedBean.getUserid().equals(userId)) {
+        //  showErrorMsg("Error", "维修课长才能进行审批");
+        // return;
+        // }
+        //获取维修课长
+        EquipmentRepairHis  equipmentrepairhis=new EquipmentRepairHis();
+        currentDetail3=equipmentrepairhis;
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+
+        super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    //审批
+    public void approval() {
+        if (currentDetail3.getContenct() != null) {
+            currentDetail3.setCompany(userManagedBean.getCompany());
+            currentDetail3.setStatus("N");
+            currentDetail3.setContenct("符合");
+            currentDetail3.setPid(currentEntity.getFormid());
+        }
+
+        super.update();
+        closeDialog();
+    }
 //获取零件费用
+
     public Double getPartsCost() {
         maintenanceCosts = 0;
         detailList2.forEach(equipmentrepair -> {
@@ -322,7 +283,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         super.handleFileUploadWhenNew(event);
         if (this.fileName != null) {
             this.createDetail();
-            int seq = addedDetailList.size() + 1;
+            int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
@@ -331,166 +292,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);
             equipmentrepairfile.setPid(currentEntity.getFormid());
+            detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
-
+            super.doConfirmDetail();
         }
-    }
-
-    @Override
-    public void createDetail() {
-        super.createDetail(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-//导出界面的EXCEL数据处理
-    @Override
-    public void print() {
-
-        fileName = "故障报修" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
-        String fileFullName = reportOutputPath + fileName;
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        //获得表格样式
-        Map<String, CellStyle> style = createStyles(workbook);
-        // 生成一个表格
-        HSSFSheet sheet1 = workbook.createSheet("维修台帐");
-        // 设置表格宽度
-        int[] wt1 = getInventoryWidth();
-        for (int i = 0; i < wt1.length; i++) {
-            sheet1.setColumnWidth(i, wt1[i] * 256);
-        }
-        //创建标题行
-        Row row;
-        //表格一
-        String[] title1 = getInventoryTitle();
-        row = sheet1.createRow(0);
-        row.setHeight((short) 800);
-        for (int i = 0; i < title1.length; i++) {
-            Cell cell = row.createCell(i);
-            cell.setCellStyle(style.get("head"));
-            cell.setCellValue(title1[i]);
-        }
-
-        List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
-        int j = 1;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (EquipmentRepair equipmentrepair : equipmentrepairList) {
-            row = sheet1.createRow(j);
-            j++;
-            row.setHeight((short) 400);
-            Cell cell0 = row.createCell(0);
-            cell0.setCellStyle(style.get("cell"));
-            cell0.setCellValue(getStateName(equipmentrepair.getRstatus()));
-            Cell cell1 = row.createCell(1);
-            cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getFormid());
-            Cell cell2 = row.createCell(2);
-            cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getItemno().getDeptname());
-            Cell cell3 = row.createCell(3);
-            cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getAssetno());
-            Cell cell4 = row.createCell(4);
-            cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getItemno().getAssetDesc());
-            Cell cell5 = row.createCell(5);
-            cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getTroublefrom());
-            Cell cell7 = row.createCell(7);
-            cell7.setCellStyle(style.get("cell"));
-            if (equipmentrepair.getServicearrivetime() != null) {
-                String servicearrivetime = sdf.format(equipmentrepair.getServicearrivetime().getTime());
-                cell7.setCellValue(servicearrivetime);
-            }
-            String Credate = sdf.format(equipmentrepair.getCredate().getTime());
-            Cell cell6 = row.createCell(6);
-            cell6.setCellStyle(style.get("cell"));
-            cell6.setCellValue(Credate);
-            Cell cell8 = row.createCell(8);
-            cell8.setCellStyle(style.get("cell"));
-            cell8.setCellValue(equipmentrepair.getRepairusername());
-            Cell cell9 = row.createCell(9);
-            cell9.setCellStyle(style.get("cell"));
-            cell9.setCellValue(equipmentrepair.getServiceusername());
-        }
-        OutputStream os = null;
-        try {
-            os = new FileOutputStream(fileFullName);
-            workbook.write(os);
-            this.reportViewPath = reportViewContext + fileName;
-            this.preview();
-        } catch (Exception ex) {
-            showErrorMsg("Error", ex.getMessage());
-        } finally {
-            try {
-                if (null != os) {
-                    os.flush();
-                    os.close();
-                }
-            } catch (IOException ex) {
-                showErrorMsg("Error", ex.getMessage());
-            }
-        }
-    }
-
-    /**
-     * 设置表头名称字段
-     */
-    private String[] getInventoryTitle() {
-        return new String[]{"进度", "报修记录号", "使用部门", "资产编号", "设备名称", "故障来源", "故障发生时间", "维修工到达时间", "报修人", "维修人"};
-    }
-
-    /**
-     * 设置单元格宽度
-     */
-    private int[] getInventoryWidth() {
-        return new int[]{15, 20, 15, 20, 20, 15, 20, 20, 10, 10};
-    }
-
-    /**
-     * 设置导出EXCEL表格样式
-     */
-    private Map<String, CellStyle> createStyles(Workbook wb) {
-        Map<String, CellStyle> styles = new LinkedHashMap<>();
-        // 文件头样式
-        CellStyle headStyle = wb.createCellStyle();
-        headStyle.setWrapText(true);//设置自动换行
-        headStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        headStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-        headStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());//单元格背景颜色
-        headStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        headStyle.setBorderRight(CellStyle.BORDER_THIN);
-        headStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-        headStyle.setBorderLeft(CellStyle.BORDER_THIN);
-        headStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-        headStyle.setBorderTop(CellStyle.BORDER_THIN);
-        headStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-        headStyle.setBorderBottom(CellStyle.BORDER_THIN);
-        headStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-        Font headFont = wb.createFont();
-        headFont.setFontHeightInPoints((short) 12);
-        headFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-        headStyle.setFont(headFont);
-        styles.put("head", headStyle);
-
-        // 正文样式
-        CellStyle cellStyle = wb.createCellStyle();
-        Font cellFont = wb.createFont();
-        cellFont.setFontHeightInPoints((short) 10);
-        cellStyle.setFont(cellFont);
-        cellStyle.setWrapText(true);//设置自动换行
-        cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-        cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
-        cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-        cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-        cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-        cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-        cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-        cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-        cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-        cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-        styles.put("cell", cellStyle);
-
-        return styles;
     }
 
     /**

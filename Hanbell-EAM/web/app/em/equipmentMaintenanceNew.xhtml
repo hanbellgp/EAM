@@ -12,10 +12,10 @@
             <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:button id="btnReturn" value="返回" outcome="malfunctionMaintenance" icon="ui-icon-restore"/>
+                    <p:button id="btnReturn" value="返回" outcome="equipmentMaintenance" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentMaintenanceManagedBean.update()}" icon="ui-icon-save"  update="plgHead"/>
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentMaintenanceManagedBean.saveAcceptance()}" icon="ui-icon-save"  update="plgHead"/>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
@@ -49,7 +49,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="维修课长"/></p:column>
                     <p:column>
-                        <h:outputText id="formList" value="东城卫" title="Unit" />
+                        <h:outputText id="maintenanceSupervisor" value="#{equipmentMaintenanceManagedBean.maintenanceSupervisor}" title="maintenanceSupervisor" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -75,8 +75,15 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间(分)"/></p:column>
                     <p:column>
-                        <p:inputText id="excepttime" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}" 
-                                     required="true" requiredMessage="请输入非工作时间" title="excepttime"/>
+                        <p:inputText id="excepttime" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^0/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     required="true"  requiredMessage="请输入非工作时间" title="excepttime" >
+                            <p:ajax event="keyup" 
+                                    update="downtime"  
+                                    listener="#{equipmentMaintenanceManagedBean.getDowntimes()}"
+                                    />
+                        </p:inputText>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -93,8 +100,6 @@
                         <h:outputText id="downtime" value="#{equipmentMaintenanceManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
                 </p:row>
-
-
             </p:panelGrid>
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
@@ -110,30 +115,20 @@
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
                         </p:selectOneMenu>
                     </p:column>
-           >     <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型1"  /></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型1"  /></p:column>
                     <p:column>
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchsort1}" title="故障类型1" >
-                            <f:selectItem itemLabel="突发性故障" itemValue="1"/>
-                            <f:selectItem itemLabel="非突发性故障" itemValue="2"/>
+                            <f:selectItems value="#{equipmentMaintenanceManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型2"  /></p:column>
-                    <p:column>
-                        <p:selectOneMenu id="hitchsort2" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchsort2}" title="故障类型2" >
-                            <f:selectItem itemLabel="损耗性故障" itemValue="1"/>
-                            <f:selectItem itemLabel="非突发性故障" itemValue="2"/>
-                        </p:selectOneMenu>
-                    </p:column>
+
                 </p:row>
-              
+
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
-                    <p:column  colspan="6" >
-                        <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status" end="0">
-                            <c:if test="${li.filefrom=='报修图片'}">  
-                                <h:outputText id="filemark" value="#{li.filemark}" title="filemark" />
-                            </c:if>
-                        </c:forEach>
+                    <p:column  colspan="6">
+                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdesc}" 
+                                  width="600" height="150"  />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -152,7 +147,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障判断过程及原因描述"  /></p:column>
                     <p:column colspan="7" >
-                        <p:inputTextarea id="hitchreason"  style="width:400px; height:100px; border:solid 1px gray; "  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchreason}"/>
+                        <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchreason}" width="600" height="150" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -160,174 +155,147 @@
                     <p:column colspan="7" style="height: 180px; ">
                         <p:fileUpload id="fileUploadDetail" fileUploadListener="#{equipmentMaintenanceManagedBean.handleFileUploadWhenDetailNew}"
                                       sizeLimit="10000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" multiple="true" sequential="true" update="imagePanel"
-                                      label="选择" uploadLabel="上传" cancelLabel="取消" />
+                                      label="选择" uploadLabel="上传" cancelLabel="取消"  />
                     </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="7"  >
+                        <h:outputLabel id="imagePanel">
+                            <c:if test="${empty equipmentMaintenanceManagedBean.addedDetailList}">   
+                                <p:outputLabel value="暂无图片"/>
+                            </c:if>  
+                            <c:forEach items="#{equipmentMaintenanceManagedBean.addedDetailList}" var ="li" varStatus="status">
+                                <c:if test="${li.filefrom=='维修图片'}">  
+                                    <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                </c:if> 
+                            </c:forEach>
+
+                        </h:outputLabel>
+                    </p:column>
+
 
                 </p:row>
                 <p:row>
-                    <p:column colspan="7"  style="height: 160px; ">
-                        <h:outputLabel id="imagePanel">
-                            <c:forEach  items="#{equipmentMaintenanceManagedBean.addedDetailList}" var ="li" varStatus="status">
-                                <c:if test="${li.filefrom=='维修图片'}"> 
-                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
-                                </c:if>
-                            </c:forEach>
-                        </h:outputLabel>
-                    </p:column>
-                </p:row>
-                <p:row>
                     <p:column colspan="7">
-                        <p:editor id="repairprocess" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairprocess}" width="600" height="150" />
+                        <p:editor id="repairprocess"  widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairprocess}" width="600" height="150" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
                     <p:column colspan="7">
-                        
-                            
                         <p:editor id="measure" widgetVar="editorWidget" value="#{equipmentMaintenanceManagedBean.currentEntity.measure}" width="600" height="150" />
-                        
                     </p:column> 
                 </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
-                <p:tab title="备件使用清单">
+                <p:tab title="备件使用明细">
                     <p:toolbar id="detailToolbar" styleClass="detailToolbar">
                         <f:facet name="left">
-                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{warehouseManagedBean.createDetail()}" icon="ui-icon-plus"
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{equipmentMaintenanceManagedBean.createDetail2()}" icon="ui-icon-plus"
                                              oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
-                                             process="@this" update="formOne:tabView:plgDetail"/>
-                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{warehouseManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             process="@this" update=":formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{equipmentMaintenanceManagedBean.deleteDetail2()}" icon="ui-icon-trash"
                                              oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
-                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList,:formOne:cost" />
                         </f:facet>
                         <f:facet name="right">
-                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{warehouseManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{equipmentMaintenanceManagedBean.doConfirmDetail2()}" icon="ui-icon-check"
                                              onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
-                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList,:formOne:cost"/>
                         </f:facet>
                     </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column><p:outputLabel value="备件品号" for="spareno"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="spareno" value="#{equipmentMaintenanceManagedBean.currentDetail2.spareno}" title="spareno" styleClass="inputWithButton"
+                                             required="true" requiredMessage="请输入品号" readonly="true"/>
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{equipmentMaintenanceManagedBean.openDialog('equipmentspareSelect')}" icon="ui-icon-extlink" process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{equipmentMaintenanceManagedBean.handleDialogReturnWhenDetailEdit}" update="sparenum,uprice,spareno" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column><h:outputText value="备件品名"/></p:column>
+                            <p:column>
+                                <h:outputText id="sparenum" value="#{equipmentMaintenanceManagedBean.currentDetail2.sparenum}" title="sparenum" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
 
-                    <p:column id="plgDetail">
 
-                    </p:column>
-                    <p:dataTable id="tableList" value="#{warehouseManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
-                                 selectionMode="single" selection="#{warehouseManagedBean.currentDetail}" rowKey="#{item.seq}" >
-                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
-                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail" oncomplete="" />
-                        <p:column headerText="备件编号" styleClass="Wid10">
-                            <h:outputText value="#{item.company}"/>
+                            <p:column><p:outputLabel value="数量" for="qty" /></p:column>
+                            <p:column>
+                                <p:spinner id="qty" value="#{equipmentMaintenanceManagedBean.qty}" title="Qty" min="1"  max="20"
+                                           required="true" requiredMessage="请输入数量"/>
+
+                            </p:column>
+                            <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
+                            <p:column>
+                                <h:outputText id="uprice" value="#{equipmentMaintenanceManagedBean.currentDetail2.uprice}" title="uprice" />
+                            </p:column>
+                        </p:row>
+
+
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{equipmentMaintenanceManagedBean.detailList2}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentDetail2}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件品号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.spareno}"/>
                         </p:column>
-                        <p:column headerText="备件名称" styleClass="Wid10">
-                            <h:outputText value="#{item.warehouseno}"/>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum}"/>
                         </p:column>
-                        <p:column headerText="规格型号" styleClass="Wid10">
-                            <h:outputText value="#{item.remark}"/>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="维修使用人"/>
+                            </f:facet>
+                            <h:outputText value="#{item.userno}"/>
                         </p:column>
-                        <p:column headerText="数量" styleClass="Wid10">
-                            <p:inputText value="1" />
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="维修使用时间"/>
+                            </f:facet>
+                            <h:outputText value="#{item.userdate}">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                            </h:outputText>   
                         </p:column>
-                        <p:column headerText="单价" styleClass="Wid10">
-                            <p:inputText value="1" />
+
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
                         </p:column>
-                        <p:column headerText="金额" styleClass="Wid10">
-                            <p:inputText value="1" />
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uprice}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>
-                <p:tab title="故障维修验收审批">
-                    <p:panelGrid id="plgBase"  styleClass="plgDetail Wid100">
-                        <p:row>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE"><p:outputLabel value="审批配置部门" /></p:column>
-                            <p:column colspan="5" style="background-color: #EEEEEE">
-                                <h:outputText  value="000-001" />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                                <p:outputLabel value="验收/审批职位"/>
-                            </p:column>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                                <p:outputLabel value="验收/审批人" />
-                            </p:column>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                                <p:outputLabel value="实际审批人" />
-                            </p:column>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                                <p:outputLabel value="验收审批结果" />
-                            </p:column>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                                <p:outputLabel value="审批时间"/>
-                            </p:column>
-                            <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                                <p:outputLabel value="审批意见"  />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="操作者"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="操作工"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="符合"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="2020-6-17 16：25：33"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="审批意见：暂无"/>
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="维修班长"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="维修工"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value=""/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="符合"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value=""/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value=""/>
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="报修人"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value="等待配置人员"/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value=""/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value=""/>
-                            </p:column>
-                            <p:column styleClass="Wid10">
-                                <p:outputLabel value=""/>
-                            </p:column>
 
-                        </p:row>
-                    </p:panelGrid>
-                </p:tab>
             </p:tabView>
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-            </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formOne" trigger="btnSave">
-                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
-            </p:blockUI>
+            <p:panelGrid  id="cost">
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
+                    <p:column>
+                        <p:inputText  id="repaircost" value="#{equipmentMaintenanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
+                    </p:column>
+                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件费用" for="maintenanceCosts" /></p:column>
+                    <p:column>
+                        <h:outputText  id="maintenanceCosts" value="#{equipmentMaintenanceManagedBean.maintenanceCosts}" title="spareno1" styleClass="inputWithButton"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
         </h:form>
     </ui:define>
 

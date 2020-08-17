@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                <p:column>
+                    <p:calendar id="queryDateBegin" value="#{equipmentMaintenanceManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                </p:column>
+                <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                <p:column>
+                    <p:calendar id="queryDateEnd" value="#{equipmentMaintenanceManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                </p:column>
+                <h:outputLabel value="报修记录号" for="queryFormId" />
+                <p:inputText id="queryFormId" value="#{equipmentMaintenanceManagedBean.queryFormId}" title="报修记录号" />
+                <h:outputLabel value="资产编号" for="queryName" />
+                <p:inputText id="queryName" value="#{equipmentMaintenanceManagedBean.queryName}" title="资产编号" />
+                <h:outputLabel value="设备名称" for="queryEquipmentName" />
+                <p:inputText id="queryEquipmentName" value="#{equipmentMaintenanceManagedBean.queryEquipmentName}" title="设备名称" />
+                <h:outputLabel value="进度" for="queryState" />
+                <p:selectOneMenu id="queryState" value="#{equipmentMaintenanceManagedBean.queryState}" title="进度">
+                    <f:selectItem  itemLabel="未结案" itemValue="ALL"/>
+                    <f:selectItem  itemLabel="已报修" itemValue="10"/>
+                    <f:selectItem  itemLabel="维修到达" itemValue="20"/>
+                    <f:selectItem  itemLabel="维修完成" itemValue="30"/>
+                    <f:selectItem  itemLabel="维修验收" itemValue="40"/>
+                    <f:selectItem  itemLabel="维修审核" itemValue="50"/>
+                    <f:selectItem  itemLabel="报修结案" itemValue="95"/>
+                    <f:selectItem  itemLabel="作废"  itemValue="98"/>
+                </p:selectOneMenu>
+                  <h:outputLabel value="使用部门" for="queryDeptname" />
+                <p:inputText id="queryDeptname" value="#{equipmentMaintenanceManagedBean.queryDeptname}" title="使用部门" />
+                <h:outputLabel value="维修人" for="queryServiceuser" />
+                <p:inputText id="queryServiceuser" value="#{equipmentMaintenanceManagedBean.queryServiceuser}" title="维修人"
+                             />
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentMaintenanceManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{equipmentMaintenanceManagedBean.view('equipmentMaintenanceView')}" icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentMaintenanceManagedBean.print()}" icon="ui-icon-print"
+                                    />
+                        <p:menuitem id="btnEdit" value="记录维修过程" action="#{equipmentMaintenanceManagedBean.recordMaintenanceProcess('equipmentMaintenanceEdit')}" icon="ui-icon-pencil"
+                                    rendered="#{equipmentMaintenanceManagedBean.doEdit}" />
+                         <p:menuitem id="btnCreate" value="发起维修验收" action="#{equipmentMaintenanceManagedBean.initiateMaintenanceAcceptance('equipmentMaintenanceNew')}" icon="ui-icon-plus"
+                                    rendered="#{equipmentMaintenanceManagedBean.doAdd}" />
+                        <p:menuitem id="btnDelete" actionListener="#{equipmentMaintenanceManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
+                                    update=":formList">
+                            <p:confirm header="系统提示" message="作废吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                    </p:splitButton>
+                    <p:commandButton  value="转派维修人" actionListener="#{equipmentMaintenanceManagedBean.openDialogCheck('repairUserSelect')}" icon="ui-icon-sync"
+                                      update=":formList">
+
+                        <p:ajax event="dialogReturn" listener="#{equipmentMaintenanceManagedBean.handleTransferDocuments}" update=":formList"
+                                />
+                    </p:commandButton>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentMaintenanceManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{equipmentMaintenanceManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                         selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentEntity}" rowKey="#{item.id}" >
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="进度"/>
+                    </f:facet>
+                    <h:outputText value="#{equipmentMaintenanceManagedBean.getStateName(item.rstatus)}"/>
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="报修单号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.formid}"/>
+                </p:column> 
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="使用部门"/>
+                    </f:facet>
+                    <h:outputText value="#{item.itemno.deptname}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="资产编号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetno}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="设备名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.itemno.assetDesc}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="故障来源"/>
+                    </f:facet>
+                    <h:outputText value="#{item.troublefrom}"/>
+                </p:column>
+                 
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="维修到达时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.servicearrivetime}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                    </h:outputText>                      
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="维修完成时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.completetime}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                    </h:outputText>                      
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="报修人"/>
+                    </f:facet>
+                    <h:outputText value="#{item.repairusername}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="维修人"/>
+                    </f:facet>
+                    <h:outputText value="#{item.serviceusername}"/>
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnQuery">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
