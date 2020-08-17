@@ -27,20 +27,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "equipmentrepairhis")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "EquipmentRepairHis.findAll", query = "SELECT e FROM EquipmentRepairHis e")
-    , @NamedQuery(name = "EquipmentRepairHis.findById", query = "SELECT e FROM EquipmentRepairHis e WHERE e.id = :id")
-    , @NamedQuery(name = "EquipmentRepairHis.findByCompany", query = "SELECT e FROM EquipmentRepairHis e WHERE e.company = :company")
-    , @NamedQuery(name = "EquipmentRepairHis.findByPid", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid")
-    , @NamedQuery(name = "EquipmentRepairHis.findBySeq", query = "SELECT e FROM EquipmentRepairHis e WHERE e.seq = :seq")
-    , @NamedQuery(name = "EquipmentRepairHis.findByUserno", query = "SELECT e FROM EquipmentRepairHis e WHERE e.userno = :userno")
-    , @NamedQuery(name = "EquipmentRepairHis.findByContenct", query = "SELECT e FROM EquipmentRepairHis e WHERE e.contenct = :contenct")
-    , @NamedQuery(name = "EquipmentRepairHis.findByNote", query = "SELECT e FROM EquipmentRepairHis e WHERE e.note = :note")
-    , @NamedQuery(name = "EquipmentRepairHis.findByRemark", query = "SELECT e FROM EquipmentRepairHis e WHERE e.remark = :remark")
-    , @NamedQuery(name = "EquipmentRepairHis.findByStatus", query = "SELECT e FROM EquipmentRepairHis e WHERE e.status = :status")
-    , @NamedQuery(name = "EquipmentRepairHis.findByPId", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid")})
-
-public class EquipmentRepairHis extends FormDetailEntity {
-
+    @NamedQuery(name = "EquipmentRepairHis.findAll", query = "SELECT e FROM EquipmentRepairHis e"),
+    @NamedQuery(name = "EquipmentRepairHis.findById", query = "SELECT e FROM EquipmentRepairHis e WHERE e.id = :id"),
+    @NamedQuery(name = "EquipmentRepairHis.findByCompany", query = "SELECT e FROM EquipmentRepairHis e WHERE e.company = :company"),
+    @NamedQuery(name = "EquipmentRepairHis.findByPid", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid"),
+    @NamedQuery(name = "EquipmentRepairHis.findBySeq", query = "SELECT e FROM EquipmentRepairHis e WHERE e.seq = :seq"),
+    @NamedQuery(name = "EquipmentRepairHis.findByUserno", query = "SELECT e FROM EquipmentRepairHis e WHERE e.userno = :userno"),
+    @NamedQuery(name = "EquipmentRepairHis.findByContenct", query = "SELECT e FROM EquipmentRepairHis e WHERE e.contenct = :contenct"),
+    @NamedQuery(name = "EquipmentRepairHis.findByNote", query = "SELECT e FROM EquipmentRepairHis e WHERE e.note = :note"),
+    @NamedQuery(name = "EquipmentRepairHis.findByRemark", query = "SELECT e FROM EquipmentRepairHis e WHERE e.remark = :remark"),
+    @NamedQuery(name = "EquipmentRepairHis.findByStatus", query = "SELECT e FROM EquipmentRepairHis e WHERE e.status = :status"),
+    @NamedQuery(name = "EquipmentRepairHis.findByCreator", query = "SELECT e FROM EquipmentRepairHis e WHERE e.creator = :creator"),
+    @NamedQuery(name = "EquipmentRepairHis.findByCredate", query = "SELECT e FROM EquipmentRepairHis e WHERE e.credate = :credate"),
+    @NamedQuery(name = "EquipmentRepairHis.findByOptuser", query = "SELECT e FROM EquipmentRepairHis e WHERE e.optuser = :optuser"),
+    @NamedQuery(name = "EquipmentRepairHis.findByOptdate", query = "SELECT e FROM EquipmentRepairHis e WHERE e.optdate = :optdate"),
+    @NamedQuery(name = "EquipmentRepairHis.findByCfmuser", query = "SELECT e FROM EquipmentRepairHis e WHERE e.cfmuser = :cfmuser"),
+      @NamedQuery(name = "EquipmentRepairHis.findByPId", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid")})
+public class EquipmentRepairHis extends FormDetailEntity  {
 
 
     @Basic(optional = false)
@@ -208,7 +211,6 @@ public class EquipmentRepairHis extends FormDetailEntity {
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -216,12 +218,11 @@ public class EquipmentRepairHis extends FormDetailEntity {
             return false;
         }
         EquipmentRepairHis other = (EquipmentRepairHis) object;
-      if (this.id != null && other.id != null) {
+          if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
         return this.seq == other.seq;
     }
-
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepairHis[ id=" + id + " ]";

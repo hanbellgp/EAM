@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Administrator
@@ -23,20 +24,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "syscode")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SysCode.findAll", query = "SELECT s FROM SysCode s")
-    , @NamedQuery(name = "SysCode.findById", query = "SELECT s FROM SysCode s WHERE s.id = :id")
-    , @NamedQuery(name = "SysCode.findBySyskind", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind")
-    , @NamedQuery(name = "SysCode.findByCode", query = "SELECT s FROM SysCode s WHERE s.code = :code")
-    , @NamedQuery(name = "SysCode.findByCvalue", query = "SELECT s FROM SysCode s WHERE s.cvalue = :cvalue")
-    , @NamedQuery(name = "SysCode.findByCdesc", query = "SELECT s FROM SysCode s WHERE s.cdesc = :cdesc")
-    , @NamedQuery(name = "SysCode.findByStatus", query = "SELECT s FROM SysCode s WHERE s.status = :status")
-    , @NamedQuery(name = "SysCode.findByCreator", query = "SELECT s FROM SysCode s WHERE s.creator = :creator")
-    , @NamedQuery(name = "SysCode.findByCredate", query = "SELECT s FROM SysCode s WHERE s.credate = :credate")
-    , @NamedQuery(name = "SysCode.findByOptuser", query = "SELECT s FROM SysCode s WHERE s.optuser = :optuser")
-    , @NamedQuery(name = "SysCode.findByOptdate", query = "SELECT s FROM SysCode s WHERE s.optdate = :optdate")
-    , @NamedQuery(name = "SysCode.findByCfmuser", query = "SELECT s FROM SysCode s WHERE s.cfmuser = :cfmuser")
-    , @NamedQuery(name = "SysCode.findBySyskindAndCode", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code")
-    , @NamedQuery(name = "SysCode.findByCfmdate", query = "SELECT s FROM SysCode s WHERE s.cfmdate = :cfmdate")})
+    @NamedQuery(name = "SysCode.findAll", query = "SELECT s FROM SysCode s"),
+    @NamedQuery(name = "SysCode.findById", query = "SELECT s FROM SysCode s WHERE s.id = :id"),
+    @NamedQuery(name = "SysCode.findBySyskind", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind"),
+    @NamedQuery(name = "SysCode.findByCode", query = "SELECT s FROM SysCode s WHERE s.code = :code"),
+    @NamedQuery(name = "SysCode.findByCvalue", query = "SELECT s FROM SysCode s WHERE s.cvalue = :cvalue"),
+    @NamedQuery(name = "SysCode.findByCdesc", query = "SELECT s FROM SysCode s WHERE s.cdesc = :cdesc"),
+    @NamedQuery(name = "SysCode.findByStatus", query = "SELECT s FROM SysCode s WHERE s.status = :status"),
+    @NamedQuery(name = "SysCode.findByCreator", query = "SELECT s FROM SysCode s WHERE s.creator = :creator"),
+    @NamedQuery(name = "SysCode.findByCredate", query = "SELECT s FROM SysCode s WHERE s.credate = :credate"),
+    @NamedQuery(name = "SysCode.findByOptuser", query = "SELECT s FROM SysCode s WHERE s.optuser = :optuser"),
+    @NamedQuery(name = "SysCode.findByOptdate", query = "SELECT s FROM SysCode s WHERE s.optdate = :optdate"),
+    @NamedQuery(name = "SysCode.findByCfmuser", query = "SELECT s FROM SysCode s WHERE s.cfmuser = :cfmuser"),
+    @NamedQuery(name = "SysCode.findBySyskindAndCode", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code"),
+    @NamedQuery(name = "SysCode.findByCfmdate", query = "SELECT s FROM SysCode s WHERE s.cfmdate = :cfmdate")})
 public class SysCode extends SuperEntity {
 
 
@@ -56,8 +57,7 @@ public class SysCode extends SuperEntity {
     @Size(max = 200)
     @Column(name = "cdesc")
     private String cdesc;
- 
-   
+
 
     public SysCode() {
     }
@@ -73,7 +73,7 @@ public class SysCode extends SuperEntity {
         this.status = status;
     }
 
-   
+
 
     public String getSyskind() {
         return syskind;
@@ -128,7 +128,7 @@ public class SysCode extends SuperEntity {
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.Syscode[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.SysCode[ id=" + id + " ]";
     }
     
 }

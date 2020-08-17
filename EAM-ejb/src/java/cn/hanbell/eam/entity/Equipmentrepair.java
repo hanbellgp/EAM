@@ -67,18 +67,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepair.findByCfmdate", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentRepair extends FormEntity {
 
- 
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "formid")
-    private String formid;
-
     @JoinColumn(name = "itemno", referencedColumnName = "itemno")
     @ManyToOne
     private AssetCard itemno;
@@ -151,29 +145,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2)
-    @Column(name = "status")
-    private String status;
-    @Size(max = 20)
-    @Column(name = "creator")
-    private String creator;
-    @Column(name = "credate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date credate;
-    @Size(max = 20)
-    @Column(name = "optuser")
-    private String optuser;
-    @Column(name = "optdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date optdate;
-    @Size(max = 20)
-    @Column(name = "cfmuser")
-    private String cfmuser;
-    @Column(name = "cfmdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date cfmdate;
+
    @Transient
     private String maintenanceTime;
     @Transient
@@ -206,7 +178,7 @@ public class EquipmentRepair extends FormEntity {
         this.company = company;
     }
 
-   
+
 
     public AssetCard getItemno() {
         return itemno;
@@ -216,7 +188,10 @@ public class EquipmentRepair extends FormEntity {
         this.itemno = itemno;
     }
 
-  
+
+
+
+
     public String getAssetno() {
         return assetno;
     }
@@ -225,7 +200,7 @@ public class EquipmentRepair extends FormEntity {
         this.assetno = assetno;
     }
 
- 
+
 
     public String getRepairuser() {
         return repairuser;
@@ -387,6 +362,8 @@ public class EquipmentRepair extends FormEntity {
         this.remark = remark;
     }
 
+
+
     public String getMaintenanceTime() {
         return maintenanceTime;
     }
@@ -434,5 +411,5 @@ public class EquipmentRepair extends FormEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepair[ id=" + id + " ]";
     }
-    
+
 }

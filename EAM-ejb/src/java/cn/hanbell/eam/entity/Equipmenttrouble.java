@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentTrouble.findByOptdate", query = "SELECT e FROM EquipmentTrouble e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentTrouble.findByCfmuser", query = "SELECT e FROM EquipmentTrouble e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentTrouble.findByCfmdate", query = "SELECT e FROM EquipmentTrouble e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentTrouble extends SuperEntity{
+public class EquipmentTrouble  extends SuperEntity {
 
 
     @Basic(optional = false)
@@ -58,7 +58,6 @@ public class EquipmentTrouble extends SuperEntity{
     private String remark;
 
 
-
     public EquipmentTrouble() {
     }
 
@@ -73,7 +72,7 @@ public class EquipmentTrouble extends SuperEntity{
         this.status = status;
     }
 
-   
+
 
     public String getTroubleid() {
         return troubleid;
@@ -128,7 +127,7 @@ public class EquipmentTrouble extends SuperEntity{
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.Equipmenttrouble[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.EquipmentTrouble[ id=" + id + " ]";
     }
-    
+
 }

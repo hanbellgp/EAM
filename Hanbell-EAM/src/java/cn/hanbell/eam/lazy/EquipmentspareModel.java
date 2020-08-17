@@ -6,7 +6,7 @@
 package cn.hanbell.eam.lazy;
 
 import cn.hanbell.eam.control.UserManagedBean;
-import cn.hanbell.eam.entity.Equipmentspare;
+import cn.hanbell.eam.entity.EquipmentSpare;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
 import java.util.List;
@@ -17,17 +17,17 @@ import org.primefaces.model.SortOrder;
  *
  * @author C0160
  */
-public class EquipmentspareModel extends BaseLazyModel<Equipmentspare> {
+public class EquipmentSpareModel extends BaseLazyModel<EquipmentSpare> {
 
     private final UserManagedBean userManagedBean;
 
-    public EquipmentspareModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
+    public EquipmentSpareModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
     }
 
     @Override
-    public List<Equipmentspare> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public List<EquipmentSpare> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         filterFields.put("company =", userManagedBean.getCompany());
         setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
         setRowCount(superEJB.getRowCount(filterFields));

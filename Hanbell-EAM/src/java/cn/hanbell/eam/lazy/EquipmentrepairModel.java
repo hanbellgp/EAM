@@ -6,7 +6,7 @@
 package cn.hanbell.eam.lazy;
 
 import cn.hanbell.eam.control.UserManagedBean;
-import cn.hanbell.eam.entity.Equipmentrepair;
+import cn.hanbell.eam.entity.EquipmentRepair;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
 
@@ -14,11 +14,11 @@ import com.lightshell.comm.SuperEJB;
  *
  * @author C2079
  */
-public class EquipmentrepairModel extends BaseLazyModel<Equipmentrepair> {
+public class EquipmentRepairModel extends BaseLazyModel<EquipmentRepair> {
 
     private final UserManagedBean userManagedBean;
   
-    public EquipmentrepairModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
+    public EquipmentRepairModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
     }
