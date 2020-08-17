@@ -49,9 +49,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findByOptdate", query = "SELECT e FROM EquipmentSpare e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentSpare.findByCfmuser", query = "SELECT e FROM EquipmentSpare e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentSpare.findByCfmdate", query = "SELECT e FROM EquipmentSpare e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentSpare extends SuperEntity {
+public class EquipmentSpare2 extends SuperEntity {
 
-  
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -113,20 +112,19 @@ public class EquipmentSpare extends SuperEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public EquipmentSpare() {
+    public EquipmentSpare2() {
     }
 
-    public EquipmentSpare(Integer id) {
+    public EquipmentSpare2(Integer id) {
         this.id = id;
     }
 
-    public EquipmentSpare(Integer id, String company, String sparenum, String status) {
+    public EquipmentSpare2(Integer id, String company, String sparenum, String status) {
         this.id = id;
         this.company = company;
         this.sparenum = sparenum;
         this.status = status;
     }
-
 
     public String getCompany() {
         return company;
@@ -224,8 +222,6 @@ public class EquipmentSpare extends SuperEntity {
         this.remark = remark;
     }
 
- 
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -233,14 +229,13 @@ public class EquipmentSpare extends SuperEntity {
         return hash;
     }
 
-
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentSpare)) {
+        if (!(object instanceof EquipmentSpare2)) {
             return false;
         }
-        EquipmentSpare other = (EquipmentSpare) object;
+        EquipmentSpare2 other = (EquipmentSpare2) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
@@ -248,5 +243,5 @@ public class EquipmentSpare extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentSpare[ id=" + id + " ]";
     }
-    
+
 }

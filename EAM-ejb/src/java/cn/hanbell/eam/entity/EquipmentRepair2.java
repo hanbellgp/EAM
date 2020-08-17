@@ -65,9 +65,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepair.findByOptdate", query = "SELECT e FROM EquipmentRepair e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentRepair.findByCfmuser", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentRepair.findByCfmdate", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentRepair extends FormEntity {
+public class EquipmentRepair2 extends FormEntity {
 
- 
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -152,14 +152,14 @@ public class EquipmentRepair extends FormEntity {
     private String contactTime;
     @Transient
     private String downtime;
-    public EquipmentRepair() {
+    public EquipmentRepair2() {
     }
 
-    public EquipmentRepair(Integer id) {
+    public EquipmentRepair2(Integer id) {
         this.id = id;
     }
 
-    public EquipmentRepair(Integer id, String company, String formid, String assetno, String troublefrom, String status) {
+    public EquipmentRepair2(Integer id, String company, String formid, String assetno, String troublefrom, String status) {
         this.id = id;
         this.company = company;
         this.formid = formid;
@@ -168,7 +168,7 @@ public class EquipmentRepair extends FormEntity {
         this.status = status;
     }
 
- 
+
 
     public String getCompany() {
         return company;
@@ -178,6 +178,8 @@ public class EquipmentRepair extends FormEntity {
         this.company = company;
     }
 
+
+
     public AssetCard getItemno() {
         return itemno;
     }
@@ -186,7 +188,7 @@ public class EquipmentRepair extends FormEntity {
         this.itemno = itemno;
     }
 
- 
+
 
 
 
@@ -198,7 +200,7 @@ public class EquipmentRepair extends FormEntity {
         this.assetno = assetno;
     }
 
-   
+
 
     public String getRepairuser() {
         return repairuser;
@@ -386,6 +388,8 @@ public class EquipmentRepair extends FormEntity {
         this.downtime = downtime;
     }
 
+
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -393,19 +397,19 @@ public class EquipmentRepair extends FormEntity {
         return hash;
     }
 
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentRepair)) {
+        if (!(object instanceof EquipmentRepair2)) {
             return false;
         }
-        EquipmentRepair other = (EquipmentRepair) object;
+        EquipmentRepair2 other = (EquipmentRepair2) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
-
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepair[ id=" + id + " ]";
     }
-    
+
 }

@@ -8,8 +8,8 @@ package cn.hanbell.eam.control;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.entity.AssetCard;
-import cn.hanbell.eam.entity.EquipmentRepair;
-import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepair2;
+import cn.hanbell.eam.entity.EquipmentRepairFile2;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
@@ -51,7 +51,7 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "equipmentRepairManagedBean")
 @SessionScoped
-public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairFile> {
+public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair2, EquipmentRepairFile2> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -66,7 +66,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
     private List<SystemUser> userList;
 
     public EquipmentRepairManagedBean() {
-        super(EquipmentRepair.class, EquipmentRepairFile.class);
+        super(EquipmentRepair2.class, EquipmentRepairFile2.class);
     }
 
     //初始化数据筛选
@@ -200,7 +200,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         if (this.fileName != null) {
             this.createDetail();
             int seq = addedDetailList.size() + 1;
-            EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
+            EquipmentRepairFile2 equipmentrepairfile = new EquipmentRepairFile2();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
             equipmentrepairfile.setFilename(imageName);
@@ -282,10 +282,10 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
-        List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
+        List<EquipmentRepair2> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
         int j = 1;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (EquipmentRepair equipmentrepair : equipmentrepairList) {
+        for (EquipmentRepair2 equipmentrepair : equipmentrepairList) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);

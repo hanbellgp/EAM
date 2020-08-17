@@ -6,7 +6,7 @@
 package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
-import cn.hanbell.eam.entity.EquipmentRepair;
+import cn.hanbell.eam.entity.EquipmentRepair2;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +21,13 @@ import javax.persistence.Query;
  */
 @Stateless
 @LocalBean
-public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
+public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair2> {
 
     public EquipmentRepairBean() {
-        super(EquipmentRepair.class);
+        super(EquipmentRepair2.class);
     }
 
-    public List<EquipmentRepair> getEquipmentRepairList(Map<String, Object> filters, Map<String, String> orderBy) {
+    public List<EquipmentRepair2> getEquipmentRepairList(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT e FROM ");
         sb.append(this.className);
@@ -119,7 +119,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     }
 
     @Override
-    public List<EquipmentRepair> findByFilters(Map<String, Object> filters, int first, int pageSize, Map<String, String> orderBy) {
+    public List<EquipmentRepair2> findByFilters(Map<String, Object> filters, int first, int pageSize, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT e FROM ");
         sb.append(this.className);

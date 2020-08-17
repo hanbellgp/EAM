@@ -46,15 +46,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepairFile.findByCfmuser", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentRepairFile.findByPId", query = "SELECT e FROM EquipmentRepairFile e WHERE e.pid = :pid ORDER BY e.seq"),
     @NamedQuery(name = "EquipmentRepairFile.findByCfmdate", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentRepairFile extends FormDetailEntity {
+public class EquipmentRepairFile2 extends FormDetailEntity {
 
-   
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-  
+
     @Size(max = 10)
     @Column(name = "filefrom")
     private String filefrom;
@@ -99,21 +98,20 @@ public class EquipmentRepairFile extends FormDetailEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public EquipmentRepairFile() {
+    public EquipmentRepairFile2() {
     }
 
-    public EquipmentRepairFile(Integer id) {
+    public EquipmentRepairFile2(Integer id) {
         this.id = id;
     }
 
-    public EquipmentRepairFile(Integer id, String company, String pid, String filename, String status) {
+    public EquipmentRepairFile2(Integer id, String company, String pid, String filename, String status) {
         this.id = id;
         this.company = company;
         this.pid = pid;
         this.filename = filename;
         this.status = status;
     }
-
 
     public String getCompany() {
         return company;
@@ -122,8 +120,6 @@ public class EquipmentRepairFile extends FormDetailEntity {
     public void setCompany(String company) {
         this.company = company;
     }
-
-
 
     public String getFilefrom() {
         return filefrom;
@@ -236,15 +232,14 @@ public class EquipmentRepairFile extends FormDetailEntity {
         return hash;
     }
 
-
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentRepairFile)) {
+        if (!(object instanceof EquipmentRepairFile2)) {
             return false;
         }
-        EquipmentRepairFile other = (EquipmentRepairFile) object;
-          if (this.id != null && other.id != null) {
+        EquipmentRepairFile2 other = (EquipmentRepairFile2) object;
+        if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
         return this.seq == other.seq;
@@ -254,5 +249,5 @@ public class EquipmentRepairFile extends FormDetailEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepairFile[ id=" + id + " ]";
     }
-    
+
 }
