@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepairFile.findByCfmuser", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentRepairFile.findByPId", query = "SELECT e FROM EquipmentRepairFile e WHERE e.pid = :pid ORDER BY e.seq"),
     @NamedQuery(name = "EquipmentRepairFile.findByCfmdate", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentRepairFile2 extends FormDetailEntity {
+public class EquipmentRepairFile extends FormDetailEntity {
 
     @Basic(optional = false)
     @NotNull
@@ -98,14 +98,14 @@ public class EquipmentRepairFile2 extends FormDetailEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public EquipmentRepairFile2() {
+    public EquipmentRepairFile() {
     }
 
-    public EquipmentRepairFile2(Integer id) {
+    public EquipmentRepairFile(Integer id) {
         this.id = id;
     }
 
-    public EquipmentRepairFile2(Integer id, String company, String pid, String filename, String status) {
+    public EquipmentRepairFile(Integer id, String company, String pid, String filename, String status) {
         this.id = id;
         this.company = company;
         this.pid = pid;
@@ -235,10 +235,10 @@ public class EquipmentRepairFile2 extends FormDetailEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentRepairFile2)) {
+        if (!(object instanceof EquipmentRepairFile)) {
             return false;
         }
-        EquipmentRepairFile2 other = (EquipmentRepairFile2) object;
+        EquipmentRepairFile other = (EquipmentRepairFile) object;
         if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }

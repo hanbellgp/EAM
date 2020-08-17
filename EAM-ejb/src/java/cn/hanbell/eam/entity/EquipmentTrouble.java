@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentTrouble.findByOptdate", query = "SELECT e FROM EquipmentTrouble e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentTrouble.findByCfmuser", query = "SELECT e FROM EquipmentTrouble e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentTrouble.findByCfmdate", query = "SELECT e FROM EquipmentTrouble e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentTrouble2  extends SuperEntity {
+public class EquipmentTrouble  extends SuperEntity {
 
 
     @Basic(optional = false)
@@ -58,14 +58,14 @@ public class EquipmentTrouble2  extends SuperEntity {
     private String remark;
 
 
-    public EquipmentTrouble2() {
+    public EquipmentTrouble() {
     }
 
-    public EquipmentTrouble2(Integer id) {
+    public EquipmentTrouble(Integer id) {
         this.id = id;
     }
 
-    public EquipmentTrouble2(Integer id, String troubleid, String troublename, String status) {
+    public EquipmentTrouble(Integer id, String troubleid, String troublename, String status) {
         this.id = id;
         this.troubleid = troubleid;
         this.troublename = troublename;
@@ -118,10 +118,10 @@ public class EquipmentTrouble2  extends SuperEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentTrouble2)) {
+        if (!(object instanceof EquipmentTrouble)) {
             return false;
         }
-        EquipmentTrouble2 other = (EquipmentTrouble2) object;
+        EquipmentTrouble other = (EquipmentTrouble) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 

@@ -11,12 +11,12 @@ import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
-import cn.hanbell.eam.entity.EquipmentRepair2;
-import cn.hanbell.eam.entity.EquipmentRepairFile2;
-import cn.hanbell.eam.entity.EquipmentRepairHis2;
-import cn.hanbell.eam.entity.EquipmentRepairSpare2;
-import cn.hanbell.eam.entity.EquipmentSpare2;
-import cn.hanbell.eam.entity.EquipmentTrouble2;
+import cn.hanbell.eam.entity.EquipmentRepair;
+import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHis;
+import cn.hanbell.eam.entity.EquipmentRepairSpare;
+import cn.hanbell.eam.entity.EquipmentSpare;
+import cn.hanbell.eam.entity.EquipmentTrouble;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
@@ -46,7 +46,7 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "equipmentAcceptanceManagedBean")
 @SessionScoped
-public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepair2, EquipmentRepairFile2, EquipmentRepairSpare2, EquipmentRepairHis2> {
+public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -69,10 +69,10 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private String queryDeptname;
     private BigDecimal qty;
     private double maintenanceCosts;
-    private List<EquipmentTrouble2> equipmentTroubleList;
+    private List<EquipmentTrouble> equipmentTroubleList;
 
     public EquipmentAcceptanceManagedBean() {
-        super(EquipmentRepair2.class, EquipmentRepairFile2.class, EquipmentRepairSpare2.class, EquipmentRepairHis2.class);
+        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
     }
 
     //初始化数据筛选
@@ -105,7 +105,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
-            EquipmentSpare2 u = (EquipmentSpare2) event.getObject();
+            EquipmentSpare u = (EquipmentSpare) event.getObject();
             currentDetail2.setUprice(u.getUprice());
             currentDetail2.setSpareno(u.getSpareno());
             currentDetail2.setUserno(currentEntity.getServiceuser());
@@ -213,7 +213,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         // return;
         // }
         //获取维修课长
-        EquipmentRepairHis2  equipmentrepairhis=new EquipmentRepairHis2();
+        EquipmentRepairHis  equipmentrepairhis=new EquipmentRepairHis();
         currentDetail3=equipmentrepairhis;
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
@@ -284,7 +284,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (this.fileName != null) {
             this.createDetail();
             int seq = detailList.size() + 1;
-            EquipmentRepairFile2 equipmentrepairfile = new EquipmentRepairFile2();
+            EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
             equipmentrepairfile.setFilename(imageName);
@@ -459,11 +459,11 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         this.queryDeptname = queryDeptname;
     }
 
-    public List<EquipmentTrouble2> getEquipmentTroubleList() {
+    public List<EquipmentTrouble> getEquipmentTroubleList() {
         return equipmentTroubleList;
     }
 
-    public void setEquipmentTroubleList(List<EquipmentTrouble2> equipmentTroubleList) {
+    public void setEquipmentTroubleList(List<EquipmentTrouble> equipmentTroubleList) {
         this.equipmentTroubleList = equipmentTroubleList;
     }
 

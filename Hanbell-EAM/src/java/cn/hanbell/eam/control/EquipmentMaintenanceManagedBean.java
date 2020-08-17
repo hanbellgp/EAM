@@ -10,11 +10,11 @@ import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
-import cn.hanbell.eam.entity.EquipmentRepair2;
-import cn.hanbell.eam.entity.EquipmentRepairFile2;
-import cn.hanbell.eam.entity.EquipmentRepairSpare2;
-import cn.hanbell.eam.entity.EquipmentSpare2;
-import cn.hanbell.eam.entity.EquipmentTrouble2;
+import cn.hanbell.eam.entity.EquipmentRepair;
+import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairSpare;
+import cn.hanbell.eam.entity.EquipmentSpare;
+import cn.hanbell.eam.entity.EquipmentTrouble;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
@@ -57,7 +57,7 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "equipmentMaintenanceManagedBean")
 @SessionScoped
-public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRepair2, EquipmentRepairFile2, EquipmentRepairSpare2> {
+public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -78,10 +78,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     private String queryDeptname;
     private BigDecimal qty;
     private double maintenanceCosts;
-    private List<EquipmentTrouble2> equipmentTroubleList;
+    private List<EquipmentTrouble> equipmentTroubleList;
 
     public EquipmentMaintenanceManagedBean() {
-        super(EquipmentRepair2.class, EquipmentRepairFile2.class, EquipmentRepairSpare2.class);
+        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class);
     }
 
     //初始化数据筛选
@@ -147,7 +147,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
-            EquipmentSpare2 u = (EquipmentSpare2) event.getObject();
+            EquipmentSpare u = (EquipmentSpare) event.getObject();
             currentDetail2.setUprice(u.getUprice());
             currentDetail2.setSpareno(u.getSpareno());
             currentDetail2.setUserno(currentEntity.getServiceuser());
@@ -323,7 +323,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         if (this.fileName != null) {
             this.createDetail();
             int seq = addedDetailList.size() + 1;
-            EquipmentRepairFile2 equipmentrepairfile = new EquipmentRepairFile2();
+            EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
             equipmentrepairfile.setFilename(imageName);
@@ -369,10 +369,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             cell.setCellValue(title1[i]);
         }
 
-        List<EquipmentRepair2> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
+        List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
         int j = 1;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (EquipmentRepair2 equipmentrepair : equipmentrepairList) {
+        for (EquipmentRepair equipmentrepair : equipmentrepairList) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);
@@ -654,11 +654,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         this.queryDeptname = queryDeptname;
     }
 
-    public List<EquipmentTrouble2> getEquipmentTroubleList() {
+    public List<EquipmentTrouble> getEquipmentTroubleList() {
         return equipmentTroubleList;
     }
 
-    public void setEquipmentTroubleList(List<EquipmentTrouble2> equipmentTroubleList) {
+    public void setEquipmentTroubleList(List<EquipmentTrouble> equipmentTroubleList) {
         this.equipmentTroubleList = equipmentTroubleList;
     }
 

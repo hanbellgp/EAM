@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepairHis.findByOptdate", query = "SELECT e FROM EquipmentRepairHis e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentRepairHis.findByCfmuser", query = "SELECT e FROM EquipmentRepairHis e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentRepairHis.findByPId", query = "SELECT e FROM EquipmentRepairHis e WHERE e.pid = :pid")})
-public class EquipmentRepairHis2 extends FormDetailEntity {
+public class EquipmentRepairHis extends FormDetailEntity {
 
     @Basic(optional = false)
     @NotNull()
@@ -89,14 +89,14 @@ public class EquipmentRepairHis2 extends FormDetailEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public EquipmentRepairHis2() {
+    public EquipmentRepairHis() {
     }
 
-    public EquipmentRepairHis2(Integer id) {
+    public EquipmentRepairHis(Integer id) {
         this.id = id;
     }
 
-    public EquipmentRepairHis2(Integer id, String company, String pid, String contenct, String status) {
+    public EquipmentRepairHis(Integer id, String company, String pid, String contenct, String status) {
         this.id = id;
         this.company = company;
         this.pid = pid;
@@ -210,10 +210,10 @@ public class EquipmentRepairHis2 extends FormDetailEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentRepairHis2)) {
+        if (!(object instanceof EquipmentRepairHis)) {
             return false;
         }
-        EquipmentRepairHis2 other = (EquipmentRepairHis2) object;
+        EquipmentRepairHis other = (EquipmentRepairHis) object;
         if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }

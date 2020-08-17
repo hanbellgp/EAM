@@ -49,7 +49,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findByOptdate", query = "SELECT e FROM EquipmentSpare e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentSpare.findByCfmuser", query = "SELECT e FROM EquipmentSpare e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentSpare.findByCfmdate", query = "SELECT e FROM EquipmentSpare e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentSpare2 extends SuperEntity {
+public class EquipmentSpare extends SuperEntity {
 
     @Basic(optional = false)
     @NotNull
@@ -112,14 +112,14 @@ public class EquipmentSpare2 extends SuperEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public EquipmentSpare2() {
+    public EquipmentSpare() {
     }
 
-    public EquipmentSpare2(Integer id) {
+    public EquipmentSpare(Integer id) {
         this.id = id;
     }
 
-    public EquipmentSpare2(Integer id, String company, String sparenum, String status) {
+    public EquipmentSpare(Integer id, String company, String sparenum, String status) {
         this.id = id;
         this.company = company;
         this.sparenum = sparenum;
@@ -232,10 +232,10 @@ public class EquipmentSpare2 extends SuperEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipmentSpare2)) {
+        if (!(object instanceof EquipmentSpare)) {
             return false;
         }
-        EquipmentSpare2 other = (EquipmentSpare2) object;
+        EquipmentSpare other = (EquipmentSpare) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
