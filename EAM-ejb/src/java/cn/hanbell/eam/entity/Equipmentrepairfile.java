@@ -27,34 +27,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "equipmentrepairfile")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Equipmentrepairfile.findAll", query = "SELECT e FROM Equipmentrepairfile e")
-    , @NamedQuery(name = "Equipmentrepairfile.findById", query = "SELECT e FROM Equipmentrepairfile e WHERE e.id = :id")
-    , @NamedQuery(name = "Equipmentrepairfile.findByCompany", query = "SELECT e FROM Equipmentrepairfile e WHERE e.company = :company")
-    , @NamedQuery(name = "Equipmentrepairfile.findByPid", query = "SELECT e FROM Equipmentrepairfile e WHERE e.pid = :pid")
-    , @NamedQuery(name = "Equipmentrepairfile.findBySeq", query = "SELECT e FROM Equipmentrepairfile e WHERE e.seq = :seq")
-    , @NamedQuery(name = "Equipmentrepairfile.findByFilefrom", query = "SELECT e FROM Equipmentrepairfile e WHERE e.filefrom = :filefrom")
-    , @NamedQuery(name = "Equipmentrepairfile.findByFileno", query = "SELECT e FROM Equipmentrepairfile e WHERE e.fileno = :fileno")
-    , @NamedQuery(name = "Equipmentrepairfile.findByFilename", query = "SELECT e FROM Equipmentrepairfile e WHERE e.filename = :filename")
-    , @NamedQuery(name = "Equipmentrepairfile.findByFilepath", query = "SELECT e FROM Equipmentrepairfile e WHERE e.filepath = :filepath")
-    , @NamedQuery(name = "Equipmentrepairfile.findByFilemark", query = "SELECT e FROM Equipmentrepairfile e WHERE e.filemark = :filemark")
-    , @NamedQuery(name = "Equipmentrepairfile.findByRemark", query = "SELECT e FROM Equipmentrepairfile e WHERE e.remark = :remark")
-    , @NamedQuery(name = "Equipmentrepairfile.findByStatus", query = "SELECT e FROM Equipmentrepairfile e WHERE e.status = :status")
-    , @NamedQuery(name = "Equipmentrepairfile.findByCreator", query = "SELECT e FROM Equipmentrepairfile e WHERE e.creator = :creator")
-    , @NamedQuery(name = "Equipmentrepairfile.findByCredate", query = "SELECT e FROM Equipmentrepairfile e WHERE e.credate = :credate")
-    , @NamedQuery(name = "Equipmentrepairfile.findByOptuser", query = "SELECT e FROM Equipmentrepairfile e WHERE e.optuser = :optuser")
-    , @NamedQuery(name = "Equipmentrepairfile.findByOptdate", query = "SELECT e FROM Equipmentrepairfile e WHERE e.optdate = :optdate")
-    , @NamedQuery(name = "Equipmentrepairfile.findByCfmuser", query = "SELECT e FROM Equipmentrepairfile e WHERE e.cfmuser = :cfmuser")
-    , @NamedQuery(name = "Equipmentrepairfile.findByCfmdate", query = "SELECT e FROM Equipmentrepairfile e WHERE e.cfmdate = :cfmdate")
-    , @NamedQuery(name = "Equipmentrepairfile.findByPId", query = "SELECT e FROM Equipmentrepairfile e WHERE e.pid = :pid")
-})
-public class Equipmentrepairfile extends FormDetailEntity {
+    @NamedQuery(name = "EquipmentRepairFile.findAll", query = "SELECT e FROM EquipmentRepairFile e"),
+    @NamedQuery(name = "EquipmentRepairFile.findById", query = "SELECT e FROM EquipmentRepairFile e WHERE e.id = :id"),
+    @NamedQuery(name = "EquipmentRepairFile.findByCompany", query = "SELECT e FROM EquipmentRepairFile e WHERE e.company = :company"),
+    @NamedQuery(name = "EquipmentRepairFile.findByPid", query = "SELECT e FROM EquipmentRepairFile e WHERE e.pid = :pid"),
+    @NamedQuery(name = "EquipmentRepairFile.findBySeq", query = "SELECT e FROM EquipmentRepairFile e WHERE e.seq = :seq"),
+    @NamedQuery(name = "EquipmentRepairFile.findByFilefrom", query = "SELECT e FROM EquipmentRepairFile e WHERE e.filefrom = :filefrom"),
+    @NamedQuery(name = "EquipmentRepairFile.findByFileno", query = "SELECT e FROM EquipmentRepairFile e WHERE e.fileno = :fileno"),
+    @NamedQuery(name = "EquipmentRepairFile.findByFilename", query = "SELECT e FROM EquipmentRepairFile e WHERE e.filename = :filename"),
+    @NamedQuery(name = "EquipmentRepairFile.findByFilepath", query = "SELECT e FROM EquipmentRepairFile e WHERE e.filepath = :filepath"),
+    @NamedQuery(name = "EquipmentRepairFile.findByFilemark", query = "SELECT e FROM EquipmentRepairFile e WHERE e.filemark = :filemark"),
+    @NamedQuery(name = "EquipmentRepairFile.findByRemark", query = "SELECT e FROM EquipmentRepairFile e WHERE e.remark = :remark"),
+    @NamedQuery(name = "EquipmentRepairFile.findByStatus", query = "SELECT e FROM EquipmentRepairFile e WHERE e.status = :status"),
+    @NamedQuery(name = "EquipmentRepairFile.findByCreator", query = "SELECT e FROM EquipmentRepairFile e WHERE e.creator = :creator"),
+    @NamedQuery(name = "EquipmentRepairFile.findByCredate", query = "SELECT e FROM EquipmentRepairFile e WHERE e.credate = :credate"),
+    @NamedQuery(name = "EquipmentRepairFile.findByOptuser", query = "SELECT e FROM EquipmentRepairFile e WHERE e.optuser = :optuser"),
+    @NamedQuery(name = "EquipmentRepairFile.findByOptdate", query = "SELECT e FROM EquipmentRepairFile e WHERE e.optdate = :optdate"),
+    @NamedQuery(name = "EquipmentRepairFile.findByCfmuser", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmuser = :cfmuser"),
+    @NamedQuery(name = "EquipmentRepairFile.findByPId", query = "SELECT e FROM EquipmentRepairFile e WHERE e.pid = :pid ORDER BY e.seq"),
+    @NamedQuery(name = "EquipmentRepairFile.findByCfmdate", query = "SELECT e FROM EquipmentRepairFile e WHERE e.cfmdate = :cfmdate")})
+public class EquipmentRepairFile extends FormDetailEntity {
 
-
+   
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
+  
     @Size(max = 10)
     @Column(name = "filefrom")
     private String filefrom;
@@ -99,20 +99,21 @@ public class Equipmentrepairfile extends FormDetailEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public Equipmentrepairfile() {
+    public EquipmentRepairFile() {
     }
 
-    public Equipmentrepairfile(Integer id) {
+    public EquipmentRepairFile(Integer id) {
         this.id = id;
     }
 
-    public Equipmentrepairfile(Integer id, String company, String pid, String filename, String status) {
+    public EquipmentRepairFile(Integer id, String company, String pid, String filename, String status) {
         this.id = id;
         this.company = company;
         this.pid = pid;
         this.filename = filename;
         this.status = status;
     }
+
 
     public String getCompany() {
         return company;
@@ -122,7 +123,7 @@ public class Equipmentrepairfile extends FormDetailEntity {
         this.company = company;
     }
 
- 
+
 
     public String getFilefrom() {
         return filefrom;
@@ -235,19 +236,23 @@ public class Equipmentrepairfile extends FormDetailEntity {
         return hash;
     }
 
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Equipmentrepairfile)) {
+        if (!(object instanceof EquipmentRepairFile)) {
             return false;
         }
-        Equipmentrepairfile other = (Equipmentrepairfile) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+        EquipmentRepairFile other = (EquipmentRepairFile) object;
+          if (this.id != null && other.id != null) {
+            return this.id.equals(other.id);
+        }
+        return this.seq == other.seq;
     }
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.Equipmentrepairfile[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.EquipmentRepairFile[ id=" + id + " ]";
     }
     
 }

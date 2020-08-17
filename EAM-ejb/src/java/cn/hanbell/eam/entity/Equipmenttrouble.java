@@ -6,19 +6,12 @@
 package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.SuperEntity;
-import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,22 +24,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "equipmenttrouble")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Equipmenttrouble.findAll", query = "SELECT e FROM Equipmenttrouble e"),
-    @NamedQuery(name = "Equipmenttrouble.findById", query = "SELECT e FROM Equipmenttrouble e WHERE e.id = :id"),
-    @NamedQuery(name = "Equipmenttrouble.findByTroubleid", query = "SELECT e FROM Equipmenttrouble e WHERE e.troubleid = :troubleid"),
-    @NamedQuery(name = "Equipmenttrouble.findByTroublename", query = "SELECT e FROM Equipmenttrouble e WHERE e.troublename = :troublename"),
-    @NamedQuery(name = "Equipmenttrouble.findByPid", query = "SELECT e FROM Equipmenttrouble e WHERE e.pid = :pid"),
-    @NamedQuery(name = "Equipmenttrouble.findByRemark", query = "SELECT e FROM Equipmenttrouble e WHERE e.remark = :remark"),
-    @NamedQuery(name = "Equipmenttrouble.findByStatus", query = "SELECT e FROM Equipmenttrouble e WHERE e.status = :status"),
-    @NamedQuery(name = "Equipmenttrouble.findByCreator", query = "SELECT e FROM Equipmenttrouble e WHERE e.creator = :creator"),
-    @NamedQuery(name = "Equipmenttrouble.findByCredate", query = "SELECT e FROM Equipmenttrouble e WHERE e.credate = :credate"),
-    @NamedQuery(name = "Equipmenttrouble.findByOptuser", query = "SELECT e FROM Equipmenttrouble e WHERE e.optuser = :optuser"),
-    @NamedQuery(name = "Equipmenttrouble.findByOptdate", query = "SELECT e FROM Equipmenttrouble e WHERE e.optdate = :optdate"),
-    @NamedQuery(name = "Equipmenttrouble.findByCfmuser", query = "SELECT e FROM Equipmenttrouble e WHERE e.cfmuser = :cfmuser"),
-    @NamedQuery(name = "Equipmenttrouble.findByCfmdate", query = "SELECT e FROM Equipmenttrouble e WHERE e.cfmdate = :cfmdate")})
-public class Equipmenttrouble extends SuperEntity {
+    @NamedQuery(name = "EquipmentTrouble.findAll", query = "SELECT e FROM EquipmentTrouble e"),
+    @NamedQuery(name = "EquipmentTrouble.findById", query = "SELECT e FROM EquipmentTrouble e WHERE e.id = :id"),
+    @NamedQuery(name = "EquipmentTrouble.findByTroubleid", query = "SELECT e FROM EquipmentTrouble e WHERE e.troubleid = :troubleid"),
+    @NamedQuery(name = "EquipmentTrouble.findByTroublename", query = "SELECT e FROM EquipmentTrouble e WHERE e.troublename = :troublename"),
+    @NamedQuery(name = "EquipmentTrouble.findByPid", query = "SELECT e FROM EquipmentTrouble e WHERE e.pid = :pid"),
+    @NamedQuery(name = "EquipmentTrouble.findByRemark", query = "SELECT e FROM EquipmentTrouble e WHERE e.remark = :remark"),
+    @NamedQuery(name = "EquipmentTrouble.findByStatus", query = "SELECT e FROM EquipmentTrouble e WHERE e.status = :status"),
+    @NamedQuery(name = "EquipmentTrouble.findByCreator", query = "SELECT e FROM EquipmentTrouble e WHERE e.creator = :creator"),
+    @NamedQuery(name = "EquipmentTrouble.findByCredate", query = "SELECT e FROM EquipmentTrouble e WHERE e.credate = :credate"),
+    @NamedQuery(name = "EquipmentTrouble.findByOptuser", query = "SELECT e FROM EquipmentTrouble e WHERE e.optuser = :optuser"),
+    @NamedQuery(name = "EquipmentTrouble.findByOptdate", query = "SELECT e FROM EquipmentTrouble e WHERE e.optdate = :optdate"),
+    @NamedQuery(name = "EquipmentTrouble.findByCfmuser", query = "SELECT e FROM EquipmentTrouble e WHERE e.cfmuser = :cfmuser"),
+    @NamedQuery(name = "EquipmentTrouble.findByCfmdate", query = "SELECT e FROM EquipmentTrouble e WHERE e.cfmdate = :cfmdate")})
+public class EquipmentTrouble  extends SuperEntity {
 
-  
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -63,23 +56,23 @@ public class Equipmenttrouble extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+  
 
-
-    public Equipmenttrouble() {
+    public EquipmentTrouble() {
     }
 
-    public Equipmenttrouble(Integer id) {
+    public EquipmentTrouble(Integer id) {
         this.id = id;
     }
 
-    public Equipmenttrouble(Integer id, String troubleid, String troublename, String status) {
+    public EquipmentTrouble(Integer id, String troubleid, String troublename, String status) {
         this.id = id;
         this.troubleid = troubleid;
         this.troublename = troublename;
         this.status = status;
     }
 
-   
+ 
 
     public String getTroubleid() {
         return troubleid;
@@ -125,16 +118,16 @@ public class Equipmenttrouble extends SuperEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Equipmenttrouble)) {
+        if (!(object instanceof EquipmentTrouble)) {
             return false;
         }
-        Equipmenttrouble other = (Equipmenttrouble) object;
+        EquipmentTrouble other = (EquipmentTrouble) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.Equipmenttrouble[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.EquipmentTrouble[ id=" + id + " ]";
     }
     
 }
