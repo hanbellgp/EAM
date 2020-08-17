@@ -6,7 +6,6 @@
 package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.FormDetailEntity;
-import com.lightshell.comm.SuperDetailEntity;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -29,27 +28,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "equipmentrepairspare")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Equipmentrepairspare.findAll", query = "SELECT e FROM Equipmentrepairspare e")
-    , @NamedQuery(name = "Equipmentrepairspare.findById", query = "SELECT e FROM Equipmentrepairspare e WHERE e.id = :id")
-    , @NamedQuery(name = "Equipmentrepairspare.findByCompany", query = "SELECT e FROM Equipmentrepairspare e WHERE e.company = :company")
-    , @NamedQuery(name = "Equipmentrepairspare.findByPid", query = "SELECT e FROM Equipmentrepairspare e WHERE e.pid = :pid")
-    , @NamedQuery(name = "Equipmentrepairspare.findBySeq", query = "SELECT e FROM Equipmentrepairspare e WHERE e.seq = :seq")
-    , @NamedQuery(name = "Equipmentrepairspare.findBySpareno", query = "SELECT e FROM Equipmentrepairspare e WHERE e.spareno = :spareno")
-    , @NamedQuery(name = "Equipmentrepairspare.findBySparenum", query = "SELECT e FROM Equipmentrepairspare e WHERE e.sparenum = :sparenum")
-    , @NamedQuery(name = "Equipmentrepairspare.findByQty", query = "SELECT e FROM Equipmentrepairspare e WHERE e.qty = :qty")
-    , @NamedQuery(name = "Equipmentrepairspare.findByUprice", query = "SELECT e FROM Equipmentrepairspare e WHERE e.uprice = :uprice")
-    , @NamedQuery(name = "Equipmentrepairspare.findByUserno", query = "SELECT e FROM Equipmentrepairspare e WHERE e.userno = :userno")
-    , @NamedQuery(name = "Equipmentrepairspare.findByUserdate", query = "SELECT e FROM Equipmentrepairspare e WHERE e.userdate = :userdate")
-    , @NamedQuery(name = "Equipmentrepairspare.findByRemark", query = "SELECT e FROM Equipmentrepairspare e WHERE e.remark = :remark")
-    , @NamedQuery(name = "Equipmentrepairspare.findByStatus", query = "SELECT e FROM Equipmentrepairspare e WHERE e.status = :status")
-    , @NamedQuery(name = "Equipmentrepairspare.findByCreator", query = "SELECT e FROM Equipmentrepairspare e WHERE e.creator = :creator")
-    , @NamedQuery(name = "Equipmentrepairspare.findByCredate", query = "SELECT e FROM Equipmentrepairspare e WHERE e.credate = :credate")
-    , @NamedQuery(name = "Equipmentrepairspare.findByOptuser", query = "SELECT e FROM Equipmentrepairspare e WHERE e.optuser = :optuser")
-    , @NamedQuery(name = "Equipmentrepairspare.findByOptdate", query = "SELECT e FROM Equipmentrepairspare e WHERE e.optdate = :optdate")
-    , @NamedQuery(name = "Equipmentrepairspare.findByCfmuser", query = "SELECT e FROM Equipmentrepairspare e WHERE e.cfmuser = :cfmuser")
-    , @NamedQuery(name = "Equipmentrepairspare.findByCfmdate", query = "SELECT e FROM Equipmentrepairspare e WHERE e.cfmdate = :cfmdate")
-    ,@NamedQuery(name = "Equipmentrepairspare.findByPId", query = "SELECT e FROM Equipmentrepairspare e WHERE e.pid = :pid ORDER BY e.seq")})
-public class Equipmentrepairspare extends FormDetailEntity {
+    @NamedQuery(name = "EquipmentRepairSpare.findAll", query = "SELECT e FROM EquipmentRepairSpare e")
+    , @NamedQuery(name = "EquipmentRepairSpare.findById", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.id = :id")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByCompany", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.company = :company")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByPid", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.pid = :pid")
+    , @NamedQuery(name = "EquipmentRepairSpare.findBySeq", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.seq = :seq")
+    , @NamedQuery(name = "EquipmentRepairSpare.findBySpareno", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.spareno = :spareno")
+    , @NamedQuery(name = "EquipmentRepairSpare.findBySparenum", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.sparenum = :sparenum")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByQty", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.qty = :qty")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByUprice", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.uprice = :uprice")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByUserno", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.userno = :userno")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByUserdate", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.userdate = :userdate")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByRemark", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.remark = :remark")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByStatus", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.status = :status")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByCreator", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.creator = :creator")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByCredate", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.credate = :credate")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByOptuser", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.optuser = :optuser")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByOptdate", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.optdate = :optdate")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByCfmuser", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.cfmuser = :cfmuser")
+    , @NamedQuery(name = "EquipmentRepairSpare.findByCfmdate", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.cfmdate = :cfmdate")
+    ,@NamedQuery(name = "EquipmentRepairSpare.findByPId", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.pid = :pid ORDER BY e.seq")})
+public class EquipmentRepairSpare extends FormDetailEntity {
 
     @Basic(optional = false)
     @NotNull
@@ -102,14 +101,14 @@ public class Equipmentrepairspare extends FormDetailEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
 
-    public Equipmentrepairspare() {
+    public EquipmentRepairSpare() {
     }
 
-    public Equipmentrepairspare(Integer id) {
+    public EquipmentRepairSpare(Integer id) {
         this.id = id;
     }
 
-    public Equipmentrepairspare(Integer id, String company,  String sparenum, String status) {
+    public EquipmentRepairSpare(Integer id, String company,  String sparenum, String status) {
         this.id = id;
         this.company = company;
         this.sparenum = sparenum;
@@ -252,10 +251,10 @@ public class Equipmentrepairspare extends FormDetailEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Equipmentrepairspare)) {
+        if (!(object instanceof EquipmentRepairSpare)) {
             return false;
         }
-        Equipmentrepairspare other = (Equipmentrepairspare) object;
+        EquipmentRepairSpare other = (EquipmentRepairSpare) object;
           if (this.id != null && other.id != null) {
             return this.id.equals(other.id);
         }
