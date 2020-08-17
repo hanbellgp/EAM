@@ -6,8 +6,8 @@
 package cn.hanbell.eam.query;
 
 import cn.hanbell.eam.ejb.EquipmentSpareBean;
-import cn.hanbell.eam.entity.Equipmentspare;
-import cn.hanbell.eam.lazy.EquipmentspareModel;
+import cn.hanbell.eam.entity.EquipmentSpare;
+import cn.hanbell.eam.lazy.EquipmentSpareModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -20,15 +20,15 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean(name = "euipmentspareQueryBean")
 @ViewScoped
-public class EquipmentspareQueryBean extends SuperQueryBean<Equipmentspare> {
+public class EquipmentSpareQueryBean extends SuperQueryBean<EquipmentSpare> {
 
     @EJB
     private EquipmentSpareBean equipmentspareBean;
     private String querySparenum;
     private String querySparedesc;
 
-    public EquipmentspareQueryBean() {
-        super(Equipmentspare.class);
+    public EquipmentSpareQueryBean() {
+        super(EquipmentSpare.class);
     }
 
     public void closeMultiSelect() {
@@ -42,7 +42,7 @@ public class EquipmentspareQueryBean extends SuperQueryBean<Equipmentspare> {
     @Override
     public void init() {
         superEJB = equipmentspareBean;
-        model = new EquipmentspareModel(equipmentspareBean, userManagedBean);
+        model = new EquipmentSpareModel(equipmentspareBean, userManagedBean);
         super.init();
     }
 

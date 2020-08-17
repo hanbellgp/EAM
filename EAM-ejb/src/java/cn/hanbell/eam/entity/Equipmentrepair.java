@@ -31,58 +31,59 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "equipmentrepair")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Equipmentrepair.findAll", query = "SELECT e FROM Equipmentrepair e")
-    , @NamedQuery(name = "Equipmentrepair.findById", query = "SELECT e FROM Equipmentrepair e WHERE e.id = :id")
-    , @NamedQuery(name = "Equipmentrepair.findByCompany", query = "SELECT e FROM Equipmentrepair e WHERE e.company = :company")
-    , @NamedQuery(name = "Equipmentrepair.findByFormid", query = "SELECT e FROM Equipmentrepair e WHERE e.formid = :formid")
-    , @NamedQuery(name = "Equipmentrepair.findByItemno", query = "SELECT e FROM Equipmentrepair e WHERE e.itemno = :itemno")
-    , @NamedQuery(name = "Equipmentrepair.findByAssetno", query = "SELECT e FROM Equipmentrepair e WHERE e.assetno = :assetno")
-    , @NamedQuery(name = "Equipmentrepair.findByFormdate", query = "SELECT e FROM Equipmentrepair e WHERE e.formdate = :formdate")
-    , @NamedQuery(name = "Equipmentrepair.findByRepairuser", query = "SELECT e FROM Equipmentrepair e WHERE e.repairuser = :repairuser")
-    , @NamedQuery(name = "Equipmentrepair.findByRepairusername", query = "SELECT e FROM Equipmentrepair e WHERE e.repairusername = :repairusername")
-    , @NamedQuery(name = "Equipmentrepair.findByTroublefrom", query = "SELECT e FROM Equipmentrepair e WHERE e.troublefrom = :troublefrom")
-    , @NamedQuery(name = "Equipmentrepair.findByServiceuser", query = "SELECT e FROM Equipmentrepair e WHERE e.serviceuser = :serviceuser")
-    , @NamedQuery(name = "Equipmentrepair.findByServiceusername", query = "SELECT e FROM Equipmentrepair e WHERE e.serviceusername = :serviceusername")
-    , @NamedQuery(name = "Equipmentrepair.findByServicearrivetime", query = "SELECT e FROM Equipmentrepair e WHERE e.servicearrivetime = :servicearrivetime")
-    , @NamedQuery(name = "Equipmentrepair.findByRstatus", query = "SELECT e FROM Equipmentrepair e WHERE e.rstatus = :rstatus")
-    , @NamedQuery(name = "Equipmentrepair.findByHitchdesc", query = "SELECT e FROM Equipmentrepair e WHERE e.hitchdesc = :hitchdesc")
-    , @NamedQuery(name = "Equipmentrepair.findByHitchtype", query = "SELECT e FROM Equipmentrepair e WHERE e.hitchtype = :hitchtype")
-    , @NamedQuery(name = "Equipmentrepair.findByRepairmethod", query = "SELECT e FROM Equipmentrepair e WHERE e.repairmethod = :repairmethod")
-    , @NamedQuery(name = "Equipmentrepair.findByExcepttime", query = "SELECT e FROM Equipmentrepair e WHERE e.excepttime = :excepttime")
-    , @NamedQuery(name = "Equipmentrepair.findByCompletetime", query = "SELECT e FROM Equipmentrepair e WHERE e.completetime = :completetime")
-    , @NamedQuery(name = "Equipmentrepair.findByAbrasehitch", query = "SELECT e FROM Equipmentrepair e WHERE e.abrasehitch = :abrasehitch")
-    , @NamedQuery(name = "Equipmentrepair.findByHitchsort1", query = "SELECT e FROM Equipmentrepair e WHERE e.hitchsort1 = :hitchsort1")
-    , @NamedQuery(name = "Equipmentrepair.findByHitchsort2", query = "SELECT e FROM Equipmentrepair e WHERE e.hitchsort2 = :hitchsort2")
-    , @NamedQuery(name = "Equipmentrepair.findByHitchreason", query = "SELECT e FROM Equipmentrepair e WHERE e.hitchreason = :hitchreason")
-    , @NamedQuery(name = "Equipmentrepair.findByRepairprocess", query = "SELECT e FROM Equipmentrepair e WHERE e.repairprocess = :repairprocess")
-    , @NamedQuery(name = "Equipmentrepair.findByMeasure", query = "SELECT e FROM Equipmentrepair e WHERE e.measure = :measure")
-    , @NamedQuery(name = "Equipmentrepair.findByRepaircost", query = "SELECT e FROM Equipmentrepair e WHERE e.repaircost = :repaircost")
-    , @NamedQuery(name = "Equipmentrepair.findByRemark", query = "SELECT e FROM Equipmentrepair e WHERE e.remark = :remark")
-    , @NamedQuery(name = "Equipmentrepair.findByStatus", query = "SELECT e FROM Equipmentrepair e WHERE e.status = :status")
-    , @NamedQuery(name = "Equipmentrepair.findByCreator", query = "SELECT e FROM Equipmentrepair e WHERE e.creator = :creator")
-    , @NamedQuery(name = "Equipmentrepair.findByCredate", query = "SELECT e FROM Equipmentrepair e WHERE e.credate = :credate")
-    , @NamedQuery(name = "Equipmentrepair.findByOptuser", query = "SELECT e FROM Equipmentrepair e WHERE e.optuser = :optuser")
-    , @NamedQuery(name = "Equipmentrepair.findByOptdate", query = "SELECT e FROM Equipmentrepair e WHERE e.optdate = :optdate")
-    , @NamedQuery(name = "Equipmentrepair.findByCfmuser", query = "SELECT e FROM Equipmentrepair e WHERE e.cfmuser = :cfmuser")
-    , @NamedQuery(name = "Equipmentrepair.findByCfmdate", query = "SELECT e FROM Equipmentrepair e WHERE e.cfmdate = :cfmdate")})
-public class Equipmentrepair extends FormEntity {
+    @NamedQuery(name = "EquipmentRepair.findAll", query = "SELECT e FROM EquipmentRepair e"),
+    @NamedQuery(name = "EquipmentRepair.findById", query = "SELECT e FROM EquipmentRepair e WHERE e.id = :id"),
+    @NamedQuery(name = "EquipmentRepair.findByCompany", query = "SELECT e FROM EquipmentRepair e WHERE e.company = :company"),
+    @NamedQuery(name = "EquipmentRepair.findByFormid", query = "SELECT e FROM EquipmentRepair e WHERE e.formid = :formid"),
+    @NamedQuery(name = "EquipmentRepair.findByItemno", query = "SELECT e FROM EquipmentRepair e WHERE e.itemno = :itemno"),
+    @NamedQuery(name = "EquipmentRepair.findByAssetno", query = "SELECT e FROM EquipmentRepair e WHERE e.assetno = :assetno"),
+    @NamedQuery(name = "EquipmentRepair.findByFormdate", query = "SELECT e FROM EquipmentRepair e WHERE e.formdate = :formdate"),
+    @NamedQuery(name = "EquipmentRepair.findByRepairuser", query = "SELECT e FROM EquipmentRepair e WHERE e.repairuser = :repairuser"),
+    @NamedQuery(name = "EquipmentRepair.findByRepairusername", query = "SELECT e FROM EquipmentRepair e WHERE e.repairusername = :repairusername"),
+    @NamedQuery(name = "EquipmentRepair.findByTroublefrom", query = "SELECT e FROM EquipmentRepair e WHERE e.troublefrom = :troublefrom"),
+    @NamedQuery(name = "EquipmentRepair.findByServiceuser", query = "SELECT e FROM EquipmentRepair e WHERE e.serviceuser = :serviceuser"),
+    @NamedQuery(name = "EquipmentRepair.findByServiceusername", query = "SELECT e FROM EquipmentRepair e WHERE e.serviceusername = :serviceusername"),
+    @NamedQuery(name = "EquipmentRepair.findByServicearrivetime", query = "SELECT e FROM EquipmentRepair e WHERE e.servicearrivetime = :servicearrivetime"),
+    @NamedQuery(name = "EquipmentRepair.findByRstatus", query = "SELECT e FROM EquipmentRepair e WHERE e.rstatus = :rstatus"),
+    @NamedQuery(name = "EquipmentRepair.findByHitchdesc", query = "SELECT e FROM EquipmentRepair e WHERE e.hitchdesc = :hitchdesc"),
+    @NamedQuery(name = "EquipmentRepair.findByHitchtype", query = "SELECT e FROM EquipmentRepair e WHERE e.hitchtype = :hitchtype"),
+    @NamedQuery(name = "EquipmentRepair.findByRepairmethod", query = "SELECT e FROM EquipmentRepair e WHERE e.repairmethod = :repairmethod"),
+    @NamedQuery(name = "EquipmentRepair.findByExcepttime", query = "SELECT e FROM EquipmentRepair e WHERE e.excepttime = :excepttime"),
+    @NamedQuery(name = "EquipmentRepair.findByCompletetime", query = "SELECT e FROM EquipmentRepair e WHERE e.completetime = :completetime"),
+    @NamedQuery(name = "EquipmentRepair.findByAbrasehitch", query = "SELECT e FROM EquipmentRepair e WHERE e.abrasehitch = :abrasehitch"),
+    @NamedQuery(name = "EquipmentRepair.findByHitchsort1", query = "SELECT e FROM EquipmentRepair e WHERE e.hitchsort1 = :hitchsort1"),
+    @NamedQuery(name = "EquipmentRepair.findByHitchsort2", query = "SELECT e FROM EquipmentRepair e WHERE e.hitchsort2 = :hitchsort2"),
+    @NamedQuery(name = "EquipmentRepair.findByHitchreason", query = "SELECT e FROM EquipmentRepair e WHERE e.hitchreason = :hitchreason"),
+    @NamedQuery(name = "EquipmentRepair.findByRepairprocess", query = "SELECT e FROM EquipmentRepair e WHERE e.repairprocess = :repairprocess"),
+    @NamedQuery(name = "EquipmentRepair.findByMeasure", query = "SELECT e FROM EquipmentRepair e WHERE e.measure = :measure"),
+    @NamedQuery(name = "EquipmentRepair.findByRepaircost", query = "SELECT e FROM EquipmentRepair e WHERE e.repaircost = :repaircost"),
+    @NamedQuery(name = "EquipmentRepair.findByRemark", query = "SELECT e FROM EquipmentRepair e WHERE e.remark = :remark"),
+    @NamedQuery(name = "EquipmentRepair.findByStatus", query = "SELECT e FROM EquipmentRepair e WHERE e.status = :status"),
+    @NamedQuery(name = "EquipmentRepair.findByCreator", query = "SELECT e FROM EquipmentRepair e WHERE e.creator = :creator"),
+    @NamedQuery(name = "EquipmentRepair.findByCredate", query = "SELECT e FROM EquipmentRepair e WHERE e.credate = :credate"),
+    @NamedQuery(name = "EquipmentRepair.findByOptuser", query = "SELECT e FROM EquipmentRepair e WHERE e.optuser = :optuser"),
+    @NamedQuery(name = "EquipmentRepair.findByOptdate", query = "SELECT e FROM EquipmentRepair e WHERE e.optdate = :optdate"),
+    @NamedQuery(name = "EquipmentRepair.findByCfmuser", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmuser = :cfmuser"),
+    @NamedQuery(name = "EquipmentRepair.findByCfmdate", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmdate = :cfmdate")})
+public class EquipmentRepair extends FormEntity {
 
+ 
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-
     @JoinColumn(name = "itemno", referencedColumnName = "itemno")
     @ManyToOne
     private AssetCard itemno;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "assetno")
     private String assetno;
-
+    @Column(name = "formdate")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date formdate;
     @Size(max = 45)
     @Column(name = "repairuser")
     private String repairuser;
@@ -135,7 +136,7 @@ public class Equipmentrepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "repairprocess")
     private String repairprocess;
-    @Size(max = 200)
+    @Size(max = 2000)
     @Column(name = "measure")
     private String measure;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -144,22 +145,21 @@ public class Equipmentrepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-    @Transient
-    private String filemark;
-    @Transient
+
+   @Transient
     private String maintenanceTime;
     @Transient
     private String contactTime;
     @Transient
     private String downtime;
-    public Equipmentrepair() {
+    public EquipmentRepair() {
     }
 
-    public Equipmentrepair(Integer id) {
+    public EquipmentRepair(Integer id) {
         this.id = id;
     }
 
-    public Equipmentrepair(Integer id, String company, String formid, String assetno, String troublefrom, String status) {
+    public EquipmentRepair(Integer id, String company, String formid, String assetno, String troublefrom, String status) {
         this.id = id;
         this.company = company;
         this.formid = formid;
@@ -167,6 +167,8 @@ public class Equipmentrepair extends FormEntity {
         this.troublefrom = troublefrom;
         this.status = status;
     }
+
+ 
 
     public String getCompany() {
         return company;
@@ -184,7 +186,9 @@ public class Equipmentrepair extends FormEntity {
         this.itemno = itemno;
     }
 
-  
+ 
+
+
 
     public String getAssetno() {
         return assetno;
@@ -193,6 +197,8 @@ public class Equipmentrepair extends FormEntity {
     public void setAssetno(String assetno) {
         this.assetno = assetno;
     }
+
+   
 
     public String getRepairuser() {
         return repairuser;
@@ -354,13 +360,7 @@ public class Equipmentrepair extends FormEntity {
         this.remark = remark;
     }
 
-    public String getFilemark() {
-        return filemark;
-    }
 
-    public void setFilemark(String filemark) {
-        this.filemark = filemark;
-    }
 
     public String getMaintenanceTime() {
         return maintenanceTime;
@@ -396,16 +396,16 @@ public class Equipmentrepair extends FormEntity {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Equipmentrepair)) {
+        if (!(object instanceof EquipmentRepair)) {
             return false;
         }
-        Equipmentrepair other = (Equipmentrepair) object;
+        EquipmentRepair other = (EquipmentRepair) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
     @Override
     public String toString() {
-        return "cn.hanbell.eam.entity.Equipmentrepair[ id=" + id + " ]";
+        return "cn.hanbell.eam.entity.EquipmentRepair[ id=" + id + " ]";
     }
-
+    
 }
