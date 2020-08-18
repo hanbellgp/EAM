@@ -13,11 +13,11 @@
                 <p:row>
                     <p:column><h:outputLabel value="设备编号" for="querySparenum" /></p:column>
                     <p:column>
-                        <p:inputText id="querySparenum" value="#{euipmentspareQueryBean.querySparenum}" title="设备编号" />
+                        <p:inputText id="querySparenum" value="#{equipmentSpareQueryBean.querySparenum}" title="设备编号" />
                     </p:column>
                     <p:column><h:outputLabel value="设备名称" for="querySparedesc" /></p:column>
                     <p:column>
-                        <p:inputText id="querySparedesc" value="#{euipmentspareQueryBean.querySparedesc}" title="设备名称" />
+                        <p:inputText id="querySparedesc" value="#{equipmentSpareQueryBean.querySparedesc}" title="设备名称" />
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -25,16 +25,16 @@
                 <f:facet name="left">
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{euipmentspareQueryBean.reset()}"  icon="ui-icon-refresh"
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{equipmentSpareQueryBean.reset()}"  icon="ui-icon-refresh"
                                      update=":formList"/>
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{euipmentspareQueryBean.query()}"  icon="ui-icon-search"
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentSpareQueryBean.query()}"  icon="ui-icon-search"
                                      update=":formList"/>
-                    <p:commandButton id="btnSelected" value="确定" actionListener="#{euipmentspareQueryBean.closeDialog()}" icon="ui-icon-plus" />
+                    <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentSpareQueryBean.closeDialog()}" icon="ui-icon-plus" />
                 </f:facet>
             </p:toolbar>
-            <p:dataTable value="#{euipmentspareQueryBean.model}" var="item" tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="10"
+            <p:dataTable value="#{equipmentSpareQueryBean.model}" var="item" tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="10,15,30"  lazy="true" selectionMode="single" selection="#{euipmentspareQueryBean.currentEntity}" rowKey="#{item.id}" >
+                         rowsPerPageTemplate="10,15,30"  lazy="true" selectionMode="single" selection="#{equipmentSpareQueryBean.currentEntity}" rowKey="#{item.id}" >
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
                 <p:column styleClass="Wid20">

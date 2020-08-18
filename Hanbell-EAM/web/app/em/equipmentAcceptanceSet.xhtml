@@ -12,7 +12,7 @@
 
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="right">
-                    <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentAcceptanceManagedBean.handleApproval()}" icon="ui-icon-plus"  process="@this,:formOne:plgHead" update=":formOne:plgHead"  />
+                    <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentAcceptanceManagedBean.confirmApproval()}" icon="ui-icon-plus"  process="@this,:formOne:plgHead" update=":formOne:plgHead"  />
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
@@ -49,8 +49,8 @@
                     </p:column>
                     <p:column styleClass="Wid10">
                         <p:selectOneMenu id="contenct" value="#{equipmentAcceptanceManagedBean.currentDetail3.contenct}" title="troublefrom" >
-                            <f:selectItem itemLabel="符合" itemValue="符合"/>
-                            <f:selectItem itemLabel="不符合" itemValue="不符合"/>
+                            <f:selectItem itemLabel="合格" itemValue="合格"/>
+                            <f:selectItem itemLabel="不合格" itemValue="不合格"/>
                         </p:selectOneMenu>
                     </p:column>
                     <p:column styleClass="Wid10">
