@@ -76,7 +76,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     private String maintenanceSupervisor;
     private String queryServiceuser;
     private String queryDeptname;
-    private BigDecimal qty;
+
     private double maintenanceCosts;
     private List<EquipmentTrouble> equipmentTroubleList;
 
@@ -106,8 +106,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     public void saveAcceptance() {
         currentEntity.setRstatus("40");//更新状态
         createDetail();
-
         super.update();//To change body of generated methods, choose Tools | Templates.
+       
     }
 
     //作废
@@ -170,11 +170,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             showErrorMsg("Error", "请选择备件");
             return;
         }
-        currentDetail2.setQty(qty.intValue());
         currentDetail2.setPid(currentEntity.getFormid());
         currentDetail2.setCompany(currentEntity.getCompany());
-        currentDetail2.setStatus("Y");
-
+        currentDetail2.setStatus("N");
         super.doConfirmDetail2();
         getPartsCost();
     }
@@ -630,14 +628,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         this.maintenanceSupervisor = maintenanceSupervisor;
     }
 
-    public BigDecimal getQty() {
-        return qty;
-    }
-
-    public void setQty(BigDecimal qty) {
-        this.qty = qty;
-    }
-
+ 
     public String getQueryServiceuser() {
         return queryServiceuser;
     }
