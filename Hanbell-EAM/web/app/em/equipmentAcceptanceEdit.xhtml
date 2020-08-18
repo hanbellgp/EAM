@@ -15,7 +15,8 @@
                     <p:button id="btnReturn" value="返回" outcome="equipmentAcceptance" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentAcceptanceManagedBean.saveAcceptance()}" icon="ui-icon-save"  update="plgHead"/>
+                     <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentAcceptanceManagedBean.saveAcceptance()}" icon="ui-icon-save"
+                                     process="@this,plgHead,plgQuery" update="formOne"/>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
@@ -210,7 +211,7 @@
                             <p:column styleClass="Wid30">
                                 <p:inputText id="spareno" value="#{equipmentAcceptanceManagedBean.currentDetail2.spareno}" title="spareno" styleClass="inputWithButton"
                                              required="true" requiredMessage="请输入品号" readonly="true"/>
-                                <p:commandButton id="btnAssetItemSelect" actionListener="#{equipmentAcceptanceManagedBean.openDialog('equipmentspareSelect')}" icon="ui-icon-extlink" process="@this" >
+                                <p:commandButton id="btnAssetItemSelect" actionListener="#{equipmentAcceptanceManagedBean.openDialog('equipmentSpareSelect')}" icon="ui-icon-extlink" process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{equipmentAcceptanceManagedBean.handleDialogReturnWhenDetailEdit}" update="sparenum,uprice,spareno" />
                                 </p:commandButton>
                             </p:column>
@@ -220,13 +221,11 @@
                             </p:column>
                         </p:row>
                         <p:row>
-
-
-                            <p:column><p:outputLabel value="数量" for="qty" /></p:column>
+                            
+                              <p:column><p:outputLabel value="数量" for="qty" /></p:column>
                             <p:column>
-                                <p:spinner id="qty" value="#{equipmentAcceptanceManagedBean.qty}" title="Qty" min="1"  max="20"
+                                <p:spinner id="qty" value="#{equipmentAcceptanceManagedBean.currentDetail2.qty}" title="Qty" min="1" max="20"
                                            required="true" requiredMessage="请输入数量"/>
-
                             </p:column>
                             <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
                             <p:column>

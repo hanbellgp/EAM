@@ -84,7 +84,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
-        
+
         queryState = "ALL";
         queryServiceuser = getUserName(userManagedBean.getUserid());
         model.getFilterFields().put("rstatus", queryState);
@@ -92,13 +92,6 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
         model.getSortFields().put("credate", "DESC");
         super.init();
-    }
-
-//保存验收数据
-    public void saveAcceptance() {
-        currentEntity.setRstatus("40");//更新状态
-        createDetail();
-        super.update();//To change body of generated methods, choose Tools | Templates.
     }
 
 //选择备件数据处理
@@ -121,18 +114,32 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         getPartsCost();
     }
 
+
+    //保存验收数据
+    public void saveAcceptance() {
+
+      
+        createDetail();
+        super.update();//To change body of generated methods, choose Tools | Templates.
+        addedDetailList2.clear();
+    }
+
     //选中备件确认时检查及处理
     @Override
     public void doConfirmDetail2() {
+        if (currentDetail2 == null) {
+            return;
+        }
         if (currentDetail2.getSpareno() == null) {
             showErrorMsg("Error", "请选择备件");
             return;
         }
-        currentDetail2.setQty(qty.intValue());
-        currentDetail2.setPid(currentEntity.getFormid());
+         if (currentDetail2.getQty()<=0) {
+            showErrorMsg("Error", "请输入数量");
+            return;
+        }
         currentDetail2.setCompany(currentEntity.getCompany());
-        currentDetail2.setStatus("Y");
-
+        currentDetail2.setStatus("N");
         super.doConfirmDetail2();
         getPartsCost();
     }
@@ -164,6 +171,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         equipmentTroubleList = equipmentTroubleBean.findAll();
         getPartsCost();
+
         return super.edit(path);
 
     }
@@ -182,7 +190,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
-          String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         getPartsCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -196,7 +204,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     }
 //审批前检查数据是否可以审批
 
-    public void approvalCheck(String view) {
+    public void approvalCheck(String view) throws Exception {
+
         if (Integer.parseInt(currentEntity.getRstatus()) < 40) {
             showErrorMsg("Error", "该条数据未验收，不能审批");
             return;
@@ -213,25 +222,24 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         // return;
         // }
         //获取维修课长
-        EquipmentRepairHis  equipmentrepairhis=new EquipmentRepairHis();
-        currentDetail3=equipmentrepairhis;
+
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
 
+        createDetail3();
         super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
     }
 
-    //审批
-    public void approval() {
-        if (currentDetail3.getContenct() != null) {
-            currentDetail3.setCompany(userManagedBean.getCompany());
-            currentDetail3.setStatus("N");
-            currentDetail3.setContenct("符合");
-            currentDetail3.setPid(currentEntity.getFormid());
-        }
+    //确认审批
+    public void confirmApproval() {
 
+        currentDetail3.setCredate(getDate());
+        currentDetail3.setCompany(userManagedBean.getCompany());
+        currentDetail3.setStatus("N");
+        currentEntity.setRstatus("50");
+        super.doConfirmDetail3();
         super.update();
-        closeDialog();
+
     }
 //获取零件费用
 
@@ -294,7 +302,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             equipmentrepairfile.setPid(currentEntity.getFormid());
             detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
-            super.doConfirmDetail();
+
         }
     }
 
