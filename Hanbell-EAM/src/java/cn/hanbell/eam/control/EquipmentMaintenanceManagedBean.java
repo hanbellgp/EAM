@@ -7,18 +7,21 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentTrouble;
+import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
-import cn.hanbell.eam.web.FormMulti2Bean;
+import cn.hanbell.eam.web.FormMulti3Bean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
@@ -57,7 +60,7 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "equipmentMaintenanceManagedBean")
 @SessionScoped
-public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare> {
+public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -71,17 +74,18 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
     private EquipmentTroubleBean equipmentTroubleBean;
     @EJB
     private SysCodeBean sysCodeBean;
+    @EJB
+    protected EquipmentRepairHisBean equipmentRepairHisBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
     private String queryServiceuser;
     private String queryDeptname;
-
     private double maintenanceCosts;
     private List<EquipmentTrouble> equipmentTroubleList;
 
     public EquipmentMaintenanceManagedBean() {
-        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class);
+        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
     }
 
     //初始化数据筛选
@@ -92,22 +96,31 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
+        detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
         queryServiceuser = getUserName(userManagedBean.getUserid());
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
         model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
         model.getSortFields().put("credate", "DESC");
-
         super.init();
     }
 
 //保存验收数据
     public void saveAcceptance() {
-        currentEntity.setRstatus("40");//更新状态
+        if (currentDetail3 != null) {
+            currentDetail3.setCompany(userManagedBean.getCompany());
+            currentDetail3.setUserno(userManagedBean.getUserid());
+            currentDetail3.setStatus("N");
+            currentDetail3.setContenct("发起验收");
+            currentDetail3.setPid(currentEntity.getFormid());
+            currentDetail3.setCredate(getDate());
+            doConfirmDetail3();
+        }
         createDetail();
+        currentEntity.setRstatus("40");//更新状态
         super.update();//To change body of generated methods, choose Tools | Templates.
-       
+
     }
 
     //作废
@@ -118,6 +131,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         }
         if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
             showErrorMsg("Error", "该单据不能作废！");
+            return;
+        }
+        if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "只有对应的维修人才能作废！");
             return;
         }
         currentEntity.setStatus("N");//简化查询条件,此处不再提供修改状态(M)
@@ -136,6 +153,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             showErrorMsg("Error", "维修人员未到达，维修未完成不能记录维修过程！");
             return "";
         }
+        if (Integer.parseInt(currentEntity.getRstatus()) >= 30) {
+            showErrorMsg("Error", "该单据已记录过维修过程！");
+            return "";
+        }
         if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
             showErrorMsg("Error", "只有对应的维修人员才能填写维修过程！");
             return "";
@@ -151,8 +172,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             currentDetail2.setUprice(u.getUprice());
             currentDetail2.setSpareno(u.getSpareno());
             currentDetail2.setUserno(currentEntity.getServiceuser());
-            currentDetail2.setSparenum(u.getSparenum());
+            currentDetail2.setSparenum(u);
             currentDetail2.setUserdate(getDate());
+            currentDetail2.setUnit(u.getUnit());
+            currentDetail2.setBrand(u.getBrand());
+            
         }
     }
 
@@ -170,11 +194,15 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             showErrorMsg("Error", "请选择备件");
             return;
         }
+        if (currentDetail2.getQty().doubleValue() <= 0) {
+            showErrorMsg("Error", "输入的数量必须大于0");
+            return;
+        }
         currentDetail2.setPid(currentEntity.getFormid());
         currentDetail2.setCompany(currentEntity.getCompany());
         currentDetail2.setStatus("N");
         super.doConfirmDetail2();
-        getPartsCost();
+        currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
     }
 
     //保存时更新状态
@@ -191,14 +219,18 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
             return;
         }
         if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
-            showErrorMsg("Error", "该单据不能转派");
+            showErrorMsg("Error", "该单据已维修完成,不能转派");
             return;
         }
-        if (currentEntity.getServiceuser() == null ? userManagedBean.getUserid() != null : !currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有维修人才能转派单据");
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        String userId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        if (currentEntity.getServiceuser().equals(userManagedBean.getUserid()) || userManagedBean.getUserid().equals(userId)) {
+            super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
+        } else {
+            showErrorMsg("Error", "只有对应的维修人或维修课长才能转派单据");
             return;
         }
-        super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     //转派单据
@@ -219,15 +251,20 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
                 return "";
             }
         }
-        if (Integer.parseInt(currentEntity.getRstatus())<30) {
+        if (Integer.parseInt(currentEntity.getRstatus()) < 30) {
             showErrorMsg("Error", "只有维修完成,才能发起验收单");
             return "";
         }
-          if (Integer.parseInt(currentEntity.getRstatus())>30) {
+        if (Integer.parseInt(currentEntity.getRstatus()) > 30) {
             showErrorMsg("Error", "该单据已发起过验收单");
             return "";
         }
+        if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "只有该单据对应的维修人，才能发起验收");
+            return "";
+        }
         addedDetailList.clear();
+        addedDetailList2.clear();
         //获取联络时间
         currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
 
@@ -241,7 +278,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         equipmentTroubleList = equipmentTroubleBean.findAll();
-        getPartsCost();
+        currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
+        createDetail3();
         return super.edit(path);
 
     }
@@ -276,7 +314,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         maintenanceCosts = 0;
         detailList2.forEach(equipmentrepair -> {
             BigDecimal price = equipmentrepair.getUprice();
-            maintenanceCosts += equipmentrepair.getQty() * price.doubleValue();
+            maintenanceCosts += equipmentrepair.getQty().doubleValue() * price.doubleValue();
         });
         return maintenanceCosts;
     }
@@ -528,6 +566,17 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         }
     }
 
+    //获取故障来源
+    public String getTroubleName(String cValue) {
+        SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
+        String troubleName = "";
+        if (sysCode == null) {
+            return troubleName;
+        }
+        troubleName = sysCode.getCdesc();
+        return troubleName;
+    }
+
     //获取显示的进度
     public String getStateName(String str) {
         String queryStateName = "";
@@ -628,7 +677,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti2Bean<EquipmentRep
         this.maintenanceSupervisor = maintenanceSupervisor;
     }
 
- 
     public String getQueryServiceuser() {
         return queryServiceuser;
     }

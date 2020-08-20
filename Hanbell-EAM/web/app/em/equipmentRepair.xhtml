@@ -119,14 +119,14 @@
                     <f:facet name="header">
                         <h:outputText value="故障来源"/>
                     </f:facet>
-                    <h:outputText value="#{item.troublefrom}"/>
+                    <h:outputText value="#{equipmentRepairManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
                  <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="故障发生时间"/>
                     </f:facet>
                     <h:outputText value="#{item.credate}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>
                 </p:column>
                 <p:column styleClass="Wid20">
@@ -134,7 +134,7 @@
                         <h:outputText value="维修到达时间"/>
                     </f:facet>
                     <h:outputText value="#{item.servicearrivetime}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>                      
                 </p:column>
                

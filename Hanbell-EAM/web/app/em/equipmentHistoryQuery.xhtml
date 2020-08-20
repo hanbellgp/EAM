@@ -15,20 +15,21 @@
                 </f:facet>
                 <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
                 <p:column>
-                    <p:calendar id="queryDateBegin" value="#{equipmentRepairManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                    <p:calendar id="queryDateBegin" value="#{equipmentHistoryManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 </p:column>
                 <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
                 <p:column>
-                    <p:calendar id="queryDateEnd" value="#{equipmentRepairManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    <p:calendar id="queryDateEnd" value="#{equipmentHistoryManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
                 </p:column>
                 <h:outputLabel value="报修单号" for="queryFormId" />
-                <p:inputText id="queryFormId" value="#{equipmentRepairManagedBean.queryFormId}" title="报修记录号" />
+                <p:inputText id="queryFormId" value="#{equipmentHistoryManagedBean.queryFormId}" title="报修记录号" />
                 <h:outputLabel value="资产编号" for="queryName" />
-                <p:inputText id="queryName" value="#{equipmentRepairManagedBean.queryName}" title="资产编号" />
+                <p:inputText id="queryName" value="#{equipmentHistoryManagedBean.queryName}" title="资产编号" />
                 <h:outputLabel value="设备名称" for="queryEquipmentName" />
-                <p:inputText id="queryEquipmentName" value="#{equipmentRepairManagedBean.queryEquipmentName}" title="设备名称" />
+                <p:inputText id="queryEquipmentName" value="#{equipmentHistoryManagedBean.queryEquipmentName}" title="设备名称" />
                 <h:outputLabel value="进度" for="queryState" />
-                <p:selectOneMenu id="queryState" value="#{equipmentRepairManagedBean.queryState}" title="状态"  >
+                <p:selectOneMenu id="queryState" value="#{equipmentHistoryManagedBean.queryState}" title="状态"  >
+                    <f:selectItem  itemLabel="所有进度" itemValue="NULL"/>
                     <f:selectItem  itemLabel="未结案" itemValue="ALL"/>
                     <f:selectItem  itemLabel="已报修" itemValue="10"/>
                     <f:selectItem  itemLabel="维修到达" itemValue="20"/>
@@ -39,49 +40,39 @@
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
                 <h:outputLabel value="使用部门" for="queryDeptname" />
-                <p:inputText id="queryDeptname" value="#{equipmentRepairManagedBean.queryDeptname}" title="使用部门" />
+                <p:inputText id="queryDeptname" value="#{equipmentHistoryManagedBean.queryDeptname}" title="使用部门" />
+                <h:outputLabel value="故障类型" for="queryHitchsort1" />
+                <p:selectOneMenu id="queryHitchsort1" value="#{equipmentHistoryManagedBean.queryHitchsort1}" title="故障类型"  >
+                    <f:selectItem  itemLabel="请选择" itemValue="ALL"/>
+                    <f:selectItems value="#{equipmentHistoryManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
+                </p:selectOneMenu>
+                <h:outputLabel value="故障描述" for="queryHitchdesc" />
+                <p:inputText id="queryHitchdesc" value="#{equipmentHistoryManagedBean.queryHitchdesc}" title="故障描述" />
+                <h:outputLabel value="故障判断" for="queryHitchreason" />
+                <p:inputText id="queryHitchreason" value="#{equipmentHistoryManagedBean.queryHitchreason}" title="故障描述" />
                 <h:outputLabel value="报修人" for="queryRepairuser" />
-                <p:inputText id="queryRepairuser" value="#{equipmentRepairManagedBean.queryRepairuser}" title="报修人"   
-                             />
+                <p:inputText id="queryRepairuser" value="#{equipmentHistoryManagedBean.queryRepairuser}" title="报修人" />
+                <h:outputLabel value="维修人" for="queryServiceuser" />
+                <p:inputText id="queryServiceuser" value="#{equipmentHistoryManagedBean.queryServiceuser}" title="维修人"/>
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentRepairManagedBean.init()}" icon="ui-icon-sync"
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentHistoryManagedBean.init()}" icon="ui-icon-sync"
                                      update=":formList"/>
 
-                    <p:commandButton id="btnView" value="查看" action="#{equipmentRepairManagedBean.view('equipmentRepairView')}" icon="ui-icon-document"/>
+                    <p:commandButton id="btnView" value="查看" action="#{equipmentHistoryManagedBean.view('equipmentHistoryQueryView')}" icon="ui-icon-document"/>
                 </f:facet>
 
                 <f:facet name="right">
-                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
-                        <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentRepairManagedBean.print()}" icon="ui-icon-print"
-                                    />
-                        <p:menuitem id="btnCreate" value="发起故障报修" action="#{equipmentRepairManagedBean.create('equipmentRepairNew')}" icon="ui-icon-plus"
-                               update=":formList"      />
-
-                        <p:menuitem  actionListener="#{equipmentRepairManagedBean.confirmRepairmanArrivalTime()}" icon="ui-icon-check" value="确认维修人员到达" 
-                                     update=":formList">
-                            <p:confirm header="系统提示" message="维修人员到达了吗?" icon="ui-icon-alert" />
-                        </p:menuitem>
-                        <p:menuitem id="btnDelete" actionListener="#{equipmentRepairManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
-                                    update=":formList">
-                            <p:confirm header="系统提示" message="作废吗?" icon="ui-icon-alert" />
-                        </p:menuitem>
-                        <p:menuitem  actionListener="#{equipmentRepairManagedBean.confirmAcceptance()}" icon="ui-icon-check" value="确认验收" 
-                                     update=":formList">
-                            <p:confirm header="系统提示" message="确认吗?" icon="ui-icon-alert" />
-                        </p:menuitem>
-                    </p:splitButton>
-
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentRepairManagedBean.query()}" icon="ui-icon-search"
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentHistoryManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
 
             </p:toolbar>
-            <p:dataTable value="#{equipmentRepairManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+            <p:dataTable value="#{equipmentHistoryManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="15,30,45"   
-                         lazy="true"  selectionMode="single" selection="#{equipmentRepairManagedBean.currentEntity}" rowKey="#{item.id}" >
+                         lazy="true"  selectionMode="single" selection="#{equipmentHistoryManagedBean.currentEntity}" rowKey="#{item.id}" >
 
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
@@ -89,7 +80,7 @@
                     <f:facet name="header">
                         <h:outputText value="进度"/>
                     </f:facet>
-                    <h:outputText value="#{equipmentRepairManagedBean.getStateName(item.rstatus)}"/>
+                    <h:outputText value="#{equipmentHistoryManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
@@ -119,9 +110,9 @@
                     <f:facet name="header">
                         <h:outputText value="故障来源"/>
                     </f:facet>
-                    <h:outputText value="#{item.troublefrom}"/>
+                    <h:outputText value="#{equipmentHistoryManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
-                 <p:column styleClass="Wid20">
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="故障发生时间"/>
                     </f:facet>
@@ -137,7 +128,7 @@
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
                     </h:outputText>                      
                 </p:column>
-               
+
                 <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="报修人"/>

@@ -7,6 +7,7 @@ package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.SysCode;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.Query;
@@ -23,10 +24,10 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
         super(SysCode.class);
     }
 
-    public SysCode findBySyskindAndCode(String syskind,String code) {
+    public SysCode findBySyskindAndCode(String syskind, String code) {
         Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCode");
         query.setParameter("syskind", syskind);
-         query.setParameter("code", code);
+        query.setParameter("code", code);
         try {
             Object o = query.getSingleResult();
             return (SysCode) o;
@@ -34,5 +35,30 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
             return null;
         }
     }
+    
+     public SysCode getTroubleName(String syskind, String code,String cValue) {
+        Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCodeAndCVlaue");
+        query.setParameter("syskind", syskind);
+        query.setParameter("code", code);
+        query.setParameter("cvalue", cValue);
+        try {
+            Object o = query.getSingleResult();
+            return (SysCode) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
 
+    public List<SysCode> getTroubleNameList(String syskind, String code) {
+        Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCode");
+        query.setParameter("syskind", syskind);
+        query.setParameter("code", code);
+        try {
+             List results = query.getResultList();
+            return results;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

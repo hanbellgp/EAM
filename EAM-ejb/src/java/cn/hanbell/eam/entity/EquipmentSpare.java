@@ -7,15 +7,14 @@ package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.SuperEntity;
 import java.math.BigDecimal;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,8 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findBySparemodel", query = "SELECT e FROM EquipmentSpare e WHERE e.sparemodel = :sparemodel"),
     @NamedQuery(name = "EquipmentSpare.findByLeadtime", query = "SELECT e FROM EquipmentSpare e WHERE e.leadtime = :leadtime"),
     @NamedQuery(name = "EquipmentSpare.findByUprice", query = "SELECT e FROM EquipmentSpare e WHERE e.uprice = :uprice"),
-    @NamedQuery(name = "EquipmentSpare.findByUserno", query = "SELECT e FROM EquipmentSpare e WHERE e.userno = :userno"),
-    @NamedQuery(name = "EquipmentSpare.findByUserdate", query = "SELECT e FROM EquipmentSpare e WHERE e.userdate = :userdate"),
+    @NamedQuery(name = "EquipmentSpare.findByUnit", query = "SELECT e FROM EquipmentSpare e WHERE e.unit = :unit"),
+    @NamedQuery(name = "EquipmentSpare.findByBrand", query = "SELECT e FROM EquipmentSpare e WHERE e.brand = :brand"),
     @NamedQuery(name = "EquipmentSpare.findByMinstock", query = "SELECT e FROM EquipmentSpare e WHERE e.minstock = :minstock"),
     @NamedQuery(name = "EquipmentSpare.findByMaxstock", query = "SELECT e FROM EquipmentSpare e WHERE e.maxstock = :maxstock"),
     @NamedQuery(name = "EquipmentSpare.findByRemark", query = "SELECT e FROM EquipmentSpare e WHERE e.remark = :remark"),
@@ -75,12 +74,12 @@ public class EquipmentSpare extends SuperEntity {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "uprice")
     private BigDecimal uprice;
-    @Size(max = 20)
-    @Column(name = "userno")
-    private String userno;
+     @JoinColumn(name = "unit", referencedColumnName = "id")
+    @ManyToOne
+    private Unit unit;
     @Size(max = 50)
-    @Column(name = "userdate")
-    private String userdate;
+    @Column(name = "brand")
+    private String brand;
     @Column(name = "minstock")
     private Integer minstock;
     @Column(name = "maxstock")
@@ -88,29 +87,6 @@ public class EquipmentSpare extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2)
-    @Column(name = "status")
-    private String status;
-    @Size(max = 20)
-    @Column(name = "creator")
-    private String creator;
-    @Column(name = "credate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date credate;
-    @Size(max = 20)
-    @Column(name = "optuser")
-    private String optuser;
-    @Column(name = "optdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date optdate;
-    @Size(max = 20)
-    @Column(name = "cfmuser")
-    private String cfmuser;
-    @Column(name = "cfmdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date cfmdate;
 
     public EquipmentSpare() {
     }
@@ -125,6 +101,7 @@ public class EquipmentSpare extends SuperEntity {
         this.sparenum = sparenum;
         this.status = status;
     }
+
 
     public String getCompany() {
         return company;
@@ -182,20 +159,22 @@ public class EquipmentSpare extends SuperEntity {
         this.uprice = uprice;
     }
 
-    public String getUserno() {
-        return userno;
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setUserno(String userno) {
-        this.userno = userno;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
-    public String getUserdate() {
-        return userdate;
+ 
+
+    public String getBrand() {
+        return brand;
     }
 
-    public void setUserdate(String userdate) {
-        this.userdate = userdate;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public Integer getMinstock() {
@@ -222,6 +201,9 @@ public class EquipmentSpare extends SuperEntity {
         this.remark = remark;
     }
 
+ 
+
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -243,5 +225,5 @@ public class EquipmentSpare extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentSpare[ id=" + id + " ]";
     }
-
+    
 }
