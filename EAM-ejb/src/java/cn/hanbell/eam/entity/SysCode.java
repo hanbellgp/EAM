@@ -37,9 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SysCode.findByOptdate", query = "SELECT s FROM SysCode s WHERE s.optdate = :optdate"),
     @NamedQuery(name = "SysCode.findByCfmuser", query = "SELECT s FROM SysCode s WHERE s.cfmuser = :cfmuser"),
     @NamedQuery(name = "SysCode.findBySyskindAndCode", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code"),
+    @NamedQuery(name = "SysCode.findBySyskindAndCodeAndCVlaue", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code And s.cvalue=:cvalue"),
     @NamedQuery(name = "SysCode.findByCfmdate", query = "SELECT s FROM SysCode s WHERE s.cfmdate = :cfmdate")})
 public class SysCode extends SuperEntity {
-
 
     @Basic(optional = false)
     @NotNull
@@ -58,7 +58,6 @@ public class SysCode extends SuperEntity {
     @Column(name = "cdesc")
     private String cdesc;
 
-
     public SysCode() {
     }
 
@@ -72,8 +71,6 @@ public class SysCode extends SuperEntity {
         this.code = code;
         this.status = status;
     }
-
-
 
     public String getSyskind() {
         return syskind;
@@ -107,8 +104,6 @@ public class SysCode extends SuperEntity {
         this.cdesc = cdesc;
     }
 
-   
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -130,5 +125,5 @@ public class SysCode extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.SysCode[ id=" + id + " ]";
     }
-    
+
 }

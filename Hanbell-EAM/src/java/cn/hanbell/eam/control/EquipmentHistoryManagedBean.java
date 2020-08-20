@@ -15,39 +15,27 @@ import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
-import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import cn.hanbell.eam.web.FormMulti3Bean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
 
 /**
  *
  * @author C2079
  */
-@ManagedBean(name = "equipmentAcceptanceManagedBean")
+@ManagedBean(name = "equipmentHistoryManagedBean")
 @SessionScoped
-public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
+public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -69,11 +57,15 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private String queryServiceuser;
     private String queryDeptname;
     private double maintenanceCosts;
-    private String contenct;
-    private String note;
+    private String queryRepairuser;
+    private String queryHitchsort1;
+    private String queryHitchdesc;
+    private String queryHitchreason;
+    private String queryRepairprocess;
+
     private List<EquipmentTrouble> equipmentTroubleList;
 
-    public EquipmentAcceptanceManagedBean() {
+    public EquipmentHistoryManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
     }
 
@@ -86,97 +78,12 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
-        queryState = "ALL";
-        queryServiceuser = getUserName(userManagedBean.getUserid());
+        queryState = "95";
+        equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
-        model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
         model.getSortFields().put("credate", "DESC");
         super.init();
-    }
-
-//选择备件数据处理
-    @Override
-    public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
-        if (event.getObject() != null && currentEntity != null) {
-            EquipmentSpare u = (EquipmentSpare) event.getObject();
-            currentDetail2.setUprice(u.getUprice());
-            currentDetail2.setSpareno(u.getSpareno());
-            currentDetail2.setUserno(currentEntity.getServiceuser());
-            currentDetail2.setSparenum(u);
-            currentDetail2.setUserdate(getDate());
-        }
-    }
-
-    @Override
-    public void deleteDetail2() {
-
-        super.deleteDetail2(); //To change body of generated methods, choose Tools | Templates.
-        getPartsCost();
-    }
-
-    //保存验收数据
-    public void saveAcceptance() {
-        createDetail();
-        super.update();//To change body of generated methods, choose Tools | Templates.
-        addedDetailList2.clear();
-    }
-
-    //选中备件确认时检查及处理
-    @Override
-    public void doConfirmDetail2() {
-        if (currentDetail2 == null) {
-            return;
-        }
-        if (currentDetail2.getSpareno() == null) {
-            showErrorMsg("Error", "请选择备件");
-            return;
-        }
-        if (currentDetail2.getQty().doubleValue() <= 0) {
-            showErrorMsg("Error", "输入的数量必须大于0");
-            return;
-        }
-        currentDetail2.setCompany(currentEntity.getCompany());
-        currentDetail2.setStatus("N");
-        super.doConfirmDetail2();
-         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
-    }
-
-    //修改维修验收单
-    public String editAcceptance(String path) {
-        if (currentEntity == null) {
-            if (this.currentEntity == null) {
-                showErrorMsg("Error", "请选择一条单据！！！");
-                return "";
-            }
-        }
-        if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有单据对应的维修人才能修改验收单！！！");
-            return "";
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) != 40) {
-            showErrorMsg("Error", "请确认选择的单据是否已发起验收单！！！");
-            return "";
-        }
-        addedDetailList.clear();
-        addedDetailList2.clear();
-        //获取联络时间
-        currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
-
-        //获取维修时间
-        currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
-        //获取总的停机时间
-        if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
-        }
-        //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        equipmentTroubleList = equipmentTroubleBean.findAll();
-        getPartsCost();
-
-        return super.edit(path);
-
     }
 
     @Override
@@ -196,6 +103,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         getPartsCost();
+
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -204,54 +112,6 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
-    }
-//审批前检查数据是否可以审批
-
-    public String approvalCheck(String path) {
-
-        if (Integer.parseInt(currentEntity.getRstatus()) < 40) {
-            showErrorMsg("Error", "该条数据未验收，不能审批");
-            return "";
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
-            showErrorMsg("Error", "该条数据已审批完成,等待报修人结案");
-            return "";
-        }
-        //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        String userId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
-        if (!userManagedBean.getUserid().equals(userId) && !userManagedBean.getUserid().equals("C2079")) {
-            showErrorMsg("Error", "只有维修课长才能进行审批");
-            return "";
-        }
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        return super.edit(path);
-
-    }
-
-    //确认审批
-    public void confirmApproval() {
-        if (currentEntity.getRstatus().equals("40")) {
-            createDetail3();
-            currentDetail3.setUserno(userManagedBean.getUserid());
-            currentDetail3.setCompany(userManagedBean.getCompany());
-            currentDetail3.setCredate(getDate());
-            currentDetail3.setStatus("N");
-            currentDetail3.setContenct(contenct);
-            currentDetail3.setNote(note);
-            if (contenct.equals("合格")) {
-                currentEntity.setRstatus("50");
-            } else if (contenct.equals("不合格")) {
-                currentEntity.setRstatus("30");
-            }
-            contenct=null;
-            note=null;
-            super.doConfirmDetail3();
-            super.update();
-        } else {
-            showErrorMsg("Error", "已完成本次审核,单据状态已变更,请返回主页面查看");
-        }
-
     }
 
 //获取零件费用
@@ -262,60 +122,6 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             maintenanceCosts += equipmentrepair.getQty().doubleValue() * price.doubleValue();
         });
         return maintenanceCosts;
-    }
-//加载文件
-
-    @Override
-    protected void upload() throws IOException {
-        try {
-            final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            request.setCharacterEncoding("UTF-8");
-            Date date = new Date();
-            SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
-            imageName = String.valueOf(date.getTime());
-            final InputStream in = this.file.getInputstream();
-            final File dir = new File(this.getAppResPath());
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            imageName = imageName + this.getFileName();
-            final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
-            int read = 0;
-            final byte[] bytes = new byte[1024];
-            while (true) {
-                read = in.read(bytes);
-                if (read < 0) {
-                    break;
-                }
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Fatal", e.toString());
-            FacesContext.getCurrentInstance().addMessage((String) null, msg);
-        }
-    }
-
-    //处理上传图片数据
-    public void handleFileUploadWhenDetailNew(FileUploadEvent event) throws IOException {
-        super.handleFileUploadWhenNew(event);
-        if (this.fileName != null) {
-            this.createDetail();
-            int seq = detailList.size() + 1;
-            EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
-            equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
-            equipmentrepairfile.setFilename(imageName);
-            equipmentrepairfile.setFilefrom("维修图片");
-            equipmentrepairfile.setStatus("Y");
-            equipmentrepairfile.setSeq(seq);
-            equipmentrepairfile.setPid(currentEntity.getFormid());
-            detailList.add(equipmentrepairfile);
-            addedDetailList.add(equipmentrepairfile);
-
-        }
     }
 
     /**
@@ -348,12 +154,29 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);
             }
+            if (queryRepairuser != null && !"".equals(queryRepairuser)) {
+                model.getFilterFields().put("repairusername", queryRepairuser);
+            }
+            if (queryHitchdesc != null && !"".equals(queryHitchdesc)) {
+                model.getFilterFields().put("hitchdesc", queryHitchdesc);
+            }
+            if (queryHitchreason != null && !"".equals(queryHitchreason)) {
+                model.getFilterFields().put("hitchreason", queryHitchreason);
+            }
+          
+            if (queryHitchsort1 != null && !"ALL".equals(queryHitchsort1)) {
+                this.model.getFilterFields().put("hitchsort1", queryHitchsort1);
+            }
             model.getFilterFields().put("company", userManagedBean.getCompany());
-            model.getFilterFields().put("rstatus", queryState);
+            if (!"NULL".equals(queryState)) {
+                 model.getFilterFields().put("rstatus", queryState);
+            }
+           
             model.getSortFields().put("credate", "DESC");
 
         }
     }
+
     //获取故障来源
     public String getTroubleName(String cValue) {
         SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
@@ -364,6 +187,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         troubleName = sysCode.getCdesc();
         return troubleName;
     }
+
     //获取显示的进度
     public String getStateName(String str) {
         String queryStateName = "";
@@ -496,20 +320,44 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         this.maintenanceCosts = maintenanceCosts;
     }
 
-    public String getContenct() {
-        return contenct;
+    public String getQueryRepairuser() {
+        return queryRepairuser;
     }
 
-    public void setContenct(String contenct) {
-        this.contenct = contenct;
+    public void setQueryRepairuser(String queryRepairuser) {
+        this.queryRepairuser = queryRepairuser;
     }
 
-    public String getNote() {
-        return note;
+    public String getQueryHitchsort1() {
+        return queryHitchsort1;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setQueryHitchsort1(String queryHitchsort1) {
+        this.queryHitchsort1 = queryHitchsort1;
+    }
+
+    public String getQueryHitchdesc() {
+        return queryHitchdesc;
+    }
+
+    public void setQueryHitchdesc(String queryHitchdesc) {
+        this.queryHitchdesc = queryHitchdesc;
+    }
+
+    public String getQueryHitchreason() {
+        return queryHitchreason;
+    }
+
+    public void setQueryHitchreason(String queryHitchreason) {
+        this.queryHitchreason = queryHitchreason;
+    }
+
+    public String getQueryRepairprocess() {
+        return queryRepairprocess;
+    }
+
+    public void setQueryRepairprocess(String queryRepairprocess) {
+        this.queryRepairprocess = queryRepairprocess;
     }
 
 }

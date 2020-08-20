@@ -47,7 +47,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
                     <p:column>
-                        <h:outputText id="troublefrom" value="#{equipmentRepairManagedBean.currentEntity.troublefrom}" title="troublefrom" />
+                      <h:outputText id="troublefrom" value="#{equipmentRepairManagedBean.getTroubleName(equipmentRepairManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="使用部门"/></p:column>
                     <p:column>

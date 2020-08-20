@@ -56,6 +56,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepair.findByHitchreason", query = "SELECT e FROM EquipmentRepair e WHERE e.hitchreason = :hitchreason"),
     @NamedQuery(name = "EquipmentRepair.findByRepairprocess", query = "SELECT e FROM EquipmentRepair e WHERE e.repairprocess = :repairprocess"),
     @NamedQuery(name = "EquipmentRepair.findByMeasure", query = "SELECT e FROM EquipmentRepair e WHERE e.measure = :measure"),
+    @NamedQuery(name = "EquipmentRepair.findBySparecost", query = "SELECT e FROM EquipmentRepair e WHERE e.sparecost = :sparecost"),
     @NamedQuery(name = "EquipmentRepair.findByRepaircost", query = "SELECT e FROM EquipmentRepair e WHERE e.repaircost = :repaircost"),
     @NamedQuery(name = "EquipmentRepair.findByRemark", query = "SELECT e FROM EquipmentRepair e WHERE e.remark = :remark"),
     @NamedQuery(name = "EquipmentRepair.findByStatus", query = "SELECT e FROM EquipmentRepair e WHERE e.status = :status"),
@@ -67,12 +68,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepair.findByCfmdate", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentRepair extends FormEntity {
 
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
+
     @JoinColumn(name = "itemno", referencedColumnName = "itemno")
     @ManyToOne
     private AssetCard itemno;
@@ -81,9 +82,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(min = 1, max = 45)
     @Column(name = "assetno")
     private String assetno;
-    @Column(name = "formdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date formdate;
+
     @Size(max = 45)
     @Column(name = "repairuser")
     private String repairuser;
@@ -107,7 +106,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 2)
     @Column(name = "rstatus")
     private String rstatus;
-    @Size(max = 2000)
+    @Size(max = 200)
     @Column(name = "hitchdesc")
     private String hitchdesc;
     @Size(max = 20)
@@ -136,22 +135,24 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "repairprocess")
     private String repairprocess;
-    @Size(max = 2000)
+    @Size(max = 200)
     @Column(name = "measure")
     private String measure;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "sparecost")
+    private BigDecimal sparecost;
     @Column(name = "repaircost")
     private BigDecimal repaircost;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-
-   @Transient
+    @Transient
     private String maintenanceTime;
     @Transient
     private String contactTime;
     @Transient
     private String downtime;
+
     public EquipmentRepair() {
     }
 
@@ -168,8 +169,6 @@ public class EquipmentRepair extends FormEntity {
         this.status = status;
     }
 
-
-
     public String getCompany() {
         return company;
     }
@@ -177,8 +176,6 @@ public class EquipmentRepair extends FormEntity {
     public void setCompany(String company) {
         this.company = company;
     }
-
-
 
     public AssetCard getItemno() {
         return itemno;
@@ -188,10 +185,6 @@ public class EquipmentRepair extends FormEntity {
         this.itemno = itemno;
     }
 
-
-
-
-
     public String getAssetno() {
         return assetno;
     }
@@ -199,8 +192,6 @@ public class EquipmentRepair extends FormEntity {
     public void setAssetno(String assetno) {
         this.assetno = assetno;
     }
-
-
 
     public String getRepairuser() {
         return repairuser;
@@ -346,6 +337,14 @@ public class EquipmentRepair extends FormEntity {
         this.measure = measure;
     }
 
+    public BigDecimal getSparecost() {
+        return sparecost;
+    }
+
+    public void setSparecost(BigDecimal sparecost) {
+        this.sparecost = sparecost;
+    }
+
     public BigDecimal getRepaircost() {
         return repaircost;
     }
@@ -361,8 +360,6 @@ public class EquipmentRepair extends FormEntity {
     public void setRemark(String remark) {
         this.remark = remark;
     }
-
-
 
     public String getMaintenanceTime() {
         return maintenanceTime;
@@ -388,15 +385,12 @@ public class EquipmentRepair extends FormEntity {
         this.downtime = downtime;
     }
 
-
-
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-
 
     @Override
     public boolean equals(Object object) {
@@ -407,6 +401,7 @@ public class EquipmentRepair extends FormEntity {
         EquipmentRepair other = (EquipmentRepair) object;
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
+
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepair[ id=" + id + " ]";

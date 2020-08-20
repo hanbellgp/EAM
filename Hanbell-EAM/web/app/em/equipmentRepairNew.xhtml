@@ -33,7 +33,7 @@
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnWhenNew}"
-                                    update="assetno,itemno,deptname,position2" />
+                                    update="assetno,itemno,deptname,position2,serviceuser" />
                         </p:commandButton>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备名称" for="itemno" /></p:column>
@@ -78,9 +78,7 @@
                     <p:column>
                         <p:selectOneMenu id="troublefrom" value="#{equipmentRepairManagedBean.newEntity.troublefrom}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
                             <f:selectItem itemLabel="请选择故障来源" itemValue=""/>
-                            <f:selectItem itemLabel="操作员点检" itemValue="操作员点检"/>
-                            <f:selectItem itemLabel="设备突发故障" itemValue="设备突发故障"/>
-                            <f:selectItem itemLabel="维修工巡检" itemValue="维修工巡检"/>
+                         <f:selectItems value="#{equipmentRepairManagedBean.troubleFromList}" var="troubleFromList" itemLabel="#{troubleFromList.cdesc}" itemValue="#{troubleFromList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE">
@@ -118,7 +116,7 @@
                                              process="@this" update="tableList" />
                         </f:facet>
                     </p:toolbar>
-                    <p:dataTable id="tableList" value="#{equipmentRepairManagedBean.addedDetailList}" var="item"  styleClass="tableList Mtop10" 
+                    <p:dataTable id="tableList" value="#{equipmentRepairManagedBean.detailList}" var="item"  styleClass="tableList Mtop10" 
                                  selectionMode="single" selection="#{equipmentRepairManagedBean.currentDetail}" rowKey="#{item.seq}" >
                         <p:ajax event="rowSelect"     update=":formOne:tabView:toolbar"/>
                         <p:ajax event="rowUnselect"   update=":formOne:tabView:toolbar"/>

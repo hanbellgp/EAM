@@ -23,9 +23,24 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="设备名称"  /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><p:outputLabel value="报修单号" for="formid" /></p:column>
+                    <p:column >
+                        <h:outputText id="formid" value="#{equipmentAcceptanceManagedBean.currentEntity.formid}" title="formid" styleClass="inputWithButton" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
+                    <p:column >
+                        <h:outputText id="assetno" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno}" title="assetno" styleClass="inputWithButton" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><h:outputText value="设备名称"  /></p:column>
                     <p:column  styleClass="Wid15">
                         <h:outputText  id="assetDesc" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.assetDesc}" title="assetDesc" />
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
+                      <p:column>
+                      <h:outputText id="troublefrom" value="#{equipmentAcceptanceManagedBean.getTroubleName(equipmentAcceptanceManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><h:outputText value="使用部门"/></p:column>
                     <p:column>
@@ -35,6 +50,7 @@
                     <p:column>
                         <h:outputText id="position2" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.position2.name}" title="position2" />
                     </p:column>
+
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="报修人"/></p:column>
@@ -105,7 +121,7 @@
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型1"  /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型1"  /></p:column>
                     <p:column>
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchsort1}" title="故障类型1" disabled="true">
                             <f:selectItems value="#{equipmentAcceptanceManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
@@ -176,18 +192,25 @@
                             </f:facet>
                             <h:outputText value="#{item.spareno}"/>
                         </p:column>
-                        <p:column styleClass="Wid15">
+                           <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件编号"/>
                             </f:facet>
-                            <h:outputText value="#{item.sparenum}"/>
+                            <h:outputText value="#{item.sparenum.sparenum}"/>
+                        </p:column>
+                          <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparedesc}"/>
                         </p:column>
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
                                 <h:outputText value="维修使用人"/>
                             </f:facet>
-                            <h:outputText value="#{item.userno}"/>
+                           <h:outputText value="#{equipmentAcceptanceManagedBean.getUserName(item.userno)}"/>
                         </p:column>
+                        
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
                                 <h:outputText value="维修使用时间"/>
@@ -196,7 +219,6 @@
                                 <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
                             </h:outputText>   
                         </p:column>
-
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
                                 <h:outputText value="数量"/>
@@ -212,17 +234,20 @@
                     </p:dataTable>
                 </p:tab>
             </p:tabView>
-              <p:panelGrid  id="cost">
+                 <p:panelGrid  id="plgCost">
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
-                    <p:column>
+                       <p:column style="background-color: #EEEEEE;height: 40px;width: 100px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
+                    <p:column  style="width: 550px">
                         <h:outputText  id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
                     </p:column>
-                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件费用" for="maintenanceCosts" /></p:column>
-                    <p:column>
-                        <h:outputText  id="maintenanceCosts" value="#{equipmentAcceptanceManagedBean.maintenanceCosts}" title="spareno1" styleClass="inputWithButton"/>
+                   
+                     <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
+                    <p:column  style="width: 550px">
+                        <h:outputText  id="sparecost" value="#{equipmentAcceptanceManagedBean.currentEntity.sparecost}" title="sparecost" styleClass="inputWithButton"/>
                     </p:column>
+                     
                 </p:row>
+                 
             </p:panelGrid>
         </h:form>
     </ui:define>
