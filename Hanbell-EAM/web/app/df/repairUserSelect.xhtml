@@ -25,6 +25,7 @@
                                      update=":formList"/>
                     <p:commandButton id="btnSelected" value="确定" actionListener="#{repairUserQueryBean.closeDialog()}" icon="ui-icon-plus" />
                 </f:facet>
+                
             </p:toolbar>
             <p:dataTable value="#{repairUserQueryBean.model}" var="item" paginator="true" paginatorPosition="bottom" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

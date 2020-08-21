@@ -171,6 +171,12 @@ public class AssetCard extends FormEntity {
     @Size(max = 100)
     @Column(name = "srcapi")
     private String srcapi;
+     @Size(max = 20)
+    @Column(name = "repairuser")
+    private String repairuser;
+    @Size(max = 45)
+    @Column(name = "repairusername")
+    private String repairusername;
     @Size(max = 20)
     @Column(name = "srcformid")
     private String srcformid;
@@ -187,7 +193,7 @@ public class AssetCard extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-
+    
     public AssetCard() {
         this.amts = BigDecimal.ZERO;
         this.used = false;
@@ -529,6 +535,22 @@ public class AssetCard extends FormEntity {
 
     public void setRelseq(Integer relseq) {
         this.relseq = relseq;
+    }
+
+    public String getRepairuser() {
+        return repairuser;
+    }
+
+    public void setRepairuser(String repairuser) {
+        this.repairuser = repairuser;
+    }
+
+    public String getRepairusername() {
+        return repairusername;
+    }
+
+    public void setRepairusername(String repairusername) {
+        this.repairusername = repairusername;
     }
 
     public String getRemark() {

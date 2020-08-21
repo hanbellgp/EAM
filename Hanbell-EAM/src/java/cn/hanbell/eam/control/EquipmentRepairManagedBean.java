@@ -7,9 +7,11 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
@@ -58,12 +60,15 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
     @EJB
     protected EquipmentRepairFileBean equipmentRepairFileBean;
     @EJB
+    protected SysCodeBean sysCodeBean;
+    @EJB
     private SystemUserBean systemUserBean;
     private String queryEquipmentName;
     private String imageName;
     private String queryRepairuser;
     private String queryDeptname;
     private List<SystemUser> userList;
+    private List<SysCode> troubleFromList;
 
     public EquipmentRepairManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class);
@@ -77,10 +82,10 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
         detailEJB = equipmentRepairFileBean;
         queryState = "ALL";
-        queryRepairuser=getUserName(userManagedBean.getUserid());
+        queryRepairuser = getUserName(userManagedBean.getUserid());
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("repairuser", userManagedBean.getUserid());
-          model.getFilterFields().put("company", userManagedBean.getCompany());
+        model.getFilterFields().put("company", userManagedBean.getCompany());
         model.getSortFields().put("credate", "DESC");
         super.init();
     }
@@ -94,7 +99,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         newEntity.setRstatus("10");
         newEntity.setRepairuser(userManagedBean.getUserid());
         newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()));
-
+        troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
     }
 
 //保存前作的数据处理
@@ -113,7 +118,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         if (this.addedDetailList != null && !this.addedDetailList.isEmpty()) {
             this.addedDetailList.stream().forEach((detail) -> {
                 detail.setPid(newEntity.getFormid());
-               
+
             });
         }
 
@@ -128,14 +133,20 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
 
     //作废
     public void invalid() {
+
         if (currentEntity == null) {
             showErrorMsg("Error", "请选择需要作废的单据！");
+            return;
+        }
+        if (!currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "只有对应的报修人才能作废此单据！");
             return;
         }
         if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
             showErrorMsg("Error", "该单据不能作废！");
             return;
         }
+
         currentEntity.setStatus("N");
         currentEntity.setRstatus("98");
         update();
@@ -147,8 +158,8 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             showErrorMsg("Error", "请选择一条数据！");
             return;
         }
-        if (currentEntity.getRepairuser() == null ? userManagedBean.getUserid() != null : !currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有报修人才能验收");
+        if (!currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "只有对应的报修人才能验收此单据");
             return;
         }
         if (!"50".equals(currentEntity.getRstatus())) {
@@ -193,13 +204,12 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         }
     }
 
-   
     //处理上传图片数据
     public void handleFileUploadWhenDetailNew(FileUploadEvent event) throws IOException {
         super.handleFileUploadWhenNew(event);
         if (this.fileName != null) {
             this.createDetail();
-            int seq = addedDetailList.size() + 1;
+            int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
@@ -207,6 +217,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             equipmentrepairfile.setFilefrom("报修图片");
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);
+            detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
         }
     }
@@ -216,6 +227,8 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         if (event.getObject() != null && newEntity != null) {
             AssetCard e = (AssetCard) event.getObject();
             newEntity.setAssetno(e.getFormid());
+            newEntity.setServiceuser(e.getRepairuser());
+            newEntity.setServiceusername(e.getRepairusername());
             newEntity.setItemno(e);
         }
     }
@@ -242,8 +255,8 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             showErrorMsg("Error", "没有选择单据");
             return;
         }
-        if (currentEntity.getRepairuser() == null ? userManagedBean.getUserid() != null : !currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有报修人才能确认到达时间");
+        if (!currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "只有对应的报修人才能确认到达时间");
             return;
         }
         if (currentEntity.getServicearrivetime() != null) {
@@ -425,21 +438,32 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             if (queryName != null && !"".equals(queryName)) {
                 model.getFilterFields().put("assetno", queryName);
             }
-              if (queryDeptname != null && !"".equals(queryDeptname)) {
+            if (queryDeptname != null && !"".equals(queryDeptname)) {
                 model.getFilterFields().put("itemno.deptname", queryDeptname);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
                 model.getFilterFields().put("itemno.assetDesc", queryEquipmentName);
             }
-          
-               if (queryRepairuser != null && !"".equals(queryRepairuser)) {
+
+            if (queryRepairuser != null && !"".equals(queryRepairuser)) {
                 model.getFilterFields().put("repairusername", queryRepairuser);
             }
-                 model.getFilterFields().put("company", userManagedBean.getCompany());
+            model.getFilterFields().put("company", userManagedBean.getCompany());
             model.getFilterFields().put("rstatus", queryState);
             model.getSortFields().put("credate", "DESC");
 
         }
+    }
+//获取故障来源的名字
+
+    public String getTroubleName(String cValue) {
+        SysCode sysCode=sysCodeBean.getTroubleName("RD", "faultType", cValue);
+        String troubleName="";
+        if (sysCode==null) {
+           return troubleName;
+        }
+        troubleName=sysCode.getCdesc();
+        return troubleName;
     }
 
     //获取显示的进度
@@ -471,7 +495,6 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         return queryStateName;
     }
 
-   
     //根据用户ID获取用户姓名
     public String getUserName(String userId) {
         SystemUser s = systemUserBean.findByUserId(userId);
@@ -508,6 +531,14 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
 
     public void setUserList(List<SystemUser> userList) {
         this.userList = userList;
+    }
+
+    public List<SysCode> getTroubleFromList() {
+        return troubleFromList;
+    }
+
+    public void setTroubleFromList(List<SysCode> troubleFromList) {
+        this.troubleFromList = troubleFromList;
     }
 
 }

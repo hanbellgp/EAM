@@ -11,6 +11,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -37,6 +39,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepairSpare.findBySparenum", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.sparenum = :sparenum"),
     @NamedQuery(name = "EquipmentRepairSpare.findByQty", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.qty = :qty"),
     @NamedQuery(name = "EquipmentRepairSpare.findByUprice", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.uprice = :uprice"),
+    @NamedQuery(name = "EquipmentRepairSpare.findByUnit", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.unit = :unit"),
+    @NamedQuery(name = "EquipmentRepairSpare.findByBrand", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.brand = :brand"),
     @NamedQuery(name = "EquipmentRepairSpare.findByUserno", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.userno = :userno"),
     @NamedQuery(name = "EquipmentRepairSpare.findByUserdate", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.userdate = :userdate"),
     @NamedQuery(name = "EquipmentRepairSpare.findByRemark", query = "SELECT e FROM EquipmentRepairSpare e WHERE e.remark = :remark"),
@@ -55,20 +59,23 @@ public class EquipmentRepairSpare extends FormDetailEntity {
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-
     @Size(max = 45)
     @Column(name = "spareno")
     private String spareno;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "sparenum")
-    private String sparenum;
-    @Column(name = "qty")
-    private Integer qty;
+    @JoinColumn(name = "sparenum", referencedColumnName = "sparenum")
+    @ManyToOne
+    private EquipmentSpare sparenum;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "qty")
+    private BigDecimal qty;
     @Column(name = "uprice")
     private BigDecimal uprice;
+    @JoinColumn(name = "unit", referencedColumnName = "id")
+    @ManyToOne
+    private Unit unit;
+    @Size(max = 50)
+    @Column(name = "brand")
+    private String brand;
     @Size(max = 20)
     @Column(name = "userno")
     private String userno;
@@ -109,12 +116,10 @@ public class EquipmentRepairSpare extends FormDetailEntity {
         this.id = id;
     }
 
-    public EquipmentRepairSpare(Integer id, String company, String pid, int seq, String sparenum, String status) {
+    public EquipmentRepairSpare(Integer id, String company, String pid,  String status) {
         this.id = id;
         this.company = company;
         this.pid = pid;
-        this.seq = seq;
-        this.sparenum = sparenum;
         this.status = status;
     }
 
@@ -134,19 +139,21 @@ public class EquipmentRepairSpare extends FormDetailEntity {
         this.spareno = spareno;
     }
 
-    public String getSparenum() {
+    public EquipmentSpare getSparenum() {
         return sparenum;
     }
 
-    public void setSparenum(String sparenum) {
+    public void setSparenum(EquipmentSpare sparenum) {
         this.sparenum = sparenum;
     }
 
-    public Integer getQty() {
+
+
+    public BigDecimal getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(BigDecimal qty) {
         this.qty = qty;
     }
 
@@ -156,6 +163,22 @@ public class EquipmentRepairSpare extends FormDetailEntity {
 
     public void setUprice(BigDecimal uprice) {
         this.uprice = uprice;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getUserno() {

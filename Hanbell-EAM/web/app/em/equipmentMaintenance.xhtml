@@ -85,7 +85,7 @@
                     </f:facet>
                     <h:outputText value="#{equipmentMaintenanceManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="报修单号"/>
                     </f:facet>
@@ -113,23 +113,30 @@
                     <f:facet name="header">
                         <h:outputText value="故障来源"/>
                     </f:facet>
-                    <h:outputText value="#{item.troublefrom}"/>
+                    <h:outputText value="#{equipmentMaintenanceManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
-                 
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="故障发生时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.credate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                    </h:outputText>                      
+                </p:column>
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="维修到达时间"/>
                     </f:facet>
                     <h:outputText value="#{item.servicearrivetime}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>                      
                 </p:column>
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="维修完成时间"/>
                     </f:facet>
                     <h:outputText value="#{item.completetime}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>                      
                 </p:column>
                 <p:column styleClass="Wid10">

@@ -1,66 +1,99 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../WEB-INF/df.xhtml"
+                template="./../../WEB-INF/template.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="content">
         <h:form id="formOne">
-            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
-
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentAcceptance" icon="ui-icon-restore"/>
+                </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentAcceptanceManagedBean.confirmApproval()}" icon="ui-icon-plus"  process="@this,:formOne:plgHead" update=":formOne:plgHead"  />
+                    <p:commandButton id="btnEdit" value="保存" actionListener="#{equipmentAcceptanceManagedBean.confirmApproval()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
                 </f:facet>
             </p:toolbar>
-            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="11">维修审批单</p:column>
+                    </p:row>
+                </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid10" style="background-color: #EEEEEE"><p:outputLabel value="审批报修单" /></p:column>
-                    <p:column colspan="5" style="background-color: #EEEEEE">
-                        <h:outputText  value="#{equipmentAcceptanceManagedBean.currentEntity.formid}" />
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="审批单号"/></p:column>
+                    <p:column>
+                        <h:outputText id="formid" value="#{equipmentAcceptanceManagedBean.currentEntity.formid}" title="formid" />
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                        <p:outputLabel value="审批职位"/>
-                    </p:column>
-                    <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                        <p:outputLabel value="审批人" />
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="审批人"/></p:column>
+                    <p:column>
+                        <h:outputText id="maintenanceSupervisor" value="#{equipmentAcceptanceManagedBean.maintenanceSupervisor}" title="maintenanceSupervisor" />
                     </p:column>
 
-                    <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                        <p:outputLabel value="审批结果" />
-                    </p:column>
-                    <p:column styleClass="Wid10" style="background-color: #EEEEEE">
-                        <p:outputLabel value="审批时间"/>
-                    </p:column>
-                    <p:column styleClass="Wid10"  style="background-color: #EEEEEE">
-                        <p:outputLabel value="审批意见"  />
-                    </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid10">
-                        <p:outputLabel value="维修课长"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <h:outputText value="#{equipmentAcceptanceManagedBean.maintenanceSupervisor}"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <p:selectOneMenu id="contenct" value="#{equipmentAcceptanceManagedBean.currentDetail3.contenct}" title="troublefrom" >
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="审批结果"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="abrasehitch" value="#{equipmentAcceptanceManagedBean.contenct}" title="磨损性故障" >
                             <f:selectItem itemLabel="合格" itemValue="合格"/>
                             <f:selectItem itemLabel="不合格" itemValue="不合格"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column styleClass="Wid10">
-                        <h:outputText id="credate" value="#{equipmentAcceptanceManagedBean.currentDetail3.credate}"/>
-                    </p:column>
-                    <p:column styleClass="Wid10">
-                        <p:inputText id="note" value="#{equipmentAcceptanceManagedBean.currentDetail3.note}"/>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="审批意见"/></p:column>
+                    <p:column>
+                        <p:editor id="note" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.note}" 
+                                  width="600" height="150"  />
                     </p:column>
                 </p:row>
             </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="审批流程">
+                    <p:dataTable id="tableList" value="#{equipmentAcceptanceManagedBean.detailList3}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentAcceptanceManagedBean.currentDetail3}" rowKey="#{item.seq}" >
+                       
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批人"/>
+                            </f:facet>
+                            <h:outputText value="#{equipmentAcceptanceManagedBean.getUserName(item.userno)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批结果"/>
+                            </f:facet>
+                            <h:outputText value="#{item.contenct}"/>
+                        </p:column>
+
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="审批时间"/>
+                            </f:facet>
+                            <h:outputText value="#{item.credate}">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                            </h:outputText>   
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="审批意见"/>
+                            </f:facet>
+                            <h:outputText value="#{item.note}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+
+            </p:tabView>
+
+
         </h:form>
     </ui:define>
 
