@@ -144,7 +144,7 @@
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
                     <p:column  colspan="6">
-                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdesc}" 
+                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdesc}" disabled="true" 
                                   width="600" height="150"  />
                     </p:column>
                 </p:row>
@@ -161,10 +161,17 @@
                         </c:forEach>
                     </p:column>
                 </p:row>
+
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障判断过程及原因描述"  /></p:column>
                     <p:column colspan="7" >
                         <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchreason}" width="600" height="150" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式说明"  /></p:column>
+                    <p:column colspan="7" >
+                        <p:editor id="repairmethod" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairmethod}" width="600" height="150" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -189,16 +196,20 @@
 
                         </h:outputLabel>
                     </p:column>
-
-
                 </p:row>
                 <p:row>
                     <p:column colspan="7">
                         <p:editor id="repairprocess"  widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairprocess}" width="600" height="150" />
                     </p:column>
                 </p:row>
+                  <p:row>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column colspan="7">
+                        <p:editor id="hitchalarm" widgetVar="editorWidget" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchalarm}" width="600" height="150" />
+                    </p:column> 
+                </p:row>
                 <p:row>
-                    <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
                     <p:column colspan="7">
                         <p:editor id="measure" widgetVar="editorWidget" value="#{equipmentMaintenanceManagedBean.currentEntity.measure}" width="600" height="150" />
                     </p:column> 
@@ -218,7 +229,7 @@
                         <f:facet name="right">
                             <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{equipmentMaintenanceManagedBean.doConfirmDetail2()}" icon="ui-icon-check"
                                              onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
-                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList,:formOne:plgCost"/>
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList,:formOne:sparecost"/>
                         </f:facet>
                     </p:toolbar>
                     <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
@@ -246,7 +257,7 @@
                             <p:column>
                                 <h:outputText id="unit" value="#{equipmentMaintenanceManagedBean.currentDetail2.unit.unit}" title="unit" />
                             </p:column>
-                            
+
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
@@ -257,7 +268,7 @@
                             <p:column>
                                 <h:outputText id="brand" value="#{equipmentMaintenanceManagedBean.currentDetail2.brand}" title="brand" />
                             </p:column>
-                             
+
                         </p:row>
 
                     </p:panelGrid>
@@ -316,7 +327,7 @@
                             </f:facet>
                             <h:outputText value="#{item.unit.unit}"/>
                         </p:column>
-                         <p:column styleClass="Wid15" style="text-align: right;">
+                        <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
                                 <h:outputText value="品牌"/>
                             </f:facet>
@@ -328,10 +339,14 @@
             </p:tabView>
             <p:panelGrid  id="plgCost">
                 <p:row>
-                    <p:column style="background-color: #EEEEEE;height: 40px;width: 100px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;height: 40px;width: 120px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
                     <p:column  style="width: 550px">
                         <p:inputText  id="repaircost" value="#{equipmentMaintenanceManagedBean.currentEntity.repaircost}" title="repaircost" styleClass="inputWithButton"
                                       onkeyup="this.value = this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" required="true"  requiredMessage="请输入其他费用" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="人工费用" for="laborcost" /></p:column>
+                    <p:column  style="width: 550px">
+                        <h:outputText  id="laborcost" value="#{equipmentMaintenanceManagedBean.currentEntity.laborcost}" title="laborcost" styleClass="inputWithButton"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
                     <p:column  style="width: 550px">

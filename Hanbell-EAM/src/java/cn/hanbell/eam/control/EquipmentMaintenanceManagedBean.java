@@ -176,7 +176,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentDetail2.setUserdate(getDate());
             currentDetail2.setUnit(u.getUnit());
             currentDetail2.setBrand(u.getBrand());
-            
+
         }
     }
 
@@ -228,7 +228,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
         } else {
             showErrorMsg("Error", "只有对应的维修人或维修课长才能转派单据");
-            return;
         }
 
     }
@@ -270,10 +269,13 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
         //获取维修时间
         currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+        //根据维修时间获取人工费用
+        getLaborcost(currentEntity.getMaintenanceTime());
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
+
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
@@ -282,6 +284,30 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         createDetail3();
         return super.edit(path);
 
+    }
+
+    //获取人工费用
+    public void getLaborcost(String maintenanceTime) {
+        String[] maintenanceTimes = maintenanceTime.split("天");
+        String day = maintenanceTimes[0];
+        maintenanceTimes = maintenanceTimes[1].split("小时");
+        String hours = maintenanceTimes[0];
+        maintenanceTimes = maintenanceTimes[1].split("分");
+        String min = maintenanceTimes[0];
+        int hour = 0;
+        if (Integer.parseInt(day) == 0 && Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
+            hour += 1;
+        }
+        if (Integer.parseInt(day) != 0) {
+            hour += Integer.parseInt(day) * 24;
+        }
+        if (Integer.parseInt(hours) != 0) {
+            hour += Integer.parseInt(hours);
+        }
+        if (Integer.parseInt(min) >= 30) {
+            hour += 1;
+        }
+        currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
     }
 
     @Override
@@ -293,6 +319,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
             //获取维修时间
             currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+            //根据维修时间获取人工费用
+            getLaborcost(currentEntity.getMaintenanceTime());
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
@@ -358,7 +386,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         super.handleFileUploadWhenNew(event);
         if (this.fileName != null) {
             this.createDetail();
-            int seq = addedDetailList.size() + 1;
+            int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
             equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
@@ -367,6 +395,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);
             equipmentrepairfile.setPid(currentEntity.getFormid());
+            equipmentrepairfile.setCredate(getDate());
+            detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
 
         }
@@ -381,13 +411,13 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     @Override
     public void print() {
 
-        fileName = "故障报修" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        fileName = "维修目录表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式
         Map<String, CellStyle> style = createStyles(workbook);
         // 生成一个表格
-        HSSFSheet sheet1 = workbook.createSheet("维修台帐");
+        HSSFSheet sheet1 = workbook.createSheet("Sheet1");
         // 设置表格宽度
         int[] wt1 = getInventoryWidth();
         for (int i = 0; i < wt1.length; i++) {
@@ -404,7 +434,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
-
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
         int j = 1;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -414,38 +443,80 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             row.setHeight((short) 400);
             Cell cell0 = row.createCell(0);
             cell0.setCellStyle(style.get("cell"));
-            cell0.setCellValue(getStateName(equipmentrepair.getRstatus()));
+            cell0.setCellValue(equipmentrepair.getFormid());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getFormid());
+            cell1.setCellValue(equipmentrepair.getItemno().getFormid());
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getItemno().getDeptname());
+            cell2.setCellValue(equipmentrepair.getItemno().getAssetItem().getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getAssetno());
+            cell3.setCellValue(equipmentrepair.getItemno().getAssetDesc());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getItemno().getAssetDesc());
+            cell4.setCellValue(equipmentrepair.getItemno().getUsername());
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getTroublefrom());
-            Cell cell7 = row.createCell(7);
-            cell7.setCellStyle(style.get("cell"));
-            if (equipmentrepair.getServicearrivetime() != null) {
-                String servicearrivetime = sdf.format(equipmentrepair.getServicearrivetime().getTime());
-                cell7.setCellValue(servicearrivetime);
-            }
-            String Credate = sdf.format(equipmentrepair.getCredate().getTime());
+            cell5.setCellValue(equipmentrepair.getItemno().getDeptname());
+
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
-            cell6.setCellValue(Credate);
+            cell6.setCellValue(getStateName(equipmentrepair.getRstatus()));
+
+            Cell cell7 = row.createCell(7);
+            cell7.setCellStyle(style.get("cell"));
+            cell7.setCellValue(equipmentrepair.getServiceusername());
+            String credate = sdf.format(equipmentrepair.getCredate().getTime());
             Cell cell8 = row.createCell(8);
             cell8.setCellStyle(style.get("cell"));
-            cell8.setCellValue(equipmentrepair.getRepairusername());
+            cell8.setCellValue(credate);
+
             Cell cell9 = row.createCell(9);
             cell9.setCellStyle(style.get("cell"));
-            cell9.setCellValue(equipmentrepair.getServiceusername());
+            if (equipmentrepair.getServicearrivetime() != null) {
+                String servicearrivetime = sdf.format(equipmentrepair.getServicearrivetime().getTime());
+                cell9.setCellValue(servicearrivetime);
+            }
+
+            Cell cell10 = row.createCell(10);
+            cell10.setCellStyle(style.get("cell"));
+            if (equipmentrepair.getCompletetime() != null) {
+                String completetime = sdf.format(equipmentrepair.getCompletetime().getTime());
+                cell10.setCellValue(completetime);
+            }
+            Cell cell11 = row.createCell(11);
+            cell11.setCellStyle(style.get("cell"));
+            cell11.setCellValue(equipmentrepair.getExcepttime());
+            
+             Cell cell12 = row.createCell(12);
+            cell12.setCellStyle(style.get("cell"));
+            cell12.setCellValue(getTimeDifference(equipmentrepair.getCompletetime(), equipmentrepair.getServicearrivetime(), 0));
+            Cell cell13 = row.createCell(13);
+            cell13.setCellStyle(style.get("cell"));
+            cell13.setCellValue(getTroubleName(equipmentrepair.getTroublefrom()));
+
+            Cell cell14 = row.createCell(14);
+            cell14.setCellStyle(style.get("cell"));
+            cell14.setCellValue(equipmentrepair.getHitchdesc());
+
+            Cell cell15 = row.createCell(15);
+            cell15.setCellStyle(style.get("cell"));
+            cell15.setCellValue(equipmentrepair.getHitchalarm());
+
+            Cell cell16 = row.createCell(16);
+            cell16.setCellStyle(style.get("cell"));
+            String hitchtype = "";
+            if ("0".equals(equipmentrepair.getHitchtype())) {
+                hitchtype = "一般故障";
+            } else if ("1".equals(equipmentrepair.getHitchtype())) {
+                hitchtype = "严重故障";
+            }
+            cell16.setCellValue(hitchtype);
+            Cell cell17 = row.createCell(17);
+            cell17.setCellStyle(style.get("cell"));
+            cell17.setCellValue(equipmentrepair.getRepairmethod());
+
         }
         OutputStream os = null;
         try {
@@ -471,14 +542,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"进度", "报修记录号", "使用部门", "资产编号", "设备名称", "故障来源", "故障发生时间", "维修工到达时间", "报修人", "维修人"};
+        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间","非工作时间(分)","维修时间", "故障来源", "故障描述", "故障报警", "故障类型", "维修方式说明"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{15, 20, 15, 20, 20, 15, 20, 20, 10, 10};
+        return new int[]{15, 20, 15, 15, 10, 15, 10, 10, 20, 20, 20,15,15, 15, 15, 15, 15, 20};
     }
 
     /**
@@ -491,7 +562,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         headStyle.setWrapText(true);//设置自动换行
         headStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         headStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-        headStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());//单元格背景颜色
+        headStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
         headStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
         headStyle.setBorderRight(CellStyle.BORDER_THIN);
         headStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());

@@ -48,10 +48,19 @@
                 </p:selectOneMenu>
                 <h:outputLabel value="故障描述" for="queryHitchdesc" />
                 <p:inputText id="queryHitchdesc" value="#{equipmentHistoryManagedBean.queryHitchdesc}" title="故障描述" />
+               
                 <h:outputLabel value="故障判断" for="queryHitchreason" />
-                <p:inputText id="queryHitchreason" value="#{equipmentHistoryManagedBean.queryHitchreason}" title="故障描述" />
+                <p:inputText id="queryHitchreason" value="#{equipmentHistoryManagedBean.queryHitchreason}" title="故障判断" />
+                
+                 <h:outputLabel value="维修策略" for="queryRepairprocess" />
+                <p:inputText id="queryRepairprocess" value="#{equipmentHistoryManagedBean.queryRepairprocess}" title="维修策略" />
+                
+                <h:outputLabel value="故障报警" for="queryHitchalarm" />
+                <p:inputText id="queryHitchalarm" value="#{equipmentHistoryManagedBean.queryHitchalarm}" title="故障报警" />
+                 
                 <h:outputLabel value="报修人" for="queryRepairuser" />
                 <p:inputText id="queryRepairuser" value="#{equipmentHistoryManagedBean.queryRepairuser}" title="报修人" />
+                
                 <h:outputLabel value="维修人" for="queryServiceuser" />
                 <p:inputText id="queryServiceuser" value="#{equipmentHistoryManagedBean.queryServiceuser}" title="维修人"/>
             </p:panelGrid>
@@ -64,6 +73,8 @@
                 </f:facet>
 
                 <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{equipmentHistoryManagedBean.print()}" icon="ui-icon-print"
+                                    />
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentHistoryManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>

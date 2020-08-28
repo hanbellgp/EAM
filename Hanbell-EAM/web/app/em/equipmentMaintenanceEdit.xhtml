@@ -134,6 +134,13 @@
                                   width="600" height="150" required="true" requiredMessage="请输入维修方式说明" />
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column colspan="7">
+                        <p:editor id="hitchalarm" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchalarm}" 
+                                  width="600" height="150"  />
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

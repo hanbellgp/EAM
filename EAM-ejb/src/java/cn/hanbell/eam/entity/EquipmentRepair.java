@@ -146,6 +146,11 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+    @Size(max = 50)
+    @Column(name = "hitchalarm")
+    private String hitchalarm;
+    @Column(name = "laborcost")
+    private BigDecimal laborcost;
     @Transient
     private String maintenanceTime;
     @Transient
@@ -383,6 +388,22 @@ public class EquipmentRepair extends FormEntity {
 
     public void setDowntime(String downtime) {
         this.downtime = downtime;
+    }
+
+    public String getHitchalarm() {
+        return hitchalarm;
+    }
+
+    public void setHitchalarm(String hitchalarm) {
+        this.hitchalarm = hitchalarm;
+    }
+
+    public BigDecimal getLaborcost() {
+        return laborcost;
+    }
+
+    public void setLaborcost(BigDecimal laborcost) {
+        this.laborcost = laborcost;
     }
 
     @Override
