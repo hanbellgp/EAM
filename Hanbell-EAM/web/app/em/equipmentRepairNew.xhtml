@@ -121,7 +121,7 @@
                         <p:ajax event="rowSelect"     update=":formOne:tabView:toolbar"/>
                         <p:ajax event="rowUnselect"   update=":formOne:tabView:toolbar"/>
                         <p:column>
-                            <img src="../../resources/app/res/#{item.filename}" width="50" height="50" />
+                            <img src="#{item.filepath}" width="50" height="50" />
                         </p:column>
                     </p:dataTable>
                 </p:tab>

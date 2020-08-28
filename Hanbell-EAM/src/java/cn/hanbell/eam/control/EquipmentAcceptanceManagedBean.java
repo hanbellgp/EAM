@@ -275,21 +275,21 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         return maintenanceCosts;
     }
 //加载文件
-
     @Override
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             request.setCharacterEncoding("UTF-8");
-            Date date = new Date();
-            SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
-            imageName = String.valueOf(date.getTime());
+            
+            SimpleDateFormat f=new SimpleDateFormat("yyyyMMddHHmmss");
+            imageName = f.format(getDate());
             final InputStream in = this.file.getInputstream();
             final File dir = new File(this.getAppResPath());
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            imageName = imageName + this.getFileName();
+             String [] type=fileName.split("\\.");
+             imageName+="."+type[1];
             final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
             int read = 0;
             final byte[] bytes = new byte[1024];
@@ -317,8 +317,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
-            equipmentrepairfile.setFilename(imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("维修图片");
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);
