@@ -149,7 +149,13 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障判断过程及原因描述"  /></p:column>
                     <p:column colspan="7" >
-                        <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.hitchreason}" disabled="true" width="600" height="150" />
+                        <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairmethod}" disabled="true" width="600" height="150" />
+                    </p:column>
+                </p:row>
+                  <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式说明"  /></p:column>
+                    <p:column colspan="7" >
+                        <p:editor id="repairmethod" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairmethod}" disabled="true" width="600" height="150" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -174,7 +180,13 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column colspan="7">
+                        <p:editor id="hitchalarm" widgetVar="editorWidget" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchalarm}" disabled="true" width="600" height="150" />
+                    </p:column> 
+                </p:row>
+                <p:row>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
                     <p:column colspan="7">
                         <p:editor id="measure" widgetVar="editorWidget" value="#{equipmentAcceptanceManagedBean.currentEntity.measure}" disabled="true" width="600" height="150" />
                     </p:column> 
@@ -240,7 +252,10 @@
                     <p:column  style="width: 550px">
                         <h:outputText  id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
                     </p:column>
-                   
+                       <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="人工费用" for="laborcost" /></p:column>
+                    <p:column  style="width: 550px">
+                        <h:outputText  id="laborcost" value="#{equipmentAcceptanceManagedBean.currentEntity.laborcost}" title="laborcost" styleClass="inputWithButton"/>
+                    </p:column>
                      <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
                     <p:column  style="width: 550px">
                         <h:outputText  id="sparecost" value="#{equipmentAcceptanceManagedBean.currentEntity.sparecost}" title="sparecost" styleClass="inputWithButton"/>

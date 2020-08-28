@@ -9,6 +9,7 @@ import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -22,6 +23,15 @@ public class EquipmentTroubleBean extends SuperEJBForEAM<EquipmentTrouble> {
         super(EquipmentTrouble.class);
     }
 
-
+ public EquipmentTrouble findByTroubleid(String value) {
+        Query query = getEntityManager().createNamedQuery("EquipmentTrouble.findByTroubleid");
+        query.setParameter("troubleid", value);
+        try {
+            Object o = query.getSingleResult();
+            return (EquipmentTrouble) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 
 }
