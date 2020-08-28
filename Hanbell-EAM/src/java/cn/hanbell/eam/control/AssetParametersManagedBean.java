@@ -197,7 +197,7 @@ private String imageName;
         currentDetail = detailList.get(0);
 
     }
-  //处理上传数据
+  //处理上传图片数据
     public void handleFileUploadWhenDetailNew(FileUploadEvent event) {
         super.handleFileUploadWhenNew(event);
         if (this.fileName != null) {
@@ -205,12 +205,11 @@ private String imageName;
             int seq = detailList3.size() + 1;
             AssetFile assetFile = new AssetFile();
             assetFile.setCompany(userManagedBean.getCompany());
-           
-            assetFile.setFilepath("../../resources/app/res/"+imageName);
+            assetFile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
             assetFile.setStatus("Y");
             assetFile.setSeq(seq);
             assetFile.setPid(currentEntity.getFormid());
-            assetFile.setFilename(fileName);
+            assetFile.setFilename(imageName);
             detailList3.add(assetFile);
             addedDetailList3.add(assetFile);
         }
@@ -230,8 +229,7 @@ private String imageName;
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-             String [] type=fileName.split("\\.");
-             imageName+="."+type[1];
+            imageName = imageName + this.getFileName();
             final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
             int read = 0;
             final byte[] bytes = new byte[1024];
