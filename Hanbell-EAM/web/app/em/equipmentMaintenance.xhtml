@@ -55,11 +55,11 @@
                         <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentMaintenanceManagedBean.print()}" icon="ui-icon-print"
                                     />
                         <p:menuitem id="btnEdit" value="记录维修过程" action="#{equipmentMaintenanceManagedBean.recordMaintenanceProcess('equipmentMaintenanceEdit')}" icon="ui-icon-pencil"
-                                    rendered="#{equipmentMaintenanceManagedBean.doEdit}" />
+                                    />
                          <p:menuitem id="btnCreate" value="发起维修验收" action="#{equipmentMaintenanceManagedBean.initiateMaintenanceAcceptance('equipmentMaintenanceNew')}" icon="ui-icon-plus"
-                                    rendered="#{equipmentMaintenanceManagedBean.doAdd}" />
+                                   />
                         <p:menuitem id="btnDelete" actionListener="#{equipmentMaintenanceManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
-                                    update=":formList">
+                                    >
                             <p:confirm header="系统提示" message="作废吗?" icon="ui-icon-alert" />
                         </p:menuitem>
                     </p:splitButton>

@@ -149,9 +149,13 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障判断过程及原因描述"  /></p:column>
                     <p:column colspan="7" >
-                        <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentHistoryManagedBean.currentEntity.hitchreason}" disabled="true" width="600" height="150" />
+                        <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentHistoryManagedBean.currentEntity.repairmethod}" disabled="true" width="600" height="150" />
                     </p:column>
                 </p:row>
+                 <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式说明"  /></p:column>
+                    <p:column colspan="7" >
+                        <p:editor id="repairmethod" widgetVar="editorWidget"  value="#{equipmentHistoryManagedBean.currentEntity.repairmethod}" disabled="true" width="600" height="150" />
+                    </p:column>
                 <p:row>
                     <p:column rowspan="3" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
 
@@ -172,6 +176,12 @@
                     <p:column colspan="7">
                         <p:editor id="repairprocess"  widgetVar="editorWidget"  value="#{equipmentHistoryManagedBean.currentEntity.repairprocess}" disabled="true" width="600" height="150" />
                     </p:column>
+                </p:row>
+                  <p:row>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column colspan="7">
+                        <p:editor id="hitchalarm" widgetVar="editorWidget" value="#{equipmentHistoryManagedBean.currentEntity.hitchalarm}" disabled="true" width="600" height="150" />
+                    </p:column> 
                 </p:row>
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>

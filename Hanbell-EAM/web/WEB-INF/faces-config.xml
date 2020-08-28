@@ -352,30 +352,35 @@
             <to-view-id>/app/os/stationeryitemView.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-      </navigation-rule>
-      <navigation-rule>
-           <description>设备维修模块</description>
-            <from-view-id>/*</from-view-id>
+    </navigation-rule>
+    <navigation-rule>
+        <description>设备维修模块</description>
+        <from-view-id>/*</from-view-id>
         <navigation-case>
             <description>EM110设备盘点作业</description>
             <from-outcome>assetCheckTemp</from-outcome>
             <to-view-id>/app/em/assetCheckTemp.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-
+        <navigation-case>
+            <description>BD1AD设备参数维护</description>
+            <from-outcome>assetParameters</from-outcome>
+            <to-view-id>/app/em/assetParameters.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
         <navigation-case>
             <description>BD100故障报修管理</description>
             <from-outcome>equipmentRepair</from-outcome>
             <to-view-id>/app/em/equipmentRepair.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>BD102故障维修管理</description>
             <from-outcome>equipmentMaintenance</from-outcome>
             <to-view-id>/app/em/equipmentMaintenance.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>BD103维修验收管理</description>
             <from-outcome>equipmentAcceptance</from-outcome>
             <to-view-id>/app/em/equipmentAcceptance.xhtml</to-view-id>
@@ -387,7 +392,7 @@
             <to-view-id>/app/em/equipmentHistoryQuery.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-      </navigation-rule>  
+    </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>
         <from-view-id>/*</from-view-id>
@@ -436,17 +441,17 @@
             <to-view-id>/app/df/warehouseSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <from-outcome>equipmentSelect</from-outcome>
             <to-view-id>/app/df/equipmentSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-           <navigation-case>
+        <navigation-case>
             <from-outcome>repairUserSelect</from-outcome>
             <to-view-id>/app/df/repairUserSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <from-outcome>equipmentSpareSelect</from-outcome>
             <to-view-id>/app/df/equipmentSpareSelect.xhtml</to-view-id>
             <redirect/>

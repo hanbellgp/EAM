@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="assetParameters" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{assetParametersManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead,formOne:tabView:plgBase,formOne:tabView:plgVendor,formOne:tabView:plgParameter" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">设备参数－编辑</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="编号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{assetParametersManagedBean.currentEntity.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="建立日期" for="formdate" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formdate" value="#{assetParametersManagedBean.currentEntity.formdate}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="名称" for="assetDesc"/></p:column>
+                    <p:column>
+                        <h:outputText id="assetDesc" value="#{assetParametersManagedBean.currentEntity.assetDesc}" title="assetDesc" />
+                    </p:column>
+                    <p:column><p:outputLabel value="规格" for="assetSpec"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="assetSpec" value="#{assetParametersManagedBean.currentEntity.assetSpec}" title="assetSpec" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="品号" for="assetItem" /></p:column>
+                    <p:column>
+                        <h:outputText id="assetItem" value="#{assetParametersManagedBean.currentEntity.assetItem.itemno}" title="itemno" styleClass="inputWithButton"
+                                      />
+                    </p:column>
+                    <p:column><h:outputText value="品名" /></p:column>
+                    <p:column>
+                        <h:outputText id="itemdesc" value="#{assetParametersManagedBean.currentEntity.assetItem.itemdesc}" title="itemdesc"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="数量" /></p:column>
+                    <p:column>
+                        <h:outputText id="qty" value="#{assetParametersManagedBean.currentEntity.qty}" title="qty"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <h:outputText id="unit" value="#{assetParametersManagedBean.currentEntity.unit}" title="Unit"
+                                      />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="基础信息">
+                    <p:panelGrid id="plgBase"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="使用部门" for="deptno" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptno" value="#{assetParametersManagedBean.currentEntity.deptno}" title="RequireDeptno" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                            <p:column><p:outputLabel value="公司" for="position1" /></p:column>
+                            <p:column>
+                                <h:outputText id="position1" value="#{assetParametersManagedBean.currentEntity.position1.name}" title="position1" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="deptname" value="#{assetParametersManagedBean.currentEntity.deptname}" title="RequireDeptname" />
+                            </p:column>
+                            <p:column><p:outputLabel value="厂区" for="position2" /></p:column>
+                            <p:column>
+                                <h:outputText id="position2" value="#{assetParametersManagedBean.currentEntity.position2.name}" title="position2" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="使用人" for="userno" /></p:column>
+                            <p:column>
+                                <h:outputText id="userno" value="#{assetParametersManagedBean.currentEntity.userno}" title="RequireUserno" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                            <p:column><p:outputLabel value="厂房" for="position3" /></p:column>
+                            <p:column>
+                                <p:outputLabel id="position3" value="#{assetParametersManagedBean.currentEntity.position3.name}" title="position3" styleClass="inputWithButton"
+                                               />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="姓名" for="username" /></p:column>
+                            <p:column>
+                                <h:outputText id="username" value="#{assetParametersManagedBean.currentEntity.username}" title="RequireUsername" />
+                            </p:column>
+                            <p:column><p:outputLabel value="地点" for="position4" /></p:column>
+                            <p:column>
+                                <h:outputText id="position4" value="#{assetParametersManagedBean.currentEntity.position4.name}" title="position4" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="维修ID" for="username" /></p:column>
+                            <p:column>
+                                <h:outputText id="repairuser" value="#{assetParametersManagedBean.currentEntity.repairuser}" title="repairuser" />
+                            </p:column>
+                            <p:column><p:outputLabel value="维修姓名" for="position4" /></p:column>
+                            <p:column>
+                                <h:outputText id="repairusername" value="#{assetParametersManagedBean.currentEntity.repairusername}" title="repairusername" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="来源单号" for="srcformid" /></p:column>
+                            <p:column>
+                                <h:outputText id="srcformid" value="#{assetParametersManagedBean.currentEntity.srcformid}" title="srcformid" />
+                            </p:column>
+                            <p:column><p:outputLabel value="仓库" for="warehouse" /></p:column>
+                            <p:column>
+                                <h:outputText id="warehouse" value="#{assetParametersManagedBean.currentEntity.warehouse.name}" title="warehouse" styleClass="inputWithButton"
+                                              />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab title="状态信息">
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column styleClass="Wid20"><h:outputText value="购置金额" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="amts" value="#{assetParametersManagedBean.currentEntity.amts}" title="amts" />
+                            </p:column>
+                            <p:column styleClass="Wid20"><h:outputText value="购置日期"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <h:outputText id="buyDate" value="#{assetParametersManagedBean.currentEntity.buyDate}" title="buyDate">
+                                    <f:convertDateTime pattern="yyyy/MM/dd"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="是否使用" /></p:column>
+                            <p:column>
+                                <p:inputSwitch id="used" value="#{assetParametersManagedBean.currentEntity.used}" disabled="true" />
+                            </p:column>
+                            <p:column><h:outputText value="使用日期"/></p:column>
+                            <p:column>
+                                <h:outputText id="usingDate" value="#{assetParametersManagedBean.currentEntity.usingDate}" title="buyDate">
+                                    <f:convertDateTime pattern="yyyy/MM/dd"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputText value="是否报废" /></p:column>
+                            <p:column>
+                                <p:inputSwitch id="scrap" value="#{assetParametersManagedBean.currentEntity.scrap}" disabled="true" />
+                            </p:column>
+                            <p:column><h:outputText value="报废日期"/></p:column>
+                            <p:column>
+                                <h:outputText id="scrapDate" value="#{assetParametersManagedBean.currentEntity.scrapDate}" title="scrapDate">
+                                    <f:convertDateTime pattern="yyyy/MM/dd"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab title="厂商信息">
+                    <p:panelGrid id="plgVendor"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column ><h:outputText value="制造商"  /></p:column>
+                            <p:column>
+                                <p:inputText id="manufacturer" value="#{assetParametersManagedBean.currentDetail.manufacturer}" title="manufacturer" />
+                            </p:column>
+                            <p:column ><h:outputText value="出厂日期"/></p:column>
+                            <p:column >
+                                <p:calendar id="manudate" value="#{assetParametersManagedBean.currentDetail.manudate}" title="出厂日期" pattern="yyyy/MM/dd"/>
+                            </p:column>
+                            <p:column ><h:outputText value="制造国别" /></p:column>
+                            <p:column >
+                                <p:inputText id="manucountry" value="#{assetParametersManagedBean.currentDetail.manucountry}" title="manucountry" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column ><h:outputText value="供货商" /></p:column>
+                            <p:column >
+                                <p:inputText id="supplier" value="#{assetParametersManagedBean.currentDetail.supplier}" title="supplier" />
+                            </p:column>
+                            <p:column ><h:outputText value="出厂编号" /></p:column>
+                            <p:column>
+                                <p:inputText id="manuno" value="#{assetParametersManagedBean.currentDetail.manuno}" title="manuno" />
+                            </p:column>
+                            <p:column ><h:outputText value="设备型号" /></p:column>
+                            <p:column >
+                                <p:inputText id="manutype"  value="#{assetParametersManagedBean.currentDetail.manutype}" title="manutype" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column ><h:outputText value="接洽人(一)" /></p:column>
+                            <p:column >
+                                <p:inputText id="contacter1"  value="#{assetParametersManagedBean.currentDetail.contacter1}" title="contacter1" />
+                            </p:column>
+                            <p:column><h:outputText value="联系方式" /></p:column>
+                            <p:column >
+                                <p:inputText id="contactertel1"  value="#{assetParametersManagedBean.currentDetail.contactertel1}" title="contactertel1" />
+                            </p:column>
+                            <p:column ><h:outputText value="联系地址" /></p:column>
+                            <p:column>
+                                <p:inputText id="contacteradd1"  value="#{assetParametersManagedBean.currentDetail.contacteradd1}" title="contacteradd1" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column ><h:outputText value="接洽人(二)" /></p:column>
+                            <p:column >
+                                <p:inputText id="contacter2"  value="#{assetParametersManagedBean.currentDetail.contacter2}" title="contacter2" />
+                            </p:column>
+                            <p:column ><h:outputText value="联系方式" /></p:column>
+                            <p:column>
+                                <p:inputText id="contactertel2"  value="#{assetParametersManagedBean.currentDetail.contactertel2}" title="contactertel2" />
+                            </p:column>
+                            <p:column ><h:outputText value="联系地址" /></p:column>
+                            <p:column>
+                                <p:inputText id="contacteradd2" value="#{assetParametersManagedBean.currentDetail.contacteradd2}" title="contacteradd2" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column ><h:outputText value="备注" /></p:column>
+                            <p:column colspan="7">
+                                <p:inputText id="mmark"  value="#{assetParametersManagedBean.currentDetail.mmark}" title="mmark" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab title="设备参数">
+                    <p:panelGrid id="plgParameter"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column ><h:outputText value="设备等级"  /></p:column>
+                            <p:column>
+                                <p:inputText id="level" value="#{assetParametersManagedBean.level}" title="level"   />
+                            </p:column>
+                            <p:column ><h:outputText value="额定电压"/></p:column>
+                            <p:column >
+                                <p:inputText id="voltage" value="#{assetParametersManagedBean.voltage}" title="voltage"  />
+                            </p:column>
+                            <p:column ><h:outputText value="额定功率" /></p:column>
+                            <p:column >
+                                <p:inputText id="power" value="#{assetParametersManagedBean.power}" title="power"  />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetParametersManagedBean.createDetail2()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update=":formOne:tabView:plgParameterDet"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{assetParametersManagedBean.deleteDetail2()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgParameterDet,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetParametersManagedBean.doConfirmDetailCheck()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgParameterDet" update=":formOne:tabView:plgParameterDet,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgParameterDet"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column><p:outputLabel value="名称"/></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="paramname" value="#{assetParametersManagedBean.currentDetail2.paramname}" title="paramname" styleClass="inputWithButton"
+                                             disabled="#{assetParametersManagedBean.checkParamname()}"/>
+                            </p:column>
+                            <p:column><h:outputText value="值"/></p:column>
+                            <p:column>
+                                <p:inputText id="paramvalue" value="#{assetParametersManagedBean.currentDetail2.paramvalue}" title="paramvalue"  required="true" requiredMessage="请输入值"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><p:outputLabel value="单位"  /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="paramunit" value="#{assetParametersManagedBean.currentDetail2.paramunit}" title="paramunit" styleClass="inputWithButton"
+                                             required="true" requiredMessage="请输入单位" />
+                            </p:column>
+                            <p:column><h:outputText value="备注"/></p:column>
+
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="remark" value="#{assetParametersManagedBean.currentDetail2.remark}" title="remark" styleClass="inputWithButton"
+                                             />
+                            </p:column>
+
+
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{assetParametersManagedBean.detailList2}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{assetParametersManagedBean.currentDetail2}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgParameterDet" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgParameterDet" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.paramname}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="值"/>
+                            </f:facet>
+                            <h:outputText value="#{item.paramvalue}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.paramunit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="备注"/>
+                            </f:facet>
+                            <h:outputText value="#{item.remark}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:tab>
+                <p:tab title="设备资料">
+                    <p:panelGrid id="plgData"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column  style="background-color: #EEEEEE"><h:outputText value="上传附件"  /></p:column>
+                            <p:column >
+                                <p:fileUpload id="fileUploadDetail" fileUploadListener="#{assetParametersManagedBean.handleFileUploadWhenDetailNew}"
+                                              sizeLimit="10000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|zip|xlsx|xls|doc|docx|txt)$/" multiple="true" sequential="true"
+                                              label="选择" uploadLabel="上传" cancelLabel="取消" update="formOne:tabView:tableList2" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+
+                    <p:toolbar id="toolbarData" styleClass="topToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnDeleteDetai3" value="删除" actionListener="#{assetParametersManagedBean.deleteDetail3()}" icon="ui-icon-trash"
+                                             process="@this" update="formOne:tabView:tableList2" />
+                        </f:facet>
+                    </p:toolbar>
+                    <p:dataTable id="tableList2" value="#{assetParametersManagedBean.detailList3}" var="item"  styleClass="tableList Mtop10" 
+                                 selectionMode="single" selection="#{assetParametersManagedBean.currentDetail3}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"   update="formOne:tabView:toolbarData"/>
+                        <p:ajax event="rowUnselect"  update="formOne:tabView:toolbarData" />
+                          
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="文件名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.filename}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -30,7 +30,7 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
     private String queryUsername;
     private String queryDeptno;
     private String queryDeptname;
-
+    
     private boolean queryZero = false;
 
     public EquipmentQueryBean() {

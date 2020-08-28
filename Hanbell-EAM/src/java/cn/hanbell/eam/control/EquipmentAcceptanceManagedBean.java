@@ -72,6 +72,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private String contenct;
     private String note;
     private List<EquipmentTrouble> equipmentTroubleList;
+    private List<EquipmentRepairFile> equipmentRepairFileList;
 
     public EquipmentAcceptanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -139,7 +140,17 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         currentDetail2.setCompany(currentEntity.getCompany());
         currentDetail2.setStatus("N");
         super.doConfirmDetail2();
-         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
+        currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
+    }
+
+    @Override
+    public void deleteDetail() {
+       
+        if (currentDetail!=null&&"报修图片".equals(currentDetail.getFilefrom())) {
+            showErrorMsg("Error", "选择的图片是报修图片,不能删除");
+            return;
+        }
+        super.deleteDetail(); //To change body of generated methods, choose Tools | Templates.
     }
 
     //修改维修验收单
@@ -244,8 +255,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             } else if (contenct.equals("不合格")) {
                 currentEntity.setRstatus("30");
             }
-            contenct=null;
-            note=null;
+            contenct = null;
+            note = null;
             super.doConfirmDetail3();
             super.update();
         } else {
@@ -354,6 +365,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
         }
     }
+
     //获取故障来源
     public String getTroubleName(String cValue) {
         SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
@@ -364,6 +376,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         troubleName = sysCode.getCdesc();
         return troubleName;
     }
+
     //获取显示的进度
     public String getStateName(String str) {
         String queryStateName = "";
@@ -510,6 +523,14 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public List<EquipmentRepairFile> getEquipmentRepairFileList() {
+        return equipmentRepairFileList;
+    }
+
+    public void setEquipmentRepairFileList(List<EquipmentRepairFile> equipmentRepairFileList) {
+        this.equipmentRepairFileList = equipmentRepairFileList;
     }
 
 }
