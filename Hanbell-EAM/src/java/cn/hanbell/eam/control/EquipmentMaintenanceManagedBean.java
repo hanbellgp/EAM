@@ -348,20 +348,21 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     }
 //加载文件
 
-    @Override
+      @Override
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             request.setCharacterEncoding("UTF-8");
-            Date date = new Date();
-            SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
-            imageName = String.valueOf(date.getTime());
+            
+            SimpleDateFormat f=new SimpleDateFormat("yyyyMMddHHmmss");
+            imageName = f.format(getDate());
             final InputStream in = this.file.getInputstream();
             final File dir = new File(this.getAppResPath());
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            imageName = imageName + this.getFileName();
+             String [] type=fileName.split("\\.");
+             imageName+="."+type[1];
             final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
             int read = 0;
             final byte[] bytes = new byte[1024];
@@ -389,8 +390,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
-            equipmentrepairfile.setFilename(imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("维修图片");
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);
@@ -411,7 +412,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     @Override
     public void print() {
 
-        fileName = "维修目录表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        fileName = "equimentMaintenance" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式

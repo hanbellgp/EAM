@@ -156,7 +156,7 @@
                         </c:if>  
                         <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                <img src="#{li.filepath}" width="200" height="200" />
                             </c:if> 
                         </c:forEach>
                     </p:column>
@@ -190,7 +190,7 @@
                             </c:if>  
                             <c:forEach items="#{equipmentMaintenanceManagedBean.addedDetailList}" var ="li" varStatus="status">
                                 <c:if test="${li.filefrom=='维修图片'}">  
-                                    <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                    <img src="#{li.filepath}" width="200" height="200" />
                                 </c:if> 
                             </c:forEach>
 
