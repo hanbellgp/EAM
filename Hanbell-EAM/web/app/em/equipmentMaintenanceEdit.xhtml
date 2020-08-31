@@ -94,8 +94,7 @@
                 <p:row>
                     <p:column rowspan="8" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
                     <p:column  colspan="6">
-                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdesc}" 
-                                  width="600" height="150"  />
+                        <p:inputTextarea id="hitchdesc"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdesc}" rows="5" cols="70" style=" border: darkgray solid 1px" readonly="true"/>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -106,7 +105,7 @@
                         </c:if>  
                         <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                <img src="#{li.filepath}" width="200" height="200" />
                             </c:if> 
                         </c:forEach>
                     </p:column>
@@ -130,15 +129,17 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="维修方式说明"  /></p:column>
                     <p:column colspan="7">
-                        <p:editor id="repairmethod" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairmethod}" 
-                                  width="600" height="150" required="true" requiredMessage="请输入维修方式说明" />
+                        
+                        <p:inputTextarea id="repairmethod"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairmethod}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px"  required="true" requiredMessage="请输入维修方式说明" maxlength="200"/>
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
                     <p:column colspan="7">
-                        <p:editor id="hitchalarm" widgetVar="editorWidget"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchalarm}" 
-                                  width="600" height="150"  />
+                               
+                        <p:inputTextarea id="hitchalarm"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchalarm}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px"  maxlength="50"/>
                     </p:column>
                 </p:row>
             </p:panelGrid>

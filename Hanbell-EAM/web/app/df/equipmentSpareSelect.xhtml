@@ -11,11 +11,11 @@
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <p:row>
-                    <p:column><h:outputLabel value="设备编号" for="querySparenum" /></p:column>
+                    <p:column><h:outputLabel value="备件编号" for="querySparenum" /></p:column>
                     <p:column>
                         <p:inputText id="querySparenum" value="#{equipmentSpareQueryBean.querySparenum}" title="设备编号" />
                     </p:column>
-                    <p:column><h:outputLabel value="设备名称" for="querySparedesc" /></p:column>
+                    <p:column><h:outputLabel value="备件名称" for="querySparedesc" /></p:column>
                     <p:column>
                         <p:inputText id="querySparedesc" value="#{equipmentSpareQueryBean.querySparedesc}" title="设备名称" />
                     </p:column>
@@ -55,7 +55,12 @@
                     </f:facet>
                     <h:outputText value="#{item.sparedesc}"/>
                 </p:column>
-              
+                 <p:column styleClass="">
+                    <f:facet name="header">
+                        <h:outputText value="品牌"/>
+                    </f:facet>
+                    <h:outputText value="#{item.brand}"/>
+                </p:column>
                 <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="数量"/>

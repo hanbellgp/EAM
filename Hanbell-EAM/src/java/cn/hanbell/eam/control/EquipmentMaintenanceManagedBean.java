@@ -99,6 +99,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
         queryServiceuser = getUserName(userManagedBean.getUserid());
+          equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
         model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
@@ -150,7 +151,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             return "";
         }
         if (Integer.parseInt(currentEntity.getRstatus()) < 20) {
-            showErrorMsg("Error", "维修人员未到达，维修未完成不能记录维修过程！");
+            showErrorMsg("Error", "维修人员未到达，不能记录维修过程！");
             return "";
         }
         if (Integer.parseInt(currentEntity.getRstatus()) >= 30) {
@@ -279,7 +280,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        equipmentTroubleList = equipmentTroubleBean.findAll();
+      
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
         createDetail3();
         return super.edit(path);
@@ -310,6 +311,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
     }
 
+
     @Override
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
@@ -319,13 +321,13 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
             //获取维修时间
             currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
-            //根据维修时间获取人工费用
-            getLaborcost(currentEntity.getMaintenanceTime());
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         getPartsCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -389,8 +391,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
-            equipmentrepairfile.setFilename(imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("维修图片");
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);

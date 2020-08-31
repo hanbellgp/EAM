@@ -94,7 +94,7 @@
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><p:outputLabel value="故障部位及详细情况"  /></p:column>
                     <p:column colspan="7" style="height: 40px">
-                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" required="true" requiredMessage="请输入故障描述" width="600" height="150"/>
+                        <p:inputTextarea id="hitchdesc"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" rows="5" cols="70" style=" border: darkgray solid 1px" maxlength="200" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -121,7 +121,7 @@
                         <p:ajax event="rowSelect"     update=":formOne:tabView:toolbar"/>
                         <p:ajax event="rowUnselect"   update=":formOne:tabView:toolbar"/>
                         <p:column>
-                            <img src="../../resources/app/res/#{item.filename}" width="50" height="50" />
+                            <img src="#{item.filepath}" width="50" height="50" />
                         </p:column>
                     </p:dataTable>
                 </p:tab>

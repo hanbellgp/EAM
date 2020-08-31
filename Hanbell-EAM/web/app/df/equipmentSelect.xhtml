@@ -12,28 +12,28 @@
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <p:row>
                     <p:column><h:outputLabel value="品号" for="queryItemno" /></p:column>
-                    <p:column styleClass="Wid20">
+                    <p:column >
                         <p:inputText id="queryItemno" value="#{equipmentQueryBean.queryItemno}" title="品号" />
                     </p:column>
-                      <p:column><h:outputLabel value="编号" for="queryFormId" /></p:column>
+                      <p:column styleClass="Wid15"><h:outputLabel value="编号" for="queryFormId" /></p:column>
                     <p:column>
                         <p:inputText id="queryFormId" value="#{equipmentQueryBean.queryFormId}" title="编号" />
                     </p:column>
-                    <p:column><h:outputLabel value="名称" for="queryName" /></p:column>
-                    <p:column styleClass="Wid20">
+                      <p:column styleClass="Wid15"><h:outputLabel value="名称" for="queryName" /></p:column>
+                    <p:column>
                         <p:inputText id="queryName" value="#{equipmentQueryBean.queryName}" title="名称" />
                     </p:column>
                 </p:row>
                 <p:row>
-                  <p:column><h:outputLabel value="使用部门" for="queryDeptname" /></p:column>
+                  <p:column styleClass="Wid15"><h:outputLabel value="使用部门" for="queryDeptname" /></p:column>
                     <p:column>
                         <p:inputText id="queryDeptname" value="#{equipmentQueryBean.queryDeptname}" title="姓名" />
                     </p:column>
-                    <p:column><h:outputLabel value="工号" for="queryUserno" /></p:column>
+                    <p:column styleClass="Wid15"><h:outputLabel value="工号" for="queryUserno" /></p:column>
                     <p:column>
                         <p:inputText id="queryUserno" value="#{equipmentQueryBean.queryUserno}" title="工号" />
                     </p:column>
-                    <p:column><h:outputLabel value="姓名" for="queryUsername" /></p:column>
+                    <p:column styleClass="Wid15"><h:outputLabel value="姓名" for="queryUsername" /></p:column>
                     <p:column>
                         <p:inputText id="queryUsername" value="#{equipmentQueryBean.queryUsername}" title="姓名" />
                     </p:column>
@@ -62,13 +62,13 @@
                     </f:facet>
                     <h:outputText value="#{item.assetItem.itemno}"/>
                 </p:column>
-                <p:column styleClass="">
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="编号"/>
                     </f:facet>
                     <h:outputText value="#{item.formid}"/>
                 </p:column>
-                <p:column styleClass="">
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="名称"/>
                     </f:facet>

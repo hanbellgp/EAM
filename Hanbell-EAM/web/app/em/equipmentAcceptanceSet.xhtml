@@ -50,8 +50,9 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="审批意见"/></p:column>
                     <p:column>
-                        <p:editor id="note" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.note}" 
-                                  width="600" height="150"  />
+                       
+                         <p:inputTextarea id="note"  value="#{equipmentAcceptanceManagedBean.note}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px"  maxlength="200"/> 
                     </p:column>
                 </p:row>
             </p:panelGrid>
