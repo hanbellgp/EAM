@@ -89,6 +89,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
         queryServiceuser = getUserName(userManagedBean.getUserid());
+        equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
         model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
@@ -183,7 +184,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        equipmentTroubleList = equipmentTroubleBean.findAll();
+        
         getPartsCost();
 
         return super.edit(path);
@@ -317,8 +318,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
-            equipmentrepairfile.setFilename(imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("维修图片");
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);

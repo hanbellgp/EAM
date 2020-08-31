@@ -88,7 +88,7 @@
                 <p:row>
                     <p:column rowspan="8" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
                     <p:column  colspan="6">
-                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" disabled="true" width="600" height="150" />
+                        <p:inputTextarea id="hitchdesc1"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" rows="5" cols="70" style=" border: darkgray solid 1px" readonly="true" />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -99,7 +99,7 @@
                         </c:if>  
                         <c:forEach items="#{equipmentRepairManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                <img src="#{li.filepath}" width="200" height="200" />
                             </c:if>  
                         </c:forEach>
                     </p:column>
