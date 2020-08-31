@@ -205,11 +205,11 @@ private String imageName;
             int seq = detailList3.size() + 1;
             AssetFile assetFile = new AssetFile();
             assetFile.setCompany(userManagedBean.getCompany());
-            assetFile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
+            assetFile.setFilepath("../../resources/app/res/"+imageName);
             assetFile.setStatus("Y");
             assetFile.setSeq(seq);
             assetFile.setPid(currentEntity.getFormid());
-            assetFile.setFilename(imageName);
+            assetFile.setFilename(fileName);
             detailList3.add(assetFile);
             addedDetailList3.add(assetFile);
         }

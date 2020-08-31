@@ -212,8 +212,8 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath(this.getAppImgPath().replaceAll("//", "/"));
-            equipmentrepairfile.setFilename(imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("报修图片");
             equipmentrepairfile.setStatus("Y");
             equipmentrepairfile.setSeq(seq);

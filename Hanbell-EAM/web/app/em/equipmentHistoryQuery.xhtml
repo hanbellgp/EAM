@@ -87,7 +87,7 @@
 
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                <p:column styleClass="Wid10">
+               <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="进度"/>
                     </f:facet>
@@ -105,13 +105,13 @@
                     </f:facet>
                     <h:outputText value="#{item.itemno.deptname}"/>
                 </p:column>
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="资产编号"/>
                     </f:facet>
                     <h:outputText value="#{item.assetno}"/>
                 </p:column>
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="设备名称"/>
                     </f:facet>
@@ -121,25 +121,33 @@
                     <f:facet name="header">
                         <h:outputText value="故障来源"/>
                     </f:facet>
-                    <h:outputText value="#{equipmentHistoryManagedBean.getTroubleName(item.troublefrom)}"/>
+                   <h:outputText value="#{equipmentHistoryManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
-                <p:column styleClass="Wid20">
+
+                  <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="故障发生时间"/>
                     </f:facet>
                     <h:outputText value="#{item.credate}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-                    </h:outputText>
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                    </h:outputText>                      
                 </p:column>
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="维修到达时间"/>
                     </f:facet>
                     <h:outputText value="#{item.servicearrivetime}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>                      
                 </p:column>
-
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="维修完成时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.completetime}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                    </h:outputText>                      
+                </p:column>
                 <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="报修人"/>

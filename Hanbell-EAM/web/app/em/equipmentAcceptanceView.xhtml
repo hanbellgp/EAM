@@ -32,15 +32,15 @@
                         <h:outputText id="assetno" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno}" title="assetno" styleClass="inputWithButton" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE" ><h:outputText value="设备名称"  /></p:column>
-                    <p:column  styleClass="Wid15">
+                    <p:column  >
                         <h:outputText  id="assetDesc" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.assetDesc}" title="assetDesc" />
                     </p:column>
 
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
-                      <p:column>
-                      <h:outputText id="troublefrom" value="#{equipmentAcceptanceManagedBean.getTroubleName(equipmentAcceptanceManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
+                    <p:column>
+                        <h:outputText id="troublefrom" value="#{equipmentAcceptanceManagedBean.getTroubleName(equipmentAcceptanceManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><h:outputText value="使用部门"/></p:column>
                     <p:column>
@@ -75,7 +75,7 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><h:outputLabel value="维修工到达现场时间" for="queryDateEnd" /></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputLabel value="维修到达时间" for="queryDateEnd" /></p:column>
                     <p:column>
                         <h:outputText id="servicearrivetime" value="#{equipmentAcceptanceManagedBean.currentEntity.servicearrivetime}" title="servicearrivetime">
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
@@ -89,7 +89,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间(分)"/></p:column>
                     <p:column>
-                        <h:outputText id="excepttime" value="#{equipmentAcceptanceManagedBean.currentEntity.excepttime}" title="excepttime" />
+                        <h:outputText id="excepttime" value="#{equipmentAcceptanceManagedBean.currentEntity.excepttime}"  />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -116,7 +116,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="磨损性故障"  /></p:column>
                     <p:column  styleClass="Wid15">
-                        <p:selectOneMenu id="abrasehitch" value="#{equipmentAcceptanceManagedBean.currentEntity.abrasehitch}" title="磨损性故障" >
+                        <p:selectOneMenu id="abrasehitch" value="#{equipmentAcceptanceManagedBean.currentEntity.abrasehitch}" title="磨损性故障" disabled="true" >
                             <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
                         </p:selectOneMenu>
@@ -131,7 +131,8 @@
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><h:outputText value="故障部位及详情描述"/></p:column>
                     <p:column  colspan="6">
-                        <p:editor id="hitchdesc" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.hitchdesc}" disabled="true" width="600" height="150" />
+                        <p:inputTextarea id="hitchdesc"  value="#{equipmentAcceptanceManagedBean.currentEntity.hitchdesc}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" readonly="true"/>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -141,21 +142,31 @@
                         </c:if>  
                         <c:forEach items="#{equipmentAcceptanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                <img src="#{li.filepath}" width="200" height="200"/>
                             </c:if>  
                         </c:forEach>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column colspan="7">
+                        <p:inputTextarea id="hitchalarm"  value="#{equipmentAcceptanceManagedBean.currentEntity.hitchalarm}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px"  readonly="true"/>
+                    </p:column> 
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式说明"  /></p:column>
+                    <p:column colspan="7" >
+                        <p:inputTextarea id="repairmethod"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairmethod}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" readonly="true"/>
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障判断过程及原因描述"  /></p:column>
                     <p:column colspan="7" >
-                        <p:editor id="hitchreason" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairmethod}" disabled="true" width="600" height="150" />
-                    </p:column>
-                </p:row>
-                  <p:row>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式说明"  /></p:column>
-                    <p:column colspan="7" >
-                        <p:editor id="repairmethod" widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairmethod}" disabled="true" width="600" height="150" />
+                        <p:inputTextarea id="hitchreason"  value="#{equipmentAcceptanceManagedBean.currentEntity.hitchreason}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" readonly="true"/>    
                     </p:column>
                 </p:row>
                 <p:row>
@@ -169,26 +180,23 @@
                         </c:if> 
                         <c:forEach  items="#{equipmentAcceptanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='维修图片'}"> 
-                                <img src="../../resources/app/res/#{li.filename}" width="200" height="200" />
+                                <img src="#{li.filepath}" width="200" height="200" />
                             </c:if>
                         </c:forEach>
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column colspan="7">
-                        <p:editor id="repairprocess"  widgetVar="editorWidget"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairprocess}" disabled="true" width="600" height="150" />
+                        <p:inputTextarea id="repairprocess"  value="#{equipmentAcceptanceManagedBean.currentEntity.repairprocess}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" readonly="true"/>  
                     </p:column>
                 </p:row>
-                <p:row>
-                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
-                    <p:column colspan="7">
-                        <p:editor id="hitchalarm" widgetVar="editorWidget" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchalarm}" disabled="true" width="600" height="150" />
-                    </p:column> 
-                </p:row>
+
                 <p:row>
                     <p:column  style="background-color: #EEEEEE"><h:outputText value="预防措施(改进，预防措施及横向展开)"  /></p:column>
                     <p:column colspan="7">
-                        <p:editor id="measure" widgetVar="editorWidget" value="#{equipmentAcceptanceManagedBean.currentEntity.measure}" disabled="true" width="600" height="150" />
+                        <p:inputTextarea id="measure"  value="#{equipmentAcceptanceManagedBean.currentEntity.measure}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" readonly="true"/> 
                     </p:column> 
                 </p:row>
             </p:panelGrid>
@@ -196,40 +204,24 @@
                 <p:tab title="备件使用明细">
                     <p:dataTable id="tableList" value="#{equipmentAcceptanceManagedBean.detailList2}" var="item" styleClass="tableList Mtop10"
                                  selectionMode="single" selection="#{equipmentAcceptanceManagedBean.currentDetail2}" rowKey="#{item.seq}" >
-                        <p:ajax event="rowSelect"  />
-                        <p:ajax event="rowUnselect"  oncomplete="" />
+
                         <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件品号"/>
                             </f:facet>
                             <h:outputText value="#{item.spareno}"/>
                         </p:column>
-                           <p:column styleClass="Wid15">
+                        <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件编号"/>
                             </f:facet>
                             <h:outputText value="#{item.sparenum.sparenum}"/>
                         </p:column>
-                          <p:column styleClass="Wid15">
+                        <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件名称"/>
                             </f:facet>
                             <h:outputText value="#{item.sparenum.sparedesc}"/>
-                        </p:column>
-                        <p:column styleClass="Wid20">
-                            <f:facet name="header">
-                                <h:outputText value="维修使用人"/>
-                            </f:facet>
-                           <h:outputText value="#{equipmentAcceptanceManagedBean.getUserName(item.userno)}"/>
-                        </p:column>
-                        
-                        <p:column styleClass="Wid20">
-                            <f:facet name="header">
-                                <h:outputText value="维修使用时间"/>
-                            </f:facet>
-                            <h:outputText value="#{item.userdate}">
-                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-                            </h:outputText>   
                         </p:column>
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
@@ -243,26 +235,38 @@
                             </f:facet>
                             <h:outputText value="#{item.uprice}"/>
                         </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.unit.unit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="品牌"/>
+                            </f:facet>
+                            <h:outputText value="#{item.brand}"/>
+                        </p:column>
                     </p:dataTable>
                 </p:tab>
             </p:tabView>
-                 <p:panelGrid  id="plgCost">
+            <p:panelGrid  id="plgCost">
                 <p:row>
-                       <p:column style="background-color: #EEEEEE;height: 40px;width: 100px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;height: 40px;width: 180px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
                     <p:column  style="width: 550px">
                         <h:outputText  id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
                     </p:column>
-                       <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="人工费用" for="laborcost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;width: 280px" ><p:outputLabel value="人工费用（20元/时）" for="laborcost" /></p:column>
                     <p:column  style="width: 550px">
                         <h:outputText  id="laborcost" value="#{equipmentAcceptanceManagedBean.currentEntity.laborcost}" title="laborcost" styleClass="inputWithButton"/>
                     </p:column>
-                     <p:column style="background-color: #EEEEEE;width: 100px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;width: 180px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
                     <p:column  style="width: 550px">
                         <h:outputText  id="sparecost" value="#{equipmentAcceptanceManagedBean.currentEntity.sparecost}" title="sparecost" styleClass="inputWithButton"/>
                     </p:column>
-                     
+
                 </p:row>
-                 
+
             </p:panelGrid>
         </h:form>
     </ui:define>
