@@ -107,6 +107,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentDetail2.setUserno(currentEntity.getServiceuser());
             currentDetail2.setSparenum(u);
             currentDetail2.setUserdate(getDate());
+            currentDetail2.setUnit(u.getUnit());
+            currentDetail2.setBrand(u.getBrand());
         }
     }
 
@@ -120,6 +122,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     //保存验收数据
     public void saveAcceptance() {
         createDetail();
+        currentEntity.setStatus("N");
         super.update();//To change body of generated methods, choose Tools | Templates.
         addedDetailList2.clear();
     }
@@ -259,6 +262,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             contenct = null;
             note = null;
             super.doConfirmDetail3();
+            currentEntity.setStatus("N");
             super.update();
         } else {
             showErrorMsg("Error", "已完成本次审核,单据状态已变更,请返回主页面查看");
