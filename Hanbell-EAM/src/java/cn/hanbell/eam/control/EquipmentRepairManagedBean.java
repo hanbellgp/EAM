@@ -147,7 +147,6 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             return;
         }
 
-        currentEntity.setStatus("N");
         currentEntity.setRstatus("98");
         update();
     }
@@ -166,7 +165,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             showErrorMsg("Error", "该单据不能验收，请确认进度！");
             return;
         }
-        currentEntity.setStatus("N");//简化查询条件,此处不再提供修改状态(M)
+
         currentEntity.setRstatus("95");
         update();
     }
@@ -212,10 +211,10 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
             equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("报修图片");
-            equipmentrepairfile.setStatus("Y");
+            equipmentrepairfile.setStatus("N");
             equipmentrepairfile.setSeq(seq);
             detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
@@ -265,6 +264,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         }
         currentEntity.setRstatus("20");
         currentEntity.setServicearrivetime(getDate());
+        currentEntity.setStatus("N");
         super.update();
     }
 
@@ -290,7 +290,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         String[] title1 = getInventoryTitle();
         row = sheet1.createRow(0);
         row.setHeight((short) 800);
-        
+
         for (int i = 0; i < title1.length; i++) {
             Cell cell = row.createCell(i);
             cell.setCellStyle(style.get("head"));
@@ -350,7 +350,7 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
 
             Cell cell11 = row.createCell(11);
             cell11.setCellStyle(style.get("cell"));
-            cell11.setCellValue(getTroubleName(equipmentrepair.getTroublefrom()) );
+            cell11.setCellValue(getTroubleName(equipmentrepair.getTroublefrom()));
 
             Cell cell12 = row.createCell(12);
             cell12.setCellStyle(style.get("cell"));
