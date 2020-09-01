@@ -99,7 +99,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
         queryServiceuser = getUserName(userManagedBean.getUserid());
-          equipmentTroubleList = equipmentTroubleBean.findAll();
+        equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
         model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
@@ -162,6 +162,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "只有对应的维修人员才能填写维修过程！");
             return "";
         }
+        currentEntity.setStatus("N");
         return super.edit(path); //To change body of generated methods, choose Tools | Templates.
     }
 //选择备件数据处理
@@ -210,6 +211,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     public void updateRstatus() {
         currentEntity.setRstatus("30");
         currentEntity.setCompletetime(getDate());
+        currentEntity.setStatus("N");
         super.update(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -239,6 +241,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             SystemUser u = (SystemUser) event.getObject();
             currentEntity.setServiceuser(u.getUserid());
             currentEntity.setServiceusername(u.getUsername());
+            currentEntity.setStatus("N");
         }
         super.update();
     }
@@ -280,7 +283,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-      
+        
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
         createDetail3();
         return super.edit(path);
@@ -310,7 +313,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         }
         currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
     }
-
 
     @Override
     public String view(String path) {
@@ -391,7 +393,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
             equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("维修图片");
             equipmentrepairfile.setStatus("Y");
@@ -489,11 +491,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             }
             Cell cell11 = row.createCell(11);
             cell11.setCellStyle(style.get("cell"));
-            cell11.setCellValue(equipmentrepair.getExcepttime());
-            
-             Cell cell12 = row.createCell(12);
+            if (equipmentrepair.getExcepttime() != null) {
+                cell11.setCellValue(equipmentrepair.getExcepttime());
+            }
+            Cell cell12 = row.createCell(12);
             cell12.setCellStyle(style.get("cell"));
-            cell12.setCellValue(getTimeDifference(equipmentrepair.getCompletetime(), equipmentrepair.getServicearrivetime(), 0));
+            if (equipmentrepair.getCompletetime()!=null&&equipmentrepair.getServicearrivetime()!=null) {
+                 cell12.setCellValue(getTimeDifference(equipmentrepair.getCompletetime(), equipmentrepair.getServicearrivetime(), 0));
+            }
             Cell cell13 = row.createCell(13);
             cell13.setCellStyle(style.get("cell"));
             cell13.setCellValue(getTroubleName(equipmentrepair.getTroublefrom()));
@@ -544,14 +549,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间","非工作时间(分)","维修时间", "故障来源", "故障描述", "故障报警", "故障类型", "维修方式说明"};
+        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间", "非工作时间(分)", "维修时间", "故障来源", "故障描述", "故障报警", "故障类型", "维修方式说明"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{15, 20, 15, 15, 10, 15, 10, 10, 20, 20, 20,15,15, 15, 15, 15, 15, 20};
+        return new int[]{15, 20, 15, 15, 10, 15, 10, 10, 20, 20, 20, 15, 15, 15, 15, 15, 15, 20};
     }
 
     /**

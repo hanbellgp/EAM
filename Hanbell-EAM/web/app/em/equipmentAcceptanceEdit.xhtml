@@ -231,12 +231,12 @@
                                 <p:inputText id="spareno" value="#{equipmentAcceptanceManagedBean.currentDetail2.spareno}" title="spareno" styleClass="inputWithButton"
                                              required="true" requiredMessage="请输入品号" readonly="true"/>
                                 <p:commandButton id="btnAssetItemSelect" actionListener="#{equipmentAcceptanceManagedBean.openDialog('equipmentSpareSelect')}" icon="ui-icon-extlink" process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{equipmentAcceptanceManagedBean.handleDialogReturnWhenDetailEdit}" update="sparenum,uprice,spareno" />
+                                    <p:ajax event="dialogReturn" listener="#{equipmentAcceptanceManagedBean.handleDialogReturnWhenDetailEdit}" update="sparenum,uprice,spareno,brand,unit" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><h:outputText value="备件名称"/></p:column>
                             <p:column>
-                                <h:outputText id="sparenum" value="#{equipmentMaintenanceManagedBean.currentDetail2.sparenum.sparedesc}" title="sparenum" />
+                                <h:outputText id="sparenum" value="#{equipmentAcceptanceManagedBean.currentDetail2.sparenum.sparedesc}" title="sparenum" />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -245,12 +245,21 @@
                                 <p:inputText  id="qty" value="#{equipmentAcceptanceManagedBean.currentDetail2.qty}" title="qty" styleClass="inputWithButton"
                                               onkeyup="this.value = this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" required="true" requiredMessage="请输入数量"/>
                             </p:column>
+                            <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                            <p:column>
+                                <h:outputText id="unit" value="#{equipmentAcceptanceManagedBean.currentDetail2.unit.unit}" title="uprice" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
                             <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
                             <p:column>
                                 <h:outputText id="uprice" value="#{equipmentAcceptanceManagedBean.currentDetail2.uprice}" title="uprice" />
                             </p:column>
+                            <p:column><p:outputLabel value="品牌" for="brand" /></p:column>
+                            <p:column>
+                                <h:outputText id="brand" value="#{equipmentAcceptanceManagedBean.currentDetail2.brand}" title="uprice" />
+                            </p:column>
                         </p:row>
-
 
                     </p:panelGrid>
                     <p:dataTable id="tableList" value="#{equipmentAcceptanceManagedBean.detailList2}" var="item" styleClass="tableList Mtop10"
