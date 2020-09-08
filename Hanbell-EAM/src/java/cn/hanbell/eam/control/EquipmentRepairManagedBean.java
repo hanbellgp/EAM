@@ -7,21 +7,31 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
+import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
+import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHis;
+import cn.hanbell.eam.entity.EquipmentRepairSpare;
+import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
+import cn.hanbell.eam.web.FormMulti3Bean;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
+import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -53,25 +63,38 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "equipmentRepairManagedBean")
 @SessionScoped
-public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairFile> {
+public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     protected EquipmentRepairFileBean equipmentRepairFileBean;
     @EJB
-    protected SysCodeBean sysCodeBean;
+    protected EquipmentRepairSpareBean equipmentRepairSpareBean;
     @EJB
     private SystemUserBean systemUserBean;
+    @EJB
+    private EquipmentTroubleBean equipmentTroubleBean;
+    @EJB
+    private SysCodeBean sysCodeBean;
+    @EJB
+    protected EquipmentRepairHisBean equipmentRepairHisBean;
+    @EJB
+    private DepartmentBean departmentBean;
     private String queryEquipmentName;
     private String imageName;
     private String queryRepairuser;
     private String queryDeptname;
     private List<SystemUser> userList;
     private List<SysCode> troubleFromList;
+    private List<SysCode> hitchurgencyList;
+    private String maintenanceSupervisor;
+    private List<EquipmentTrouble> equipmentTroubleList;
+    private String contenct;
+    private String note;
 
     public EquipmentRepairManagedBean() {
-        super(EquipmentRepair.class, EquipmentRepairFile.class);
+        super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
     }
 
     //初始化数据筛选
@@ -81,8 +104,11 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         superEJB = equipmentRepairBean;
         model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
         detailEJB = equipmentRepairFileBean;
+        detailEJB2 = equipmentRepairSpareBean;
+        detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
         queryRepairuser = getUserName(userManagedBean.getUserid());
+        equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("repairuser", userManagedBean.getUserid());
         model.getFilterFields().put("company", userManagedBean.getCompany());
@@ -96,10 +122,14 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
+        newEntity.setHitchtime(getDate());
         newEntity.setRstatus("10");
         newEntity.setRepairuser(userManagedBean.getUserid());
         newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()));
+        newEntity.setRepairdeptno(this.getDepartment(userManagedBean.getUserid()).getDeptno());
+        newEntity.setRepairdeptname(this.getDepartment(userManagedBean.getUserid()).getDept());
         troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
     }
 
 //保存前作的数据处理
@@ -151,23 +181,124 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         update();
     }
 
-    //确认验收
-    public void confirmAcceptance() {
+    public void confirmCompleted() {
+
         if (currentEntity == null) {
-            showErrorMsg("Error", "请选择一条数据！");
+            showErrorMsg("Error", "请选择单据！");
             return;
         }
         if (!currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有对应的报修人才能验收此单据");
+            showErrorMsg("Error", "只有对应的报修人才能确认！");
             return;
         }
-        if (!"50".equals(currentEntity.getRstatus())) {
-            showErrorMsg("Error", "该单据不能验收，请确认进度！");
+        if (Integer.parseInt(currentEntity.getRstatus()) != 20) {
+            showErrorMsg("Error", "该单据未维修，或单据已确认维修完成！");
             return;
         }
 
-        currentEntity.setRstatus("95");
+        currentEntity.setRstatus("30");
+        currentEntity.setCompletetime(getDate());
         update();
+    }
+
+    //责任回复
+    public String responsibilitySet(String path) {
+        if (currentEntity == null) {
+            showErrorMsg("Error", "请选择单据！");
+            return "";
+        }
+        if (!currentEntity.getRstatus().equals("50")) {
+            showErrorMsg("Error", "当前状态为：" + getStateName(currentEntity.getRstatus()) + ",不能填写责任回复");
+            return "";
+        }
+        if (!currentEntity.getHitchdutyuser().equals(userManagedBean.getUserid())||"2079".equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "只有对应的责任人才能填写责任回复！");
+            return "";
+        }
+        //获取维修课长
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        //获取联络时间
+        currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+
+        //获取维修时间
+        currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+        //根据维修时间获取人工费用
+        getLaborcost(currentEntity.getMaintenanceTime());
+        //获取总的停机时间
+        if (currentEntity.getExcepttime() != null) {
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+        }
+        return super.edit(path);
+    }
+
+    //保存审核数据
+    public void saveAudit() {
+        if (currentEntity.getRstatus().equals("50")) {
+            createDetail3();
+            currentDetail3.setUserno(userManagedBean.getUserid());
+            currentDetail3.setCompany(userManagedBean.getCompany());
+            currentDetail3.setCredate(getDate());
+            currentDetail3.setStatus("N");
+            currentDetail3.setContenct(contenct);
+            currentDetail3.setNote(note);
+            if (currentDetail3.getContenct().equals("接受")) {
+                currentEntity.setRstatus("60");
+            } else {
+                currentEntity.setRstatus("40");
+            }
+            contenct = null;
+            note = null;
+            super.doConfirmDetail3();
+            currentEntity.setStatus("N");
+            super.update();//To change body of generated methods, choose Tools | Templates.
+        } else {
+            showErrorMsg("Error", "已完成本次审核！");
+        }
+
+    }
+
+    //获取时间差
+    public String getTimeDifference(Date strDate, Date endDate, int downTimes) {
+        long l = strDate.getTime() - endDate.getTime();
+        long day = l / (24 * 60 * 60 * 1000);
+        long hour = (l / (60 * 60 * 1000) - day * 24);
+        long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
+        if (downTimes != 0) {
+            int days = downTimes / (60 * 24);
+            downTimes -= days * 60 * 24;
+            int hours = (int) Math.floor(downTimes / 60);
+            downTimes -= days * 60;
+            int minute = (int) (downTimes % 60);
+            day = day - days;
+
+            hour = hour - hours;
+            if (hour < 0) {
+                day = day - 1;
+                hour = hour + 24;
+            }
+            min = min - minute;
+            if (min < 0) {
+                hour = hour - 1;
+                min = min + 60;
+            }
+            if (day < 0) {
+                hour = 0;
+                min = 0;
+                day = 0;
+
+            }
+            if (hour < 0) {
+                hour = 0;
+                min = 0;
+                day = 0;
+            }
+
+        }
+        if (day > 0) {
+            hour += 24 * day;
+        }
+        return hour + "小时" + min + "分";
     }
 
     @Override
@@ -246,6 +377,26 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
             currentEntity.setServiceuser(u.getUserid());
             currentEntity.setServiceusername(u.getUsername());
         }
+    }
+    //获取人工费用
+
+    public void getLaborcost(String maintenanceTime) {
+        String[] maintenanceTimes = maintenanceTime.split("小时");
+        String hours = maintenanceTimes[0];
+        maintenanceTimes = maintenanceTimes[1].split("分");
+        String min = maintenanceTimes[0];
+        int hour = 0;
+        if (Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
+            hour += 1;
+        }
+
+        if (Integer.parseInt(hours) != 0) {
+            hour += Integer.parseInt(hours);
+        }
+        if (Integer.parseInt(min) >= 30) {
+            hour += 1;
+        }
+        currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
     }
 
     //确认维修到达时间
@@ -520,7 +671,13 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
                 queryStateName = "维修验收";
                 break;
             case "50":
-                queryStateName = "维修审核";
+                queryStateName = "责任回复";
+                break;
+            case "60":
+                queryStateName = "课长审核";
+                break;
+            case "70":
+                queryStateName = "经理审核";
                 break;
             case "95":
                 queryStateName = "报修结案";
@@ -532,10 +689,28 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
         return queryStateName;
     }
 
+    //获取部门
+    public Department getDepartment(String userId) {
+        SystemUser s = systemUserBean.findByUserId(userId);
+        Department dept = departmentBean.findByDeptno(s.getDeptno());
+        return dept;
+    }
+
     //根据用户ID获取用户姓名
     public String getUserName(String userId) {
         SystemUser s = systemUserBean.findByUserId(userId);
         return s.getUsername();
+    }
+
+    //获取故障紧急度
+    public String getHitchurgency(String cValue) {
+        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        String troubleName = "";
+        if (sysCode == null) {
+            return troubleName;
+        }
+        troubleName = sysCode.getCdesc();
+        return troubleName;
     }
 
     public String getQueryEquipmentName() {
@@ -576,6 +751,46 @@ public class EquipmentRepairManagedBean extends FormMultiBean<EquipmentRepair, E
 
     public void setTroubleFromList(List<SysCode> troubleFromList) {
         this.troubleFromList = troubleFromList;
+    }
+
+    public List<SysCode> getHitchurgencyList() {
+        return hitchurgencyList;
+    }
+
+    public void setHitchurgencyList(List<SysCode> hitchurgencyList) {
+        this.hitchurgencyList = hitchurgencyList;
+    }
+
+    public List<EquipmentTrouble> getEquipmentTroubleList() {
+        return equipmentTroubleList;
+    }
+
+    public void setEquipmentTroubleList(List<EquipmentTrouble> equipmentTroubleList) {
+        this.equipmentTroubleList = equipmentTroubleList;
+    }
+
+    public String getMaintenanceSupervisor() {
+        return maintenanceSupervisor;
+    }
+
+    public void setMaintenanceSupervisor(String maintenanceSupervisor) {
+        this.maintenanceSupervisor = maintenanceSupervisor;
+    }
+
+    public String getContenct() {
+        return contenct;
+    }
+
+    public void setContenct(String contenct) {
+        this.contenct = contenct;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
 }

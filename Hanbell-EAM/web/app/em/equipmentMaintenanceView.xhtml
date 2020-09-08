@@ -23,12 +23,18 @@
                     </p:row>
                 </f:facet>
                 <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障紧急度"/></p:column>
+                    <p:column colspan="11"> 
+                        <h:outputText id="hitchurgency" value="#{equipmentMaintenanceManagedBean.getHitchurgency(equipmentMaintenanceManagedBean.currentEntity.hitchurgency)}" title="troublefrom" />
+                    </p:column>
+                </p:row>
+                <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><p:outputLabel value="报修单号" for="formid" /></p:column>
-                    <p:column >
+                    <p:column styleClass="Wid20">
                         <h:outputText id="formid" value="#{equipmentMaintenanceManagedBean.currentEntity.formid}" title="formid" styleClass="inputWithButton" />
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
-                    <p:column >
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="资产编号" for="assetno" /></p:column>
+                    <p:column styleClass="Wid15">
                         <h:outputText id="assetno" value="#{equipmentMaintenanceManagedBean.currentEntity.assetno}" title="assetno" styleClass="inputWithButton" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE" ><h:outputText value="设备名称"  /></p:column>
@@ -42,7 +48,7 @@
                     <p:column>
                         <h:outputText id="troublefrom" value="#{equipmentMaintenanceManagedBean.getTroubleName(equipmentMaintenanceManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><h:outputText value="使用部门"/></p:column>
+                    <p:column style="background-color: #EEEEEE"  ><h:outputText value="使用部门"/></p:column>
                     <p:column>
                         <h:outputText id="deptname" value="#{equipmentMaintenanceManagedBean.currentEntity.itemno.deptname}" title="deptname"/>
                     </p:column>
@@ -57,9 +63,9 @@
                     <p:column >
                         <h:outputText id="repairusername" value="#{equipmentMaintenanceManagedBean.currentEntity.repairusername}" title="repairusername" />
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修人"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="报修部门"/></p:column>
                     <p:column>
-                        <h:outputText id="serviceusername" value="#{equipmentMaintenanceManagedBean.currentEntity.serviceusername}" title="serviceusername" />
+                        <h:outputText id="repairdeptname" value="#{equipmentMaintenanceManagedBean.currentEntity.repairdeptname}" title="repairdeptname" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="维修课长"/></p:column>
                     <p:column>
@@ -67,29 +73,38 @@
                     </p:column>
                 </p:row>
                 <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修人"/></p:column>
+                    <p:column>
+                        <h:outputText id="serviceusername" value="#{equipmentMaintenanceManagedBean.currentEntity.serviceusername}" title="serviceusername" />
+                    </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障发生时间"/></p:column>
-                    <p:column colspan="11">
-                        <h:outputText id="credate" value="#{equipmentMaintenanceManagedBean.currentEntity.credate}" title="credate">
+                    <p:column >
+                        <h:outputText id="credate" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchtime}" title="credate">
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
                     </p:column>
-                </p:row>
-                <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputLabel value="维修到达时间" for="queryDateEnd" /></p:column>
                     <p:column>
                         <h:outputText id="servicearrivetime" value="#{equipmentMaintenanceManagedBean.currentEntity.servicearrivetime}" title="servicearrivetime">
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
                     </p:column>
+                </p:row>
+                <p:row>
+
                     <p:column style="background-color: #EEEEEE"><h:outputLabel value="维修完成时间" for="queryDateEnd" /></p:column>
                     <p:column  >
                         <h:outputText id="completetime" value="#{equipmentMaintenanceManagedBean.currentEntity.completetime}" title="completetime">
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间(分)"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修期间停工时间(分)"/></p:column>
                     <p:column>
-                        <h:outputText id="excepttime" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}"  />
+                        <h:outputText id="stopworktime" value="#{equipmentMaintenanceManagedBean.currentEntity.stopworktime}"  />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="非生产时间(分)"/></p:column>
+                    <p:column>
+                        <h:outputText id="excepttime" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}"/>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -106,6 +121,16 @@
                         <h:outputText id="downtime" value="#{equipmentMaintenanceManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障责任人"/></p:column>
+                    <p:column>
+                        <h:outputText id="hitchdutyusername" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdutyusername}" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障责任单位"/></p:column>
+                    <p:column>
+                        <h:outputText id="hitchdutydeptname" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdutydeptname}"  title="downtime" />
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
@@ -115,10 +140,16 @@
                 </f:facet>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="磨损性故障"  /></p:column>
-                    <p:column  styleClass="Wid15">
+                    <p:column  styleClass="Wid20">
                         <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="磨损性故障" disabled="true" >
                             <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
+                    <p:column styleClass="Wid15">
+                        <p:selectOneMenu id="hitchtype" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
+                            <f:selectItems  value="#{equipmentMaintenanceManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型1"  /></p:column>
@@ -256,7 +287,7 @@
                     <p:column  style="width: 550px">
                         <h:outputText  id="repaircost" value="#{equipmentMaintenanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE;width: 280px" ><p:outputLabel value="人工费用（20元/时）" for="laborcost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;width: 400px" ><p:outputLabel value="人工费用（20元/时）" for="laborcost" /></p:column>
                     <p:column  style="width: 550px">
                         <h:outputText  id="laborcost" value="#{equipmentMaintenanceManagedBean.currentEntity.laborcost}" title="laborcost" styleClass="inputWithButton"/>
                     </p:column>
@@ -264,7 +295,10 @@
                     <p:column  style="width: 550px">
                         <h:outputText  id="sparecost" value="#{equipmentMaintenanceManagedBean.currentEntity.sparecost}" title="sparecost" styleClass="inputWithButton"/>
                     </p:column>
-
+                    <p:column style="background-color: #EEEEEE;width: 180px" ><p:outputLabel value="总费用" for="sparecost" /></p:column>
+                    <p:column  style="width: 550px">
+                        <h:outputText  id="totalCost" value="#{equipmentMaintenanceManagedBean.totalCost}" title="sparecost" styleClass="inputWithButton"/>
+                    </p:column>
                 </p:row>
 
             </p:panelGrid>

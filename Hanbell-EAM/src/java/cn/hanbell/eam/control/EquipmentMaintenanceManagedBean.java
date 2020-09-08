@@ -22,7 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import cn.hanbell.eam.web.FormMulti3Bean;
+import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
+import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
 import java.io.File;
@@ -30,6 +32,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -76,13 +79,18 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     private SysCodeBean sysCodeBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
+    @EJB
+    private DepartmentBean departmentBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
     private String queryServiceuser;
     private String queryDeptname;
     private double maintenanceCosts;
+    private double totalCost;
     private List<EquipmentTrouble> equipmentTroubleList;
+    private List<SysCode> hitchurgencyList;
+    private List<String> paramPosition = null;
 
     public EquipmentMaintenanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -109,6 +117,13 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
 //保存验收数据
     public void saveAcceptance() {
+        createDetail();
+        currentEntity.setRstatus("40");//更新状态
+        super.update();//To change body of generated methods, choose Tools | Templates.
+    }
+
+    //提交
+    public void submit() {
         if (currentDetail3 != null) {
             currentDetail3.setCompany(userManagedBean.getCompany());
             currentDetail3.setUserno(userManagedBean.getUserid());
@@ -119,9 +134,12 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             doConfirmDetail3();
         }
         createDetail();
-        currentEntity.setRstatus("40");//更新状态
+        if (currentEntity.getHitchdutyuser() == null) {
+            currentEntity.setRstatus("60");//更新状态
+        } else {
+            currentEntity.setRstatus("50");//更新状态
+        }
         super.update();//To change body of generated methods, choose Tools | Templates.
-
     }
 
     //作废
@@ -144,29 +162,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         update();
     }
 
-    //记录维修记录检查是否已维修完成
-    public String recordMaintenanceProcess(String path) {
-        if (currentEntity == null) {
-            showErrorMsg("Error", "请选择单据！");
-            return "";
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) < 20) {
-            showErrorMsg("Error", "维修人员未到达，不能记录维修过程！");
-            return "";
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) >= 30) {
-            showErrorMsg("Error", "该单据已记录过维修过程！");
-            return "";
-        }
-        if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有对应的维修人员才能填写维修过程！");
-            return "";
-        }
-        currentEntity.setStatus("N");
-        return super.edit(path); //To change body of generated methods, choose Tools | Templates.
-    }
 //选择备件数据处理
-
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
@@ -180,6 +176,16 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentDetail2.setBrand(u.getBrand());
 
         }
+    }
+
+    @Override
+    public void deleteDetail() {
+
+        if (currentDetail != null && "报修图片".equals(currentDetail.getFilefrom())) {
+            showErrorMsg("Error", "选择的图片是报修图片,不能删除");
+            return;
+        }
+        super.deleteDetail(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -205,14 +211,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         currentDetail2.setStatus("N");
         super.doConfirmDetail2();
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
-    }
-
-    //保存时更新状态
-    public void updateRstatus() {
-        currentEntity.setRstatus("30");
-        currentEntity.setCompletetime(getDate());
-        currentEntity.setStatus("N");
-        super.update(); //To change body of generated methods, choose Tools | Templates.
+        calculateTotalCost();
     }
 
     //转派单据前端验证
@@ -233,6 +232,17 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "只有对应的维修人或维修课长才能转派单据");
         }
 
+    }
+
+    public void screeningOpenDialog(String view) {
+        if (paramPosition == null) {
+            paramPosition = new ArrayList<>();
+        } else {
+            paramPosition.clear();
+        }
+        paramPosition.add(currentEntity.getRepairdeptno());
+        openParams.put("deptno", paramPosition);
+        super.openDialog("sysuserSelect", openParams);
     }
 
     //转派单据
@@ -258,7 +268,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "只有维修完成,才能发起验收单");
             return "";
         }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 30) {
+        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
             showErrorMsg("Error", "该单据已发起过验收单");
             return "";
         }
@@ -283,28 +293,29 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        
+        //获取故障类型
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
+        calculateTotalCost();
         createDetail3();
-        return super.edit(path);
-
+        if (detailList3.size() > 0) {
+            return super.edit("equipmentMaintenanceEdit");
+        } else {
+            return super.edit(path);
+        }
     }
 
     //获取人工费用
     public void getLaborcost(String maintenanceTime) {
-        String[] maintenanceTimes = maintenanceTime.split("天");
-        String day = maintenanceTimes[0];
-        maintenanceTimes = maintenanceTimes[1].split("小时");
+        String[] maintenanceTimes = maintenanceTime.split("小时");
         String hours = maintenanceTimes[0];
         maintenanceTimes = maintenanceTimes[1].split("分");
         String min = maintenanceTimes[0];
         int hour = 0;
-        if (Integer.parseInt(day) == 0 && Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
+        if (Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
             hour += 1;
         }
-        if (Integer.parseInt(day) != 0) {
-            hour += Integer.parseInt(day) * 24;
-        }
+
         if (Integer.parseInt(hours) != 0) {
             hour += Integer.parseInt(hours);
         }
@@ -330,7 +341,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        getPartsCost();
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -496,8 +508,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             }
             Cell cell12 = row.createCell(12);
             cell12.setCellStyle(style.get("cell"));
-            if (equipmentrepair.getCompletetime()!=null&&equipmentrepair.getServicearrivetime()!=null) {
-                 cell12.setCellValue(getTimeDifference(equipmentrepair.getCompletetime(), equipmentrepair.getServicearrivetime(), 0));
+            if (equipmentrepair.getCompletetime() != null && equipmentrepair.getServicearrivetime() != null) {
+                cell12.setCellValue(getTimeDifference(equipmentrepair.getCompletetime(), equipmentrepair.getServicearrivetime(), 0));
             }
             Cell cell13 = row.createCell(13);
             cell13.setCellStyle(style.get("cell"));
@@ -655,6 +667,49 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         return troubleName;
     }
 
+    //计算总费用
+    public void calculateTotalCost() {
+        totalCost = 0;
+        if (currentEntity.getRepaircost() != null) {
+            totalCost += currentEntity.getRepaircost().doubleValue();
+        }
+        if (currentEntity.getLaborcost() != null) {
+            totalCost += currentEntity.getLaborcost().doubleValue();
+        }
+        if (currentEntity.getSparecost() != null) {
+            totalCost += currentEntity.getSparecost().doubleValue();
+        }
+    }
+
+    //获取故障紧急度
+    public String getHitchurgency(String cValue) {
+        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        String troubleName = "";
+        if (sysCode == null) {
+            return troubleName;
+        }
+        troubleName = sysCode.getCdesc();
+        return troubleName;
+    }
+
+    //选择责任人后数据处理
+    public void handleDialogSysuserWhenNew(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            currentEntity.setHitchdutyuser(u.getUserid());
+            currentEntity.setHitchdutyusername(u.getUsername());
+            currentEntity.setHitchdutydeptno(this.getDepartment(u.getUserid()).getDeptno());
+            currentEntity.setHitchdutydeptname(this.getDepartment(u.getUserid()).getDept());
+        }
+    }
+
+    //获取部门
+    public Department getDepartment(String userId) {
+        SystemUser s = systemUserBean.findByUserId(userId);
+        Department dept = departmentBean.findByDeptno(s.getDeptno());
+        return dept;
+    }
+
     //获取显示的进度
     public String getStateName(String str) {
         String queryStateName = "";
@@ -672,7 +727,13 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
                 queryStateName = "维修验收";
                 break;
             case "50":
-                queryStateName = "维修审核";
+                queryStateName = "责任回复";
+                break;
+            case "60":
+                queryStateName = "课长审核";
+                break;
+            case "70":
+                queryStateName = "经理审核";
                 break;
             case "95":
                 queryStateName = "报修结案";
@@ -690,7 +751,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         long day = l / (24 * 60 * 60 * 1000);
         long hour = (l / (60 * 60 * 1000) - day * 24);
         long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
-        long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
         if (downTimes != 0) {
             int days = downTimes / (60 * 24);
             downTimes -= days * 60 * 24;
@@ -713,16 +773,19 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
                 hour = 0;
                 min = 0;
                 day = 0;
-                s = 0;
+
             }
             if (hour < 0) {
                 hour = 0;
                 min = 0;
                 day = 0;
-                s = 0;
             }
+
         }
-        return "" + day + "天" + hour + "小时" + min + "分";
+        if (day > 0) {
+            hour += 24 * day;
+        }
+        return hour + "小时" + min + "分";
     }
 
     //根据用户ID获取用户姓名
@@ -785,6 +848,30 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     public void setMaintenanceCosts(double maintenanceCosts) {
         this.maintenanceCosts = maintenanceCosts;
+    }
+
+    public List<SysCode> getHitchurgencyList() {
+        return hitchurgencyList;
+    }
+
+    public void setHitchurgencyList(List<SysCode> hitchurgencyList) {
+        this.hitchurgencyList = hitchurgencyList;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public List<String> getParamPosition() {
+        return paramPosition;
+    }
+
+    public void setParamPosition(List<String> paramPosition) {
+        this.paramPosition = paramPosition;
     }
 
 }

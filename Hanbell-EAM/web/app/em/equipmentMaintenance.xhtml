@@ -28,15 +28,17 @@
                 <h:outputLabel value="设备名称" for="queryEquipmentName" />
                 <p:inputText id="queryEquipmentName" value="#{equipmentMaintenanceManagedBean.queryEquipmentName}" title="设备名称" />
                 <h:outputLabel value="进度" for="queryState" />
-                <p:selectOneMenu id="queryState" value="#{equipmentMaintenanceManagedBean.queryState}" title="进度">
+               <p:selectOneMenu id="queryState" value="#{equipmentMaintenanceManagedBean.queryState}" title="状态"  >
                     <f:selectItem  itemLabel="未结案" itemValue="ALL"/>
                     <f:selectItem  itemLabel="已报修" itemValue="10"/>
                     <f:selectItem  itemLabel="维修到达" itemValue="20"/>
                     <f:selectItem  itemLabel="维修完成" itemValue="30"/>
                     <f:selectItem  itemLabel="维修验收" itemValue="40"/>
-                    <f:selectItem  itemLabel="维修审核" itemValue="50"/>
-                    <f:selectItem  itemLabel="报修结案" itemValue="95"/>
-                    <f:selectItem  itemLabel="作废"  itemValue="98"/>
+                    <f:selectItem  itemLabel="责任回复" itemValue="50"/>
+                    <f:selectItem  itemLabel="课长审核" itemValue="60"/>
+                    <f:selectItem  itemLabel="经理审核" itemValue="70"/>
+                    <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
+                    <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
                   <h:outputLabel value="使用部门" for="queryDeptname" />
                 <p:inputText id="queryDeptname" value="#{equipmentMaintenanceManagedBean.queryDeptname}" title="使用部门" />
@@ -53,8 +55,6 @@
                 <f:facet name="right">
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentMaintenanceManagedBean.print()}" icon="ui-icon-print"
-                                    />
-                        <p:menuitem id="btnEdit" value="记录维修过程" action="#{equipmentMaintenanceManagedBean.recordMaintenanceProcess('equipmentMaintenanceEdit')}" icon="ui-icon-pencil"
                                     />
                          <p:menuitem id="btnCreate" value="发起维修验收" action="#{equipmentMaintenanceManagedBean.initiateMaintenanceAcceptance('equipmentMaintenanceNew')}" icon="ui-icon-plus"
                                    />

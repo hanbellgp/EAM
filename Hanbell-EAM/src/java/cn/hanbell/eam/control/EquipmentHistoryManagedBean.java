@@ -75,13 +75,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private String queryServiceuser;
     private String queryDeptname;
     private double maintenanceCosts;
+    private double totalCost;
     private String queryRepairuser;
     private String queryHitchsort1;
     private String queryHitchdesc;
     private String queryHitchreason;
     private String queryRepairprocess;
     private String queryHitchalarm;
-
+     private List<SysCode> hitchurgencyList;
     private List<EquipmentTrouble> equipmentTroubleList;
 
     public EquipmentHistoryManagedBean() {
@@ -122,7 +123,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         getPartsCost();
-
+         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -200,7 +202,19 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
         }
     }
-
+ //计算总费用
+    public void calculateTotalCost() {
+        totalCost=0;
+        if (currentEntity.getRepaircost() != null) {
+            totalCost += currentEntity.getRepaircost().doubleValue();
+        }
+         if (currentEntity.getLaborcost()!= null) {
+            totalCost += currentEntity.getLaborcost().doubleValue();
+        }
+        if (currentEntity.getSparecost()!= null) {
+            totalCost += currentEntity.getSparecost().doubleValue();
+        }
+    }
     //获取故障来源
     public String getTroubleName(String cValue) {
         SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
@@ -212,6 +226,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         return troubleName;
     }
 
+  
     //获取显示的进度
     public String getStateName(String str) {
         String queryStateName = "";
@@ -229,7 +244,13 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 queryStateName = "维修验收";
                 break;
             case "50":
-                queryStateName = "维修审核";
+                queryStateName = "责任回复";
+                break;
+            case "60":
+                queryStateName = "课长审核";
+                break;
+            case "70":
+                queryStateName = "经理审核";
                 break;
             case "95":
                 queryStateName = "报修结案";
@@ -239,6 +260,17 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 break;
         }
         return queryStateName;
+    }
+        //获取故障紧急度
+
+    public String getHitchurgency(String cValue) {
+        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        String troubleName = "";
+        if (sysCode == null) {
+            return troubleName;
+        }
+        troubleName = sysCode.getCdesc();
+        return troubleName;
     }
 //处理俩时间显示的格式
 
@@ -445,6 +477,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             Cell cell21 = row.createCell(21);
             cell21.setCellStyle(style.get("cell"));
             double laborcost = 0;
+            
             if (equipmentrepair.getLaborcost() != null) {
                 laborcost = equipmentrepair.getLaborcost().doubleValue();
             }
@@ -661,6 +694,22 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void setQueryHitchalarm(String queryHitchalarm) {
         this.queryHitchalarm = queryHitchalarm;
+    }
+
+    public List<SysCode> getHitchurgencyList() {
+        return hitchurgencyList;
+    }
+
+    public void setHitchurgencyList(List<SysCode> hitchurgencyList) {
+        this.hitchurgencyList = hitchurgencyList;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
     }
 
 }

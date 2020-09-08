@@ -28,6 +28,12 @@
                         <p:column colspan="6">报修单详情</p:column>
                     </p:row>
                 </f:facet>
+                  <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障紧急度"/></p:column>
+                    <p:column colspan="11"> 
+                        <h:outputText id="hitchurgency" value="#{equipmentRepairManagedBean.getHitchurgency(equipmentRepairManagedBean.currentEntity.hitchurgency)}" title="troublefrom" />
+                    </p:column>
+                </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="报修记录号"/></p:column>
                     <p:column>
