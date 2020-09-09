@@ -12,6 +12,7 @@ import cn.hanbell.eap.entity.SystemUser;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -23,6 +24,7 @@ public class SystemUserQueryBean extends SuperQueryBean<SystemUser> {
 
     @EJB
     private SystemUserBean systemUserBean;
+    private String queryDeptno;
 
     public SystemUserQueryBean() {
         super(SystemUser.class);
@@ -32,6 +34,15 @@ public class SystemUserQueryBean extends SuperQueryBean<SystemUser> {
     public void init() {
         this.superEJB = systemUserBean;
         setModel(new SystemUserModel(systemUserBean));
+        params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+        if (params != null) {
+            if (params.containsKey("deptno")) {
+                queryDeptno = String.valueOf(params.get("deptno")[0]);
+            }
+        }
+        if (queryDeptno != null) {
+            model.getFilterFields().put("deptno", queryDeptno);
+        }
         model.getSortFields().put("userid", "ASC");
         super.init();
     }

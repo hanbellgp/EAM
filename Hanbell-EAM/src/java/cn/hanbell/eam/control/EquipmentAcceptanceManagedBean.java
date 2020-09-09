@@ -69,10 +69,12 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private String queryServiceuser;
     private String queryDeptname;
     private double maintenanceCosts;
+    private double totalCost;
     private String contenct;
     private String note;
     private List<EquipmentTrouble> equipmentTroubleList;
     private List<EquipmentRepairFile> equipmentRepairFileList;
+    private List<SysCode> hitchurgencyList;
 
     public EquipmentAcceptanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -149,8 +151,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     @Override
     public void deleteDetail() {
-       
-        if (currentDetail!=null&&"报修图片".equals(currentDetail.getFilefrom())) {
+
+        if (currentDetail != null && "报修图片".equals(currentDetail.getFilefrom())) {
             showErrorMsg("Error", "选择的图片是报修图片,不能删除");
             return;
         }
@@ -187,7 +189,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        
+
         getPartsCost();
 
         return super.edit(path);
@@ -210,7 +212,9 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         getPartsCost();
+        calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -220,54 +224,125 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
     }
+    //计算总费用
+
+    public void calculateTotalCost() {
+        totalCost = 0;
+        if (currentEntity.getRepaircost() != null) {
+            totalCost += currentEntity.getRepaircost().doubleValue();
+        }
+        if (currentEntity.getLaborcost() != null) {
+            totalCost += currentEntity.getLaborcost().doubleValue();
+        }
+        if (currentEntity.getSparecost() != null) {
+            totalCost += currentEntity.getSparecost().doubleValue();
+        }
+    }
 //审批前检查数据是否可以审批
 
     public String approvalCheck(String path) {
+        if (currentEntity == null) {
+            showErrorMsg("Error", "请选择单据！");
+            return "";
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) < 60) {
+            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",不能审批");
+            return "";
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) > 70) {
+            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",不能审批");
+            return "";
+        }
 
-        if (Integer.parseInt(currentEntity.getRstatus()) < 40) {
-            showErrorMsg("Error", "该条数据未验收，不能审批");
-            return "";
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
-            showErrorMsg("Error", "该条数据已审批完成,等待报修人结案");
-            return "";
-        }
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        String userId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
-        if (!userManagedBean.getUserid().equals(userId) && !userManagedBean.getUserid().equals("C2079")) {
-            showErrorMsg("Error", "只有维修课长才能进行审批");
+        String repairleadersId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        //维修经理
+        String repairmanagerId = sysCodeBean.findBySyskindAndCode("RD", "repairmanager").getCvalue();
+        if (!userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
+            showErrorMsg("Error", "只有维修课长和维修经理才能进行审批操作");
             return "";
         }
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+
+        if (Integer.parseInt(currentEntity.getRstatus()) == 70 && !userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals("C2079")) {
+            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  维修课长不能审批");
+            return "";
+        }
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        if (currentEntity.getServicearrivetime() != null) {
+            //获取联络时间
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+        }
+        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
+            //获取维修时间
+            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+        }
+        //获取总的停机时间
+        if (currentEntity.getExcepttime() != null) {
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+        }
         return super.edit(path);
 
     }
 
     //确认审批
     public void confirmApproval() {
-        if (currentEntity.getRstatus().equals("40")) {
-            createDetail3();
-            currentDetail3.setUserno(userManagedBean.getUserid());
-            currentDetail3.setCompany(userManagedBean.getCompany());
-            currentDetail3.setCredate(getDate());
-            currentDetail3.setStatus("N");
-            currentDetail3.setContenct(contenct);
-            currentDetail3.setNote(note);
+        createDetail3();
+        currentDetail3.setUserno(userManagedBean.getUserid());
+        currentDetail3.setCompany(userManagedBean.getCompany());
+        currentDetail3.setCredate(getDate());
+        currentDetail3.setStatus("N");
+        currentDetail3.setContenct(contenct);
+        currentDetail3.setNote(note);
+        //获取维修课长
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
+        String repairleadersId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        //维修经理
+        String repairmanagerId = sysCodeBean.findBySyskindAndCode("RD", "repairmanager").getCvalue();
+        //备件费用
+        maintenanceCosts = 0;
+        detailList2.forEach(equipmentrepair1 -> {
+            BigDecimal price = equipmentrepair1.getUprice();
+            maintenanceCosts += equipmentrepair1.getQty().doubleValue() * price.doubleValue();
+        });
+        calculateTotalCost();
+        if (currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals(repairleadersId) || currentEntity.getRstatus().equals("60") &&userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
-                currentEntity.setRstatus("50");
+                if (totalCost > 5000) {
+                    currentEntity.setRstatus("70");
+                } else {
+                    currentEntity.setRstatus("95");
+                }
             } else if (contenct.equals("不合格")) {
-                currentEntity.setRstatus("30");
+                currentEntity.setRstatus("40");
             }
-            contenct = null;
-            note = null;
-            super.doConfirmDetail3();
-            currentEntity.setStatus("N");
-            super.update();
+
+        } else if (currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals(repairmanagerId) ||currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
+            if (contenct.equals("合格")) {
+                currentEntity.setRstatus("95");
+            } else if (contenct.equals("不合格")) {
+                currentEntity.setRstatus("60");
+            }
         } else {
             showErrorMsg("Error", "已完成本次审核,单据状态已变更,请返回主页面查看");
+            return;
         }
+        contenct = null;
+        note = null;
+        super.doConfirmDetail3();
+        currentEntity.setStatus("N");
+        super.update();
+    }
+    //获取故障紧急度
 
+    public String getHitchurgency(String cValue) {
+        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        String troubleName = "";
+        if (sysCode == null) {
+            return troubleName;
+        }
+        troubleName = sysCode.getCdesc();
+        return troubleName;
     }
 
 //获取零件费用
@@ -322,7 +397,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath("../../resources/app/res/"+imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
             equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("维修图片");
             equipmentrepairfile.setStatus("Y");
@@ -399,7 +474,13 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 queryStateName = "维修验收";
                 break;
             case "50":
-                queryStateName = "维修审核";
+                queryStateName = "责任回复";
+                break;
+            case "60":
+                queryStateName = "课长审核";
+                break;
+            case "70":
+                queryStateName = "经理审核";
                 break;
             case "95":
                 queryStateName = "报修结案";
@@ -450,6 +531,26 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             }
         }
         return "" + day + "天" + hour + "小时" + min + "分";
+    }
+    //获取人工费用
+
+    public void getLaborcost(String maintenanceTime) {
+        String[] maintenanceTimes = maintenanceTime.split("小时");
+        String hours = maintenanceTimes[0];
+        maintenanceTimes = maintenanceTimes[1].split("分");
+        String min = maintenanceTimes[0];
+        int hour = 0;
+        if (Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
+            hour += 1;
+        }
+
+        if (Integer.parseInt(hours) != 0) {
+            hour += Integer.parseInt(hours);
+        }
+        if (Integer.parseInt(min) >= 30) {
+            hour += 1;
+        }
+        currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
     }
 
     //根据用户ID获取用户姓名
@@ -536,6 +637,22 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     public void setEquipmentRepairFileList(List<EquipmentRepairFile> equipmentRepairFileList) {
         this.equipmentRepairFileList = equipmentRepairFileList;
+    }
+
+    public List<SysCode> getHitchurgencyList() {
+        return hitchurgencyList;
+    }
+
+    public void setHitchurgencyList(List<SysCode> hitchurgencyList) {
+        this.hitchurgencyList = hitchurgencyList;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
     }
 
 }
