@@ -34,7 +34,9 @@
                     <f:selectItem  itemLabel="维修到达" itemValue="20"/>
                     <f:selectItem  itemLabel="维修完成" itemValue="30"/>
                     <f:selectItem  itemLabel="维修验收" itemValue="40"/>
-                    <f:selectItem  itemLabel="维修审核" itemValue="50"/>
+                    <f:selectItem  itemLabel="责任回复" itemValue="50"/>
+                    <f:selectItem  itemLabel="课长审核" itemValue="60"/>
+                    <f:selectItem  itemLabel="经理审核" itemValue="70"/>
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>
                     <f:selectItem  itemLabel="作废"  itemValue="98"/>
                 </p:selectOneMenu>
@@ -51,13 +53,9 @@
                     <p:commandButton id="btnView" value="查看" action="#{equipmentAcceptanceManagedBean.view('equipmentAcceptanceView')}" icon="ui-icon-document"/>
                 </f:facet>
                 <f:facet name="right">
-
-                    <p:commandButton id="btnEdit" value="修改验收单" action="#{equipmentAcceptanceManagedBean.editAcceptance('equipmentAcceptanceEdit')}" icon="ui-icon-pencil"
-                                   update=":formList" />
-                    
                     <p:commandButton id="btnReturn"  value="审批" action="#{equipmentAcceptanceManagedBean.approvalCheck('equipmentAcceptanceSet')}" icon="ui-icon-sync"
-                                      update=":formList">
-                      
+                                     update=":formList">
+
                     </p:commandButton>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentAcceptanceManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
@@ -103,10 +101,10 @@
                     <f:facet name="header">
                         <h:outputText value="故障来源"/>
                     </f:facet>
-                   <h:outputText value="#{equipmentAcceptanceManagedBean.getTroubleName(item.troublefrom)}"/>
+                    <h:outputText value="#{equipmentAcceptanceManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
 
-                  <p:column styleClass="Wid15">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="故障发生时间"/>
                     </f:facet>

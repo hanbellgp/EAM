@@ -28,7 +28,7 @@
                 </f:facet>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
-                    <p:column >
+                    <p:column  styleClass="Wid20">
                         <p:inputText id="assetno" value="#{equipmentRepairManagedBean.newEntity.assetno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
@@ -78,16 +78,22 @@
                     <p:column>
                         <p:selectOneMenu id="troublefrom" value="#{equipmentRepairManagedBean.newEntity.troublefrom}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
                             <f:selectItem itemLabel="请选择故障来源" itemValue=""/>
-                         <f:selectItems value="#{equipmentRepairManagedBean.troubleFromList}" var="troubleFromList" itemLabel="#{troubleFromList.cdesc}" itemValue="#{troubleFromList.cvalue}" />
+                            <f:selectItems value="#{equipmentRepairManagedBean.troubleFromList}" var="troubleFromList" itemLabel="#{troubleFromList.cdesc}" itemValue="#{troubleFromList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE">
-                        <p:outputLabel value="发生时间" for="formdate"/>
+                        <p:outputLabel value="故障紧急度" for="hitchurgency"/>
                     </p:column>
                     <p:column>
-                        <h:outputText id="formdate" value="#{equipmentRepairManagedBean.newEntity.formdate}">
-                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-                        </h:outputText>
+                        <p:selectOneMenu id="hitchurgency" value="#{equipmentRepairManagedBean.newEntity.hitchurgency}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
+                            <f:selectItems  value="#{equipmentRepairManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="故障发生时间" for="hitchtime"/>
+                    </p:column>
+                    <p:column>
+                        <p:calendar id="hitchtime" value="#{equipmentRepairManagedBean.newEntity.hitchtime}" title="故障发生时间" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}" />
                     </p:column>
                 </p:row>
 

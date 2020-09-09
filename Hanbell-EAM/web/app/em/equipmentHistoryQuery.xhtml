@@ -35,7 +35,9 @@
                     <f:selectItem  itemLabel="维修到达" itemValue="20"/>
                     <f:selectItem  itemLabel="维修完成" itemValue="30"/>
                     <f:selectItem  itemLabel="维修验收" itemValue="40"/>
-                    <f:selectItem  itemLabel="维修审核" itemValue="50"/>
+                    <f:selectItem  itemLabel="责任回复" itemValue="50"/>
+                    <f:selectItem  itemLabel="课长审核" itemValue="60"/>
+                    <f:selectItem  itemLabel="经理审核" itemValue="70"/>
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
@@ -48,19 +50,19 @@
                 </p:selectOneMenu>
                 <h:outputLabel value="故障描述" for="queryHitchdesc" />
                 <p:inputText id="queryHitchdesc" value="#{equipmentHistoryManagedBean.queryHitchdesc}" title="故障描述" />
-               
+
                 <h:outputLabel value="故障判断" for="queryHitchreason" />
                 <p:inputText id="queryHitchreason" value="#{equipmentHistoryManagedBean.queryHitchreason}" title="故障判断" />
-                
-                 <h:outputLabel value="维修策略" for="queryRepairprocess" />
+
+                <h:outputLabel value="维修策略" for="queryRepairprocess" />
                 <p:inputText id="queryRepairprocess" value="#{equipmentHistoryManagedBean.queryRepairprocess}" title="维修策略" />
-                
+
                 <h:outputLabel value="故障报警" for="queryHitchalarm" />
                 <p:inputText id="queryHitchalarm" value="#{equipmentHistoryManagedBean.queryHitchalarm}" title="故障报警" />
-                 
+
                 <h:outputLabel value="报修人" for="queryRepairuser" />
                 <p:inputText id="queryRepairuser" value="#{equipmentHistoryManagedBean.queryRepairuser}" title="报修人" />
-                
+
                 <h:outputLabel value="维修人" for="queryServiceuser" />
                 <p:inputText id="queryServiceuser" value="#{equipmentHistoryManagedBean.queryServiceuser}" title="维修人"/>
             </p:panelGrid>
@@ -74,7 +76,7 @@
 
                 <f:facet name="right">
                     <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{equipmentHistoryManagedBean.print()}" icon="ui-icon-print"
-                                    />
+                                     />
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentHistoryManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
@@ -87,7 +89,7 @@
 
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-               <p:column styleClass="Wid10">
+                <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="进度"/>
                     </f:facet>
@@ -121,10 +123,10 @@
                     <f:facet name="header">
                         <h:outputText value="故障来源"/>
                     </f:facet>
-                   <h:outputText value="#{equipmentHistoryManagedBean.getTroubleName(item.troublefrom)}"/>
+                    <h:outputText value="#{equipmentHistoryManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
 
-                  <p:column styleClass="Wid15">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="故障发生时间"/>
                     </f:facet>

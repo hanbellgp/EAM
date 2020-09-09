@@ -34,7 +34,9 @@
                     <f:selectItem  itemLabel="维修到达" itemValue="20"/>
                     <f:selectItem  itemLabel="维修完成" itemValue="30"/>
                     <f:selectItem  itemLabel="维修验收" itemValue="40"/>
-                    <f:selectItem  itemLabel="维修审核" itemValue="50"/>
+                    <f:selectItem  itemLabel="责任回复" itemValue="50"/>
+                    <f:selectItem  itemLabel="课长审核" itemValue="60"/>
+                    <f:selectItem  itemLabel="经理审核" itemValue="70"/>
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
@@ -53,24 +55,28 @@
                 </f:facet>
 
                 <f:facet name="right">
+                   
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentRepairManagedBean.print()}" icon="ui-icon-print"
                                     />
                         <p:menuitem id="btnCreate" value="发起故障报修" action="#{equipmentRepairManagedBean.create('equipmentRepairNew')}" icon="ui-icon-plus"
-                               update=":formList"      />
+                                    update=":formList"      />
 
                         <p:menuitem  actionListener="#{equipmentRepairManagedBean.confirmRepairmanArrivalTime()}" icon="ui-icon-check" value="确认维修人员到达" 
                                      update=":formList">
                             <p:confirm header="系统提示" message="维修人员到达了吗?" icon="ui-icon-alert" />
                         </p:menuitem>
+                        <p:menuitem id="btnConfirm" actionListener="#{equipmentRepairManagedBean.confirmCompleted()}" icon="ui-icon-check" value="确认维修完成" 
+                                    update=":formList">
+                            <p:confirm header="系统提示" message="维修完成了吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                         <p:menuitem id="btnEdit" value="责任回复" action="#{equipmentRepairManagedBean.responsibilitySet('equipmentRepairSet')}" icon="ui-icon-pencil"
+                                     update=":formList" />
                         <p:menuitem id="btnDelete" actionListener="#{equipmentRepairManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
                                     update=":formList">
                             <p:confirm header="系统提示" message="作废吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem  actionListener="#{equipmentRepairManagedBean.confirmAcceptance()}" icon="ui-icon-check" value="确认验收" 
-                                     update=":formList">
-                            <p:confirm header="系统提示" message="确认吗?" icon="ui-icon-alert" />
-                        </p:menuitem>
+
                     </p:splitButton>
 
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentRepairManagedBean.query()}" icon="ui-icon-search"
@@ -121,11 +127,11 @@
                     </f:facet>
                     <h:outputText value="#{equipmentRepairManagedBean.getTroubleName(item.troublefrom)}"/>
                 </p:column>
-                 <p:column styleClass="Wid20">
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="故障发生时间"/>
                     </f:facet>
-                    <h:outputText value="#{item.credate}">
+                    <h:outputText value="#{item.hitchtime}">
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>
                 </p:column>
@@ -137,7 +143,7 @@
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>                      
                 </p:column>
-               
+
                 <p:column styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="报修人"/>
