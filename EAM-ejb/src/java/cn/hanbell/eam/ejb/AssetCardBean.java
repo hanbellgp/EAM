@@ -179,4 +179,26 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
             return BigDecimal.ZERO;
         }
     }
+
+    public List<AssetCard> getAssetCardList(String company, String queryParam) {
+        String sqlStr = "SELECT a FROM AssetCard a WHERE a.company = :company AND a.assetItem.category.id = :categoryid AND (a.formid LIKE :formid OR a.assetItem.itemdesc LIKE :itemdesc OR a.assetDesc LIKE :assetDesc OR a.userno LIKE :userno OR a.username LIKE :username)";
+
+        //生成SQL
+        Query query = getEntityManager().createQuery(sqlStr).setMaxResults(100);
+
+        //参数赋值
+        query.setParameter("company", company);
+        query.setParameter("formid", "%" + queryParam + "%");
+        query.setParameter("categoryid", 3);
+        query.setParameter("itemdesc", "%" + queryParam + "%");
+        query.setParameter("assetDesc", "%" + queryParam + "%");
+        query.setParameter("userno", "%" + queryParam + "%");
+        query.setParameter("username", "%" + queryParam + "%");
+
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }
