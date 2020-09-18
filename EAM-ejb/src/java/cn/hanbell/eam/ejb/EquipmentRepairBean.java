@@ -33,10 +33,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(this.className);
         sb.append(" e WHERE 1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
-        //给Map排序
-        if (filters.get("itemno.assetDesc") != null) {
-            sb.append(" AND e.itemno.formid=e.assetno");
-        }
+      
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -47,18 +44,21 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     strMap.put(key, value);
                 }
 
-            }else{
-             strMap.put("repairuser", filters.get("repairuser"));
+            } else {
+                //strMap.put("repairuser", filters.get("repairuser"));
+                sb.append("  AND (e.repairuser = '");
+                sb.append(filters.get("repairuser")).append("'");
+                sb.append("  OR e.hitchdutyuser = '");
+                sb.append(filters.get("repairuser")).append("')");
             }
         }
-       
+
         filters = strMap;
 
         if (filters != null) {
             this.setQueryFilter(sb, filters);
         }
 
-    
         if (orderBy != null && orderBy.size() > 0) {
             sb.append(" ORDER BY ");
             for (final Map.Entry<String, String> o : orderBy.entrySet()) {
@@ -66,7 +66,6 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             }
             sb.deleteCharAt(sb.lastIndexOf(","));
         }
-       
 
         //生成SQL
         Query query = getEntityManager().createQuery(sb.toString());
@@ -89,23 +88,25 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(" e WHERE 1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
         //给Map排序
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+          for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (!"repairuser".equals(key)) {
                 if ("ALL".equals(value)) {
                     sb.append("  AND e.rstatus<'95'");
+                } else {
+                    strMap.put(key, value);
                 }
+
             } else {
-                strMap.put("repairuser", filters.get("repairuser"));
-
+                //strMap.put("repairuser", filters.get("repairuser"));
+                sb.append("  AND (e.repairuser = '");
+                sb.append(filters.get("repairuser")).append("'");
+                sb.append("  OR e.hitchdutyuser = '");
+                sb.append(filters.get("repairuser")).append("')");
             }
-
         }
         filters = strMap;
-        if (filters.get("itemno.assetDesc") != null) {
-            sb.append(" AND e.itemno.formid=e.assetno");
-        }
 
         if (filters != null) {
             this.setQueryFilter(sb, filters);
@@ -126,9 +127,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(" e WHERE 1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
         //给Map排序
-
-        sb.append(" AND e.itemno.formid=e.assetno");
-
+            
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -140,8 +139,11 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 }
 
             } else {
-                strMap.put("repairuser", filters.get("repairuser"));
-
+                //strMap.put("repairuser", filters.get("repairuser"));
+                sb.append("  AND (e.repairuser = '");
+                sb.append(filters.get("repairuser")).append("'");
+                sb.append("  OR e.hitchdutyuser = '");
+                sb.append(filters.get("repairuser")).append("')");
             }
         }
         filters = strMap;

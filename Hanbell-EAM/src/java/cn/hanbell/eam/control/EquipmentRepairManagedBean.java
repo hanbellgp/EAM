@@ -7,6 +7,7 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
@@ -14,6 +15,7 @@ import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentTrouble;
@@ -81,6 +83,9 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     protected EquipmentRepairHisBean equipmentRepairHisBean;
     @EJB
     private DepartmentBean departmentBean;
+    @EJB
+    private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
+
     private String queryEquipmentName;
     private String imageName;
     private String queryRepairuser;
@@ -92,6 +97,8 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private List<EquipmentTrouble> equipmentTroubleList;
     private String contenct;
     private String note;
+    protected List<EquipmentRepairHelpers> detailList4;
+    private EquipmentRepairHelpers currentDetail4;
 
     public EquipmentRepairManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -107,7 +114,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
-        queryRepairuser = getUserName(userManagedBean.getUserid());
+        queryRepairuser = getUserName(userManagedBean.getUserid()).getUsername();
         equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("repairuser", userManagedBean.getUserid());
@@ -125,7 +132,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         newEntity.setHitchtime(getDate());
         newEntity.setRstatus("10");
         newEntity.setRepairuser(userManagedBean.getUserid());
-        newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()));
+        newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()).getUsername());
         newEntity.setRepairdeptno(this.getDepartment(userManagedBean.getUserid()).getDeptno());
         newEntity.setRepairdeptname(this.getDepartment(userManagedBean.getUserid()).getDept());
         troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
@@ -181,14 +188,15 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         update();
     }
 
+    //确认维修完成
     public void confirmCompleted() {
 
         if (currentEntity == null) {
             showErrorMsg("Error", "请选择单据！");
             return;
         }
-        if (!currentEntity.getRepairuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有对应的报修人才能确认！");
+        if (!currentEntity.getRepairdeptno().equals(getDepartment(userManagedBean.getUserid()).getDeptno())) {
+            showErrorMsg("Error", "只有对应的报修人，及报修人所在部门的人员才能确认！");
             return;
         }
         if (Integer.parseInt(currentEntity.getRstatus()) != 20) {
@@ -211,7 +219,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "当前状态为：" + getStateName(currentEntity.getRstatus()) + ",不能填写责任回复");
             return "";
         }
-        if (!currentEntity.getHitchdutyuser().equals(userManagedBean.getUserid())||"2079".equals(userManagedBean.getUserid())) {
+        if (!currentEntity.getHitchdutyuser().equals(userManagedBean.getUserid()) || "2079".equals(userManagedBean.getUserid())) {
             showErrorMsg("Error", "只有对应的责任人才能填写责任回复！");
             return "";
         }
@@ -229,6 +237,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
+        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.edit(path);
     }
 
@@ -356,10 +365,10 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     public void handleDialogReturnWhenNew(SelectEvent event) {
         if (event.getObject() != null && newEntity != null) {
             AssetCard e = (AssetCard) event.getObject();
-            newEntity.setAssetno(e.getFormid());
+            newEntity.setAssetno(e);
             newEntity.setServiceuser(e.getRepairuser());
             newEntity.setServiceusername(e.getRepairusername());
-            newEntity.setItemno(e);
+            newEntity.setItemno(e.getAssetItem().getItemno());
         }
     }
 
@@ -396,7 +405,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (Integer.parseInt(min) >= 30) {
             hour += 1;
         }
-        currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
+        currentEntity.setLaborcosts(BigDecimal.valueOf(hour * 20));
     }
 
     //确认维修到达时间
@@ -459,19 +468,19 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             cell0.setCellValue(equipmentrepair.getFormid());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getItemno().getFormid());
+            cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getItemno().getAssetItem().getItemno());
+            cell2.setCellValue(equipmentrepair.getAssetno().getAssetItem().getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getItemno().getAssetDesc());
+            cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getItemno().getUsername());
+            cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getItemno().getDeptname());
+            cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
 
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
@@ -624,13 +633,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                 model.getFilterFields().put("formid", queryFormId);
             }
             if (queryName != null && !"".equals(queryName)) {
-                model.getFilterFields().put("assetno", queryName);
+                model.getFilterFields().put("assetno.formid", queryName);
             }
             if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("itemno.deptname", queryDeptname);
+                model.getFilterFields().put("assetno.deptname", queryDeptname);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("itemno.assetDesc", queryEquipmentName);
+                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
             }
 
             if (queryRepairuser != null && !"".equals(queryRepairuser)) {
@@ -697,9 +706,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     }
 
     //根据用户ID获取用户姓名
-    public String getUserName(String userId) {
+    public SystemUser getUserName(String userId) {
         SystemUser s = systemUserBean.findByUserId(userId);
-        return s.getUsername();
+        return s;
+    }
+
+    //根据用户ID查询用户手机号码
+    public String getPhone(String userId) {
+        return getUserName(userId).getPhone();
     }
 
     //获取故障紧急度
@@ -791,6 +805,22 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public List<EquipmentRepairHelpers> getDetailList4() {
+        return detailList4;
+    }
+
+    public void setDetailList4(List<EquipmentRepairHelpers> detailList4) {
+        this.detailList4 = detailList4;
+    }
+
+    public EquipmentRepairHelpers getCurrentDetail4() {
+        return currentDetail4;
+    }
+
+    public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
+        this.currentDetail4 = currentDetail4;
     }
 
 }

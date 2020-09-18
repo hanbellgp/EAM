@@ -28,7 +28,7 @@
                         <p:column colspan="6">报修单详情</p:column>
                     </p:row>
                 </f:facet>
-                  <p:row>
+                <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障紧急度"/></p:column>
                     <p:column colspan="11"> 
                         <h:outputText id="hitchurgency" value="#{equipmentRepairManagedBean.getHitchurgency(equipmentRepairManagedBean.currentEntity.hitchurgency)}" title="troublefrom" />
@@ -41,36 +41,34 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="资产编号"/></p:column>
                     <p:column>
-                        <h:outputText id="assetno" value="#{equipmentRepairManagedBean.currentEntity.assetno}" title="assetno" />
+                        <h:outputText id="assetno" value="#{equipmentRepairManagedBean.currentEntity.assetno.formid}" title="assetno" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="设备名称"/></p:column>
                     <p:column>
-                        <h:outputText id="assetDesc" value="#{equipmentRepairManagedBean.currentEntity.itemno.assetDesc}" title="assetDesc" />
+                        <h:outputText id="assetDesc" value="#{equipmentRepairManagedBean.currentEntity.assetno.assetDesc}" title="assetDesc" />
                     </p:column>
-
-
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
                     <p:column>
-                      <h:outputText id="troublefrom" value="#{equipmentRepairManagedBean.getTroubleName(equipmentRepairManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
+                        <h:outputText id="troublefrom" value="#{equipmentRepairManagedBean.getTroubleName(equipmentRepairManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="使用部门"/></p:column>
                     <p:column>
-                        <h:outputText id="deptname" value="#{equipmentRepairManagedBean.currentEntity.itemno.deptname}" title="deptname"/>
+                        <h:outputText id="deptname" value="#{equipmentRepairManagedBean.currentEntity.assetno.deptname}" title="deptname"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="存放地址"/></p:column>
                     <p:column>
-                        <h:outputText id="name" value="#{equipmentRepairManagedBean.currentEntity.itemno.position2.name}" title="name" />
+                        <h:outputText id="name" value="#{equipmentRepairManagedBean.currentEntity.assetno.position2.name}" title="name" />
                     </p:column>
 
                 </p:row>
 
                 <p:row>
 
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="发生时间" for="credate" /></p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="故障发生时间" for="credate" /></p:column>
                     <p:column >
-                        <h:outputText id="credate" value="#{equipmentRepairManagedBean.currentEntity.credate}" title="credate">
+                        <h:outputText id="credate" value="#{equipmentRepairManagedBean.currentEntity.hitchtime}" title="credate">
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
                     </p:column>
@@ -89,6 +87,12 @@
                         <h:outputText id="servicearrivetime" value="#{equipmentRepairManagedBean.currentEntity.servicearrivetime}" title="servicearrivetime">
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
+                    </p:column>
+                </p:row>
+                 <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="维修人电话" for="phone" /></p:column>
+                    <p:column colspan="7">
+                        <h:outputText id="phone" value="#{equipmentRepairManagedBean.getPhone(equipmentRepairManagedBean.currentEntity.serviceuser)}" title="phone" />
                     </p:column>
                 </p:row>
                 <p:row>

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentSpare" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentSpareManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">维修备件－编辑</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="备件品号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="spareno" value="#{equipmentSpareManagedBean.currentEntity.spareno}" title="Spareno"  required="true" requiredMessage="请输入备件品号"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="备件编号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="sparenum" value="#{equipmentSpareManagedBean.currentEntity.sparenum}" required="true" requiredMessage="请输入备件编号"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="备件名称"/></p:column>
+                    <p:column>
+                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.currentEntity.sparedesc}" title="Sparedesc"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="规格型号" for="sparemodel" /></p:column>
+                    <p:column>
+                        <p:inputText id="sparemodel" value="#{equipmentSpareManagedBean.currentEntity.sparemodel}" title="Sparemodel"
+                                     />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="品牌"/></p:column>
+                    <p:column>
+                        <p:inputText id="brand" value="#{equipmentSpareManagedBean.currentEntity.brand}" title="Brand"/>
+                    </p:column>
+                    <p:column><h:outputText value="采购周期"/></p:column>
+                    <p:column>
+                        <p:inputText id="repaircost" value="#{equipmentSpareManagedBean.currentEntity.leadtime}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="Leadtime" >
+                        </p:inputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="最低储备"/></p:column>
+                    <p:column>
+                        <p:inputText id="minstock" value="#{equipmentSpareManagedBean.currentEntity.minstock}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="Minstock"/> 
+                    </p:column>
+                    <p:column><h:outputText value="最高储备"/></p:column>
+                    <p:column>
+                        <p:inputText id="maxstock" value="#{equipmentSpareManagedBean.currentEntity.maxstock}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="Maxstock" >
+                        </p:inputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
+                    <p:column>
+                        <p:inputText  id="uprice" value="#{equipmentMaintenanceManagedBean.currentDetail2.uprice}" title="qty" styleClass="inputWithButton"
+                                      onkeyup="this.value = this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" required="true" requiredMessage="请输入单价"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <p:inputText id="unit" value="#{equipmentSpareManagedBean.currentEntity.unit.unit}" title="Unit" styleClass="inputWithButton" readonly="true"
+                                     />
+                        <p:commandButton id="btnUnitSelect" actionListener="#{equipmentSpareManagedBean.openDialog('unitSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleDialogReturnUnitWhenEdit}"
+                                    update="unit" />
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{equipmentSpareManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

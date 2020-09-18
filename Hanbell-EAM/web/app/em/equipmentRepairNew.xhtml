@@ -29,7 +29,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
                     <p:column  styleClass="Wid20">
-                        <p:inputText id="assetno" value="#{equipmentRepairManagedBean.newEntity.assetno}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="assetno" value="#{equipmentRepairManagedBean.newEntity.assetno.formid}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnWhenNew}"
@@ -38,12 +38,12 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备名称" for="itemno" /></p:column>
                     <p:column>
-                        <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.itemno.assetDesc}" title="itemno" />
+                        <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.assetno.assetDesc}" title="itemno" />
                     </p:column>
 
                     <p:column style="background-color: #EEEEEE" ><p:outputLabel value="使用部门" for="deptname"/></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText   id="deptname" value="#{equipmentRepairManagedBean.newEntity.itemno.deptname}" title="deptname"
+                        <h:outputText   id="deptname" value="#{equipmentRepairManagedBean.newEntity.assetno.deptname}" title="deptname"
                                         />
                     </p:column>
                 </p:row>
@@ -52,7 +52,7 @@
 
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="存放地址" for="position2"/></p:column>
                     <p:column >
-                        <h:outputText id="position2" value="#{equipmentRepairManagedBean.newEntity.itemno.position2.name}" title="position2" />
+                        <h:outputText id="position2" value="#{equipmentRepairManagedBean.newEntity.assetno.position2.name}" title="position2" />
                     </p:column>
 
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="报修人" for="repairusername"/></p:column>
@@ -61,13 +61,13 @@
                                       />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="维修人" for="serviceuser" /></p:column>
-                    <p:column>
-                        <p:inputText id="serviceuser" value="#{equipmentRepairManagedBean.newEntity.serviceusername}" title="serviceuser" styleClass="inputWithButton" 
-                                     readonly="true"  />
+                   
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="serviceuser" value="#{equipmentRepairManagedBean.newEntity.serviceusername}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="queryCategory" actionListener="#{equipmentRepairManagedBean.openDialog('repairUserSelect')}" icon="ui-icon-extlink"
-                                         process="@this">
+                                         process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnSysuserWhenNew}"
-                                    update="serviceuser"/>
+                                    update="serviceuser" />
                         </p:commandButton>
                     </p:column>
                 </p:row>
