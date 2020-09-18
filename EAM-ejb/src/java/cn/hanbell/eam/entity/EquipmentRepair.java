@@ -11,6 +11,9 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -68,6 +71,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentRepair.findByCfmdate", query = "SELECT e FROM EquipmentRepair e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentRepair extends FormEntity {
 
+    @Id()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -76,8 +84,8 @@ public class EquipmentRepair extends FormEntity {
     @Basic(optional = false)
     @NotNull()
     @Size(min = 1, max = 45)
-    @Column(name = "assetno")
-    private String assetno;
+    @Column(name = "itemno")
+    private String itemno;
     @Size(max = 20)
     @Column(name = "repairdeptno")
     private String repairdeptno;
@@ -96,15 +104,15 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 45)
     @Column(name = "troublefrom")
     private String troublefrom;
+    @Size(max = 2)
+    @Column(name = "repairmethodtype")
+    private String repairmethodtype;
     @Size(max = 20)
     @Column(name = "serviceuser")
     private String serviceuser;
-    @Size(max = 45)
+    @Size(max = 20)
     @Column(name = "serviceusername")
     private String serviceusername;
-    @Size(max = 2)
-    @Column(name = "rstatus")
-    private String rstatus;
     @Size(max = 200)
     @Column(name = "hitchdesc")
     private String hitchdesc;
@@ -117,6 +125,11 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "repairmethod")
     private String repairmethod;
+    @Size(max = 2)
+    @Column(name = "rstatus")
+    private String rstatus;
+    @Column(name = "serviceassisttime")
+    private Integer serviceassisttime;
     @Size(max = 20)
     @Column(name = "abrasehitch")
     private String abrasehitch;
@@ -150,17 +163,22 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "hmeasure")
     private String hmeasure;
+    @Size(max = 10)
+    @Column(name = "laborcost")
+    private String laborcost;
+    @Column(name = "laborcosts")
+    private BigDecimal laborcosts;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+    @JoinColumn(name = "assetno", referencedColumnName = "formid")
+    @ManyToOne
+    private AssetCard assetno;
     @Column(name = "hitchtime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date hitchtime;
     @Column(name = "stopworktime")
     private Integer stopworktime;
-    @JoinColumn(name = "itemno", referencedColumnName = "itemno")
-    @ManyToOne
-    private AssetCard itemno;
     @Column(name = "servicearrivetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date servicearrivetime;
@@ -174,8 +192,6 @@ public class EquipmentRepair extends FormEntity {
     private BigDecimal sparecost;
     @Column(name = "repaircost")
     private BigDecimal repaircost;
-    @Column(name = "laborcost")
-    private BigDecimal laborcost;
     @Transient
     private String maintenanceTime;
     @Transient
@@ -186,7 +202,8 @@ public class EquipmentRepair extends FormEntity {
     public EquipmentRepair(Integer id) {
         this.id = id;
     }
-    public EquipmentRepair(Integer id, String company, String formid, String assetno, String troublefrom, String status) {
+
+    public EquipmentRepair(Integer id, String company, String formid, AssetCard assetno, String troublefrom, String status) {
         this.id = id;
         this.company = company;
         this.formid = formid;
@@ -195,6 +212,100 @@ public class EquipmentRepair extends FormEntity {
         this.status = status;
     }
 
+
+
+    public EquipmentRepair() {
+    }
+
+    public AssetCard getAssetno() {
+        return assetno;
+    }
+
+    public void setAssetno(AssetCard assetno) {
+        this.assetno = assetno;
+    }
+
+
+    public Date getServicearrivetime() {
+        return servicearrivetime;
+    }
+
+    public void setServicearrivetime(Date servicearrivetime) {
+        this.servicearrivetime = servicearrivetime;
+    }
+
+    public Integer getExcepttime() {
+        return excepttime;
+    }
+
+    public void setExcepttime(Integer excepttime) {
+        this.excepttime = excepttime;
+    }
+
+    public Date getCompletetime() {
+        return completetime;
+    }
+
+    public void setCompletetime(Date completetime) {
+        this.completetime = completetime;
+    }
+
+    public BigDecimal getSparecost() {
+        return sparecost;
+    }
+
+    public void setSparecost(BigDecimal sparecost) {
+        this.sparecost = sparecost;
+    }
+
+    public BigDecimal getRepaircost() {
+        return repaircost;
+    }
+
+    public void setRepaircost(BigDecimal repaircost) {
+        this.repaircost = repaircost;
+    }
+
+    public String getMaintenanceTime() {
+        return maintenanceTime;
+    }
+
+    public void setMaintenanceTime(String maintenanceTime) {
+        this.maintenanceTime = maintenanceTime;
+    }
+
+    public String getContactTime() {
+        return contactTime;
+    }
+
+    public void setContactTime(String contactTime) {
+        this.contactTime = contactTime;
+    }
+
+    public String getDowntime() {
+        return downtime;
+    }
+
+    public void setDowntime(String downtime) {
+        this.downtime = downtime;
+    }
+
+
+    public Date getHitchtime() {
+        return hitchtime;
+    }
+
+    public void setHitchtime(Date hitchtime) {
+        this.hitchtime = hitchtime;
+    }
+
+    public Integer getStopworktime() {
+        return stopworktime;
+    }
+
+    public void setStopworktime(Integer stopworktime) {
+        this.stopworktime = stopworktime;
+    }
     public String getCompany() {
         return company;
     }
@@ -203,13 +314,16 @@ public class EquipmentRepair extends FormEntity {
         this.company = company;
     }
 
-    public String getAssetno() {
-        return assetno;
+
+    public String getItemno() {
+        return itemno;
     }
 
-    public void setAssetno(String assetno) {
-        this.assetno = assetno;
+    public void setItemno(String itemno) {
+        this.itemno = itemno;
     }
+
+
 
     public String getRepairdeptno() {
         return repairdeptno;
@@ -259,6 +373,14 @@ public class EquipmentRepair extends FormEntity {
         this.troublefrom = troublefrom;
     }
 
+    public String getRepairmethodtype() {
+        return repairmethodtype;
+    }
+
+    public void setRepairmethodtype(String repairmethodtype) {
+        this.repairmethodtype = repairmethodtype;
+    }
+
     public String getServiceuser() {
         return serviceuser;
     }
@@ -273,14 +395,6 @@ public class EquipmentRepair extends FormEntity {
 
     public void setServiceusername(String serviceusername) {
         this.serviceusername = serviceusername;
-    }
-
-    public String getRstatus() {
-        return rstatus;
-    }
-
-    public void setRstatus(String rstatus) {
-        this.rstatus = rstatus;
     }
 
     public String getHitchdesc() {
@@ -313,6 +427,22 @@ public class EquipmentRepair extends FormEntity {
 
     public void setRepairmethod(String repairmethod) {
         this.repairmethod = repairmethod;
+    }
+
+    public String getRstatus() {
+        return rstatus;
+    }
+
+    public void setRstatus(String rstatus) {
+        this.rstatus = rstatus;
+    }
+
+    public Integer getServiceassisttime() {
+        return serviceassisttime;
+    }
+
+    public void setServiceassisttime(Integer serviceassisttime) {
+        this.serviceassisttime = serviceassisttime;
     }
 
     public String getAbrasehitch() {
@@ -403,6 +533,22 @@ public class EquipmentRepair extends FormEntity {
         this.hmeasure = hmeasure;
     }
 
+    public String getLaborcost() {
+        return laborcost;
+    }
+
+    public void setLaborcost(String laborcost) {
+        this.laborcost = laborcost;
+    }
+
+    public BigDecimal getLaborcosts() {
+        return laborcosts;
+    }
+
+    public void setLaborcosts(BigDecimal laborcosts) {
+        this.laborcosts = laborcosts;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -411,106 +557,9 @@ public class EquipmentRepair extends FormEntity {
         this.remark = remark;
     }
 
-    public EquipmentRepair() {
-    }
+  
 
-    public AssetCard getItemno() {
-        return itemno;
-    }
-
-    public void setItemno(AssetCard itemno) {
-        this.itemno = itemno;
-    }
-
-    public Date getServicearrivetime() {
-        return servicearrivetime;
-    }
-
-    public void setServicearrivetime(Date servicearrivetime) {
-        this.servicearrivetime = servicearrivetime;
-    }
-
-    public Integer getExcepttime() {
-        return excepttime;
-    }
-
-    public void setExcepttime(Integer excepttime) {
-        this.excepttime = excepttime;
-    }
-
-    public Date getCompletetime() {
-        return completetime;
-    }
-
-    public void setCompletetime(Date completetime) {
-        this.completetime = completetime;
-    }
-
-    public BigDecimal getSparecost() {
-        return sparecost;
-    }
-
-    public void setSparecost(BigDecimal sparecost) {
-        this.sparecost = sparecost;
-    }
-
-    public BigDecimal getRepaircost() {
-        return repaircost;
-    }
-
-    public void setRepaircost(BigDecimal repaircost) {
-        this.repaircost = repaircost;
-    }
-
-    public String getMaintenanceTime() {
-        return maintenanceTime;
-    }
-
-    public void setMaintenanceTime(String maintenanceTime) {
-        this.maintenanceTime = maintenanceTime;
-    }
-
-    public String getContactTime() {
-        return contactTime;
-    }
-
-    public void setContactTime(String contactTime) {
-        this.contactTime = contactTime;
-    }
-
-    public String getDowntime() {
-        return downtime;
-    }
-
-    public void setDowntime(String downtime) {
-        this.downtime = downtime;
-    }
-
-    public BigDecimal getLaborcost() {
-        return laborcost;
-    }
-
-    public void setLaborcost(BigDecimal laborcost) {
-        this.laborcost = laborcost;
-    }
-
-    public Date getHitchtime() {
-        return hitchtime;
-    }
-
-    public void setHitchtime(Date hitchtime) {
-        this.hitchtime = hitchtime;
-    }
-
-    public Integer getStopworktime() {
-        return stopworktime;
-    }
-
-    public void setStopworktime(Integer stopworktime) {
-        this.stopworktime = stopworktime;
-    }
-
-    @Override
+   @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

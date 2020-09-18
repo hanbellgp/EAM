@@ -164,13 +164,13 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 model.getFilterFields().put("formid", queryFormId);
             }
             if (queryName != null && !"".equals(queryName)) {
-                model.getFilterFields().put("assetno", queryName);
+                model.getFilterFields().put("assetno.formid", queryName);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("itemno.assetDesc", queryEquipmentName);
+                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
             }
             if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("itemno.deptname", queryDeptname);
+                model.getFilterFields().put("assetno.deptname", queryDeptname);
             }
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);
@@ -209,7 +209,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             totalCost += currentEntity.getRepaircost().doubleValue();
         }
          if (currentEntity.getLaborcost()!= null) {
-            totalCost += currentEntity.getLaborcost().doubleValue();
+            totalCost += currentEntity.getLaborcosts().doubleValue();
         }
         if (currentEntity.getSparecost()!= null) {
             totalCost += currentEntity.getSparecost().doubleValue();
@@ -279,7 +279,6 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         long day = l / (24 * 60 * 60 * 1000);
         long hour = (l / (60 * 60 * 1000) - day * 24);
         long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
-        long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
         if (downTimes != 0) {
             int days = downTimes / (60 * 24);
             downTimes -= days * 60 * 24;
@@ -302,16 +301,19 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 hour = 0;
                 min = 0;
                 day = 0;
-                s = 0;
+
             }
             if (hour < 0) {
                 hour = 0;
                 min = 0;
                 day = 0;
-                s = 0;
             }
+
         }
-        return "" + day + "天" + hour + "小时" + min + "分";
+        if (day > 0) {
+            hour += 24 * day;
+        }
+        return hour + "小时" + min + "分";
     }
 //导出界面的EXCEL数据处理
 
@@ -377,19 +379,19 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cell0.setCellValue(equipmentrepair.getFormid());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getItemno().getFormid());
+            cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getItemno().getAssetItem().getItemno());
+            cell2.setCellValue(equipmentrepair.getAssetno().getAssetItem().getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getItemno().getAssetDesc());
+            cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getItemno().getUsername());
+            cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getItemno().getDeptname());
+            cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
 
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
@@ -479,7 +481,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             double laborcost = 0;
             
             if (equipmentrepair.getLaborcost() != null) {
-                laborcost = equipmentrepair.getLaborcost().doubleValue();
+                laborcost = equipmentrepair.getLaborcosts().doubleValue();
             }
             cell21.setCellValue(laborcost);
 

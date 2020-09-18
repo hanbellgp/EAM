@@ -18,7 +18,7 @@
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">设备参数－编辑</p:column>
+                        <p:column colspan="4">设备参数－查看</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
@@ -38,9 +38,10 @@
                     <p:column>
                         <h:outputText id="assetDesc" value="#{assetParametersManagedBean.currentEntity.assetDesc}" title="assetDesc" />
                     </p:column>
-                    <p:column><p:outputLabel value="规格" for="assetSpec"/></p:column>
-                    <p:column colspan="3">
-                        <h:outputText id="assetSpec" value="#{assetParametersManagedBean.currentEntity.assetSpec}" title="assetSpec" />
+                   <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <h:outputText id="unit" value="#{assetParametersManagedBean.currentEntity.unit}" title="Unit"
+                                      />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -55,14 +56,13 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><h:outputText value="数量" /></p:column>
+                   <p:column><h:outputText value="品牌" /></p:column>
                     <p:column>
-                        <h:outputText id="qty" value="#{assetParametersManagedBean.currentEntity.qty}" title="qty"/>
+                        <h:outputText id="brand" value="#{assetParametersManagedBean.currentEntity.brand}" title="brand"/>
                     </p:column>
-                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
-                    <p:column>
-                        <h:outputText id="unit" value="#{assetParametersManagedBean.currentEntity.unit}" title="Unit"
-                                      />
+                      <p:column><p:outputLabel value="规格" for="assetSpec"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="assetSpec" value="#{assetParametersManagedBean.currentEntity.assetSpec}" title="assetSpec" />
                     </p:column>
                 </p:row>
             </p:panelGrid>

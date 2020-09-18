@@ -7,12 +7,14 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentSpare;
@@ -63,6 +65,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private EquipmentTroubleBean equipmentTroubleBean;
     @EJB
     private SysCodeBean sysCodeBean;
+    @EJB
+    private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
@@ -75,6 +79,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private List<EquipmentTrouble> equipmentTroubleList;
     private List<EquipmentRepairFile> equipmentRepairFileList;
     private List<SysCode> hitchurgencyList;
+    protected List<EquipmentRepairHelpers> detailList4;
+    private EquipmentRepairHelpers currentDetail4;
 
     public EquipmentAcceptanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -90,11 +96,11 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
         queryState = "ALL";
-        queryServiceuser = getUserName(userManagedBean.getUserid());
+        // queryServiceuser = getUserName(userManagedBean.getUserid());
         equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
-        model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
+        //model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
         model.getSortFields().put("credate", "DESC");
         super.init();
     }
@@ -213,6 +219,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -231,8 +238,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (currentEntity.getRepaircost() != null) {
             totalCost += currentEntity.getRepaircost().doubleValue();
         }
-        if (currentEntity.getLaborcost() != null) {
-            totalCost += currentEntity.getLaborcost().doubleValue();
+        if (currentEntity.getLaborcosts() != null) {
+            totalCost += currentEntity.getLaborcosts().doubleValue();
         }
         if (currentEntity.getSparecost() != null) {
             totalCost += currentEntity.getSparecost().doubleValue();
@@ -281,6 +288,9 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
+        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        getPartsCost();
+        calculateTotalCost();
         return super.edit(path);
 
     }
@@ -306,9 +316,12 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             maintenanceCosts += equipmentrepair1.getQty().doubleValue() * price.doubleValue();
         });
         calculateTotalCost();
-        if (currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals(repairleadersId) || currentEntity.getRstatus().equals("60") &&userManagedBean.getUserid().equals("C2079")) {
+        if (currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals(repairleadersId) || currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
-                if (totalCost > 5000) {
+                //维修经理签核的金额
+                String repairApprovals = sysCodeBean.findBySyskindAndCode("RD", "repairApprovals").getCvalue();
+                currentDetail3.setRemark(repairApprovals);
+                if (totalCost > Integer.parseInt(repairApprovals)) {
                     currentEntity.setRstatus("70");
                 } else {
                     currentEntity.setRstatus("95");
@@ -317,7 +330,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 currentEntity.setRstatus("40");
             }
 
-        } else if (currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals(repairmanagerId) ||currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
+        } else if (currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals(repairmanagerId) || currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
                 currentEntity.setRstatus("95");
             } else if (contenct.equals("不合格")) {
@@ -428,13 +441,13 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 model.getFilterFields().put("formid", queryFormId);
             }
             if (queryName != null && !"".equals(queryName)) {
-                model.getFilterFields().put("assetno", queryName);
+                model.getFilterFields().put("assetno.formid", queryName);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("itemno.assetDesc", queryEquipmentName);
+                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
             }
             if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("itemno.deptname", queryDeptname);
+                model.getFilterFields().put("assetno.deptname", queryDeptname);
             }
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);
@@ -550,7 +563,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (Integer.parseInt(min) >= 30) {
             hour += 1;
         }
-        currentEntity.setLaborcost(BigDecimal.valueOf(hour * 20));
+        currentEntity.setLaborcosts(BigDecimal.valueOf(hour * 20));
     }
 
     //根据用户ID获取用户姓名
@@ -653,6 +666,22 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     public void setTotalCost(double totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public List<EquipmentRepairHelpers> getDetailList4() {
+        return detailList4;
+    }
+
+    public void setDetailList4(List<EquipmentRepairHelpers> detailList4) {
+        this.detailList4 = detailList4;
+    }
+
+    public EquipmentRepairHelpers getCurrentDetail4() {
+        return currentDetail4;
+    }
+
+    public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
+        this.currentDetail4 = currentDetail4;
     }
 
 }

@@ -28,7 +28,7 @@
                 <h:outputLabel value="设备名称" for="queryEquipmentName" />
                 <p:inputText id="queryEquipmentName" value="#{equipmentMaintenanceManagedBean.queryEquipmentName}" title="设备名称" />
                 <h:outputLabel value="进度" for="queryState" />
-               <p:selectOneMenu id="queryState" value="#{equipmentMaintenanceManagedBean.queryState}" title="状态"  >
+                <p:selectOneMenu id="queryState" value="#{equipmentMaintenanceManagedBean.queryState}" title="状态"  >
                     <f:selectItem  itemLabel="未结案" itemValue="ALL"/>
                     <f:selectItem  itemLabel="已报修" itemValue="10"/>
                     <f:selectItem  itemLabel="维修到达" itemValue="20"/>
@@ -40,7 +40,7 @@
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
-                  <h:outputLabel value="使用部门" for="queryDeptname" />
+                <h:outputLabel value="使用部门" for="queryDeptname" />
                 <p:inputText id="queryDeptname" value="#{equipmentMaintenanceManagedBean.queryDeptname}" title="使用部门" />
                 <h:outputLabel value="维修人" for="queryServiceuser" />
                 <p:inputText id="queryServiceuser" value="#{equipmentMaintenanceManagedBean.queryServiceuser}" title="维修人"
@@ -56,8 +56,9 @@
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{equipmentMaintenanceManagedBean.print()}" icon="ui-icon-print"
                                     />
-                         <p:menuitem id="btnCreate" value="发起维修验收" action="#{equipmentMaintenanceManagedBean.initiateMaintenanceAcceptance('equipmentMaintenanceNew')}" icon="ui-icon-plus"
-                                   />
+                      
+                        <p:menuitem id="btnCreate" value="发起维修验收" action="#{equipmentMaintenanceManagedBean.initiateMaintenanceAcceptance('equipmentMaintenanceNew')}" icon="ui-icon-plus"
+                                    />
                         <p:menuitem id="btnDelete" actionListener="#{equipmentMaintenanceManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
                                     >
                             <p:confirm header="系统提示" message="作废吗?" icon="ui-icon-alert" />
@@ -91,29 +92,29 @@
                     </f:facet>
                     <h:outputText value="#{item.formid}"/>
                 </p:column> 
-                <p:column styleClass="Wid10">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="使用部门"/>
                     </f:facet>
-                    <h:outputText value="#{item.itemno.deptname}"/>
+                    <h:outputText value="#{item.assetno.deptname}"/>
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="资产编号"/>
                     </f:facet>
-                    <h:outputText value="#{item.assetno}"/>
+                    <h:outputText value="#{item.assetno.formid}"/>
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="设备名称"/>
                     </f:facet>
-                    <h:outputText value="#{item.itemno.assetDesc}"/>
+                    <h:outputText value="#{item.assetno.assetDesc}"/>
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
-                        <h:outputText value="故障来源"/>
+                        <h:outputText value="故障报警"/>
                     </f:facet>
-                    <h:outputText value="#{equipmentMaintenanceManagedBean.getTroubleName(item.troublefrom)}"/>
+                    <h:outputText value="#{item.hitchalarm}"/>
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
