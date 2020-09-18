@@ -57,7 +57,8 @@ public class AssetParametersManagedBean extends FormMulti3Bean<AssetCard, AssetM
     private String level;
     private String voltage;
     private String power;
-private String imageName;
+    private String imageName;
+
     public AssetParametersManagedBean() {
         super(AssetCard.class, AssetManufacturer.class, AssetParameterDta.class, AssetFile.class);
     }
@@ -67,7 +68,7 @@ private String imageName;
         superEJB = assetCardBean;
         detailEJB = assetManufacturerBean;
         detailEJB2 = assetParameterDtaBean;
-        detailEJB3=assetFileBean;
+        detailEJB3 = assetFileBean;
         model = new AssetCardModel(assetCardBean, userManagedBean);
         this.model.getFilterFields().put("assetItem.category.id =", 3);
         model.getSortFields().put("assetItem.itemno", "ASC");
@@ -130,6 +131,14 @@ private String imageName;
         } else {
             getDetail();
         }
+    }
+
+    @Override
+    public String view(String path) {
+        if (!detailList.isEmpty()) {
+            currentDetail = detailList.get(0);
+        }
+        return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void doConfirmDetailCheck() {
@@ -197,7 +206,8 @@ private String imageName;
         currentDetail = detailList.get(0);
 
     }
-  //处理上传图片数据
+    //处理上传图片数据
+
     public void handleFileUploadWhenDetailNew(FileUploadEvent event) {
         super.handleFileUploadWhenNew(event);
         if (this.fileName != null) {
@@ -205,7 +215,7 @@ private String imageName;
             int seq = detailList3.size() + 1;
             AssetFile assetFile = new AssetFile();
             assetFile.setCompany(userManagedBean.getCompany());
-            assetFile.setFilepath("../../resources/app/res/"+imageName);
+            assetFile.setFilepath("../../resources/app/res/" + imageName);
             assetFile.setStatus("Y");
             assetFile.setSeq(seq);
             assetFile.setPid(currentEntity.getFormid());
@@ -221,8 +231,8 @@ private String imageName;
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             request.setCharacterEncoding("UTF-8");
-            
-            SimpleDateFormat f=new SimpleDateFormat("yyyyMMddHHmmss");
+
+            SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHHmmss");
             imageName = f.format(getDate());
             final InputStream in = this.file.getInputstream();
             final File dir = new File(this.getAppResPath());
@@ -248,6 +258,7 @@ private String imageName;
             FacesContext.getCurrentInstance().addMessage((String) null, msg);
         }
     }
+
     @Override
     public void query() {
         if (this.model != null) {

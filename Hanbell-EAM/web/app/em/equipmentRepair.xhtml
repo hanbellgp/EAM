@@ -66,7 +66,7 @@
                                      update=":formList">
                             <p:confirm header="系统提示" message="维修人员到达了吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem id="btnConfirm" actionListener="#{equipmentRepairManagedBean.confirmCompleted()}" icon="ui-icon-check" value="确认维修完成" 
+                      <p:menuitem id="btnConfirm" actionListener="#{equipmentRepairManagedBean.confirmCompleted()}" icon="ui-icon-check" value="确认维修完成" 
                                     update=":formList">
                             <p:confirm header="系统提示" message="维修完成了吗?" icon="ui-icon-alert" />
                         </p:menuitem>
@@ -103,29 +103,29 @@
                     </f:facet>
                     <h:outputText value="#{item.formid}"/>
                 </p:column> 
-                <p:column styleClass="Wid10">
+                <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="使用部门"/>
                     </f:facet>
-                    <h:outputText value="#{item.itemno.deptname}"/>
+                    <h:outputText value="#{item.assetno.deptname}"/>
                 </p:column>
                 <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="资产编号"/>
                     </f:facet>
-                    <h:outputText value="#{item.assetno}"/>
+                    <h:outputText value="#{item.assetno.formid}"/>
                 </p:column>
                 <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="设备名称"/>
                     </f:facet>
-                    <h:outputText value="#{item.itemno.assetDesc}"/>
+                    <h:outputText value="#{item.assetno.assetDesc}"/>
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
-                        <h:outputText value="故障来源"/>
+                        <h:outputText value="故障报警"/>
                     </f:facet>
-                    <h:outputText value="#{equipmentRepairManagedBean.getTroubleName(item.troublefrom)}"/>
+                    <h:outputText value="#{item.hitchalarm}"/>
                 </p:column>
                 <p:column styleClass="Wid20">
                     <f:facet name="header">

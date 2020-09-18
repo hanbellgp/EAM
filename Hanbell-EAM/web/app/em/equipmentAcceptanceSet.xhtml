@@ -96,11 +96,11 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="资产编号" for="assetno" /></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText id="assetno" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno}" title="assetno" styleClass="inputWithButton" />
+                        <h:outputText id="assetno" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.formid}" title="assetno" styleClass="inputWithButton" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE" ><h:outputText value="设备名称"  /></p:column>
                     <p:column  >
-                        <h:outputText  id="assetDesc" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.assetDesc}" title="assetDesc" />
+                        <h:outputText  id="assetDesc" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.assetDesc}" title="assetDesc" />
                     </p:column>
 
                 </p:row>
@@ -111,11 +111,11 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  ><h:outputText value="使用部门"/></p:column>
                     <p:column>
-                        <h:outputText id="deptname" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.deptname}" title="deptname"/>
+                        <h:outputText id="deptname" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.deptname}" title="deptname"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="存放地址"/></p:column>
                     <p:column>
-                        <h:outputText id="position2" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.position2.name}" title="position2" />
+                        <h:outputText id="position2" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.position2.name}" title="position2" />
                     </p:column>
 
                 </p:row>
@@ -342,6 +342,25 @@
                         </p:column>
                     </p:dataTable>
                 </p:tab>
+                <p:tab title="维修人员">
+                    <p:dataTable id="tableList1" value="#{equipmentAcceptanceManagedBean.detailList4}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentAcceptanceManagedBean.currentDetail4}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  />
+                        <p:ajax event="rowUnselect"  />
+                       <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="维修人员"/>
+                            </f:facet>
+                            <h:outputText value="#{item.curnode2}"/>
+                        </p:column>
+                         <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="维修时间"/>
+                            </f:facet>
+                            <h:outputText value="#{item.userno}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
             </p:tabView>
             <p:panelGrid  id="plgCost">
                 <p:row>
@@ -349,15 +368,18 @@
                     <p:column  style="width: 550px">
                         <h:outputText  id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE;width: 280px" ><p:outputLabel value="人工费用（20元/时）" for="laborcost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;width: 400px" ><p:outputLabel value="人工费用（#{equipmentAcceptanceManagedBean.currentEntity.laborcost}元/分）" for="laborcosts" /></p:column>
                     <p:column  style="width: 550px">
-                        <h:outputText  id="laborcost" value="#{equipmentAcceptanceManagedBean.currentEntity.laborcost}" title="laborcost" styleClass="inputWithButton"/>
+                        <h:outputText  id="laborcosts" value="#{equipmentAcceptanceManagedBean.currentEntity.laborcosts}" title="laborcosts" styleClass="inputWithButton"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE;width: 180px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
                     <p:column  style="width: 550px">
                         <h:outputText  id="sparecost" value="#{equipmentAcceptanceManagedBean.currentEntity.sparecost}" title="sparecost" styleClass="inputWithButton"/>
                     </p:column>
-
+                    <p:column style="background-color: #EEEEEE;width: 180px" ><p:outputLabel value="总费用" for="sparecost" /></p:column>
+                    <p:column  style="width: 550px">
+                        <h:outputText  id="totalCost" value="#{equipmentAcceptanceManagedBean.totalCost}" title="sparecost" styleClass="inputWithButton"/>
+                    </p:column>
                 </p:row>
 
             </p:panelGrid>

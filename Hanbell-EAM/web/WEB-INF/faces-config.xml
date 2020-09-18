@@ -392,6 +392,12 @@
             <to-view-id>/app/em/equipmentHistoryQuery.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+            <navigation-case>
+            <description>BD105维修备件维护</description>
+            <from-outcome>equipmentSpare</from-outcome>
+            <to-view-id>/app/em/equipmentSpare.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>

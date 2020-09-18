@@ -32,11 +32,11 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
                     <p:column >
-                        <h:outputText id="assetno" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno}" title="assetno" styleClass="inputWithButton" />
+                        <h:outputText id="assetno" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.formid}" title="assetno" styleClass="inputWithButton" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="设备名称"  /></p:column>
                     <p:column  styleClass="Wid15">
-                        <h:outputText  id="assetDesc" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.assetDesc}" title="assetDesc" />
+                        <h:outputText  id="assetDesc" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.assetDesc}" title="assetDesc" />
                     </p:column>
 
                 </p:row>
@@ -47,11 +47,11 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><h:outputText value="使用部门"/></p:column>
                     <p:column>
-                        <h:outputText id="deptname" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.deptname}" title="deptname"/>
+                        <h:outputText id="deptname" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.deptname}" title="deptname"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="存放地址"/></p:column>
                     <p:column>
-                        <h:outputText id="position2" value="#{equipmentAcceptanceManagedBean.currentEntity.itemno.position2.name}" title="position2" />
+                        <h:outputText id="position2" value="#{equipmentAcceptanceManagedBean.currentEntity.assetno.position2.name}" title="position2" />
                     </p:column>
 
                 </p:row>
@@ -337,9 +337,9 @@
                         <p:inputText  id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" title="repaircost" styleClass="inputWithButton"
                                       onkeyup="this.value = this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" required="true"  requiredMessage="请输入其他费用" />
                     </p:column>
-                    <p:column style="background-color: #EEEEEE;width: 280px" ><p:outputLabel value="人工费用（20元/时）" for="laborcost" /></p:column>
+                    <p:column style="background-color: #EEEEEE;width: 280px" ><p:outputLabel value="人工费用（20元/时）" for="laborcosts" /></p:column>
                     <p:column  style="width: 550px">
-                        <h:outputText  id="laborcost" value="#{equipmentAcceptanceManagedBean.currentEntity.laborcost}" title="laborcost" styleClass="inputWithButton"/>
+                        <h:outputText  id="laborcosts" value="#{equipmentAcceptanceManagedBean.currentEntity.laborcosts}" title="laborcosts" styleClass="inputWithButton"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE;width: 180px" ><p:outputLabel value="备件费用" for="sparecost" /></p:column>
                     <p:column  style="width: 400px">
