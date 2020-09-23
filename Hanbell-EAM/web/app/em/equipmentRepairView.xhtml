@@ -89,7 +89,7 @@
                         </h:outputText>
                     </p:column>
                 </p:row>
-                 <p:row>
+                <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="维修人电话" for="phone" /></p:column>
                     <p:column colspan="7">
                         <h:outputText id="phone" value="#{equipmentRepairManagedBean.getPhone(equipmentRepairManagedBean.currentEntity.serviceuser)}" title="phone" />
@@ -116,6 +116,46 @@
                 </p:row>
 
             </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="审核流程">
+                    <p:dataTable id="tableList" value="#{equipmentRepairManagedBean.detailList3}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentRepairManagedBean.currentDetail3}" rowKey="#{item.seq}" >
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批流程"/>
+                            </f:facet>
+                            <h:outputText value="#{item.curnode}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批人"/>
+                            </f:facet>
+                            <h:outputText value="#{equipmentRepairManagedBean.getUserName(item.userno).username}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批结果"/>
+                            </f:facet>
+                            <h:outputText value="#{item.contenct}"/>
+                        </p:column>
+
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="审批时间"/>
+                            </f:facet>
+                            <h:outputText value="#{item.credate}">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                            </h:outputText>   
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="审批意见"/>
+                            </f:facet>
+                            <h:outputText value="#{item.note}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />

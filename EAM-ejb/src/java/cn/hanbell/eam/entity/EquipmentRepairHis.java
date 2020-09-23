@@ -50,12 +50,14 @@ public class EquipmentRepairHis extends FormDetailEntity {
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-
+    @Size(max = 30)
+    @Column(name = "curnode")
+    private String curnode;
     @Size(max = 45)
     @Column(name = "userno")
     private String userno;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 45)
     @Column(name = "contenct")
     private String contenct;
@@ -73,18 +75,18 @@ public class EquipmentRepairHis extends FormDetailEntity {
     @Size(max = 20)
     @Column(name = "creator")
     private String creator;
-    @Column(name = "credate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date credate;
     @Size(max = 20)
     @Column(name = "optuser")
     private String optuser;
-    @Column(name = "optdate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date optdate;
     @Size(max = 20)
     @Column(name = "cfmuser")
     private String cfmuser;
+    @Column(name = "credate")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date credate;
+    @Column(name = "optdate")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date optdate;
     @Column(name = "cfmdate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
@@ -104,12 +106,44 @@ public class EquipmentRepairHis extends FormDetailEntity {
         this.status = status;
     }
 
+    public Date getCredate() {
+        return credate;
+    }
+
+    public void setCredate(Date credate) {
+        this.credate = credate;
+    }
+
+    public Date getOptdate() {
+        return optdate;
+    }
+
+    public void setOptdate(Date optdate) {
+        this.optdate = optdate;
+    }
+
+    public Date getCfmdate() {
+        return cfmdate;
+    }
+
+    public void setCfmdate(Date cfmdate) {
+        this.cfmdate = cfmdate;
+    }
+
     public String getCompany() {
         return company;
     }
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public String getCurnode() {
+        return curnode;
+    }
+
+    public void setCurnode(String curnode) {
+        this.curnode = curnode;
     }
 
     public String getUserno() {
@@ -160,14 +194,6 @@ public class EquipmentRepairHis extends FormDetailEntity {
         this.creator = creator;
     }
 
-    public Date getCredate() {
-        return credate;
-    }
-
-    public void setCredate(Date credate) {
-        this.credate = credate;
-    }
-
     public String getOptuser() {
         return optuser;
     }
@@ -176,28 +202,12 @@ public class EquipmentRepairHis extends FormDetailEntity {
         this.optuser = optuser;
     }
 
-    public Date getOptdate() {
-        return optdate;
-    }
-
-    public void setOptdate(Date optdate) {
-        this.optdate = optdate;
-    }
-
     public String getCfmuser() {
         return cfmuser;
     }
 
     public void setCfmuser(String cfmuser) {
         this.cfmuser = cfmuser;
-    }
-
-    public Date getCfmdate() {
-        return cfmdate;
-    }
-
-    public void setCfmdate(Date cfmdate) {
-        this.cfmdate = cfmdate;
     }
 
     @Override

@@ -103,7 +103,7 @@
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修期间停工时间(分)"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="停工时间(分)"/></p:column>
                     <p:column>
                         <p:inputText id="stopworktime" value="#{equipmentMaintenanceManagedBean.currentEntity.stopworktime}"  onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
@@ -115,12 +115,12 @@
                                     />
                         </p:inputText>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="非生产时间(分)"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间(分)"/></p:column>
                     <p:column>
                         <p:inputText id="excepttime" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}"  onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
                                 }).call(this)" onblur="this.v();"
-                                      title="excepttime" >
+                                     title="excepttime" >
                             <p:ajax event="keyup" 
                                     update="downtime"  
                                     listener="#{equipmentMaintenanceManagedBean.getDowntimes()}"
@@ -137,7 +137,7 @@
                     <p:column>
                         <h:outputText id="maintenanceTime"  title="maintenanceTime"  value="#{equipmentMaintenanceManagedBean.currentEntity.maintenanceTime}"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间总计"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间"/></p:column>
                     <p:column>
                         <h:outputText id="downtime" value="#{equipmentMaintenanceManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
@@ -158,8 +158,8 @@
                     </p:column>
                 </p:row>
             </p:panelGrid>
-           
-                
+
+
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
                     <p:row>
@@ -212,7 +212,7 @@
                 </p:row>
 
                 <p:row>
-                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="设备故障报警号"  /></p:column>
                     <p:column colspan="7">
                         <p:inputTextarea id="hitchalarm"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchalarm}" rows="5" cols="70" 
                                          style=" border: darkgray solid 1px" maxlength="50"/>
@@ -234,10 +234,10 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column rowspan="3" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
+                    <p:column rowspan="4" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
                     <p:column colspan="7" style="height: 180px; ">
                         <p:fileUpload id="fileUploadDetail" fileUploadListener="#{equipmentMaintenanceManagedBean.handleFileUploadWhenDetailNew}"
-                                      sizeLimit="10000000" fileLimit="10" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" multiple="true" sequential="true" update="imagePanel"
+                                      sizeLimit="10000000" fileLimit="10" allowTypes="/(\.|\/)(gif|jpe?g|png|zip|xlsx|xls|doc|docx|txt)$/" multiple="true" sequential="true" update="imagePanel,imagePanel2" 
                                       label="选择" uploadLabel="上传" cancelLabel="取消"  />
                     </p:column>
                 </p:row>
@@ -247,11 +247,21 @@
                             <c:if test="${empty equipmentMaintenanceManagedBean.detailList}">   
                                 <p:outputLabel value="暂无图片"/>
                             </c:if>  
-
                             <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
-
-                                <c:if test="${li.filefrom=='维修图片'}">  
+                                <c:if test="${li.filefrom=='维修图片'}">   
                                     <p:graphicImage url="#{li.filepath}" width="300" alt="#{li.filename}"/>
+                                </c:if> 
+                            </c:forEach>
+
+                        </h:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="7"  >
+                        <h:outputLabel id="imagePanel2">
+                            <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
+                                <c:if test="${li.filefrom=='维修文件'}">   
+                                    <br/> <p:link href="#{li.filepath}" value = "#{li.filename}"/><br/>
                                 </c:if> 
                             </c:forEach>
                         </h:outputLabel>
@@ -404,9 +414,9 @@
                             <p:column><h:outputText value="维修时间(分)"/></p:column>
                             <p:column>
                                 <p:inputText id="userno" value="#{equipmentMaintenanceManagedBean.currentDetail4.userno}" title="userno"
-                                         onkeyup="(this.v = function () {
-                                    this.value = this.value.replace(/\D|^0/g, '');
-                                }).call(this)" onblur="this.v();"      disabled="#{equipmentMaintenanceManagedBean.currentDetail4.rtype==0 ? true : false}" />
+                                             onkeyup="(this.v = function () {
+                                                         this.value = this.value.replace(/\D|^0/g, '');
+                                                     }).call(this)" onblur="this.v();"      disabled="#{equipmentMaintenanceManagedBean.currentDetail4.rtype==0 ? true : false}" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>
@@ -414,15 +424,21 @@
                                  selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentDetail4}" rowKey="#{item.seq}" >
                         <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail1" oncomplete="PF('btnAddDetail1').disable();PF('btnDeleteDetail1').enable();PF('btnSaveDetail1').enable();" />
                         <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail1" oncomplete="" />
-                       <p:column styleClass="Wid15" style="text-align: right;">
+                        <p:column styleClass="Wid15">
                             <f:facet name="header">
-                                <h:outputText value="维修人员"/>
+                                <h:outputText value="维修人ID"/>
+                            </f:facet>
+                            <h:outputText value="#{item.curnode}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="维修人姓名"/>
                             </f:facet>
                             <h:outputText value="#{item.curnode2}"/>
                         </p:column>
-                         <p:column styleClass="Wid15" style="text-align: right;">
+                        <p:column styleClass="Wid15" >
                             <f:facet name="header">
-                                <h:outputText value="维修时间"/>
+                                <h:outputText value="维修时间(分)"/>
                             </f:facet>
                             <h:outputText value="#{item.userno}"/>
                         </p:column>
@@ -439,8 +455,12 @@
                                  selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentDetail}" rowKey="#{item.seq}" >
                         <p:ajax event="rowSelect"     update=":formOne:tabView:toolbar2"/>
                         <p:ajax event="rowUnselect"   update=":formOne:tabView:toolbar2"/>
+
                         <p:column styleClass="Wid10">
                             <h:outputText   value="#{item.filefrom}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10">
+                            <h:outputText   value="#{item.filename}"/>
                         </p:column>
                         <p:column>
                             <img src="#{item.filepath}" width="50" height="50" />
@@ -453,9 +473,9 @@
                     <p:column style="background-color: #EEEEEE;height: 40px;width: 180px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
                     <p:column >
                         <p:inputText id="repaircost" value="#{equipmentMaintenanceManagedBean.currentEntity.repaircost}" onkeyup="(this.v = function () {
-                                    this.value = this.value.replace(/\D|^/g, '');
+                                    this.value = this.value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '');
                                 }).call(this)" onblur="this.v();"
-                                    title="repaircost" >
+                                     title="repaircost" >
                             <p:ajax event="keyup" 
                                     update="totalCost"  
                                     listener="#{equipmentMaintenanceManagedBean.calculateTotalCost()}"

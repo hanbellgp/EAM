@@ -33,7 +33,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(this.className);
         sb.append(" e WHERE 1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
-      
+
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -88,7 +88,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(" e WHERE 1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
         //给Map排序
-          for (Map.Entry<String, Object> entry : filters.entrySet()) {
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (!"repairuser".equals(key)) {
@@ -127,7 +127,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(" e WHERE 1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
         //给Map排序
-            
+
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -170,5 +170,35 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List results = query.getResultList();
         return results;
     }
-
+    //获取显示的进度
+    public String getStateName(String str) {
+        switch (str) {
+            case "10":
+                return "已报修";
+            case "15":
+                return "已受理";
+            case "20":
+                return "维修到达";
+            case "25":
+                return "维修中";
+            case "28":
+                return "维修暂停";
+            case "30":
+                return "维修完成";
+            case "40":
+                return "维修验收";
+            case "50":
+                return "责任回复";
+            case "60":
+                return "课长审核";
+            case "70":
+                return "经理审核";
+            case "95":
+                return "报修结案";
+            case "98":
+                return "已作废";
+            default:
+                return "";
+        }
+    }
 }

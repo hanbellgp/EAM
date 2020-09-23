@@ -101,7 +101,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
         //model.getFilterFields().put("serviceuser", userManagedBean.getUserid());
-        model.getSortFields().put("credate", "DESC");
+        model.getSortFields().put("hitchtime", "DESC");
         super.init();
     }
 
@@ -219,7 +219,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -264,6 +264,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         String repairleadersId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();;
         //维修经理
         String repairmanagerId = sysCodeBean.findBySyskindAndCode("RD", "repairmanager").getCvalue();
         if (!userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
@@ -288,7 +289,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
-        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
         calculateTotalCost();
         return super.edit(path);
@@ -301,6 +302,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         currentDetail3.setUserno(userManagedBean.getUserid());
         currentDetail3.setCompany(userManagedBean.getCompany());
         currentDetail3.setCredate(getDate());
+        currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
         currentDetail3.setStatus("N");
         currentDetail3.setContenct(contenct);
         currentDetail3.setNote(note);
@@ -309,6 +311,9 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         String repairleadersId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
         //维修经理
         String repairmanagerId = sysCodeBean.findBySyskindAndCode("RD", "repairmanager").getCvalue();
+        //维修经理签核的金额
+        String repairApprovals = sysCodeBean.findBySyskindAndCode("RD", "repairApprovals").getCvalue();
+
         //备件费用
         maintenanceCosts = 0;
         detailList2.forEach(equipmentrepair1 -> {
@@ -318,9 +323,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         calculateTotalCost();
         if (currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals(repairleadersId) || currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
-                //维修经理签核的金额
-                String repairApprovals = sysCodeBean.findBySyskindAndCode("RD", "repairApprovals").getCvalue();
-                currentDetail3.setRemark(repairApprovals);
+
                 if (totalCost > Integer.parseInt(repairApprovals)) {
                     currentEntity.setRstatus("70");
                 } else {
@@ -332,6 +335,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
         } else if (currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals(repairmanagerId) || currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
+                currentDetail3.setRemark(repairApprovals);
                 currentEntity.setRstatus("95");
             } else if (contenct.equals("不合格")) {
                 currentEntity.setRstatus("60");
@@ -454,7 +458,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             }
             model.getFilterFields().put("company", userManagedBean.getCompany());
             model.getFilterFields().put("rstatus", queryState);
-            model.getSortFields().put("credate", "DESC");
+            model.getSortFields().put("hitchtime", "DESC");
 
         }
     }
@@ -471,38 +475,35 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     }
 
     //获取显示的进度
-    public String getStateName(String str) {
-        String queryStateName = "";
+      public String getStateName(String str) {
         switch (str) {
             case "10":
-                queryStateName = "已报修";
-                break;
+                return "已报修";
+            case "15":
+                return "已受理";
             case "20":
-                queryStateName = "维修到达";
-                break;
+                return "维修到达";
+            case "25":
+                return "维修中";
+            case "28":
+                return "维修暂停";
             case "30":
-                queryStateName = "维修完成";
-                break;
+                return "维修完成";
             case "40":
-                queryStateName = "维修验收";
-                break;
+                return "维修验收";
             case "50":
-                queryStateName = "责任回复";
-                break;
+                return "责任回复";
             case "60":
-                queryStateName = "课长审核";
-                break;
+                return "课长审核";
             case "70":
-                queryStateName = "经理审核";
-                break;
+                return "经理审核";
             case "95":
-                queryStateName = "报修结案";
-                break;
+                return "报修结案";
             case "98":
-                queryStateName = "作废";
-                break;
+                return "已作废";
+            default:
+            return "";
         }
-        return queryStateName;
     }
 //处理俩时间显示的格式
 
