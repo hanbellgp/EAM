@@ -77,10 +77,10 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
                 this.model.getFilterFields().put("deptname", this.queryDeptname);
             }
             if (this.queryUserno != null && !"".equals(this.queryUserno)) {
-                this.model.getFilterFields().put("userno", this.queryUserno);
+                this.model.getFilterFields().put("assetSpec", this.queryUserno);
             }
             if (this.queryUsername != null && !"".equals(this.queryUsername)) {
-                this.model.getFilterFields().put("username", this.queryUsername);
+                this.model.getFilterFields().put("brand", this.queryUsername);
             }
             this.model.getFilterFields().put("assetItem.category.id =", 3);
             model.getSortFields().put("assetItem.itemno", "ASC");
@@ -88,10 +88,7 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
         }
     }
 
-    @Override
-    public void reset() {
-        super.reset();
-    }
+   
 
     /**
      * @return the queryItemno

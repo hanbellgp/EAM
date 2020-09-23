@@ -119,7 +119,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("repairuser", userManagedBean.getUserid());
         model.getFilterFields().put("company", userManagedBean.getCompany());
-        model.getSortFields().put("credate", "DESC");
+        model.getSortFields().put("hitchtime", "DESC");
         super.init();
     }
 
@@ -150,6 +150,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "请选择维修人！");
             return false;
         }
+        if (currentEntity.getRepairmethodtype().equals("2")) {
+            newEntity.setServicearrivetime(getDate());
+            newEntity.setServiceuser(userManagedBean.getUserid());
+            newEntity.setRstatus("20");
+            newEntity.setServiceusername(getUserName(userManagedBean.getUserid()).getUsername());
+        }
+
         String formid = this.superEJB.getFormId(newEntity.getFormdate(), "PR", "YYMM", 4);
         this.newEntity.setFormid(formid);
         if (this.addedDetailList != null && !this.addedDetailList.isEmpty()) {
@@ -199,12 +206,37 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "只有对应的报修人，及报修人所在部门的人员才能确认！");
             return;
         }
-        if (Integer.parseInt(currentEntity.getRstatus()) != 20) {
+        if (Integer.parseInt(currentEntity.getRstatus()) < 20 || Integer.parseInt(currentEntity.getRstatus()) >= 30) {
             showErrorMsg("Error", "该单据未维修，或单据已确认维修完成！");
             return;
         }
+        createDetail3();
+        currentDetail3.setCompany(userManagedBean.getCompany());
+        currentDetail3.setUserno(userManagedBean.getUserid());
+        currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
+        currentDetail3.setStatus("N");
 
-        currentEntity.setRstatus("30");
+        currentDetail3.setPid(currentEntity.getFormid());
+        currentDetail3.setCredate(getDate());
+
+        //当维修为现场维修时,确认完成就结案
+        if (currentEntity.getRepairmethodtype().equals("2")) {
+            currentEntity.setRstatus("95");
+            currentDetail3.setContenct("维修结案");
+        } else {
+            currentEntity.setRstatus("30");
+            currentDetail3.setContenct("维修完成");
+        }
+        doConfirmDetail3();
+        int min = 0;
+        //获取暂停的时间
+        for (int i = 0; i < detailList3.size(); i++) {
+            if (detailList3.get(i).getContenct().equals("暂停维修")) {
+                String data = this.getTimeDifference(detailList3.get(i + 1).getCredate(), detailList3.get(i).getCredate(), 0);//获取暂停到结束的时间
+                min += Integer.parseInt(this.getMin(data));
+            }
+        }
+        currentEntity.setExcepttime(min);
         currentEntity.setCompletetime(getDate());
         update();
     }
@@ -237,7 +269,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
-        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.edit(path);
     }
 
@@ -247,6 +279,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             createDetail3();
             currentDetail3.setUserno(userManagedBean.getUserid());
             currentDetail3.setCompany(userManagedBean.getCompany());
+            currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
             currentDetail3.setCredate(getDate());
             currentDetail3.setStatus("N");
             currentDetail3.setContenct(contenct);
@@ -310,6 +343,21 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         return hour + "小时" + min + "分";
     }
 
+    private String getMin(String str) {
+        if (!"".equals(str)) {
+            String[] maintenanceTimes = str.split("小时");
+            String hours = maintenanceTimes[0];
+            maintenanceTimes = maintenanceTimes[1].split("分");
+            String min = maintenanceTimes[0];
+            if (Integer.parseInt(hours) != 0) {
+                min += Integer.parseInt(hours) * 60;
+                return min;
+            }
+            return min;
+        }
+        return "0";
+    }
+
     @Override
     protected void upload() throws IOException {
         try {
@@ -356,6 +404,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             equipmentrepairfile.setFilefrom("报修图片");
             equipmentrepairfile.setStatus("N");
             equipmentrepairfile.setSeq(seq);
+            equipmentrepairfile.setCredate(getDate());
             detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
         }
@@ -422,6 +471,15 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "已确认过维修人到达时间");
             return;
         }
+        createDetail3();
+        currentDetail3.setCompany(userManagedBean.getCompany());
+        currentDetail3.setUserno(userManagedBean.getUserid());
+        currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
+        currentDetail3.setStatus("N");
+        currentDetail3.setContenct("维修到达");
+        currentDetail3.setPid(currentEntity.getFormid());
+        currentDetail3.setCredate(getDate());
+        doConfirmDetail3();
         currentEntity.setRstatus("20");
         currentEntity.setServicearrivetime(getDate());
         currentEntity.setStatus("N");
@@ -647,7 +705,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             }
             model.getFilterFields().put("company", userManagedBean.getCompany());
             model.getFilterFields().put("rstatus", queryState);
-            model.getSortFields().put("credate", "DESC");
+            model.getSortFields().put("hitchtime", "DESC");
 
         }
     }
@@ -665,37 +723,34 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     //获取显示的进度
     public String getStateName(String str) {
-        String queryStateName = "";
         switch (str) {
             case "10":
-                queryStateName = "已报修";
-                break;
+                return "已报修";
+            case "15":
+                return "已受理";
             case "20":
-                queryStateName = "维修到达";
-                break;
+                return "维修到达";
+            case "25":
+                return "维修中";
+            case "28":
+                return "维修暂停";
             case "30":
-                queryStateName = "维修完成";
-                break;
+                return "维修完成";
             case "40":
-                queryStateName = "维修验收";
-                break;
+                return "维修验收";
             case "50":
-                queryStateName = "责任回复";
-                break;
+                return "责任回复";
             case "60":
-                queryStateName = "课长审核";
-                break;
+                return "课长审核";
             case "70":
-                queryStateName = "经理审核";
-                break;
+                return "经理审核";
             case "95":
-                queryStateName = "报修结案";
-                break;
+                return "报修结案";
             case "98":
-                queryStateName = "作废";
-                break;
+                return "已作废";
+            default:
+                return "";
         }
-        return queryStateName;
     }
 
     //获取部门

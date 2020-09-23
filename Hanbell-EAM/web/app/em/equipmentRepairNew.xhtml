@@ -61,7 +61,7 @@
                                       />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="维修人" for="serviceuser" /></p:column>
-                   
+
                     <p:column  styleClass="Wid20">
                         <p:inputText id="serviceuser" value="#{equipmentRepairManagedBean.newEntity.serviceusername}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="queryCategory" actionListener="#{equipmentRepairManagedBean.openDialog('repairUserSelect')}" icon="ui-icon-extlink"
@@ -89,6 +89,16 @@
                             <f:selectItems  value="#{equipmentRepairManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式"  /></p:column>
+                    <p:column styleClass="Wid20">
+                        <p:selectOneMenu id="abrasehitch" value="#{equipmentRepairManagedBean.newEntity.repairmethodtype}" title="维修方式" >
+                            <f:selectItem itemLabel="自主维修" itemValue="1"/>
+                            <f:selectItem itemLabel="现场维修" itemValue="2"/>
+                            <f:selectItem itemLabel="委外维修" itemValue="3"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
                     <p:column style="background-color: #EEEEEE">
                         <p:outputLabel value="故障发生时间" for="hitchtime"/>
                     </p:column>
@@ -96,7 +106,6 @@
                         <p:calendar id="hitchtime" value="#{equipmentRepairManagedBean.newEntity.hitchtime}" title="故障发生时间" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}" />
                     </p:column>
                 </p:row>
-
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><p:outputLabel value="故障部位及详细情况"  /></p:column>
                     <p:column colspan="7" style="height: 40px">

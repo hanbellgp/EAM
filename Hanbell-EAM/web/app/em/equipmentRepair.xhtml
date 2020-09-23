@@ -82,7 +82,6 @@
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentRepairManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
-
             </p:toolbar>
             <p:dataTable value="#{equipmentRepairManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -123,7 +122,7 @@
                 </p:column>
                 <p:column styleClass="Wid15">
                     <f:facet name="header">
-                        <h:outputText value="故障报警"/>
+                        <h:outputText value="设备故障报警号"/>
                     </f:facet>
                     <h:outputText value="#{item.hitchalarm}"/>
                 </p:column>
