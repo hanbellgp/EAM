@@ -7,12 +7,14 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
+import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
+import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentTrouble;
@@ -69,6 +71,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private EquipmentTroubleBean equipmentTroubleBean;
     @EJB
     private SysCodeBean sysCodeBean;
+    @EJB
+    private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
@@ -82,8 +86,10 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private String queryHitchreason;
     private String queryRepairprocess;
     private String queryHitchalarm;
-     private List<SysCode> hitchurgencyList;
+    private List<SysCode> hitchurgencyList;
     private List<EquipmentTrouble> equipmentTroubleList;
+    protected List<EquipmentRepairHelpers> detailList4;
+    private EquipmentRepairHelpers currentDetail4;
 
     public EquipmentHistoryManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -102,7 +108,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
-        model.getSortFields().put("credate", "DESC");
+        model.getSortFields().put("hitchtime", "DESC");
         super.init();
     }
 
@@ -122,9 +128,10 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
-         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-         calculateTotalCost();
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -198,23 +205,25 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 model.getFilterFields().put("rstatus", queryState);
             }
 
-            model.getSortFields().put("credate", "DESC");
+            model.getSortFields().put("hitchtime", "DESC");
 
         }
     }
- //计算总费用
+
+    //计算总费用
     public void calculateTotalCost() {
-        totalCost=0;
+        totalCost = 0;
         if (currentEntity.getRepaircost() != null) {
             totalCost += currentEntity.getRepaircost().doubleValue();
         }
-         if (currentEntity.getLaborcost()!= null) {
+        if (currentEntity.getLaborcosts() != null) {
             totalCost += currentEntity.getLaborcosts().doubleValue();
         }
-        if (currentEntity.getSparecost()!= null) {
+        if (currentEntity.getSparecost() != null) {
             totalCost += currentEntity.getSparecost().doubleValue();
         }
     }
+
     //获取故障来源
     public String getTroubleName(String cValue) {
         SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
@@ -226,42 +235,38 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         return troubleName;
     }
 
-  
     //获取显示的进度
-    public String getStateName(String str) {
-        String queryStateName = "";
+      public String getStateName(String str) {
         switch (str) {
             case "10":
-                queryStateName = "已报修";
-                break;
+                return "已报修";
+            case "15":
+                return "已受理";
             case "20":
-                queryStateName = "维修到达";
-                break;
+                return "维修到达";
+            case "25":
+                return "维修中";
+            case "28":
+                return "维修暂停";
             case "30":
-                queryStateName = "维修完成";
-                break;
+                return "维修完成";
             case "40":
-                queryStateName = "维修验收";
-                break;
+                return "维修验收";
             case "50":
-                queryStateName = "责任回复";
-                break;
+                return "责任回复";
             case "60":
-                queryStateName = "课长审核";
-                break;
+                return "课长审核";
             case "70":
-                queryStateName = "经理审核";
-                break;
+                return "经理审核";
             case "95":
-                queryStateName = "报修结案";
-                break;
+                return "报修结案";
             case "98":
-                queryStateName = "作废";
-                break;
+                return "已作废";
+            default:
+            return "";
         }
-        return queryStateName;
     }
-        //获取故障紧急度
+    //获取故障紧急度
 
     public String getHitchurgency(String cValue) {
         SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
@@ -479,8 +484,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             Cell cell21 = row.createCell(21);
             cell21.setCellStyle(style.get("cell"));
             double laborcost = 0;
-            
-            if (equipmentrepair.getLaborcost() != null) {
+
+            if (equipmentrepair.getLaborcosts() != null) {
                 laborcost = equipmentrepair.getLaborcosts().doubleValue();
             }
             cell21.setCellValue(laborcost);
@@ -712,6 +717,22 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void setTotalCost(double totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public List<EquipmentRepairHelpers> getDetailList4() {
+        return detailList4;
+    }
+
+    public void setDetailList4(List<EquipmentRepairHelpers> detailList4) {
+        this.detailList4 = detailList4;
+    }
+
+    public EquipmentRepairHelpers getCurrentDetail4() {
+        return currentDetail4;
+    }
+
+    public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
+        this.currentDetail4 = currentDetail4;
     }
 
 }

@@ -27,15 +27,15 @@
                 <p:row>
                     <p:column styleClass="Wid15"><h:outputLabel value="使用部门" for="queryDeptname" /></p:column>
                     <p:column>
-                        <p:inputText id="queryDeptname" value="#{equipmentQueryBean.queryDeptname}" title="姓名" />
+                        <p:inputText id="queryDeptname" value="#{equipmentQueryBean.queryDeptname}" title="使用部门" />
                     </p:column>
-                    <p:column styleClass="Wid15"><h:outputLabel value="工号" for="queryUserno" /></p:column>
+                    <p:column styleClass="Wid15"><h:outputLabel value="规格" for="queryUserno" /></p:column>
                     <p:column>
-                        <p:inputText id="queryUserno" value="#{equipmentQueryBean.queryUserno}" title="工号" />
+                        <p:inputText id="queryUserno" value="#{equipmentQueryBean.queryUserno}" title="规格" />
                     </p:column>
-                    <p:column styleClass="Wid15"><h:outputLabel value="姓名" for="queryUsername" /></p:column>
+                    <p:column styleClass="Wid15"><h:outputLabel value="品牌" for="queryUsername" /></p:column>
                     <p:column>
-                        <p:inputText id="queryUsername" value="#{equipmentQueryBean.queryUsername}" title="姓名" />
+                        <p:inputText id="queryUsername" value="#{equipmentQueryBean.queryUsername}" title="品牌" />
                     </p:column>
 
                 </p:row>
@@ -44,8 +44,6 @@
                 <f:facet name="left">
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{equipmentQueryBean.reset()}"  icon="ui-icon-refresh"
-                                     update=":formList"/>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentQueryBean.query()}"  icon="ui-icon-search"
                                      update=":formList"/>
                     <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentQueryBean.closeDialog()}" icon="ui-icon-plus" />

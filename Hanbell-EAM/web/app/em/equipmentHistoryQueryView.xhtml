@@ -98,11 +98,11 @@
                             <f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
                         </h:outputText>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修期间停工时间(分)"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="停工时间(分)"/></p:column>
                     <p:column>
                         <h:outputText id="stopworktime" value="#{equipmentHistoryManagedBean.currentEntity.stopworktime}"  />
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="非生产时间(分)"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间(分)"/></p:column>
                     <p:column>
                         <h:outputText id="excepttime" value="#{equipmentHistoryManagedBean.currentEntity.excepttime}"/>
                     </p:column>
@@ -116,7 +116,7 @@
                     <p:column>
                         <h:outputText id="maintenanceTime"  title="maintenanceTime"  value="#{equipmentHistoryManagedBean.currentEntity.maintenanceTime}"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间总计"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间"/></p:column>
                     <p:column>
                         <h:outputText id="downtime" value="#{equipmentHistoryManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
@@ -181,7 +181,7 @@
                 </p:row>
 
                 <p:row>
-                    <p:column  style="background-color: #EEEEEE"><h:outputText value="故障报警"  /></p:column>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="设备故障报警号"  /></p:column>
                     <p:column colspan="7">
                         <p:inputTextarea id="hitchalarm"  value="#{equipmentHistoryManagedBean.currentEntity.hitchalarm}" rows="5" cols="70" 
                                          style=" border: darkgray solid 1px"  readonly="true"/>
@@ -202,19 +202,33 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column rowspan="3" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
+                    <p:column rowspan="4" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
 
                 </p:row>
                 <p:row>
                     <p:column colspan="7"  >
-                        <c:if test="${empty equipmentHistoryManagedBean.detailList}">   
-                            <p:outputLabel value="暂无图片"/>
-                        </c:if> 
-                        <c:forEach  items="#{equipmentHistoryManagedBean.detailList}" var ="li" varStatus="status">
-                            <c:if test="${li.filefrom=='维修图片'}"> 
-                                <img src="#{li.filepath}" width="200" height="200" />
-                            </c:if>
-                        </c:forEach>
+                        <h:outputLabel id="imagePanel">
+                            <c:if test="${empty equipmentHistoryManagedBean.detailList}">   
+                                <p:outputLabel value="暂无图片"/>
+                            </c:if>  
+                            <c:forEach items="#{equipmentHistoryManagedBean.detailList}" var ="li" varStatus="status">
+                                <c:if test="${li.filefrom=='维修图片'}">   
+                                    <p:graphicImage url="#{li.filepath}" width="300" alt="#{li.filename}"/>
+                                </c:if> 
+                            </c:forEach>
+
+                        </h:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="7"  >
+                        <h:outputLabel id="imagePanel2">
+                            <c:forEach items="#{equipmentHistoryManagedBean.detailList}" var ="li" varStatus="status">
+                                <c:if test="${li.filefrom=='维修文件'}">   
+                                    <br/> <p:link href="#{li.filepath}" value = "#{li.filename}"/><br/>
+                                </c:if> 
+                            </c:forEach>
+                        </h:outputLabel>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -280,6 +294,70 @@
                             <h:outputText value="#{item.brand}"/>
                         </p:column>
                     </p:dataTable>
+                </p:tab>
+                <p:tab title="维修人员">
+                    <p:dataTable id="tableList1" value="#{equipmentHistoryManagedBean.detailList4}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentHistoryManagedBean.currentDetail4}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  />
+                        <p:ajax event="rowUnselect"  />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="维修人ID"/>
+                            </f:facet>
+                            <h:outputText value="#{item.curnode}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="维修人姓名"/>
+                            </f:facet>
+                            <h:outputText value="#{item.curnode2}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="维修时间(分)"/>
+                            </f:facet>
+                            <h:outputText value="#{item.userno}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="审核流程">
+                    <p:dataTable id="tableList3" value="#{equipmentHistoryManagedBean.detailList3}" var="item" styleClass="tableList Mtop10"
+                         selectionMode="single" selection="#{equipmentHistoryManagedBean.currentDetail3}" rowKey="#{item.seq}" >
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="审批流程"/>
+                    </f:facet>
+                    <h:outputText value="#{item.curnode}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="审批人"/>
+                    </f:facet>
+                    <h:outputText value="#{equipmentHistoryManagedBean.getUserName(item.userno)}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="审批结果"/>
+                    </f:facet>
+                    <h:outputText value="#{item.contenct}"/>
+                </p:column>
+
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="审批时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.credate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                    </h:outputText>   
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="审批意见"/>
+                    </f:facet>
+                    <h:outputText value="#{item.note}"/>
+                </p:column>
+
+            </p:dataTable>
                 </p:tab>
             </p:tabView>
            <p:panelGrid  id="plgCost">
