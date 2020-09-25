@@ -348,12 +348,12 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             String[] maintenanceTimes = str.split("小时");
             String hours = maintenanceTimes[0];
             maintenanceTimes = maintenanceTimes[1].split("分");
-            String min = maintenanceTimes[0];
+            int min =Integer.parseInt(maintenanceTimes[0]) ;
             if (Integer.parseInt(hours) != 0) {
                 min += Integer.parseInt(hours) * 60;
-                return min;
+                return String.valueOf(min);
             }
-            return min;
+           return String.valueOf(min);
         }
         return "0";
     }
