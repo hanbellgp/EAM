@@ -204,7 +204,7 @@
                     </p:column>
                 </p:row>
             </p:panelGrid>
-            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
                     <p:row>
                         <p:column colspan="6">故障原因分析</p:column>
@@ -214,19 +214,24 @@
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="磨损性故障"  /></p:column>
                     <p:column styleClass="Wid20">
                         <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="磨损性故障" >
+                            <f:selectItem itemLabel="请选择" itemValue="NULL"/>
                             <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
+
                     <p:column styleClass="Wid15">
                         <p:selectOneMenu id="hitchtype" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchtype}" title="hitchtype" required="true" >
+                            <f:selectItem itemLabel="请选择" itemValue="NULL"/>
                             <f:selectItems  value="#{equipmentMaintenanceManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15" ><h:outputText value="故障类型1"  /></p:column>
                     <p:column >
+
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchsort1}" title="故障类型1" >
+                            <f:selectItem itemLabel="请选择" itemValue="NULL"/>
                             <f:selectItems value="#{equipmentMaintenanceManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                         </p:selectOneMenu>
                     </p:column>
@@ -248,7 +253,8 @@
                         </c:if>  
                         <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="#{li.filepath}" width="200" height="200" />
+                                <img src="#{li.filepath}" width="200" height="200"  />
+
                             </c:if> 
                         </c:forEach>
                     </p:column>
@@ -265,7 +271,7 @@
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式说明"  /></p:column>
                     <p:column colspan="7" >
                         <p:inputTextarea id="repairmethod"  value="#{equipmentMaintenanceManagedBean.currentEntity.repairmethod}" rows="5" cols="70" 
-                                         style=" border: darkgray solid 1px"   maxlength="200"/>
+                                         style=" border: darkgray solid 1px"  maxlength="200"/>
                     </p:column>
                 </p:row>
 
@@ -280,7 +286,7 @@
                     <p:column rowspan="4" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
                     <p:column colspan="7" style="height: 180px; ">
                         <p:fileUpload id="fileUploadDetail" fileUploadListener="#{equipmentMaintenanceManagedBean.handleFileUploadWhenDetailNew}"
-                                      sizeLimit="10000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|zip|xlsx|xls|doc|docx|txt)$/" multiple="true" sequential="true" update="imagePanel,imagePanel2"
+                                      sizeLimit="10000000" fileLimit="10" allowTypes="/(\.|\/)(gif|jpe?g|png|zip|xlsx|xls|doc|docx|txt)$/" multiple="true" sequential="true" update="imagePanel,imagePanel2" 
                                       label="选择" uploadLabel="上传" cancelLabel="取消"  />
                     </p:column>
                 </p:row>

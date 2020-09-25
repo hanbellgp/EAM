@@ -142,6 +142,7 @@
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="磨损性故障"  /></p:column>
                     <p:column styleClass="Wid20">
                         <p:selectOneMenu id="abrasehitch" value="#{equipmentHistoryManagedBean.currentEntity.abrasehitch}" title="abrasehitch" disabled="true" >
+                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
                         </p:selectOneMenu>
@@ -149,12 +150,14 @@
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
                     <p:column styleClass="Wid15">
                         <p:selectOneMenu id="hitchtype" value="#{equipmentHistoryManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
+                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems  value="#{equipmentHistoryManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15" ><h:outputText value="故障类型1"  /></p:column>
                     <p:column >
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentHistoryManagedBean.currentEntity.hitchsort1}" title="hitchsort1" disabled="true">
+                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems value="#{equipmentHistoryManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                         </p:selectOneMenu>
                     </p:column>
@@ -322,45 +325,45 @@
                 </p:tab>
                 <p:tab title="审核流程">
                     <p:dataTable id="tableList3" value="#{equipmentHistoryManagedBean.detailList3}" var="item" styleClass="tableList Mtop10"
-                         selectionMode="single" selection="#{equipmentHistoryManagedBean.currentDetail3}" rowKey="#{item.seq}" >
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="审批流程"/>
-                    </f:facet>
-                    <h:outputText value="#{item.curnode}"/>
-                </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="审批人"/>
-                    </f:facet>
-                    <h:outputText value="#{equipmentHistoryManagedBean.getUserName(item.userno)}"/>
-                </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="审批结果"/>
-                    </f:facet>
-                    <h:outputText value="#{item.contenct}"/>
-                </p:column>
+                                 selectionMode="single" selection="#{equipmentHistoryManagedBean.currentDetail3}" rowKey="#{item.seq}" >
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批流程"/>
+                            </f:facet>
+                            <h:outputText value="#{item.curnode}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批人"/>
+                            </f:facet>
+                            <h:outputText value="#{equipmentHistoryManagedBean.getUserName(item.userno)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="审批结果"/>
+                            </f:facet>
+                            <h:outputText value="#{item.contenct}"/>
+                        </p:column>
 
-                <p:column styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="审批时间"/>
-                    </f:facet>
-                    <h:outputText value="#{item.credate}">
-                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-                    </h:outputText>   
-                </p:column>
-                <p:column styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="审批意见"/>
-                    </f:facet>
-                    <h:outputText value="#{item.note}"/>
-                </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="审批时间"/>
+                            </f:facet>
+                            <h:outputText value="#{item.credate}">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                            </h:outputText>   
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="审批意见"/>
+                            </f:facet>
+                            <h:outputText value="#{item.note}"/>
+                        </p:column>
 
-            </p:dataTable>
+                    </p:dataTable>
                 </p:tab>
             </p:tabView>
-           <p:panelGrid  id="plgCost">
+            <p:panelGrid  id="plgCost">
                 <p:row>
                     <p:column style="background-color: #EEEEEE;height: 40px;width: 180px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
                     <p:column  style="width: 550px">

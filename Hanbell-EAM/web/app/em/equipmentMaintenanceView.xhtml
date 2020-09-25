@@ -130,7 +130,7 @@
                     <p:column>
                         <h:outputText id="hitchdutydeptname" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdutydeptname}"  title="downtime" />
                     </p:column>
-                     <p:column style="background-color: #EEEEEE"><h:outputText value="报修人电话"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="报修人电话"/></p:column>
                     <p:column>
                         <h:outputText id="phone" value="#{equipmentMaintenanceManagedBean.getPhone(equipmentMaintenanceManagedBean.currentEntity.serviceuser)}" title="phone" />
                     </p:column>
@@ -146,6 +146,7 @@
                     <p:column style="background-color: #EEEEEE"><h:outputText value="磨损性故障"  /></p:column>
                     <p:column  styleClass="Wid20">
                         <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="磨损性故障" disabled="true" >
+                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
                             <f:selectItem itemLabel="正常磨损" itemValue="2"/>
                         </p:selectOneMenu>
@@ -153,12 +154,14 @@
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
                     <p:column styleClass="Wid15">
                         <p:selectOneMenu id="hitchtype" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
+                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems  value="#{equipmentMaintenanceManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型1"  /></p:column>
                     <p:column>
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchsort1}" title="故障类型1" disabled="true">
+                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems value="#{equipmentMaintenanceManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                         </p:selectOneMenu>
                     </p:column>
@@ -207,7 +210,7 @@
                 <p:row>
                     <p:column rowspan="4" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
                 </p:row>
-               <p:row>
+                <p:row>
                     <p:column colspan="7"  >
                         <h:outputLabel id="imagePanel">
                             <c:if test="${empty equipmentMaintenanceManagedBean.detailList}">   
