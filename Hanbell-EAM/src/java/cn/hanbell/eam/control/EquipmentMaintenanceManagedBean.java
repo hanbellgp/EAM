@@ -166,7 +166,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 //保存验收数据
     public void saveAcceptance() {
         createDetail();
-        if (currentEntity.getRstatus().equals("30")) {
+        if (currentEntity.getRstatus().equals("30") || currentEntity.getRstatus().equals("40")) {
             currentEntity.setRstatus("40");//更新状态
         } else {
             currentEntity.setRstatus("25");//更新状态
@@ -195,6 +195,21 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "维修期间停工时间不能为空！");
             return;
         }
+        if (currentEntity.getAbrasehitch().equals("NULL")) {
+            showErrorMsg("Error", "请选择磨损性故障！");
+            return;
+        }
+        if (currentEntity.getHitchtype().equals("NULL")) {
+            showErrorMsg("Error", "请选择故障类型！");
+            return;
+        }
+        if (currentEntity.getHitchsort1().equals("NULL")) {
+            showErrorMsg("Error", "请选择故障类型1！");
+            return;
+        }
+        if (detailList4.size() == 1) {
+            showErrorMsg("Error", "请注意，未添加辅助人员！");
+        }
         if (currentDetail3 != null) {
             currentDetail3.setCompany(userManagedBean.getCompany());
             currentDetail3.setUserno(userManagedBean.getUserid());
@@ -214,7 +229,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
         super.update();//To change body of generated methods, choose Tools | Templates.
     }
-
 
     //记录维修时间
     public void recordTime() {
@@ -321,6 +335,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             return "none";
         }
         if (currentEntity.getId() == null) {
+            return "none";
+        }
+        if (!userManagedBean.getUserid().equals(currentEntity.getServiceuser())) {
             return "none";
         }
         if (currentEntity.getRstatus().equals("10") || currentEntity.getRstatus().equals("20")) {
@@ -443,12 +460,12 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             String[] maintenanceTimes = currentEntity.getMaintenanceTime().split("小时");
             String hours = maintenanceTimes[0];
             maintenanceTimes = maintenanceTimes[1].split("分");
-            String min = maintenanceTimes[0];
+            int min = Integer.parseInt(maintenanceTimes[0]);
             if (Integer.parseInt(hours) != 0) {
                 min += Integer.parseInt(hours) * 60;
             }
             equipmentRepairHelpers.setCredate(getDate());
-            equipmentRepairHelpers.setUserno(min);
+            equipmentRepairHelpers.setUserno(String.valueOf(min));
             equipmentRepairHelpers.setRtype("0");
             equipmentRepairHelpers.setStatus("N");
             addedDetailList4.add(equipmentRepairHelpers);
@@ -504,7 +521,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
         }
         //获取总的停机时间
-        if (currentEntity.getExcepttime() != null) {
+        if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
@@ -992,12 +1009,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             String[] maintenanceTimes = currentEntity.getMaintenanceTime().split("小时");
             String hours = maintenanceTimes[0];
             maintenanceTimes = maintenanceTimes[1].split("分");
-            String min = maintenanceTimes[0];
+            int min = Integer.parseInt(maintenanceTimes[0]);
             if (Integer.parseInt(hours) != 0) {
                 min += Integer.parseInt(hours) * 60;
             }
-
-            currentDetail4.setUserno(min);
+            currentDetail4.setUserno(String.valueOf(min));
             currentDetail4.setStatus("N");
             currentDetail4.setCredate(getDate());
             currentDetail4.setRtype("1");
