@@ -12,6 +12,7 @@ import com.lightshell.comm.BaseLib;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.Query;
@@ -189,6 +190,36 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         //参数赋值
         query.setParameter("company", company);
         query.setParameter("formid", "%" + queryParam + "%");
+        query.setParameter("categoryid", 3);
+        query.setParameter("itemdesc", "%" + queryParam + "%");
+        query.setParameter("assetDesc", "%" + queryParam + "%");
+        query.setParameter("userno", "%" + queryParam + "%");
+        query.setParameter("username", "%" + queryParam + "%");
+
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public List<AssetCard> getAssetCardList(String company, String queryParam, Map<String, Object> filters) {
+        String sqlStr = "SELECT e FROM AssetCard e WHERE e.company = :company AND e.assetItem.category.id = :categoryid AND (e.formid LIKE :formidTemp OR e.assetItem.itemdesc LIKE :itemdesc OR e.assetDesc LIKE :assetDesc OR e.userno LIKE :userno OR e.username LIKE :username)";
+        StringBuilder sb = new StringBuilder();
+        sb.append(sqlStr);
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+
+        //生成SQL
+        Query query = getEntityManager().createQuery(sb.toString()).setMaxResults(100);
+
+        //参数赋值
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+        }
+        query.setParameter("company", company);
+        query.setParameter("formidTemp", "%" + queryParam + "%");
         query.setParameter("categoryid", 3);
         query.setParameter("itemdesc", "%" + queryParam + "%");
         query.setParameter("assetDesc", "%" + queryParam + "%");
