@@ -286,6 +286,11 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     }
 
     public void print(String rptclazz, String rptdesign, String reportFormat) throws Exception {
+        List<AssetCard> cardList = assetCardBean.getCardList(model.getFilterFields(), model.getSortFields());
+        for (AssetCard list : cardList) {
+            currentEntity = list;
+            doBeforeVerify();
+        }
         if (currentPrgGrant != null && currentPrgGrant.getDoprt()) {
             HashMap<String, Object> reportParams = new HashMap<>();
             reportParams.put("company", userManagedBean.getCurrentCompany().getName());

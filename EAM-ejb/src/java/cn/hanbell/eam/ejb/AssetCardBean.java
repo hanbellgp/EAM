@@ -203,6 +203,28 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         }
     }
 
+     public List<AssetCard> getCardList(final Map<String, Object> filters, final Map<String, String> orderBy) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("SELECT e FROM ");
+        sb.append(this.className);
+        sb.append(" e WHERE 1=1 ");
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+        if (orderBy != null && orderBy.size() > 0) {
+            sb.append(" ORDER BY ");
+            for (final Map.Entry<String, String> o : orderBy.entrySet()) {
+                sb.append(" e.").append(o.getKey()).append(" ").append(o.getValue()).append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+        }
+        final Query query = this.getEntityManager().createQuery(sb.toString());
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+        }
+        return (List<AssetCard>)query.getResultList();
+    }
+
     public List<AssetCard> getAssetCardList(String company, String queryParam, Map<String, Object> filters) {
         String sqlStr = "SELECT e FROM AssetCard e WHERE e.company = :company AND e.assetItem.category.id = :categoryid AND (e.formid LIKE :formidTemp OR e.assetItem.itemdesc LIKE :itemdesc OR e.assetDesc LIKE :assetDesc OR e.userno LIKE :userno OR e.username LIKE :username)";
         StringBuilder sb = new StringBuilder();
