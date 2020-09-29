@@ -84,7 +84,7 @@ currentRow = 0;]]></method>
     dataSetRow["formid"] = detail.get(currentRow).getFormid();
     dataSetRow["assetdesc"] = detail.get(currentRow).getAssetDesc();
     dataSetRow["itemno"] ="";
-    dataSetRow["code"] = "http://eam.hanbell.com.cn:8480/Hanbell-EAM/resources/app/res/QR" + detail.get(currentRow).getFormid() + ".png";
+    dataSetRow["code"] = "http://i2.hanbell.com.cn:8480/Hanbell-EAM/resources/app/res/QR" + detail.get(currentRow).getFormid() + ".png";
     currentRow++;
     return true;
 }

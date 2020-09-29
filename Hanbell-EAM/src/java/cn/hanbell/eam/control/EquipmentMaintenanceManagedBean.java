@@ -445,9 +445,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         //获取故障类型
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-        getLaborcost(currentEntity.getMaintenanceTime());
+     
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
-        calculateTotalCost();
+       
         createDetail3();
         //检查是否存在主维修人，不存在添加
         if (equipmentRepairHelpersBean.findByPId(currentEntity.getFormid()).isEmpty() && Integer.parseInt(currentEntity.getRstatus()) >= 30) {
@@ -471,6 +471,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             addedDetailList4.add(equipmentRepairHelpers);
             detailList4.add(equipmentRepairHelpers);
         }
+         getTotalLaborcost();
+        calculateTotalCost();
         if (detailList3.size() > 0) {
             return super.edit("equipmentMaintenanceEdit");
         } else {
