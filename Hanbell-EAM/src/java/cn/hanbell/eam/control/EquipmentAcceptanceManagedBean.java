@@ -202,7 +202,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     }
 
-    @Override
+       @Override
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
@@ -213,14 +213,12 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
         }
         //获取总的停机时间
-        if (currentEntity.getExcepttime() != null) {
+        if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-        detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
-        getPartsCost();
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -507,12 +505,12 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     }
 //处理俩时间显示的格式
 
+ 
     public String getTimeDifference(Date strDate, Date endDate, int downTimes) {
         long l = strDate.getTime() - endDate.getTime();
         long day = l / (24 * 60 * 60 * 1000);
         long hour = (l / (60 * 60 * 1000) - day * 24);
         long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
-        long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
         if (downTimes != 0) {
             int days = downTimes / (60 * 24);
             downTimes -= days * 60 * 24;
@@ -535,16 +533,19 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 hour = 0;
                 min = 0;
                 day = 0;
-                s = 0;
+
             }
             if (hour < 0) {
                 hour = 0;
                 min = 0;
                 day = 0;
-                s = 0;
             }
+
         }
-        return "" + day + "天" + hour + "小时" + min + "分";
+        if (day > 0) {
+            hour += 24 * day;
+        }
+        return hour + "小时" + min + "分";
     }
     //获取人工费用
 
