@@ -184,13 +184,13 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         addedDetailList.clear();
         addedDetailList2.clear();
         //获取联络时间
-        currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+        currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
 
         //获取维修时间
         currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
@@ -206,7 +206,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
-            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
             //获取维修时间
@@ -214,19 +214,20 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         calculateTotalCost();
+        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
 
     public void getDowntimes() {
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
     }
     //计算总费用
@@ -277,7 +278,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
-            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
             //获取维修时间
@@ -285,7 +286,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
