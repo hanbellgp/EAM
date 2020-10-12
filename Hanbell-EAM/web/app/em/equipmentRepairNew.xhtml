@@ -27,7 +27,7 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="资产编号" for="assetno" /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="资产编号" for="assetno" /></p:column>
                     <p:column  styleClass="Wid20">
                         <p:inputText id="assetno" value="#{equipmentRepairManagedBean.newEntity.assetno.formid}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
@@ -36,8 +36,8 @@
                                     update="assetno,itemno,deptname,position2,serviceuser" />
                         </p:commandButton>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备名称" for="itemno" /></p:column>
-                    <p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备名称" for="itemno" /></p:column>
+                    <p:column styleClass="Wid15">
                         <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.assetno.assetDesc}" title="itemno" />
                     </p:column>
 
@@ -104,6 +104,32 @@
                     </p:column>
                     <p:column>
                         <p:calendar id="hitchtime" value="#{equipmentRepairManagedBean.newEntity.hitchtime}" title="故障发生时间" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="是否补单" />
+                    </p:column>
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{equipmentRepairManagedBean.checkSingleSupplement}" >
+                            <p:ajax event="change"
+                                    update="formOne"
+                                    listener="#{equipmentRepairManagedBean.onModuleChange()}"></p:ajax>
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+
+                </p:row>
+
+                <p:row id= "rows"  rendered="#{equipmentRepairManagedBean.checkSingleSupplement}"  >
+                    <p:column  style="background-color: #EEEEEE " >
+                        <p:outputLabel value="维修到达时间" for="servicearrivetime"/>
+                    </p:column>
+                    <p:column >
+                        <p:calendar   id="servicearrivetime" value="#{equipmentRepairManagedBean.newEntity.servicearrivetime}" title="servicearrivetime" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}"  />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE " >
+                        <p:outputLabel value="维修完成时间" for="completetime"/>
+                    </p:column>
+                    <p:column>
+                        <p:calendar   id="completetime" value="#{equipmentRepairManagedBean.newEntity.completetime}" title="completetime" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}" />
                     </p:column>
                 </p:row>
                 <p:row>

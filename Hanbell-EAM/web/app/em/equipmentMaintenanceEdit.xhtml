@@ -202,9 +202,16 @@
                     <p:column>
                         <h:outputText id="hitchdutydeptname" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchdutydeptname}"  title="downtime" />
                     </p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="是否重复维修"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="remark" value="#{equipmentMaintenanceManagedBean.currentEntity.remark}" >
+                            <f:selectItem itemLabel="否" itemValue="false"/>
+                            <f:selectItem itemLabel="是" itemValue="true"/>
+                        </p:selectOneMenu>
+                    </p:column>
                 </p:row>
             </p:panelGrid>
-             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
                     <p:row>
                         <p:column colspan="6">故障原因分析</p:column>
@@ -253,7 +260,7 @@
                         </c:if>  
                         <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="#{li.filepath}" width="200" height="200"  />
+                                <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width = 200, height = 200" onclick="width = 500, height = 500"  alt="#{li.filename}"/>
 
                             </c:if> 
                         </c:forEach>
@@ -298,7 +305,7 @@
                             </c:if>  
                             <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                                 <c:if test="${li.filefrom=='维修图片'}">   
-                                    <p:graphicImage url="#{li.filepath}" width="300" alt="#{li.filename}"/>
+                                    <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width = 200, height = 200" onclick="width = 500, height = 500"  alt="#{li.filename}"/>
                                 </c:if> 
                             </c:forEach>
 
@@ -519,7 +526,7 @@
             <p:panelGrid  id="plgCost">
                 <p:row>
                     <p:column style="background-color: #EEEEEE;height: 40px;width: 180px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
-                     <p:column >
+                    <p:column >
                         <p:inputText id="repaircost" value="#{equipmentMaintenanceManagedBean.currentEntity.repaircost}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '');
                                 }).call(this)" onblur="this.v();"
