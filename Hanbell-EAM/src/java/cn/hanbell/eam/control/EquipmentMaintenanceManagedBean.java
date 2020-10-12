@@ -108,6 +108,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     private EquipmentRepairHelpers currentDetail4;
     private List<EquipmentRepairHelpers> addedDetailList4;
     private String note;
+    private boolean checkRepeat;
 
     public EquipmentMaintenanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -188,11 +189,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             return;
         }
         if (currentEntity.getExcepttime() == null) {
-            showErrorMsg("Error", "非生产时间不能为空！");
+            showErrorMsg("Error", "非工作时间不能为空！");
             return;
         }
         if (currentEntity.getStopworktime() == null) {
-            showErrorMsg("Error", "维修期间停工时间不能为空！");
+            showErrorMsg("Error", "停工时间不能为空！");
             return;
         }
         if (currentEntity.getAbrasehitch().equals("NULL")) {
@@ -428,7 +429,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         deletedDetailList2.clear();
         //获取联络时间
         if (currentEntity.getServicearrivetime() != null) {
-            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
         //获取维修时间
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
@@ -437,7 +438,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
 
         //获取维修课长
@@ -445,9 +446,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         //获取故障类型
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-     
+
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
-       
+
         createDetail3();
         //检查是否存在主维修人，不存在添加
         if (equipmentRepairHelpersBean.findByPId(currentEntity.getFormid()).isEmpty() && Integer.parseInt(currentEntity.getRstatus()) >= 30) {
@@ -471,7 +472,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             addedDetailList4.add(equipmentRepairHelpers);
             detailList4.add(equipmentRepairHelpers);
         }
-         getTotalLaborcost();
+        getTotalLaborcost();
         calculateTotalCost();
         if (detailList3.size() > 0) {
             return super.edit("equipmentMaintenanceEdit");
@@ -480,25 +481,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         }
     }
 
-    //获取维修人的人工费用
-    public void getLaborcost(String maintenanceTime) {
-        if (maintenanceTime == null) {
-            return;
-        }
-        String[] maintenanceTimes = maintenanceTime.split("小时");
-        String hours = maintenanceTimes[0];
-        maintenanceTimes = maintenanceTimes[1].split("分");
-        String min = maintenanceTimes[0];
-        if (Integer.parseInt(hours) != 0) {
-            min += Integer.parseInt(hours) * 60;
-        }
-        currentEntity.setLaborcost(sysCodeBean.findBySyskindAndCode("RD", "laborcost").getCvalue());
-        BigDecimal b1 = new BigDecimal(Double.toString(Double.parseDouble(currentEntity.getLaborcost())));
-        BigDecimal b2 = new BigDecimal(Double.toString(Double.parseDouble(min)));
-        currentEntity.setLaborcosts(b1.multiply(b2));
-    }
     //获取维修人的总人工费用
-
     public void getTotalLaborcost() {
 
         if (!detailList4.isEmpty()) {
@@ -506,6 +489,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             for (EquipmentRepairHelpers equipmentrepairHelpers : detailList4) {
                 min += Integer.parseInt(equipmentrepairHelpers.getUserno());
             }
+            currentEntity.setLaborcost(sysCodeBean.findBySyskindAndCode("RD", "laborcost").getCvalue());
             BigDecimal b1 = new BigDecimal(Double.toString(Double.parseDouble(currentEntity.getLaborcost())));
             BigDecimal b2 = new BigDecimal(Double.toString(Double.parseDouble(String.valueOf(min))));
             currentEntity.setLaborcosts(b1.multiply(b2));
@@ -516,7 +500,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
-            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
             //获取维修时间
@@ -524,7 +508,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
@@ -536,7 +520,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     public void getDowntimes() {
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
     }
 
@@ -783,7 +767,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             Cell cell7 = row.createCell(7);
             cell7.setCellStyle(style.get("cell"));
             cell7.setCellValue(equipmentrepair.getServiceusername());
-            String credate = sdf.format(equipmentrepair.getCredate().getTime());
+            String credate = sdf.format(equipmentrepair.getHitchtime().getTime());
             Cell cell8 = row.createCell(8);
             cell8.setCellStyle(style.get("cell"));
             cell8.setCellValue(credate);
@@ -1178,6 +1162,24 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         return getUserName(userId).getPhone();
     }
 
+//    //获取存入的remark的boolean类型
+//    public boolean getRemarkBoolean() {
+//        boolean bool;
+//                
+//        if (currentEntity.getRemark() != null) {
+//            checkRepeat=Boolean.parseBoolean(currentEntity.getRemark());
+//            
+//            return checkRepeat;
+//        } else if (currentEntity.getRemark() == null) {
+//            checkRepeat=false;
+//            if (checkRepeat) {
+//                currentEntity.setRemark("true");
+//            }else{
+//                currentEntity.setRemark("false");
+//            }
+//        }
+//        return  checkRepeat;
+//    }
     @Override
     public void create() {
         super.create();
@@ -1359,6 +1361,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public boolean isCheckRepeat() {
+        return checkRepeat;
+    }
+
+    public void setCheckRepeat(boolean checkRepeat) {
+        this.checkRepeat = checkRepeat;
     }
 
 }

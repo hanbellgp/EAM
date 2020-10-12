@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import cn.hanbell.eam.web.FormMulti3Bean;
-import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Department;
@@ -33,7 +32,6 @@ import com.lightshell.comm.BaseLib;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -97,8 +95,10 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private List<EquipmentTrouble> equipmentTroubleList;
     private String contenct;
     private String note;
+    private double totalCost;
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
+    private boolean checkSingleSupplement;
 
     public EquipmentRepairManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -130,13 +130,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
         newEntity.setHitchtime(getDate());
-        newEntity.setRstatus("10");
+
         newEntity.setRepairuser(userManagedBean.getUserid());
         newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()).getUsername());
         newEntity.setRepairdeptno(this.getDepartment(userManagedBean.getUserid()).getDeptno());
         newEntity.setRepairdeptname(this.getDepartment(userManagedBean.getUserid()).getDept());
         troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+
     }
 
 //保存前作的数据处理
@@ -149,12 +150,6 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (newEntity.getServiceuser() == null) {
             showErrorMsg("Error", "请选择维修人！");
             return false;
-        }
-        if (currentEntity.getRepairmethodtype().equals("2")) {
-            newEntity.setServicearrivetime(getDate());
-            newEntity.setServiceuser(userManagedBean.getUserid());
-            newEntity.setRstatus("20");
-            newEntity.setServiceusername(getUserName(userManagedBean.getUserid()).getUsername());
         }
 
         String formid = this.superEJB.getFormId(newEntity.getFormdate(), "PR", "YYMM", 4);
@@ -171,6 +166,51 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                 detail.setPid(newEntity.getFormid());
             });
         }
+        if (checkSingleSupplement && currentEntity.getRepairmethodtype().equals("2") || !currentEntity.getRepairmethodtype().equals("2")) {
+            if (newEntity.getCompletetime() != null && newEntity.getServicearrivetime() != null) {
+                if (newEntity.getRepairmethodtype().equals("2")) {
+                    newEntity.setRstatus("95");
+                } else {
+                    newEntity.setRstatus("30");
+                }
+                long completetime = newEntity.getCompletetime().getTime();
+                long servicearrivetime = newEntity.getServicearrivetime().getTime();
+                if (completetime < servicearrivetime) {
+                    showErrorMsg("Error", "请注意:维修完成时间一定比维修到达时间晚！！！");
+                    return false;
+                }
+            }
+
+            if (newEntity.getCompletetime() == null && newEntity.getServicearrivetime() != null) {
+                if (currentEntity.getRepairmethodtype().equals("2")) {
+                    newEntity.setServiceuser(userManagedBean.getUserid());
+                    newEntity.setServiceusername(getUserName(userManagedBean.getUserid()).getUsername());
+                }
+                newEntity.setRstatus("20");
+                long servicearrivetime = newEntity.getServicearrivetime().getTime();
+                long hitchtime = newEntity.getHitchtime().getTime();
+                if (servicearrivetime < hitchtime) {
+                    showErrorMsg("Error", "请注意:维修到达时间一定比维修发生时间晚！！！");
+                    return false;
+                }
+            }
+            if (newEntity.getCompletetime() == null && newEntity.getServicearrivetime() == null) {
+                newEntity.setRstatus("10");
+            }
+            if (newEntity.getCompletetime() != null && newEntity.getServicearrivetime() == null) {
+                showErrorMsg("Error", "输入了完成时间,必须要输入到达时间！");
+                return false;
+            }
+
+        } else if (checkSingleSupplement == false && currentEntity.getRepairmethodtype().equals("2")) {
+            newEntity.setServicearrivetime(getDate());
+            newEntity.setServiceuser(userManagedBean.getUserid());
+            newEntity.setRstatus("20");
+            newEntity.setServiceusername(getUserName(userManagedBean.getUserid()).getUsername());
+        } else if (checkSingleSupplement == false && !currentEntity.getRepairmethodtype().equals("2")) {
+            newEntity.setRstatus("10");
+        }
+        checkSingleSupplement = false;
         showInfoMsg("Info", "报修记录号为:" + currentEntity.getFormid());
         return true;
     }
@@ -263,13 +303,12 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
         //获取维修时间
         currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
-        //根据维修时间获取人工费用
-        getLaborcost(currentEntity.getMaintenanceTime());
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        calculateTotalCost();
         return super.edit(path);
     }
 
@@ -348,12 +387,12 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             String[] maintenanceTimes = str.split("小时");
             String hours = maintenanceTimes[0];
             maintenanceTimes = maintenanceTimes[1].split("分");
-            int min =Integer.parseInt(maintenanceTimes[0]) ;
+            int min = Integer.parseInt(maintenanceTimes[0]);
             if (Integer.parseInt(hours) != 0) {
                 min += Integer.parseInt(hours) * 60;
                 return String.valueOf(min);
             }
-           return String.valueOf(min);
+            return String.valueOf(min);
         }
         return "0";
     }
@@ -435,26 +474,6 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             currentEntity.setServiceuser(u.getUserid());
             currentEntity.setServiceusername(u.getUsername());
         }
-    }
-    //获取人工费用
-
-    public void getLaborcost(String maintenanceTime) {
-        String[] maintenanceTimes = maintenanceTime.split("小时");
-        String hours = maintenanceTimes[0];
-        maintenanceTimes = maintenanceTimes[1].split("分");
-        String min = maintenanceTimes[0];
-        int hour = 0;
-        if (Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
-            hour += 1;
-        }
-
-        if (Integer.parseInt(hours) != 0) {
-            hour += Integer.parseInt(hours);
-        }
-        if (Integer.parseInt(min) >= 30) {
-            hour += 1;
-        }
-        currentEntity.setLaborcosts(BigDecimal.valueOf(hour * 20));
     }
 
     //确认维修到达时间
@@ -721,6 +740,20 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         return troubleName;
     }
 
+    //计算总费用
+    public void calculateTotalCost() {
+        totalCost = 0;
+        if (currentEntity.getRepaircost() != null) {
+            totalCost += currentEntity.getRepaircost().doubleValue();
+        }
+        if (currentEntity.getLaborcosts() != null) {
+            totalCost += currentEntity.getLaborcosts().doubleValue();
+        }
+        if (currentEntity.getSparecost() != null) {
+            totalCost += currentEntity.getSparecost().doubleValue();
+        }
+    }
+
     //获取显示的进度
     public String getStateName(String str) {
         switch (str) {
@@ -751,6 +784,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             default:
                 return "";
         }
+    }
+
+    //判断是否补单
+    public boolean onModuleChange() {
+        newEntity.setCompletetime(null);
+        newEntity.setServicearrivetime(null);
+        return checkSingleSupplement;
     }
 
     //获取部门
@@ -862,6 +902,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         this.note = note;
     }
 
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
     public List<EquipmentRepairHelpers> getDetailList4() {
         return detailList4;
     }
@@ -876,6 +924,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
         this.currentDetail4 = currentDetail4;
+    }
+
+    public boolean isCheckSingleSupplement() {
+        return checkSingleSupplement;
+    }
+
+    public void setCheckSingleSupplement(boolean checkSingleSupplement) {
+        this.checkSingleSupplement = checkSingleSupplement;
     }
 
 }

@@ -116,7 +116,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
-            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
             //获取维修时间
@@ -124,7 +124,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
@@ -138,7 +138,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void getDowntimes() {
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
     }
 
@@ -405,7 +405,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             Cell cell7 = row.createCell(7);
             cell7.setCellStyle(style.get("cell"));
             cell7.setCellValue(equipmentrepair.getServiceusername());
-            String credate = sdf.format(equipmentrepair.getCredate().getTime());
+            String credate = sdf.format(equipmentrepair.getHitchtime().getTime());
 
             Cell cell8 = row.createCell(8);
             cell8.setCellStyle(style.get("cell"));
