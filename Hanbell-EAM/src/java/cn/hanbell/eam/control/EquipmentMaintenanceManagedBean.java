@@ -96,6 +96,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     private double totalCost;
     private List<EquipmentTrouble> equipmentTroubleList;
     private List<SysCode> hitchurgencyList;
+    private List<SysCode> abrasehitchList;
     private List<String> paramPosition = null;
     private List<EquipmentRepairFile> imageList;
     private List<EquipmentRepairFile> fileList;
@@ -109,6 +110,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     private List<EquipmentRepairHelpers> addedDetailList4;
     private String note;
     private boolean checkRepeat;
+    private String disabledShow;
 
     public EquipmentMaintenanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -197,7 +199,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             return;
         }
         if (currentEntity.getAbrasehitch().equals("NULL")) {
-            showErrorMsg("Error", "请选择磨损性故障！");
+            showErrorMsg("Error", "请选择故障责任原因！");
             return;
         }
         if (currentEntity.getHitchtype().equals("NULL")) {
@@ -390,7 +392,23 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentEntity.setServiceusername(u.getUsername());
             currentEntity.setStatus("N");
         }
-        super.update();
+    }
+
+    //确认单据转派
+    public void confirmTransfer(SelectEvent event) {
+        createDetail3();
+        currentDetail3.setCompany(userManagedBean.getCompany());
+        currentDetail3.setUserno(userManagedBean.getUserid());
+        currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
+        currentDetail3.setStatus("N");
+        currentDetail3.setNote(note);
+        currentDetail3.setContenct("转派");
+        currentDetail3.setPid(currentEntity.getFormid());
+        currentDetail3.setCredate(getDate());
+        doConfirmDetail3();
+        note=null;
+        update();
+        showInfoMsg("Info", " 已成功转派给："+currentEntity.getServiceusername());
     }
 
     //记录审批意见
@@ -446,7 +464,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         //获取故障类型
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-
+        //获取故障责任原因
+        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
 
         createDetail3();
@@ -475,10 +494,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         getTotalLaborcost();
         calculateTotalCost();
         if (detailList3.size() > 0) {
-            return super.edit("equipmentMaintenanceEdit");
+            disabledShow = "";
         } else {
-            return super.edit(path);
+            disabledShow = "none";
         }
+        return super.edit(path);
     }
 
     //获取维修人的总人工费用
@@ -513,6 +533,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        //获取故障责任原因
+        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -1369,6 +1391,22 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     public void setCheckRepeat(boolean checkRepeat) {
         this.checkRepeat = checkRepeat;
+    }
+
+    public List<SysCode> getAbrasehitchList() {
+        return abrasehitchList;
+    }
+
+    public void setAbrasehitchList(List<SysCode> abrasehitchList) {
+        this.abrasehitchList = abrasehitchList;
+    }
+
+    public String getDisabledShow() {
+        return disabledShow;
+    }
+
+    public void setDisabledShow(String disabledShow) {
+        this.disabledShow = disabledShow;
     }
 
 }

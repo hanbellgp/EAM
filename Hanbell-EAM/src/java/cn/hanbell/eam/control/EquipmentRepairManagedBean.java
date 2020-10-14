@@ -91,6 +91,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private List<SystemUser> userList;
     private List<SysCode> troubleFromList;
     private List<SysCode> hitchurgencyList;
+    private List<SysCode> abrasehitchList;
     private String maintenanceSupervisor;
     private List<EquipmentTrouble> equipmentTroubleList;
     private String contenct;
@@ -295,17 +296,23 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "只有对应的责任人才能填写责任回复！");
             return "";
         }
+        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+          //获取故障责任原因
+        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         //获取联络时间
-        currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getCredate(), 0));
-
+        if (currentEntity.getServicearrivetime() != null) {
+            currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
+        }
         //获取维修时间
-        currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
+            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+        }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
-            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getCredate(), currentEntity.getExcepttime()));
+            currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         calculateTotalCost();
@@ -932,6 +939,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void setCheckSingleSupplement(boolean checkSingleSupplement) {
         this.checkSingleSupplement = checkSingleSupplement;
+    }
+
+    public List<SysCode> getAbrasehitchList() {
+        return abrasehitchList;
+    }
+
+    public void setAbrasehitchList(List<SysCode> abrasehitchList) {
+        this.abrasehitchList = abrasehitchList;
     }
 
 }

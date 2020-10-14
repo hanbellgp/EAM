@@ -118,9 +118,10 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         }
         return Integer.parseInt(query.getSingleResult().toString());
     }
-
+    
+    
     @Override
-    public List<EquipmentRepair> findByFilters(Map<String, Object> filters, int first, int pageSize, Map<String, String> orderBy) {
+    public List<EquipmentRepair> findByFilters(Map<String, Object> filters,int first, int pageSize, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT e FROM ");
         sb.append(this.className);

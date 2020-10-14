@@ -116,7 +116,7 @@
                     <p:column>
                         <h:outputText id="maintenanceTime"  title="maintenanceTime"  value="#{equipmentHistoryManagedBean.currentEntity.maintenanceTime}"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障持续时间"/></p:column>
                     <p:column>
                         <h:outputText id="downtime" value="#{equipmentHistoryManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
@@ -146,18 +146,15 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="磨损性故障"  /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障责任原因"  /></p:column>
                     <p:column styleClass="Wid20">
                         <p:selectOneMenu id="abrasehitch" value="#{equipmentHistoryManagedBean.currentEntity.abrasehitch}" title="abrasehitch" disabled="true" >
-                            <f:selectItem itemLabel="" itemValue="NULL"/>
-                            <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
-                            <f:selectItem itemLabel="正常磨损" itemValue="2"/>
+                            <f:selectItems  value="#{equipmentHistoryManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
                     <p:column styleClass="Wid15">
                         <p:selectOneMenu id="hitchtype" value="#{equipmentHistoryManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
-                            <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems  value="#{equipmentHistoryManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
