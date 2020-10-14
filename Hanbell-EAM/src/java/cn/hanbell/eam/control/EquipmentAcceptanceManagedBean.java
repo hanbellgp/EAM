@@ -78,6 +78,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private String note;
     private List<EquipmentTrouble> equipmentTroubleList;
     private List<EquipmentRepairFile> equipmentRepairFileList;
+    private List<SysCode> abrasehitchList;
     private List<SysCode> hitchurgencyList;
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
@@ -219,6 +220,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+         //获取故障责任原因
+        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
         calculateTotalCost();
         detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -276,6 +279,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             return "";
         }
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+         //获取故障责任原因
+        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
@@ -685,6 +690,14 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
         this.currentDetail4 = currentDetail4;
+    }
+
+    public List<SysCode> getAbrasehitchList() {
+        return abrasehitchList;
+    }
+
+    public void setAbrasehitchList(List<SysCode> abrasehitchList) {
+        this.abrasehitchList = abrasehitchList;
     }
 
 }

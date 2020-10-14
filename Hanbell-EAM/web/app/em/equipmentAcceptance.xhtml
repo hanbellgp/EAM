@@ -67,77 +67,41 @@
                          selectionMode="single" selection="#{equipmentAcceptanceManagedBean.currentEntity}" rowKey="#{item.id}" >
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                <p:column styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="进度"/>
-                    </f:facet>
+               <p:column styleClass="Wid10" headerText="进度" sortBy="#{item.rstatus}">
                     <h:outputText value="#{equipmentAcceptanceManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="报修单号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.formid}"/>
-                </p:column> 
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="使用部门"/>
-                    </f:facet>
-                    <h:outputText value="#{item.assetno.deptname}"/>
-                </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="资产编号"/>
-                    </f:facet>
+
+                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno.formid}">
                     <h:outputText value="#{item.assetno.formid}"/>
                 </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="设备名称"/>
-                    </f:facet>
+                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.assetno.assetDesc}">
                     <h:outputText value="#{item.assetno.assetDesc}"/>
                 </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="设备故障报警号"/>
-                    </f:facet>
+                <p:column styleClass="Wid15" headerText="故障现象" sortBy="#{item.hitchdesc}">
+                    <h:outputText value="#{item.hitchdesc}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="设备故障报警号" sortBy="#{item.hitchalarm}">
                     <h:outputText value="#{item.hitchalarm}"/>
                 </p:column>
-
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="故障发生时间"/>
-                    </f:facet>
-                    <h:outputText value="#{item.credate}">
+                <p:column styleClass="Wid20" headerText="故障发生时间" sortBy="#{item.hitchtime}">
+                    <h:outputText value="#{item.hitchtime}">
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-                    </h:outputText>                      
+                    </h:outputText>   
                 </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="维修到达时间"/>
-                    </f:facet>
+                <p:column styleClass="Wid20" headerText="维修到达时间" sortBy="#{item.servicearrivetime}">
                     <h:outputText value="#{item.servicearrivetime}">
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-                    </h:outputText>                      
+                    </h:outputText>   
                 </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="维修完成时间"/>
-                    </f:facet>
+                <p:column styleClass="Wid20" headerText="维修完成时间" sortBy="#{item.completetime}">
                     <h:outputText value="#{item.completetime}">
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-                    </h:outputText>                      
+                    </h:outputText>   
                 </p:column>
-                <p:column styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="报修人"/>
-                    </f:facet>
+                <p:column styleClass="Wid10" headerText="报修人" sortBy="#{item.repairusername}">
                     <h:outputText value="#{item.repairusername}"/>
                 </p:column>
-                <p:column styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="维修人"/>
-                    </f:facet>
+                <p:column styleClass="Wid10" headerText="维修人" sortBy="#{item.serviceusername}">
                     <h:outputText value="#{item.serviceusername}"/>
                 </p:column>
             </p:dataTable>

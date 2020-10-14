@@ -12,15 +12,61 @@
             <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:button id="btnReturn" value="返回" outcome="equipmentMaintenance" icon="ui-icon-restore"/>
+                     <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentMaintenanceManagedBean.closeDialog()}" icon="ui-icon-plus" />
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnSave" value="暂存" actionListener="#{equipmentMaintenanceManagedBean.saveAcceptance()}" icon="ui-icon-save"
-                                     process="@this,plgHead,plgQuery,plgCost" update="formOne,:formOne:tabView:tableList1"/>
+                                     process="@this,plgHead,plgQuery,plgCost" update="formOne"/>
                     <p:commandButton id="btnSubmit" value="提交" actionListener="#{equipmentMaintenanceManagedBean.submit()}" icon="ui-icon-save"
                                      process="@this,plgHead,plgQuery,plgCost" update="formOne"/>
                 </f:facet>
             </p:toolbar>
+            <p:panelGrid id="plgAudit" styleClass="plgHead Wid100">
+                <f:facet name="header" >
+                    <p:row style="display: #{equipmentMaintenanceManagedBean.disabledShow}">
+                        <p:column colspan="11">审核流程处理</p:column>
+                    </p:row>
+                </f:facet>
+
+
+            </p:panelGrid>
+            <p:dataTable id="tableList" value="#{equipmentMaintenanceManagedBean.detailList3}" var="item" styleClass="tableList Mtop10" style="display: #{equipmentMaintenanceManagedBean.disabledShow}"
+                         selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentDetail3}" rowKey="#{item.seq}" >
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="审批流程"/>
+                    </f:facet>
+                    <h:outputText value="#{item.curnode}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="审批人"/>
+                    </f:facet>
+                    <h:outputText value="#{equipmentMaintenanceManagedBean.getUserName(item.userno).username}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="审批结果"/>
+                    </f:facet>
+                    <h:outputText value="#{item.contenct}"/>
+                </p:column>
+
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="审批时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.credate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                    </h:outputText>   
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="审批意见"/>
+                    </f:facet>
+                    <h:outputText value="#{item.note}"/>
+                </p:column>
+
+            </p:dataTable>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
@@ -105,7 +151,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="停工时间(分)"/></p:column>
                     <p:column>
-                        <p:inputText id="stopworktime" value="#{equipmentMaintenanceManagedBean.currentEntity.stopworktime}"  onkeyup="(this.v = function () {
+                        <p:inputText id="stopworktime" value="#{equipmentMaintenanceManagedBean.currentEntity.stopworktime}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
                                 }).call(this)" onblur="this.v();"
                                      title="stopworktime" >
@@ -137,7 +183,7 @@
                     <p:column>
                         <h:outputText id="maintenanceTime"  title="maintenanceTime"  value="#{equipmentMaintenanceManagedBean.currentEntity.maintenanceTime}"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障持续时间"/></p:column>
                     <p:column>
                         <h:outputText id="downtime" value="#{equipmentMaintenanceManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
@@ -161,13 +207,10 @@
                         <p:selectOneMenu id="remark" value="#{equipmentMaintenanceManagedBean.currentEntity.remark}" >
                             <f:selectItem itemLabel="否" itemValue="false"/>
                             <f:selectItem itemLabel="是" itemValue="true"/>
-                        </p:selectOneMenu> 
-
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
             </p:panelGrid>
-
-
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
                     <p:row>
@@ -175,12 +218,11 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="磨损性故障"  /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障责任原因"  /></p:column>
                     <p:column styleClass="Wid20">
-                        <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="磨损性故障" >
+                      <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="abrasehitch" >
                             <f:selectItem itemLabel="请选择" itemValue="NULL"/>
-                            <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
-                            <f:selectItem itemLabel="正常磨损" itemValue="2"/>
+                            <f:selectItems  value="#{equipmentMaintenanceManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
@@ -217,7 +259,8 @@
                         </c:if>  
                         <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                             <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width=200,height=200" onclick="width=500,height=500"  alt="#{li.filename}"/>
+                                <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width = 200, height = 200" onclick="width = 500, height = 500"  alt="#{li.filename}"/>
+
                             </c:if> 
                         </c:forEach>
                     </p:column>
@@ -261,7 +304,7 @@
                             </c:if>  
                             <c:forEach items="#{equipmentMaintenanceManagedBean.detailList}" var ="li" varStatus="status">
                                 <c:if test="${li.filefrom=='维修图片'}">   
-                                     <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width=200,height=200" onclick="width=500,height=500"  alt="#{li.filename}"/>
+                                    <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width = 200, height = 200" onclick="width = 500, height = 500"  alt="#{li.filename}"/>
                                 </c:if> 
                             </c:forEach>
 
@@ -467,7 +510,6 @@
                                  selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentDetail}" rowKey="#{item.seq}" >
                         <p:ajax event="rowSelect"     update=":formOne:tabView:toolbar2"/>
                         <p:ajax event="rowUnselect"   update=":formOne:tabView:toolbar2"/>
-
                         <p:column styleClass="Wid10">
                             <h:outputText   value="#{item.filefrom}"/>
                         </p:column>
@@ -508,6 +550,7 @@
                     </p:column>
                 </p:row>
             </p:panelGrid>
+
         </h:form>
     </ui:define>
 

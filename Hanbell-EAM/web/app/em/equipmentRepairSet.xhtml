@@ -183,7 +183,7 @@
                     <p:column>
                         <h:outputText id="maintenanceTime"  title="maintenanceTime"  value="#{equipmentRepairManagedBean.currentEntity.maintenanceTime}"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="停机时间"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障持续时间"/></p:column>
                     <p:column>
                         <h:outputText id="downtime" value="#{equipmentRepairManagedBean.currentEntity.downtime}"  title="downtime" />
                     </p:column>
@@ -213,11 +213,11 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="磨损性故障"  /></p:column>
+                   <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障责任原因"  /></p:column>
                     <p:column styleClass="Wid20">
-                        <p:selectOneMenu id="abrasehitch" value="#{equipmentRepairManagedBean.currentEntity.abrasehitch}" title="abrasehitch" disabled="true" >
-                            <f:selectItem itemLabel="非正常磨损" itemValue="1"/>
-                            <f:selectItem itemLabel="正常磨损" itemValue="2"/>
+                        <p:selectOneMenu id="abrasehitch" value="#{equipmentRepairManagedBean.currentEntity.abrasehitch}" title="abrasehitch" >
+                            <f:selectItem itemLabel="请选择" itemValue="NULL"/>
+                            <f:selectItems  value="#{equipmentRepairManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>

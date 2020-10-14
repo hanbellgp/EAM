@@ -87,6 +87,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private String queryRepairprocess;
     private String queryHitchalarm;
     private List<SysCode> hitchurgencyList;
+    private List<SysCode> abrasehitchList;
     private List<EquipmentTrouble> equipmentTroubleList;
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
@@ -108,10 +109,10 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
-        model.getSortFields().put("hitchtime", "DESC");
         super.init();
     }
-
+   
+    
     @Override
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
@@ -131,6 +132,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        //获取故障责任原因
+        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -205,11 +208,9 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 model.getFilterFields().put("rstatus", queryState);
             }
 
-            model.getSortFields().put("hitchtime", "DESC");
-
         }
     }
-
+    
     //计算总费用
     public void calculateTotalCost() {
         totalCost = 0;
@@ -733,6 +734,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
         this.currentDetail4 = currentDetail4;
+    }
+
+    public List<SysCode> getAbrasehitchList() {
+        return abrasehitchList;
+    }
+
+    public void setAbrasehitchList(List<SysCode> abrasehitchList) {
+        this.abrasehitchList = abrasehitchList;
     }
 
 }

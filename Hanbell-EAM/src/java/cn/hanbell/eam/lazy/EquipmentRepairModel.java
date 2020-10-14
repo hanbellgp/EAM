@@ -9,6 +9,9 @@ import cn.hanbell.eam.control.UserManagedBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
+import java.util.List;
+import java.util.Map;
+import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -17,11 +20,24 @@ import com.lightshell.comm.SuperEJB;
 public class EquipmentRepairModel extends BaseLazyModel<EquipmentRepair> {
 
     private final UserManagedBean userManagedBean;
-  
+
     public EquipmentRepairModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
         this.userManagedBean = userManagedBean;
     }
 
-  
+    @Override
+    public List<EquipmentRepair> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+       
+        if (sortField!=null) {
+            String sort =sortOrder.toString().substring(0, sortOrder.toString().length()-6);
+            sortFields.put(sortField, sort);
+        }
+        //sortFields.put(sortField, sortOrder);
+        setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
+        setRowCount(superEJB.getRowCount(filterFields));
+        sortFields.clear();
+        return dataList;
+    }
+
 }
