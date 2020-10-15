@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
+<configuration status="INFO" monitorInterval="30">
     <properties>
         <property name="LOG_HOME">D:/EAP-LOG/logs</property>
+        <property name="LOG_PATTERN">%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n</property>
     </properties>
     <appenders>
-        <RollingFile name="RollingFile" fileName="${LOG_HOME}/eap.log"
-                     filePattern="${LOG_HOME}/eap-%d{yyyy-MM-dd}-%i.log">
+        <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </Console>
+        <RollingFile name="EAM" fileName="${LOG_HOME}/eam.log"
+                     filePattern="${LOG_HOME}/eam-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="Ext" fileName="${LOG_HOME}/ext.log"
+                     filePattern="${LOG_HOME}/ext-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"  modulate="true" />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
         </RollingFile>
     </appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
     <loggers>
-        <root level="info">
-            <appender-ref ref="RollingFile"/>
+        <Logger name="cn.hanbell.eam" level="INFO" additivity="false">
+            <appender-ref ref="EAM" />
+        </Logger>
+        <!--建立一个默认的root的logger-->
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Ext"/>
         </root>
     </loggers>
 </configuration>
