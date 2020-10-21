@@ -46,7 +46,7 @@ public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
     protected final String url = "http://127.0.0.1:8480/WebService/SHBERPWebService";
     protected final String nameSpace = "http://jws.hanbell.cn/";
 
-    protected final Logger log4j = LogManager.getLogger();
+    protected final Logger log4j = LogManager.getLogger("cn.hanbell.eam");
 
     protected String company = "C";
 
