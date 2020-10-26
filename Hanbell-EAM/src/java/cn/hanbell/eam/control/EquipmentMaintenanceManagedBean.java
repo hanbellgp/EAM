@@ -111,6 +111,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     private String note;
     private boolean checkRepeat;
     private String disabledShow;
+    private String userName;
 
     public EquipmentMaintenanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -388,14 +389,20 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     public void handleTransferDocuments(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             SystemUser u = (SystemUser) event.getObject();
+            userName = currentEntity.getServiceusername();
             currentEntity.setServiceuser(u.getUserid());
             currentEntity.setServiceusername(u.getUsername());
             currentEntity.setStatus("N");
+
         }
     }
 
     //确认单据转派
     public void confirmTransfer(SelectEvent event) {
+        if (userName==null||userName.equals(currentEntity.getServiceusername())) {
+            showErrorMsg("Error", "不能转派给自己，请重新选择");
+            return;
+        }
         createDetail3();
         currentDetail3.setCompany(userManagedBean.getCompany());
         currentDetail3.setUserno(userManagedBean.getUserid());
@@ -405,10 +412,12 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         currentDetail3.setContenct("转派");
         currentDetail3.setPid(currentEntity.getFormid());
         currentDetail3.setCredate(getDate());
+        currentDetail3.setOptuser(getUserName(userManagedBean.getUserid()).getUsername());
         doConfirmDetail3();
-        note=null;
+        note = null;
+        userName=null;
         update();
-        showInfoMsg("Info", " 已成功转派给："+currentEntity.getServiceusername());
+        showInfoMsg("Info", " 已成功转派给：" + currentEntity.getServiceusername());
     }
 
     //记录审批意见
@@ -1407,6 +1416,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     public void setDisabledShow(String disabledShow) {
         this.disabledShow = disabledShow;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
 }

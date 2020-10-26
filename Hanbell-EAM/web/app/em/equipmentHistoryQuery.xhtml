@@ -48,7 +48,7 @@
                     <f:selectItem  itemLabel="请选择" itemValue="ALL"/>
                     <f:selectItems value="#{equipmentHistoryManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                 </p:selectOneMenu>
-                <h:outputLabel value="故障描述" for="queryHitchdesc" />
+                <h:outputLabel value="故障现象" for="queryHitchdesc" />
                 <p:inputText id="queryHitchdesc" value="#{equipmentHistoryManagedBean.queryHitchdesc}" title="故障描述" />
 
                 <h:outputLabel value="故障判断" for="queryHitchreason" />

@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6"> 查询条件</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateBegin" value="#{repairTransferStatisticsManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                    <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateEnd" value="#{repairTransferStatisticsManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{repairTransferStatisticsManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                </f:facet>
+
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{repairTransferStatisticsManagedBean.print()}" icon="ui-icon-print"
+                                     />
+                    
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{repairTransferStatisticsManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{repairTransferStatisticsManagedBean.detailList}"  var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         rowsPerPageTemplate="15,30,45">
+                <p:ajax event="rowSelect"  />
+                <p:ajax event="rowUnselect" />
+                <p:column styleClass="Wid20" headerText="原负责维修人" sortBy="#{item[0]}">
+                    <h:outputText value="#{item[0]}" />
+                </p:column>
+                <p:column styleClass="Wid20" headerText="被转单负责人" sortBy="#{item[1]}">
+                    <h:outputText value="#{item[1]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="报修单号" sortBy="#{item[2]}">
+                    <h:outputText value="#{item[2]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="资源编号" sortBy="#{item[3]}">
+                    <h:outputText value="#{item[3]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[4]}" >
+                    <h:outputText value="#{item[4]}"/>
+                </p:column>
+               <p:column styleClass="Wid20" headerText="故障发生日期" sortBy="#{item[5]}" >
+                    <h:outputText value="#{item[5]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="转单事由" sortBy="#{item[6]}" >
+                    <h:outputText value="#{item[6]}"/>
+                </p:column>
+               
+            </p:dataTable>
+           
+        </h:form>
+    </ui:define>
+
+</ui:composition>

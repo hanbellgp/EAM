@@ -398,6 +398,36 @@
             <to-view-id>/app/em/equipmentSpare.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+         <navigation-case>
+            <description>维修工时明细表</description>
+            <from-outcome>repairManHourDetailList</from-outcome>
+            <to-view-id>/app/em/repairManHourDetailList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+         <navigation-case>
+            <description>维修工时汇总表</description>
+            <from-outcome>repairManHourSummary</from-outcome>
+            <to-view-id>/app/em/repairManHourSummary.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>维修转单统计表</description>
+            <from-outcome>repairTransferStatistics</from-outcome>
+            <to-view-id>/app/em/repairTransferStatistics.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+         <navigation-case>
+            <description>故障紧急度统计表</description>
+            <from-outcome>faultEmergencyStatistical</from-outcome>
+            <to-view-id>/app/em/faultEmergencyStatistical.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+         <navigation-case>
+            <description>维修费用统计表</description>
+            <from-outcome>repairCostStatistics</from-outcome>
+            <to-view-id>/app/em/repairCostStatistics.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>
