@@ -84,6 +84,7 @@
                          selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentEntity}" rowKey="#{item.id}" >
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
+           
                  <p:column styleClass="Wid10" headerText="进度" sortBy="#{item.rstatus}">
                     <h:outputText value="#{equipmentMaintenanceManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>

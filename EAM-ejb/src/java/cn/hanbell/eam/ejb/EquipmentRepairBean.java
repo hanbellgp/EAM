@@ -202,4 +202,55 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 return "";
         }
     }
+    
+        //获取维修紧急统计表的List
+    public List<EquipmentRepair> getRepairEmergencyStatisticsList(String staDate, String endDate,String assetno,String deptname) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT R.assetno,A.assetDesc,A.deptname,sum(if(R.hitchtype = '03', 1, 0)) AS emergency,sum(if(R.hitchtype = '02', 1, 0)) AS urgent,sum(if(R.hitchtype = '01', 1, 0)) AS general");
+        sb.append(" FROM equipmentrepair R, assetcard A");
+        sb.append(" WHERE R.assetno = A.formid AND R.hitchtype IS NOT NULL");
+        if (!"".equals(staDate)) {
+            sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
+        }
+        if (!"".equals(endDate)) {
+            sb.append(" AND R.hitchtime< ").append("'").append(endDate).append("'");
+        }
+        if (assetno!=null&&!"".equals(assetno)) {
+            sb.append(" AND R.assetno Like ").append("'%").append(assetno).append("%'");
+        }
+        if (deptname!=null&&!"".equals(deptname)) {
+            sb.append(" AND R.repairdeptname Like ").append("'%").append(deptname).append("%'");
+        }
+        sb.append(" GROUP BY R.assetno");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+
+        List results = query.getResultList();
+        return results;
+    }
+    
+    
+          //获取维修费用统计表的List
+    public List<EquipmentRepair> getRepairCostStatisticsList(String staDate, String endDate,String deptname,String abrasehitch) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT R.formid, R.assetno,A.assetDesc,A.deptname,R.hitchtime,R.abrasehitch,R.repairmethod,R.repaircost,R.laborcosts,R.sparecost,R.repaircost+R.laborcosts+R.sparecost AS tot, R.serviceusername");
+        sb.append(" FROM equipmentrepair R, assetcard A WHERE R.assetno = A.formid  AND R.rstatus='95'");
+        if (!"".equals(staDate)) {
+            sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
+        }
+        if (!"".equals(endDate)) {
+            sb.append(" AND R.hitchtime< ").append("'").append(endDate).append("'");
+        }
+        if (abrasehitch!=null&&!"".equals(abrasehitch)) {
+            sb.append(" AND R.abrasehitch = ").append("'").append(abrasehitch).append("'");
+        }
+        if (deptname!=null&&!"".equals(deptname)) {
+            sb.append(" AND R.repairdeptname Like ").append("'%").append(deptname).append("%'");
+        }
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+
+        List results = query.getResultList();
+        return results;
+    }
 }

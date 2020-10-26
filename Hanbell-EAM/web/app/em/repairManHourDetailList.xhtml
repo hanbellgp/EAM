@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6"> 查询条件</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateBegin" value="#{repairManHourDetailListManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                    <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateEnd" value="#{repairManHourDetailListManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="维修人" for="selectedUserName" />  </p:column>
+                    <p:column colspan="6">
+                        <p:selectCheckboxMenu id="selectedUserName" value="#{repairManHourDetailListManagedBean.selectedUserName}"  multiple="true"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{repairManHourDetailListManagedBean.usernameList}" />
+                        </p:selectCheckboxMenu>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{repairManHourDetailListManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                </f:facet>
+
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{repairManHourDetailListManagedBean.print()}" icon="ui-icon-print"
+                                     />
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{repairManHourDetailListManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{repairManHourDetailListManagedBean.detailList}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         rowsPerPageTemplate="15,30,45"   
+                         >
+                
+                <p:ajax event="rowSelect"  />
+                <p:ajax event="rowUnselect" />
+                <p:column styleClass="Wid10" headerText="维修人" sortBy="#{item[1]}">
+                    <h:outputText value="#{item[1]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="报修单号" sortBy="#{item[2]}">
+                    <h:outputText value="#{item[2]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item[3]}">
+                    <h:outputText value="#{item[3]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[4]}">
+                    <h:outputText value="#{item[4]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="故障发生日期" sortBy="#{item[5]}" >
+                    <h:outputText value="#{item[5]}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm"  />
+                    </h:outputText>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="维修方式说明" sortBy="#{item[6]}" >
+                    <h:outputText value="#{item[6]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="报修部门" sortBy="#{item[7]}" >
+                    <h:outputText value="#{item[7]}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="维修到达时间" sortBy="#{item[8]}" >
+                    <h:outputText value="#{item[8]}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                    </h:outputText>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="维修完成时间" sortBy="#{item[9]}">
+                    <h:outputText value="#{item[9]}">
+                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                    </h:outputText>
+                </p:column>
+                <p:column styleClass="Wid15" headerText="维修工时" sortBy="#{item[11]}" style="text-align: right" >
+                    <h:outputText value="#{item[10]==0 ? item[11] : '0'}" />
+                </p:column>
+                <p:column styleClass="Wid15" headerText="辅助维修工时" sortBy="#{item[11]}" style="text-align: right">
+                    <h:outputText value="#{item[10]==1 ? item[11] : '0'}"  />
+                </p:column>
+
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnQuery">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -203,7 +203,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     }
 
-       @Override
+    @Override
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
@@ -220,10 +220,10 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-         //获取故障责任原因
-        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
+        //获取故障责任原因
+        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         calculateTotalCost();
-        detailList4=equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -233,8 +233,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
     }
-    //计算总费用
 
+    //计算总费用
     public void calculateTotalCost() {
         totalCost = 0;
         if (currentEntity.getRepaircost() != null) {
@@ -279,8 +279,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             return "";
         }
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-         //获取故障责任原因
-        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
+        //获取故障责任原因
+        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
@@ -299,6 +299,45 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         return super.edit(path);
 
     }
+
+    @Override
+    public void toNext() {
+        if (this.model != null && !this.model.getDataList().isEmpty()) {
+            final int idx = this.model.getDataList().indexOf(this.currentEntity) + 1;
+            if (idx < this.model.getDataList().size()) {
+                EquipmentRepair eq = (EquipmentRepair) this.model.getDataList().get(idx);
+                if (Integer.parseInt(eq.getRstatus()) < 60) {
+                    showErrorMsg("Error", "请注意:下一张单据状态为:" + getStateName(eq.getRstatus()) + "。不能审批。");
+                    return;
+                }
+                if (Integer.parseInt(eq.getRstatus()) > 70) {
+                    showErrorMsg("Error", "请注意:下一张单据状态为:" + getStateName(eq.getRstatus()) + "。已审批完成。");
+                    return;
+                }
+                this.setCurrentEntity((EquipmentRepair) this.model.getDataList().get(idx));
+            }
+        }
+    }
+
+    @Override
+    public void toPrev() {
+        if (this.model != null && !this.model.getDataList().isEmpty()) {
+            final int idx = this.model.getDataList().indexOf(this.currentEntity) - 1;
+            if (idx >= 0) {
+                EquipmentRepair eq = (EquipmentRepair) this.model.getDataList().get(idx);
+                if (Integer.parseInt(eq.getRstatus()) < 60) {
+                    showErrorMsg("Error", "请注意:上一张单据状态为:" + getStateName(eq.getRstatus()) + "。不能审批。");
+                    return;
+                }
+                if (Integer.parseInt(eq.getRstatus()) > 70) {
+                    showErrorMsg("Error", "请注意:上一张单据状态为:" + getStateName(eq.getRstatus()) + "。已审批完成。");
+                    return;
+                }
+                this.setCurrentEntity((EquipmentRepair) this.model.getDataList().get(idx));
+            }
+        }
+    }
+
 
     //确认审批
     public void confirmApproval() {
@@ -353,6 +392,10 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         super.doConfirmDetail3();
         currentEntity.setStatus("N");
         super.update();
+         final int idx = this.model.getDataList().indexOf(this.currentEntity) ;
+        toNext();
+        model.getDataList().remove(idx);
+        
     }
     //获取故障紧急度
 
@@ -479,7 +522,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     }
 
     //获取显示的进度
-      public String getStateName(String str) {
+    public String getStateName(String str) {
         switch (str) {
             case "10":
                 return "已报修";
@@ -506,12 +549,11 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             case "98":
                 return "已作废";
             default:
-            return "";
+                return "";
         }
     }
 //处理俩时间显示的格式
 
- 
     public String getTimeDifference(Date strDate, Date endDate, int downTimes) {
         long l = strDate.getTime() - endDate.getTime();
         long day = l / (24 * 60 * 60 * 1000);

@@ -12,7 +12,7 @@
             <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                     <p:commandButton id="btnSelected" value="确定" actionListener="#{equipmentMaintenanceManagedBean.closeDialog()}" icon="ui-icon-plus" />
+                    <p:button id="btnReturn" value="返回" outcome="equipmentMaintenance" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnSave" value="暂存" actionListener="#{equipmentMaintenanceManagedBean.saveAcceptance()}" icon="ui-icon-save"
@@ -220,7 +220,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障责任原因"  /></p:column>
                     <p:column styleClass="Wid20">
-                      <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="abrasehitch" >
+                        <p:selectOneMenu id="abrasehitch" value="#{equipmentMaintenanceManagedBean.currentEntity.abrasehitch}" title="abrasehitch" >
                             <f:selectItem itemLabel="请选择" itemValue="NULL"/>
                             <f:selectItems  value="#{equipmentMaintenanceManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
@@ -270,7 +270,7 @@
                     <p:column  style="background-color: #EEEEEE"><h:outputText value="设备故障报警号"  /></p:column>
                     <p:column colspan="7">
                         <p:inputTextarea id="hitchalarm"  value="#{equipmentMaintenanceManagedBean.currentEntity.hitchalarm}" rows="5" cols="70" 
-                                         style=" border: darkgray solid 1px" maxlength="50"/>
+                                         style=" border: darkgray solid 1px" maxlength="200"/>
                     </p:column> 
                 </p:row>
                 <p:row>
