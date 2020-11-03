@@ -40,8 +40,8 @@
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
-                <h:outputLabel value="使用部门" for="queryDeptname" />
-                <p:inputText id="queryDeptname" value="#{equipmentMaintenanceManagedBean.queryDeptname}" title="使用部门" />
+                <h:outputLabel value="报修部门" for="queryDeptname" />
+                <p:inputText id="queryDeptname" value="#{equipmentMaintenanceManagedBean.queryDeptname}" title="报修部门" />
                 <h:outputLabel value="维修人" for="queryServiceuser" />
                 <p:inputText id="queryServiceuser" value="#{equipmentMaintenanceManagedBean.queryServiceuser}" title="维修人"
                              />
@@ -79,21 +79,22 @@
                 </f:facet>
             </p:toolbar>
             <p:dataTable value="#{equipmentMaintenanceManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="15,30,45"  lazy="true"
-                         selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentEntity}" rowKey="#{item.id}" >
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"   
+                         lazy="true"  selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentEntity}" rowKey="#{item.id}" >
+
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-           
-                 <p:column styleClass="Wid10" headerText="进度" sortBy="#{item.rstatus}">
+
+                <p:column styleClass="Wid10" headerText="进度" sortBy="#{item.rstatus}">
                     <h:outputText value="#{equipmentMaintenanceManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>
 
-                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno.formid}">
+                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno}">
                     <h:outputText value="#{item.assetno.formid}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.assetno.assetDesc}">
-                    <h:outputText value="#{item.assetno.assetDesc}"/>
+                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.itemno}">
+                    <h:outputText value="#{item.itemno.equals('9')? '其他':item.assetno.assetDesc}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="故障现象" sortBy="#{item.hitchdesc}">
                     <h:outputText value="#{item.hitchdesc}"/>
@@ -122,6 +123,7 @@
                 <p:column styleClass="Wid10" headerText="维修人" sortBy="#{item.serviceusername}">
                     <h:outputText value="#{item.serviceusername}"/>
                 </p:column>
+
             </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

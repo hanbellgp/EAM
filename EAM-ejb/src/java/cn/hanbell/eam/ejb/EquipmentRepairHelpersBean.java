@@ -32,9 +32,9 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
     //获取维修工时明细
     public List<EquipmentRepairHelpers> getEquipmentRepairHelpersList(String staDate, String endDate, String sql) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT e.id,e.curnode2,e.pid,r.assetno,c.assetDesc,r.hitchtime,r.repairmethod,c.deptname,r.servicearrivetime,r.completetime,e.rtype,e.userno From ");
-        sb.append(" EquipmentRepairHelpers e, equipmentrepair r, assetcard c");
-        sb.append(" WHERE e.pid = r.formid AND c.formid = r.assetno ");
+        sb.append("SELECT e.id,e.curnode2,e.pid,r.assetno,if(r.assetno IS NULL ,'其他',c.assetDesc) assetDesc, r.hitchtime,r.repairmethod,r.repairdeptname,r.servicearrivetime,r.completetime,e.rtype,e.userno");
+        sb.append(" FROM   EquipmentRepairHelpers e LEFT JOIN equipmentrepair r ON e.pid = r.formid LEFT JOIN assetcard c ON c.formid = r.assetno");
+        sb.append(" WHERE r.rstatus='95' ");
         if (!"".equals(sql)) {
             sb.append(" AND (").append(sql).append(" )");
         }
@@ -44,7 +44,7 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
         if (!"".equals(endDate)) {
             sb.append(" AND r.hitchtime< ").append("'").append(endDate).append("'");
         }
-        sb.append(" ORDER BY curnode2 ");
+        sb.append(" ORDER BY curnode2,r.itemno ");
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString());
 
@@ -91,8 +91,8 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
     public List<EquipmentRepairHelpers> getRepairManHourSummaryList(String staDate, String endDate) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  A.curnode2,COUNT(curnode2),sum( if(rtype=0,userno,'0' ))AS Maintenancehours,sum( if(rtype=1,userno,'0' )) AS auxiliary ,SUM(userno)");
-        sb.append(" FROM equipmentrepairhelpers A,equipmentrepair B");
-        sb.append(" WHERE A.pid=B.formid");
+        sb.append(" FROM equipmentrepairhelpers A LEFT JOIN equipmentrepair B ON A.pid = B.formid");
+        sb.append(" WHERE  B.rstatus='95'");
         if (!"".equals(staDate)) {
             sb.append(" AND B.hitchtime>= ").append("'").append(staDate).append("'");
         }

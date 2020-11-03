@@ -89,7 +89,7 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
-        if (detailList==null||detailList.size() < 0) {
+        if (detailList == null || detailList.size() < 0) {
             showErrorMsg("Error", "当前无数据！请先查询");
             return;
         }
@@ -114,7 +114,9 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
             cell2.setCellValue(eq[2].toString());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(eq[3].toString());
+            if (eq[3] != null) {
+                cell3.setCellValue(eq[3].toString());
+            }
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
             cell4.setCellValue(eq[4].toString());
@@ -124,7 +126,6 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
             cell6.setCellValue(eq[6].toString());
-           
 
         }
         OutputStream os = null;

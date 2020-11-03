@@ -40,7 +40,7 @@
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
-                <h:outputLabel value="使用部门" for="queryDeptname" />
+                <h:outputLabel value="报修部门" for="queryDeptname" />
                 <p:inputText id="queryDeptname" value="#{equipmentRepairManagedBean.queryDeptname}" title="使用部门" />
                 <h:outputLabel value="报修人" for="queryRepairuser" />
                 <p:inputText id="queryRepairuser" value="#{equipmentRepairManagedBean.queryRepairuser}" title="报修人"   
@@ -90,16 +90,16 @@
 
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-              
+
                 <p:column styleClass="Wid10" headerText="进度" sortBy="#{item.rstatus}">
                     <h:outputText value="#{equipmentRepairManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>
 
-                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno.formid}">
+                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno}">
                     <h:outputText value="#{item.assetno.formid}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.assetno.assetDesc}">
-                    <h:outputText value="#{item.assetno.assetDesc}"/>
+                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.itemno}">
+                    <h:outputText value="#{item.itemno.equals('9')? '其他':item.assetno.assetDesc}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="故障现象" sortBy="#{item.hitchdesc}">
                     <h:outputText value="#{item.hitchdesc}"/>

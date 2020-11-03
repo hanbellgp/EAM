@@ -116,14 +116,16 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
             cell0.setCellValue(eq[0].toString());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(eq[1].toString());
+            if (eq[1] != null) {
+                cell1.setCellValue(eq[1].toString());
+            }
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
             cell2.setCellValue(eq[2].toString());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
             cell3.setCellValue(eq[3].toString());
-             String hitchtime = sdf.format(sdf.parse(eq[4].toString()));
+            String hitchtime = sdf.format(sdf.parse(eq[4].toString()));
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
             cell4.setCellValue(hitchtime);
@@ -134,7 +136,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
             }
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
-            if (eq[6]!=null) {
+            if (eq[6] != null) {
                 cell6.setCellValue(eq[6].toString());
             }
             Cell cell7 = row.createCell(7);

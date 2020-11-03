@@ -206,9 +206,9 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         //获取维修紧急统计表的List
     public List<EquipmentRepair> getRepairEmergencyStatisticsList(String staDate, String endDate,String assetno,String deptname) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT R.assetno,A.assetDesc,A.deptname,sum(if(R.hitchtype = '03', 1, 0)) AS emergency,sum(if(R.hitchtype = '02', 1, 0)) AS urgent,sum(if(R.hitchtype = '01', 1, 0)) AS general");
-        sb.append(" FROM equipmentrepair R, assetcard A");
-        sb.append(" WHERE R.assetno = A.formid AND R.hitchtype IS NOT NULL");
+        sb.append(" SELECT R.assetno,if(R.assetno IS NULL ,'其他',A.assetDesc) assetDesc,R.repairdeptname,sum(if(R.hitchtype = '03', 1, 0)) AS emergency,sum(if(R.hitchtype = '02', 1, 0)) AS urgent,sum(if(R.hitchtype = '01', 1, 0)) AS general");
+        sb.append(" FROM equipmentrepair R LEFT JOIN assetcard A ON R.assetno = A.formid");
+        sb.append(" WHERE R.rstatus='95' AND  R.hitchtype IS NOT NULL");
         if (!"".equals(staDate)) {
             sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
         }
@@ -221,7 +221,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         if (deptname!=null&&!"".equals(deptname)) {
             sb.append(" AND R.repairdeptname Like ").append("'%").append(deptname).append("%'");
         }
-        sb.append(" GROUP BY R.assetno");
+        sb.append(" GROUP BY R.assetno,repairdeptname");
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString());
 
@@ -233,8 +233,8 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
           //获取维修费用统计表的List
     public List<EquipmentRepair> getRepairCostStatisticsList(String staDate, String endDate,String deptname,String abrasehitch) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT R.formid, R.assetno,A.assetDesc,A.deptname,R.hitchtime,R.abrasehitch,R.repairmethod,R.repaircost,R.laborcosts,R.sparecost,R.repaircost+R.laborcosts+R.sparecost AS tot, R.serviceusername");
-        sb.append(" FROM equipmentrepair R, assetcard A WHERE R.assetno = A.formid  AND R.rstatus='95'");
+        sb.append(" SELECT R.formid,R.assetno,if(R.assetno IS NULL ,'其他',A.assetDesc) assetDesc,R.repairdeptname, R.hitchtime,R.abrasehitch,R.repairmethod,R.repaircost,R.laborcosts,R.sparecost,R.repaircost + R.laborcosts + R.sparecost AS tot,R.serviceusername");
+        sb.append(" FROM equipmentrepair R LEFT JOIN assetcard A ON R.assetno = A.formid WHERE  R.rstatus = '95'");
         if (!"".equals(staDate)) {
             sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
         }
@@ -247,10 +247,63 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         if (deptname!=null&&!"".equals(deptname)) {
             sb.append(" AND R.repairdeptname Like ").append("'%").append(deptname).append("%'");
         }
+        sb.append(" ORDER BY R.itemno");
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString());
 
         List results = query.getResultList();
         return results;
     }
+    
+           //获取维修费用汇总表的List
+    public List<EquipmentRepair> getRepairCostSummaryList(String staDate, String endDate,String deptname,String abrasehitch) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT R.assetno,if(R.assetno IS NULL ,'其他',A.assetDesc) assetDesc,R.repairdeptname,sum(R.repaircost) A ,sum(R.laborcosts) B,sum(R.sparecost) C,sum(R.repaircost+R.laborcosts+R.sparecost) D,COUNT(R.assetno) C");
+        sb.append(" FROM equipmentrepair R LEFT JOIN assetcard A ON R.assetno = A.formid WHERE   R.rstatus='95'");
+        if (!"".equals(staDate)) {
+            sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
+        }
+        if (!"".equals(endDate)) {
+            sb.append(" AND R.hitchtime< ").append("'").append(endDate).append("'");
+        }
+        if (abrasehitch!=null&&!"".equals(abrasehitch)) {
+            sb.append(" AND R.abrasehitch = ").append("'").append(abrasehitch).append("'");
+        }
+        if (deptname!=null&&!"".equals(deptname)) {
+            sb.append(" AND R.repairdeptname Like ").append("'%").append(deptname).append("%'");
+        }
+        sb.append(" GROUP BY R.assetno,repairdeptname");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+
+        List results = query.getResultList();
+        return results;
+    }
+    
+              //获取故障责任统计表的List
+    public List<EquipmentRepair> getfaultDutyStatisticalList(String staDate, String endDate,String deptname,String abrasehitch) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT R.assetno,if(R.assetno IS NULL ,'其他',A.assetDesc) assetDesc,R.repairdeptname,sum(if(R.abrasehitch = '01', 1, 0)) A ,sum(if(R.abrasehitch = '02', 1, 0)) B,sum(if(R.abrasehitch = '03', 1, 0)) C,sum(if(R.abrasehitch = '04', 1, 0)) D,sum(if(R.abrasehitch = '05', 1, 0)) E");
+        sb.append(" FROM equipmentrepair R LEFT JOIN assetcard A ON R.assetno = A.formid WHERE R.rstatus='95' AND  R.abrasehitch LIKE '%0%'");
+        if (!"".equals(staDate)) {
+            sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
+        }
+        if (!"".equals(endDate)) {
+            sb.append(" AND R.hitchtime< ").append("'").append(endDate).append("'");
+        }
+        if (abrasehitch!=null&&!"".equals(abrasehitch)) {
+            sb.append(" AND R.assetno = ").append("'").append(abrasehitch).append("'");
+        }
+        if (deptname!=null&&!"".equals(deptname)) {
+            sb.append(" AND R.repairdeptname Like ").append("'%").append(deptname).append("%'");
+        }
+        sb.append(" GROUP BY R.assetno,R.repairusername");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+
+        List results = query.getResultList();
+        return results;
+    }
+    
+    
 }
