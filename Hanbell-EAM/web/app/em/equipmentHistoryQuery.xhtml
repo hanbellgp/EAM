@@ -41,8 +41,8 @@
                     <f:selectItem  itemLabel="报修结案" itemValue="95"/>、
                     <f:selectItem  itemLabel="作废" itemValue="98"/>
                 </p:selectOneMenu>
-                <h:outputLabel value="使用部门" for="queryDeptname" />
-                <p:inputText id="queryDeptname" value="#{equipmentHistoryManagedBean.queryDeptname}" title="使用部门" />
+                <h:outputLabel value="报修部门" for="queryDeptname" />
+                <p:inputText id="queryDeptname" value="#{equipmentHistoryManagedBean.queryDeptname}" title="报修部门" />
                 <h:outputLabel value="故障类型" for="queryHitchsort1" />
                 <p:selectOneMenu id="queryHitchsort1" value="#{equipmentHistoryManagedBean.queryHitchsort1}" title="故障类型"  >
                     <f:selectItem  itemLabel="请选择" itemValue="ALL"/>
@@ -57,7 +57,7 @@
                 <h:outputLabel value="维修策略" for="queryRepairprocess" />
                 <p:inputText id="queryRepairprocess" value="#{equipmentHistoryManagedBean.queryRepairprocess}" title="维修策略" />
 
-                <h:outputLabel value="故障报警" for="queryHitchalarm" />
+                <h:outputLabel value="设备故障报警号" for="queryHitchalarm" />
                 <p:inputText id="queryHitchalarm" value="#{equipmentHistoryManagedBean.queryHitchalarm}" title="故障报警" />
 
                 <h:outputLabel value="报修人" for="queryRepairuser" />
@@ -82,22 +82,21 @@
                 </f:facet>
 
             </p:toolbar>
-            <p:dataTable value="#{equipmentHistoryManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="15,30,45"  lazy="true"
-                         selectionMode="single" selection="#{equipmentHistoryManagedBean.currentEntity}" rowKey="#{item.id}" >
-
+             <p:dataTable value="#{equipmentHistoryManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"   
+                         lazy="true"  selectionMode="single" selection="#{equipmentHistoryManagedBean.currentEntity}" rowKey="#{item.id}" >
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
                 <p:column styleClass="Wid10" headerText="进度" sortBy="#{item.rstatus}">
                     <h:outputText value="#{equipmentHistoryManagedBean.getStateName(item.rstatus)}"/>
                 </p:column>
 
-                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno.formid}">
+                <p:column styleClass="Wid20" headerText="资产编号" sortBy="#{item.assetno}">
                     <h:outputText value="#{item.assetno.formid}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.assetno.assetDesc}">
-                    <h:outputText value="#{item.assetno.assetDesc}"/>
+                <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item.itemno}">
+                    <h:outputText value="#{item.itemno.equals('9')? '其他':item.assetno.assetDesc}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="故障现象" sortBy="#{item.hitchdesc}">
                     <h:outputText value="#{item.hitchdesc}"/>

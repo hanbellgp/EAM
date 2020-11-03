@@ -8,6 +8,7 @@ package cn.hanbell.eam.query;
 import cn.hanbell.eam.ejb.AssetCardBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.lazy.AssetCardModel;
+import cn.hanbell.eam.lazy.EquimentQueryModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -49,7 +50,7 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
     @Override
     public void init() {
         superEJB = assetCardBean;
-        model = new AssetCardModel(assetCardBean, userManagedBean);
+        model = new EquimentQueryModel(assetCardBean, userManagedBean);
         String categoryid="3";
          this.model.getFilterFields().put("assetItem.category.id =", 3);
         model.getSortFields().put("assetItem.itemno", "ASC");

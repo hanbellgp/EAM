@@ -399,7 +399,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     //确认单据转派
     public void confirmTransfer(SelectEvent event) {
-        if (userName==null||userName.equals(currentEntity.getServiceusername())) {
+        if (userName == null || userName.equals(currentEntity.getServiceusername())) {
             showErrorMsg("Error", "不能转派给自己，请重新选择");
             return;
         }
@@ -415,7 +415,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         currentDetail3.setOptuser(getUserName(userManagedBean.getUserid()).getUsername());
         doConfirmDetail3();
         note = null;
-        userName=null;
+        userName = null;
         update();
         showInfoMsg("Info", " 已成功转派给：" + currentEntity.getServiceusername());
     }
@@ -777,19 +777,21 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             cell0.setCellValue(equipmentrepair.getFormid());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
+            if (equipmentrepair.getAssetno() != null) {
+                cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
+            }
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getAssetno().getAssetItem().getItemno());
+            cell2.setCellValue(equipmentrepair.getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
+            cell3.setCellValue(equipmentrepair.getAssetno() == null ? "其他" : equipmentrepair.getAssetno().getDeptname());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
+            cell4.setCellValue(equipmentrepair.getAssetno() == null ? equipmentrepair.getRepairusername() : equipmentrepair.getAssetno().getUsername());
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
+            cell5.setCellValue(equipmentrepair.getAssetno() == null ? equipmentrepair.getRepairdeptname() : equipmentrepair.getAssetno().getDeptname());
 
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
@@ -956,10 +958,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
                 model.getFilterFields().put("assetno.formid", queryName);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                if (queryEquipmentName.equals("其") || queryEquipmentName.equals("他") || queryEquipmentName.equals("其他")) {
+                    model.getFilterFields().put("itemno =", "9");
+                } else {
+                    model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                }
             }
             if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("assetno.deptname", queryDeptname);
+                model.getFilterFields().put("repairdeptname", queryDeptname);
             }
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);

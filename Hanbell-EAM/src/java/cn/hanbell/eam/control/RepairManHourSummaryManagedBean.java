@@ -18,7 +18,6 @@ import com.lightshell.comm.BaseLib;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,8 +28,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -92,8 +89,11 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
 //            int index = finalFilePath.indexOf("dist/gfdeploy");
 //            //正式路径  D:\Java\glassfish5.0.1\glassfish\domains\domain1\applications\EAM\Hanbell-EAM_war\rpt
 //                      //D:\Java\glassfish5.0.1\glassfish\domains\domain1\applications\KPI\Hanbell-KPI_war\rpt
-            int index = finalFilePath.indexOf("EAM-ejb");
-            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "Hanbell-EAM/web/rpt/维修工时汇总表模板.xls");
+//D:\Java\glassfish5.0.1\glassfish\domains\domain1\applications\EAM\Hanbell-EAM_war\WEB-INF\classes\cn\hanbell\eam\control
+///D:/C2079/EAM/dist/gfdeploy/EAM/Hanbell-EAM_war/WEB-INF/classes/cn/hanbell/eam/control/RepairManHourSummaryManagedBean.class
+//D:/C2079/EAM/Hanbell-EAM/web/rpt/维修工时汇总表模板.xls
+            int index = finalFilePath.indexOf("WEB-INF");
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/维修工时汇总表模板.xls");
             Workbook workbook = WorkbookFactory.create(is);
             //获得表格样式
             Map<String, CellStyle> style = createStyles(workbook);
@@ -150,7 +150,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
                 }
             }
         } catch (IOException | InvalidFormatException e) {
-               showErrorMsg("Error", "e.toString() + \"Path:\" + finalFilePath");
+               showErrorMsg("Error", e.toString());
         }
     }
 
@@ -221,7 +221,6 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         String strdate = "";
         String enddate = "";
         if (queryDateBegin != null) {
-
             strdate = simpleDateFormat.format(queryDateBegin);
         }
         if (queryDateEnd != null) {

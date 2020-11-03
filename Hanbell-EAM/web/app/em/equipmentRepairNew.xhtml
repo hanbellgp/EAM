@@ -33,28 +33,62 @@
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnWhenNew}"
-                                    update="assetno,itemno,deptname,position2,serviceuser" />
+                                    update="formOne" />
                         </p:commandButton>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备名称" for="itemno" /></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.assetno.assetDesc}" title="itemno" />
+                        <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.itemno.equals('9')?'其他':equipmentRepairManagedBean.newEntity.assetno.assetDesc}" title="itemno" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="故障紧急度" for="hitchurgency"/>
+                    </p:column>
+                    <p:column styleClass="Wid15">
+                        <p:selectOneMenu id="hitchurgency" value="#{equipmentRepairManagedBean.newEntity.hitchurgency}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
+                            <f:selectItems  value="#{equipmentRepairManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
+                        </p:selectOneMenu>
                     </p:column>
 
-                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="使用部门" for="deptname"/></p:column>
-                    <p:column styleClass="Wid15">
-                        <h:outputText   id="deptname" value="#{equipmentRepairManagedBean.newEntity.assetno.deptname}" title="deptname"
-                                        />
-                    </p:column>
                 </p:row>
 
                 <p:row>
-
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="存放地址" for="position2"/></p:column>
+                    <p:column style="background-color: #EEEEEE" >
+                        <p:outputLabel id="repairareas" value="所属厂区"/>
+                    </p:column>
+                    <p:column styleClass="Wid15" rendered="#{equipmentRepairManagedBean.newEntity.itemno.equals('9')?'true':'false'}">
+                        <p:selectOneMenu id="repairarea" value="#{equipmentRepairManagedBean.newEntity.repairarea}" title="repairarea" required="true" requiredMessage="请选择所属厂区" >
+                            <f:selectItem itemLabel="请选择" itemValue="" />
+                            <f:selectItems  value="#{equipmentRepairManagedBean.repairareaList}" var="repairareaList" itemLabel="#{repairareaList.cdesc}" itemValue="#{repairareaList.cvalue}"  />
+                            <p:ajax event="change"
+                                    update="serviceuser"
+                                    listener="#{equipmentRepairManagedBean.getServiceuser()}"></p:ajax>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid15" rendered="#{equipmentRepairManagedBean.newEntity.itemno.equals('9')?'false':'true'}">
+                        <h:outputText id="repairarea1" value="#{equipmentRepairManagedBean.newEntity.repairarea}" title="repairarea" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="存放地址" for="position3"/></p:column>
                     <p:column >
-                        <h:outputText id="position2" value="#{equipmentRepairManagedBean.newEntity.assetno.position2.name}" title="position2" />
+                        <h:outputText id="position3" value="#{equipmentRepairManagedBean.newEntity.assetno.position3.name}" title="position3" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="使用部门" for="deptname"/></p:column>
+                    <p:column >
+                        <h:outputText   id="deptname" value="#{equipmentRepairManagedBean.newEntity.itemno.equals('9')?equipmentRepairManagedBean.newEntity.repairdeptname:equipmentRepairManagedBean.newEntity.assetno.deptname}" title="deptname"
+                                        />
                     </p:column>
 
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="故障来源" for="troublefrom"/>
+                    </p:column>
+                    <p:column>
+                        <p:selectOneMenu id="troublefrom" value="#{equipmentRepairManagedBean.newEntity.troublefrom}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
+                            <f:selectItem itemLabel="请选择故障来源" itemValue=""/>
+                            <f:selectItems value="#{equipmentRepairManagedBean.troubleFromList}" var="troubleFromList" itemLabel="#{troubleFromList.cdesc}" itemValue="#{troubleFromList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="报修人" for="repairusername"/></p:column>
                     <p:column >
                         <h:outputText id="repairusername" value="#{equipmentRepairManagedBean.newEntity.repairusername}" title="repairusername"
@@ -70,44 +104,22 @@
                                     update="serviceuser" />
                         </p:commandButton>
                     </p:column>
+
+
                 </p:row>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE">
-                        <p:outputLabel value="故障来源" for="troublefrom"/>
-                    </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="troublefrom" value="#{equipmentRepairManagedBean.newEntity.troublefrom}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
-                            <f:selectItem itemLabel="请选择故障来源" itemValue=""/>
-                            <f:selectItems value="#{equipmentRepairManagedBean.troubleFromList}" var="troubleFromList" itemLabel="#{troubleFromList.cdesc}" itemValue="#{troubleFromList.cvalue}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column style="background-color: #EEEEEE">
-                        <p:outputLabel value="故障紧急度" for="hitchurgency"/>
-                    </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="hitchurgency" value="#{equipmentRepairManagedBean.newEntity.hitchurgency}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
-                            <f:selectItems  value="#{equipmentRepairManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式"  /></p:column>
-                    <p:column styleClass="Wid20">
-                        <p:selectOneMenu id="abrasehitch" value="#{equipmentRepairManagedBean.newEntity.repairmethodtype}" title="维修方式" >
-                            <f:selectItem itemLabel="维修课维修" itemValue="1"/>
-                            <f:selectItem itemLabel="现场自主维修" itemValue="2"/>
-                            <f:selectItem itemLabel="委外维修" itemValue="3"/>
-                        </p:selectOneMenu>
-                    </p:column>
-                </p:row>
-                <p:row>
+
                     <p:column style="background-color: #EEEEEE">
                         <p:outputLabel value="故障发生时间" for="hitchtime"/>
                     </p:column>
                     <p:column>
                         <p:calendar id="hitchtime" value="#{equipmentRepairManagedBean.newEntity.hitchtime}" title="故障发生时间" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}" />
                     </p:column>
+
                     <p:column style="background-color: #EEEEEE">
                         <p:outputLabel value="是否补单" />
                     </p:column>
+
                     <p:column>
                         <p:selectBooleanCheckbox value="#{equipmentRepairManagedBean.checkSingleSupplement}" >
                             <p:ajax event="change"
@@ -115,7 +127,14 @@
                                     listener="#{equipmentRepairManagedBean.onModuleChange()}"></p:ajax>
                         </p:selectBooleanCheckbox>
                     </p:column>
-
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="维修方式"  /></p:column>
+                    <p:column styleClass="Wid20">
+                        <p:selectOneMenu id="repairmethodtype" value="#{equipmentRepairManagedBean.newEntity.repairmethodtype}" title="维修方式" >
+                            <f:selectItem itemLabel="维修课维修" itemValue="1"/>
+                            <f:selectItem itemLabel="现场自主维修" itemValue="2"/>
+                            <f:selectItem itemLabel="委外维修" itemValue="3"/>
+                        </p:selectOneMenu>
+                    </p:column>
                 </p:row>
 
                 <p:row id= "rows"  rendered="#{equipmentRepairManagedBean.checkSingleSupplement}"  >
@@ -135,7 +154,7 @@
                 <p:row>
                     <p:column rowspan="2" style="background-color: #EEEEEE"><p:outputLabel value="故障部位及详细情况"  /></p:column>
                     <p:column colspan="7" style="height: 40px">
-                        <p:inputTextarea id="hitchdesc"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" rows="5" cols="70" style=" border: darkgray solid 1px" maxlength="200" />
+                        <p:inputTextarea id="hitchdesc"  value="#{equipmentRepairManagedBean.currentEntity.hitchdesc}" rows="5" cols="70" style=" border: darkgray solid 1px" maxlength="200"  />
                     </p:column>
                 </p:row>
                 <p:row>

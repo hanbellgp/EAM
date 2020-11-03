@@ -172,8 +172,11 @@ public class EquipmentRepair extends FormEntity {
     @Column(name = "remark")
     private String remark;
     @JoinColumn(name = "assetno", referencedColumnName = "formid")
-    @ManyToOne
+    @ManyToOne(optional = true)
     private AssetCard assetno;
+    @Size(max = 20)
+    @Column(name = "repairarea")
+    private String repairarea;
     @Column(name = "hitchtime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date hitchtime;
@@ -212,8 +215,6 @@ public class EquipmentRepair extends FormEntity {
         this.status = status;
     }
 
-
-
     public EquipmentRepair() {
     }
 
@@ -224,7 +225,6 @@ public class EquipmentRepair extends FormEntity {
     public void setAssetno(AssetCard assetno) {
         this.assetno = assetno;
     }
-
 
     public Date getServicearrivetime() {
         return servicearrivetime;
@@ -290,7 +290,6 @@ public class EquipmentRepair extends FormEntity {
         this.downtime = downtime;
     }
 
-
     public Date getHitchtime() {
         return hitchtime;
     }
@@ -306,6 +305,31 @@ public class EquipmentRepair extends FormEntity {
     public void setStopworktime(Integer stopworktime) {
         this.stopworktime = stopworktime;
     }
+
+    public Integer getServiceassisttime() {
+        return serviceassisttime;
+    }
+
+    public void setServiceassisttime(Integer serviceassisttime) {
+        this.serviceassisttime = serviceassisttime;
+    }
+
+    public BigDecimal getLaborcosts() {
+        return laborcosts;
+    }
+
+    public void setLaborcosts(BigDecimal laborcosts) {
+        this.laborcosts = laborcosts;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getCompany() {
         return company;
     }
@@ -314,7 +338,6 @@ public class EquipmentRepair extends FormEntity {
         this.company = company;
     }
 
-
     public String getItemno() {
         return itemno;
     }
@@ -322,8 +345,6 @@ public class EquipmentRepair extends FormEntity {
     public void setItemno(String itemno) {
         this.itemno = itemno;
     }
-
-
 
     public String getRepairdeptno() {
         return repairdeptno;
@@ -437,14 +458,6 @@ public class EquipmentRepair extends FormEntity {
         this.rstatus = rstatus;
     }
 
-    public Integer getServiceassisttime() {
-        return serviceassisttime;
-    }
-
-    public void setServiceassisttime(Integer serviceassisttime) {
-        this.serviceassisttime = serviceassisttime;
-    }
-
     public String getAbrasehitch() {
         return abrasehitch;
     }
@@ -541,14 +554,6 @@ public class EquipmentRepair extends FormEntity {
         this.laborcost = laborcost;
     }
 
-    public BigDecimal getLaborcosts() {
-        return laborcosts;
-    }
-
-    public void setLaborcosts(BigDecimal laborcosts) {
-        this.laborcosts = laborcosts;
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -557,9 +562,15 @@ public class EquipmentRepair extends FormEntity {
         this.remark = remark;
     }
 
-  
+    public String getRepairarea() {
+        return repairarea;
+    }
 
-   @Override
+    public void setRepairarea(String repairarea) {
+        this.repairarea = repairarea;
+    }
+   
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -580,4 +591,5 @@ public class EquipmentRepair extends FormEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentRepair[ id=" + id + " ]";
     }
+
 }

@@ -428,6 +428,18 @@
             <to-view-id>/app/em/repairCostStatistics.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <description>维修费用汇总表</description>
+            <from-outcome>repairCostSummary</from-outcome>
+            <to-view-id>/app/em/repairCostSummary.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+         <navigation-case>
+            <description>故障责任统计表</description>
+            <from-outcome>faultDutyStatistical</from-outcome>
+            <to-view-id>/app/em/faultDutyStatistical.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>

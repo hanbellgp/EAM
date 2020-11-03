@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -92,6 +94,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private List<SysCode> troubleFromList;
     private List<SysCode> hitchurgencyList;
     private List<SysCode> abrasehitchList;
+    private List<SysCode> repairareaList;
     private String maintenanceSupervisor;
     private List<EquipmentTrouble> equipmentTroubleList;
     private String contenct;
@@ -138,19 +141,29 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         newEntity.setRepairdeptname(this.getDepartment(userManagedBean.getUserid()).getDept());
         troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-
+        repairareaList = sysCodeBean.getTroubleNameList("RD", "repairarea");
     }
 
 //保存前作的数据处理
     @Override
     protected boolean doBeforePersist() throws Exception {
-        if (newEntity.getAssetno() == null) {
+        if (newEntity.getItemno() == null) {
             showErrorMsg("Error", "请选择资产编号！");
             return false;
         }
         if (newEntity.getServiceuser() == null) {
             showErrorMsg("Error", "请选择维修人！");
             return false;
+        }
+        if (newEntity.getHitchdesc() == null || newEntity.getHitchdesc().equals("")) {
+            showErrorMsg("Error", "请输入故障详情！");
+            return false;
+        }
+        if (newEntity.getItemno().equals("9")) {
+            if ("".equals(newEntity.getRepairarea()) || newEntity.getRepairarea() == null) {
+                showErrorMsg("Error", "请选择厂区！");
+                return false;
+            }
         }
 
         String formid = this.superEJB.getFormId(newEntity.getFormdate(), "PR", "YYMM", 4);
@@ -297,8 +310,8 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             return "";
         }
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-          //获取故障责任原因
-        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
+        //获取故障责任原因
+        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
@@ -460,10 +473,17 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     public void handleDialogReturnWhenNew(SelectEvent event) {
         if (event.getObject() != null && newEntity != null) {
             AssetCard e = (AssetCard) event.getObject();
-            newEntity.setAssetno(e);
-            newEntity.setServiceuser(e.getRepairuser());
-            newEntity.setServiceusername(e.getRepairusername());
-            newEntity.setItemno(e.getAssetItem().getItemno());
+            if (e.getFormid() != null) {
+                newEntity.setAssetno(e);
+                newEntity.setServiceuser(e.getRepairuser());
+                newEntity.setServiceusername(e.getRepairusername());
+                newEntity.setItemno(e.getAssetItem().getItemno());
+                newEntity.setRepairarea(e.getPosition2().getName());
+            } else {
+                newEntity.setAssetno(null);
+                newEntity.setItemno("9");
+                newEntity.setRepairarea(null);
+            }
         }
     }
 
@@ -552,20 +572,33 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             cell0.setCellValue(equipmentrepair.getFormid());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
+            if (equipmentrepair.getAssetno() != null) {
+                cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
+            }
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getAssetno().getAssetItem().getItemno());
+            cell2.setCellValue(equipmentrepair.getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
+            if (equipmentrepair.getItemno().equals("9")) {
+                cell3.setCellValue("其他");
+            } else {
+                cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
+            }
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
+            if (equipmentrepair.getItemno().equals("9")) {
+                cell4.setCellValue(equipmentrepair.getRepairusername());
+            } else {
+                cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
+            }
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
-
+            if (equipmentrepair.getItemno().equals("9")) {
+                cell5.setCellValue(equipmentrepair.getRepairdeptname());
+            } else {
+                cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
+            }
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
             cell6.setCellValue(getStateName(equipmentrepair.getRstatus()));
@@ -719,11 +752,15 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             if (queryName != null && !"".equals(queryName)) {
                 model.getFilterFields().put("assetno.formid", queryName);
             }
-            if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("assetno.deptname", queryDeptname);
-            }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                if (queryEquipmentName.equals("其") || queryEquipmentName.equals("他") || queryEquipmentName.equals("其他")) {
+                    model.getFilterFields().put("itemno =", "9");
+                } else {
+                    model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                }
+            }
+            if (queryDeptname != null && !"".equals(queryDeptname)) {
+                model.getFilterFields().put("repairdeptname", queryDeptname);
             }
 
             if (queryRepairuser != null && !"".equals(queryRepairuser)) {
@@ -798,6 +835,20 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         newEntity.setCompletetime(null);
         newEntity.setServicearrivetime(null);
         return checkSingleSupplement;
+    }
+
+    //根据选择的厂区确认维修人
+    public void getServiceuser() {
+        if (newEntity.getRepairarea().equals("")) {
+            newEntity.setServiceuser("");
+            newEntity.setServiceusername("");
+        } else if (newEntity.getRepairarea().equals("枫泾总部")) {
+            newEntity.setServiceuser("C0567");
+            newEntity.setServiceusername("张国荣");
+        } else {
+            newEntity.setServiceuser("C1233");
+            newEntity.setServiceusername("曹雪平");
+        }
     }
 
     //获取部门
@@ -947,6 +998,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void setAbrasehitchList(List<SysCode> abrasehitchList) {
         this.abrasehitchList = abrasehitchList;
+    }
+
+    public List<SysCode> getRepairareaList() {
+        return repairareaList;
+    }
+
+    public void setRepairareaList(List<SysCode> repairareaList) {
+        this.repairareaList = repairareaList;
     }
 
 }

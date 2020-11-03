@@ -111,7 +111,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
-        if (detailList==null||detailList.size() < 0) {
+        if (detailList == null || detailList.size() < 0) {
             showErrorMsg("Error", "当前无数据！请先查询");
             return;
         }
@@ -132,7 +132,9 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
             cell1.setCellValue(eq[2].toString());
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(eq[3].toString());
+            if (eq[3] != null) {
+                cell2.setCellValue(eq[3].toString());
+            }
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
             cell3.setCellValue(eq[4].toString());

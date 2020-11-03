@@ -111,8 +111,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         model.getFilterFields().put("company", userManagedBean.getCompany());
         super.init();
     }
-   
-    
+
     @Override
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
@@ -133,7 +132,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         getPartsCost();
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList=sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -177,10 +176,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 model.getFilterFields().put("assetno.formid", queryName);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                if (queryEquipmentName.equals("其") || queryEquipmentName.equals("他") || queryEquipmentName.equals("其他")) {
+                    model.getFilterFields().put("itemno =", "9");
+                } else {
+                    model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                }
             }
             if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("assetno.deptname", queryDeptname);
+                model.getFilterFields().put("repairdeptname", queryDeptname);
             }
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);
@@ -210,7 +213,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
         }
     }
-    
+
     //计算总费用
     public void calculateTotalCost() {
         totalCost = 0;
@@ -237,7 +240,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     }
 
     //获取显示的进度
-      public String getStateName(String str) {
+    public String getStateName(String str) {
         switch (str) {
             case "10":
                 return "已报修";
@@ -264,7 +267,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             case "98":
                 return "已作废";
             default:
-            return "";
+                return "";
         }
     }
     //获取故障紧急度
@@ -385,19 +388,21 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cell0.setCellValue(equipmentrepair.getFormid());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
+            if (equipmentrepair.getAssetno() != null) {
+                cell1.setCellValue(equipmentrepair.getAssetno().getFormid());
+            }
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(equipmentrepair.getAssetno().getAssetItem().getItemno());
+            cell2.setCellValue(equipmentrepair.getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
+            cell3.setCellValue(equipmentrepair.getAssetno() == null ? "其他" : equipmentrepair.getAssetno().getAssetDesc());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
+            cell4.setCellValue(equipmentrepair.getAssetno() == null ? equipmentrepair.getRepairusername() : equipmentrepair.getAssetno().getUsername());
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
+            cell5.setCellValue(equipmentrepair.getAssetno() == null ? equipmentrepair.getRepairdeptname() : equipmentrepair.getAssetno().getDeptname());
 
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));

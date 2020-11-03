@@ -315,6 +315,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                     return;
                 }
                 this.setCurrentEntity((EquipmentRepair) this.model.getDataList().get(idx));
+                detailList2 = equipmentRepairSpareBean.findByPId(currentEntity.getFormid());
+                detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
             }
         }
     }
@@ -337,7 +339,6 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             }
         }
     }
-
 
     //确认审批
     public void confirmApproval() {
@@ -392,10 +393,10 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         super.doConfirmDetail3();
         currentEntity.setStatus("N");
         super.update();
-         final int idx = this.model.getDataList().indexOf(this.currentEntity) ;
-        toNext();
+        final int idx = this.model.getDataList().indexOf(this.currentEntity);
+
         model.getDataList().remove(idx);
-        
+        toNext();
     }
     //获取故障紧急度
 
@@ -495,10 +496,14 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 model.getFilterFields().put("assetno.formid", queryName);
             }
             if (queryEquipmentName != null && !"".equals(queryEquipmentName)) {
-                model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                if (queryEquipmentName.equals("其") || queryEquipmentName.equals("他") || queryEquipmentName.equals("其他")) {
+                    model.getFilterFields().put("itemno =", "9");
+                } else {
+                    model.getFilterFields().put("assetno.assetDesc", queryEquipmentName);
+                }
             }
             if (queryDeptname != null && !"".equals(queryDeptname)) {
-                model.getFilterFields().put("assetno.deptname", queryDeptname);
+                model.getFilterFields().put("repairdeptname", queryDeptname);
             }
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);
