@@ -392,19 +392,19 @@
             <to-view-id>/app/em/equipmentHistoryQuery.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-            <navigation-case>
+        <navigation-case>
             <description>BD105维修备件维护</description>
             <from-outcome>equipmentSpare</from-outcome>
             <to-view-id>/app/em/equipmentSpare.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>维修工时明细表</description>
             <from-outcome>repairManHourDetailList</from-outcome>
             <to-view-id>/app/em/repairManHourDetailList.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>维修工时汇总表</description>
             <from-outcome>repairManHourSummary</from-outcome>
             <to-view-id>/app/em/repairManHourSummary.xhtml</to-view-id>
@@ -416,13 +416,13 @@
             <to-view-id>/app/em/repairTransferStatistics.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>故障紧急度统计表</description>
             <from-outcome>faultEmergencyStatistical</from-outcome>
             <to-view-id>/app/em/faultEmergencyStatistical.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>维修费用统计表</description>
             <from-outcome>repairCostStatistics</from-outcome>
             <to-view-id>/app/em/repairCostStatistics.xhtml</to-view-id>
@@ -434,10 +434,34 @@
             <to-view-id>/app/em/repairCostSummary.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>故障责任统计表</description>
             <from-outcome>faultDutyStatistical</from-outcome>
             <to-view-id>/app/em/faultDutyStatistical.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>故障类型统计表</description>
+            <from-outcome>faultTypeStatistical</from-outcome>
+            <to-view-id>/app/em/faultTypeStatistical.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>现场维修统计表</description>
+            <from-outcome>repairSceneStatistics</from-outcome>
+            <to-view-id>/app/em/repairSceneStatistics.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+         <navigation-case>
+            <description>设备MTBF.MTTR</description>
+            <from-outcome>repairMTBFAndMTTR</from-outcome>
+            <to-view-id>/app/em/repairMTBFAndMTTR.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>设备故障率统计</description>
+            <from-outcome>repairFaultRateStatistics</from-outcome>
+            <to-view-id>/app/em/repairFaultRateStatistics.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>  

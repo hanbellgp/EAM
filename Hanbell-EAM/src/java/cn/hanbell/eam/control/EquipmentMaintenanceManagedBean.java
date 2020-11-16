@@ -255,25 +255,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         update();
     }
 
-    //作废
-    public void invalid() {
-        if (currentEntity == null) {
-            showErrorMsg("Error", "请选择需要作废的单据！");
-            return;
-        }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
-            showErrorMsg("Error", "该单据不能作废！");
-            return;
-        }
-        if (!currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
-            showErrorMsg("Error", "只有对应的维修人才能作废！");
-            return;
-        }
-        currentEntity.setStatus("N");//简化查询条件,此处不再提供修改状态(M)
-        currentEntity.setRstatus("98");
-        update();
-    }
-
 //选择备件数据处理
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
@@ -459,8 +440,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
         //获取维修时间
-        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
-            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null && currentEntity.getExcepttime() != null) {
+            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), currentEntity.getExcepttime()));
         }
 
         //获取总的停机时间
@@ -531,9 +512,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             //获取联络时间
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
-        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
+        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null&& currentEntity.getExcepttime()!=null) {
             //获取维修时间
-            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), currentEntity.getExcepttime()));
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
@@ -552,6 +533,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     public void getDowntimes() {
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
+            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), currentEntity.getExcepttime()));
         }
     }
 

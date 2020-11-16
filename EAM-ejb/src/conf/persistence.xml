@@ -7,4 +7,12 @@
     <validation-mode>NONE</validation-mode>
     <properties/>
   </persistence-unit>
+  <persistence-unit name="SHBMES-ejbPU" transaction-type="JTA">
+    <jta-data-source>jdbc/shbmes</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+    </properties>
+  </persistence-unit>
 </persistence>

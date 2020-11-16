@@ -16,7 +16,6 @@ import com.lightshell.comm.BaseLib;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,8 +25,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -97,8 +94,8 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
             List<?> itemList = equipmentRepairsList;
             int j = 1;
             List<Object[]> list = (List<Object[]>) itemList;
-           
-            int[] sumList=new int[5];
+
+            int[] sumList = new int[5];
             for (Object[] eq : list) {
                 row = sheet.createRow(j);
                 j++;
@@ -169,20 +166,6 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
     }
 
     /**
-     * 设置表头名称字段
-     */
-    private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "所属部门", "使用不当", "保养不当", "维修不当", "劣质配件", "正常使用寿命"};
-    }
-
-    /**
-     * 设置单元格宽度
-     */
-    private int[] getInventoryWidth() {
-        return new int[]{20, 20, 20, 15, 15, 15};
-    }
-
-    /**
      * 设置导出EXCEL表格样式
      */
     private Map<String, CellStyle> createStyles(Workbook wb) {
@@ -247,7 +230,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairsList = equipmentRepairBean.getfaultDutyStatisticalList(strdate, enddate, queryFormId, queryName);
+        equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(strdate, enddate, queryFormId, queryName);
         createPieModel();
     }
 

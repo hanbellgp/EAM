@@ -321,7 +321,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         }
         //获取维修时间
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null) {
-            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), 0));
+            currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), currentEntity.getExcepttime()));
         }
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
