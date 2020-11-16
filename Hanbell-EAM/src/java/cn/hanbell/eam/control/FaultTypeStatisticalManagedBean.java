@@ -37,9 +37,9 @@ import org.apache.poi.ss.usermodel.Workbook;
  *
  * @author C2079
  */
-@ManagedBean(name = "faultEmergencyStatisticalManagedBean")
+@ManagedBean(name = "faultTypeStatisticalManagedBean")
 @SessionScoped
-public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHelpers> {
+public class FaultTypeStatisticalManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHelpers> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
@@ -47,7 +47,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     private List<EquipmentRepair> equipmentRepairsList;
 
-    public FaultEmergencyStatisticalManagedBean() {
+    public FaultTypeStatisticalManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHelpers.class);
     }
 
@@ -65,7 +65,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
     @Override
     public void print() throws ParseException {
 
-        fileName = "故障紧急度统计" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        fileName = "故障类型统计表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式
@@ -91,9 +91,9 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         }
         if (equipmentRepairsList.size() < 0) {
             showErrorMsg("Error", "当前无数据！请先查询");
-            return;
-        }
-
+            return;     
+        }                           
+                                        
         int j = 1;
         List<?> itemList = equipmentRepairsList;
 
@@ -122,6 +122,9 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
             cell5.setCellValue(Integer.parseInt(eq[5].toString()));
+            Cell cell6 = row.createCell(6);
+            cell6.setCellStyle(style.get("cell"));
+            cell6.setCellValue(Integer.parseInt(eq[6].toString()));
 
         }
         OutputStream os = null;
@@ -148,14 +151,14 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "所属部门", "紧急(次数)", "急(次数)", "不急(次数)"};
+        return new String[]{"资产编号", "设备名称", "所属部门", "电器类", "机械类", "液压类", "气动类"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{20, 20, 20, 15, 15, 15};
+        return new int[]{20, 20, 20, 15, 15, 15, 15};
     }
 
     /**
@@ -223,8 +226,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(strdate, enddate, queryName, queryFormId);
-
+        equipmentRepairsList = equipmentRepairBean.getFaultTypeStatisticalList(strdate, enddate, queryFormId, queryName);
     }
 
     public List<EquipmentRepair> getEquipmentRepairsList() {

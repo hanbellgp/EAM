@@ -7,8 +7,10 @@ package cn.hanbell.eam.control;
  */
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
+import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
+import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
@@ -37,17 +39,19 @@ import org.apache.poi.ss.usermodel.Workbook;
  *
  * @author C2079
  */
-@ManagedBean(name = "faultEmergencyStatisticalManagedBean")
+@ManagedBean(name = "repairMTBFAndMTTRManagedBean")
 @SessionScoped
-public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHelpers> {
+public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHelpers> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
-    private List<EquipmentRepair> equipmentRepairsList;
+    @EJB
+    private SysCodeBean sysCodeBean;
+    private List<Object[]> equipmentRepairsList;
 
-    public FaultEmergencyStatisticalManagedBean() {
+    public RepairMTBFAndMTTRManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHelpers.class);
     }
 
@@ -65,7 +69,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
     @Override
     public void print() throws ParseException {
 
-        fileName = "故障紧急度统计" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        fileName = "设备MTBF和MTTR表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式
@@ -115,14 +119,22 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
             cell2.setCellValue(eq[2].toString());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(Integer.parseInt(eq[3].toString()));
+            cell3.setCellValue(Double.parseDouble(eq[3].toString()));
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(Integer.parseInt(eq[4].toString()));
+            cell4.setCellValue(Double.parseDouble(eq[4].toString()));
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(Integer.parseInt(eq[5].toString()));
-
+            cell5.setCellValue(Double.parseDouble(eq[5].toString()));
+            Cell cell6 = row.createCell(6);
+            cell6.setCellStyle(style.get("cell"));
+            cell6.setCellValue(Double.parseDouble(eq[6].toString()));
+            Cell cell7 = row.createCell(7);
+            cell7.setCellStyle(style.get("cell"));
+            cell7.setCellValue(Double.parseDouble(eq[7].toString()));
+            Cell cell8 = row.createCell(8);
+            cell8.setCellStyle(style.get("cell"));
+            cell8.setCellValue(Double.parseDouble(eq[8].toString()));
         }
         OutputStream os = null;
         try {
@@ -148,14 +160,14 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "所属部门", "紧急(次数)", "急(次数)", "不急(次数)"};
+        return new String[]{"资产编号", "设备名称", "所属部门", "计划工作时间", "故障停机时间", "维修次数", "维修时间", "MTBF", "MTTR"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{20, 20, 20, 15, 15, 15};
+        return new int[]{20, 20, 20, 15, 15, 15, 15, 10, 10};
     }
 
     /**
@@ -211,27 +223,39 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
      */
     @Override
     public void query() {
-        String pattern = "yyyy-MM-dd";
+        if (queryDateBegin == null) {
+            showErrorMsg("Error", "请输入开始时间");
+            return;
+        }
+        if (queryDateEnd == null) {
+            showErrorMsg("Error", "请输入结束时间");
+            return;
+        }
+        String pattern = "yyyy/MM/dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
-        if (queryDateBegin != null) {
-
-            strdate = simpleDateFormat.format(queryDateBegin);
+        List<SysCode> codeList = sysCodeBean.getTroubleNameList("RD", "itemno");
+        String sql = "";
+        if (codeList.size() > 0) {
+            sql = codeList.stream().map(sqlCode -> "'" + sqlCode.getCvalue() + "',").reduce(sql, String::concat);
         }
-        if (queryDateEnd != null) {
-            enddate = simpleDateFormat.format(queryDateEnd);
+        if (sql != null && !"".equals(sql)) {
+            sql = sql.substring(0, sql.length() - 1);
         }
 
-        equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(strdate, enddate, queryName, queryFormId);
+        strdate = simpleDateFormat.format(queryDateBegin);
 
+        enddate = simpleDateFormat.format(queryDateEnd);
+
+        equipmentRepairsList = equipmentRepairBean.getMTBFAndMTTR(strdate, enddate, queryFormId, queryName, sql);
     }
 
-    public List<EquipmentRepair> getEquipmentRepairsList() {
+    public List<Object[]> getEquipmentRepairsList() {
         return equipmentRepairsList;
     }
 
-    public void setEquipmentRepairsList(List<EquipmentRepair> equipmentRepairsList) {
+    public void setEquipmentRepairsList(List<Object[]> equipmentRepairsList) {
         this.equipmentRepairsList = equipmentRepairsList;
     }
 
