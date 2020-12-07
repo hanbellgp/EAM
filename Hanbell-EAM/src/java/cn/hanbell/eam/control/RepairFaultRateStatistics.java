@@ -12,6 +12,8 @@ import cn.hanbell.eam.entity.EquipmentRepairHis;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.entity.Company;
 import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
 import java.text.ParseException;
@@ -48,7 +50,11 @@ public class RepairFaultRateStatistics extends FormMultiBean<EquipmentRepair, Eq
 
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
+    @EJB
+    private CompanyBean companyBean;
     private List<Object[]> equipmentRepairsList;
+    private List<Company> companyList;
+    private String[] company;
 
     public RepairFaultRateStatistics() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
@@ -62,6 +68,8 @@ public class RepairFaultRateStatistics extends FormMultiBean<EquipmentRepair, Eq
         if (equipmentRepairsList != null) {
             equipmentRepairsList.clear();
         }
+        companyList = companyBean.findBySystemName("EAM");
+        company = null;
     }
 
 //导出界面的EXCEL数据处理
@@ -156,7 +164,7 @@ public class RepairFaultRateStatistics extends FormMultiBean<EquipmentRepair, Eq
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "所属部门", "计划工作时间", "故障停机时间", "设备故障率(%)"};
+        return new String[]{"资产编号", "设备名称", "报修部门", "计划工作时间(分)", "故障停机时间(分)", "设备故障率(%)"};
     }
 
     /**
@@ -223,6 +231,7 @@ public class RepairFaultRateStatistics extends FormMultiBean<EquipmentRepair, Eq
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
+
         if (queryDateBegin == null) {
             showErrorMsg("Error", "请输入开始日期！！！");
             return;
@@ -232,10 +241,17 @@ public class RepairFaultRateStatistics extends FormMultiBean<EquipmentRepair, Eq
             showErrorMsg("Error", "请输入结束日期！！！");
             return;
         }
+        String companySql = "";
+        if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
+            }
+            companySql = companySql.substring(2, companySql.length());
+        }
         strdate = simpleDateFormat.format(queryDateBegin);
         enddate = simpleDateFormat.format(queryDateEnd);
         try {
-            equipmentRepairsList = equipmentRepairBean.getRepairFaultRateStatistics(strdate, enddate, queryFormId, queryName);
+            equipmentRepairsList = equipmentRepairBean.getRepairFaultRateStatistics(strdate, enddate, queryFormId, queryName, companySql);
         } catch (ParseException ex) {
             Logger.getLogger(RepairFaultRateStatistics.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -248,6 +264,22 @@ public class RepairFaultRateStatistics extends FormMultiBean<EquipmentRepair, Eq
 
     public void setEquipmentRepairsList(List<Object[]> equipmentRepairsList) {
         this.equipmentRepairsList = equipmentRepairsList;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }

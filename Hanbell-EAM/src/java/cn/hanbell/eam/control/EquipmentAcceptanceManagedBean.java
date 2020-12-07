@@ -50,7 +50,7 @@ import org.primefaces.event.SelectEvent;
 @ManagedBean(name = "equipmentAcceptanceManagedBean")
 @SessionScoped
 public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepair, EquipmentRepairFile, EquipmentRepairSpare, EquipmentRepairHis> {
-
+    
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
@@ -82,7 +82,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private List<SysCode> hitchurgencyList;
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
-
+    
     public EquipmentAcceptanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
     }
@@ -120,10 +120,10 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentDetail2.setBrand(u.getBrand());
         }
     }
-
+    
     @Override
     public void deleteDetail2() {
-
+        
         super.deleteDetail2(); //To change body of generated methods, choose Tools | Templates.
         getPartsCost();
     }
@@ -155,10 +155,10 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         super.doConfirmDetail2();
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
     }
-
+    
     @Override
     public void deleteDetail() {
-
+        
         if (currentDetail != null && "报修图片".equals(currentDetail.getFilefrom())) {
             showErrorMsg("Error", "选择的图片是报修图片,不能删除");
             return;
@@ -196,13 +196,13 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         //获取维修课长
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-
+        
         getPartsCost();
-
+        
         return super.edit(path);
-
+        
     }
-
+    
     @Override
     public String view(String path) {
         if (currentEntity.getServicearrivetime() != null) {
@@ -273,7 +273,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             showErrorMsg("Error", "只有维修课长和维修经理才能进行审批操作");
             return "";
         }
-
+        
         if (Integer.parseInt(currentEntity.getRstatus()) == 70 && !userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals("C2079")) {
             showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  维修课长不能审批");
             return "";
@@ -297,9 +297,9 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         getPartsCost();
         calculateTotalCost();
         return super.edit(path);
-
+        
     }
-
+    
     @Override
     public void toNext() {
         if (this.model != null && !this.model.getDataList().isEmpty()) {
@@ -320,7 +320,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             }
         }
     }
-
+    
     @Override
     public void toPrev() {
         if (this.model != null && !this.model.getDataList().isEmpty()) {
@@ -367,8 +367,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         calculateTotalCost();
         if (currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals(repairleadersId) || currentEntity.getRstatus().equals("60") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
-
-                if (totalCost > Integer.parseInt(repairApprovals)) {
+                
+                if (totalCost > Integer.parseInt(repairApprovals) || currentEntity.getRepairarchive().equals("Y")) {
                     currentEntity.setRstatus("70");
                 } else {
                     currentEntity.setRstatus("95");
@@ -376,7 +376,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             } else if (contenct.equals("不合格")) {
                 currentEntity.setRstatus("40");
             }
-
+            
         } else if (currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals(repairmanagerId) || currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
                 currentDetail3.setRemark(repairApprovals);
@@ -394,7 +394,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         currentEntity.setStatus("N");
         super.update();
         final int idx = this.model.getDataList().indexOf(this.currentEntity);
-
+        
         model.getDataList().remove(idx);
         toNext();
     }
@@ -470,7 +470,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             equipmentrepairfile.setPid(currentEntity.getFormid());
             detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
-
+            
         }
     }
 
@@ -481,11 +481,11 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     public void query() {
         if (model != null) {
             this.model.getFilterFields().clear();
-
+            
             if (queryDateBegin != null) {
                 model.getFilterFields().put("formdateBegin", queryDateBegin);
             }
-
+            
             if (queryDateEnd != null) {
                 model.getFilterFields().put("formdateEnd", queryDateEnd);
             }
@@ -511,7 +511,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             model.getFilterFields().put("company", userManagedBean.getCompany());
             model.getFilterFields().put("rstatus", queryState);
             model.getSortFields().put("hitchtime", "DESC");
-
+            
         }
     }
 
@@ -571,7 +571,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             downTimes -= days * 60;
             int minute = (int) (downTimes % 60);
             day = day - days;
-
+            
             hour = hour - hours;
             if (hour < 0) {
                 day = day - 1;
@@ -586,14 +586,14 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 hour = 0;
                 min = 0;
                 day = 0;
-
+                
             }
             if (hour < 0) {
                 hour = 0;
                 min = 0;
                 day = 0;
             }
-
+            
         }
         if (day > 0) {
             hour += 24 * day;
@@ -611,7 +611,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (Integer.parseInt(hours) == 0 && Integer.parseInt(min) < 30) {
             hour += 1;
         }
-
+        
         if (Integer.parseInt(hours) != 0) {
             hour += Integer.parseInt(hours);
         }
@@ -626,125 +626,125 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         SystemUser s = systemUserBean.findByUserId(userId);
         return s.getUsername();
     }
-
+    
     public String getQueryEquipmentName() {
         return queryEquipmentName;
     }
-
+    
     public void setQueryEquipmentName(String queryEquipmentName) {
         this.queryEquipmentName = queryEquipmentName;
     }
-
+    
     public String getImageName() {
         return imageName;
     }
-
+    
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
-
+    
     public String getMaintenanceSupervisor() {
         return maintenanceSupervisor;
     }
-
+    
     public void setMaintenanceSupervisor(String maintenanceSupervisor) {
         this.maintenanceSupervisor = maintenanceSupervisor;
     }
-
+    
     public String getQueryServiceuser() {
         return queryServiceuser;
     }
-
+    
     public void setQueryServiceuser(String queryServiceuser) {
         this.queryServiceuser = queryServiceuser;
     }
-
+    
     public String getQueryDeptname() {
         return queryDeptname;
     }
-
+    
     public void setQueryDeptname(String queryDeptname) {
         this.queryDeptname = queryDeptname;
     }
-
+    
     public List<EquipmentTrouble> getEquipmentTroubleList() {
         return equipmentTroubleList;
     }
-
+    
     public void setEquipmentTroubleList(List<EquipmentTrouble> equipmentTroubleList) {
         this.equipmentTroubleList = equipmentTroubleList;
     }
-
+    
     public double getMaintenanceCosts() {
         return maintenanceCosts;
     }
-
+    
     public void setMaintenanceCosts(double maintenanceCosts) {
         this.maintenanceCosts = maintenanceCosts;
     }
-
+    
     public String getContenct() {
         return contenct;
     }
-
+    
     public void setContenct(String contenct) {
         this.contenct = contenct;
     }
-
+    
     public String getNote() {
         return note;
     }
-
+    
     public void setNote(String note) {
         this.note = note;
     }
-
+    
     public List<EquipmentRepairFile> getEquipmentRepairFileList() {
         return equipmentRepairFileList;
     }
-
+    
     public void setEquipmentRepairFileList(List<EquipmentRepairFile> equipmentRepairFileList) {
         this.equipmentRepairFileList = equipmentRepairFileList;
     }
-
+    
     public List<SysCode> getHitchurgencyList() {
         return hitchurgencyList;
     }
-
+    
     public void setHitchurgencyList(List<SysCode> hitchurgencyList) {
         this.hitchurgencyList = hitchurgencyList;
     }
-
+    
     public double getTotalCost() {
         return totalCost;
     }
-
+    
     public void setTotalCost(double totalCost) {
         this.totalCost = totalCost;
     }
-
+    
     public List<EquipmentRepairHelpers> getDetailList4() {
         return detailList4;
     }
-
+    
     public void setDetailList4(List<EquipmentRepairHelpers> detailList4) {
         this.detailList4 = detailList4;
     }
-
+    
     public EquipmentRepairHelpers getCurrentDetail4() {
         return currentDetail4;
     }
-
+    
     public void setCurrentDetail4(EquipmentRepairHelpers currentDetail4) {
         this.currentDetail4 = currentDetail4;
     }
-
+    
     public List<SysCode> getAbrasehitchList() {
         return abrasehitchList;
     }
-
+    
     public void setAbrasehitchList(List<SysCode> abrasehitchList) {
         this.abrasehitchList = abrasehitchList;
     }
-
+    
 }

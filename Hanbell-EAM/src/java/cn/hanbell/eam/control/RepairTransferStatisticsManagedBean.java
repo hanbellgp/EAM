@@ -6,14 +6,14 @@ package cn.hanbell.eam.control;
  * and open the template in the editor.
  */
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
-import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
-import cn.hanbell.eap.entity.SystemUser;
+import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.entity.Company;
 import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
 import java.text.ParseException;
@@ -45,9 +45,12 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
-
+    @EJB
+    private CompanyBean companyBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
+    private List<Company> companyList;
+    private String[] company;
 
     public RepairTransferStatisticsManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
@@ -58,7 +61,8 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
     public void init() {
         superEJB = equipmentRepairBean;
         detailEJB = equipmentRepairHisBean;
-
+        companyList = companyBean.findBySystemName("EAM");
+        company=null;
     }
 
 //导出界面的EXCEL数据处理
@@ -219,6 +223,13 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
+        String companySql="";
+         if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  H.company= " + " '" + sqlCompanyID + "' "; 
+            }
+             companySql = companySql.substring(2, companySql.length());
+        }
         if (queryDateBegin != null) {
 
             strdate = simpleDateFormat.format(queryDateBegin);
@@ -227,8 +238,24 @@ public class RepairTransferStatisticsManagedBean extends FormMultiBean<Equipment
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        detailList = equipmentRepairHisBean.getRepairTransferStatisticsList(strdate, enddate);
+        detailList = equipmentRepairHisBean.getRepairTransferStatisticsList(strdate, enddate,companySql);
 
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }

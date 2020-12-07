@@ -168,6 +168,12 @@ public class EquipmentRepair extends FormEntity {
     private String laborcost;
     @Column(name = "laborcosts")
     private BigDecimal laborcosts;
+    @Size(max = 2)
+    @Column(name = "repairarchive")
+    private String repairarchive;
+    @Size(max = 2)
+    @Column(name = "isdup")
+    private String isdup;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
@@ -554,6 +560,22 @@ public class EquipmentRepair extends FormEntity {
         this.laborcost = laborcost;
     }
 
+    public String getRepairarchive() {
+        return repairarchive;
+    }
+
+    public void setRepairarchive(String repairarchive) {
+        this.repairarchive = repairarchive;
+    }
+
+    public String getIsdup() {
+        return isdup;
+    }
+
+    public void setIsdup(String isdup) {
+        this.isdup = isdup;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -569,7 +591,7 @@ public class EquipmentRepair extends FormEntity {
     public void setRepairarea(String repairarea) {
         this.repairarea = repairarea;
     }
-   
+
     @Override
     public int hashCode() {
         int hash = 0;

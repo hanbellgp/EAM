@@ -36,7 +36,16 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
         newEntity.setCredate(getDate());
         newEntity.setStatus("N");
         newEntity.setCreator(userManagedBean.getUserid());
-       
+
+    }
+
+    @Override
+    protected boolean doBeforePersist() throws Exception {
+        if (newEntity.getUnit() == null) {
+            showErrorMsg("Error", "请选择单位！");
+            return false;
+        }
+        return super.doBeforePersist(); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

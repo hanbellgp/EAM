@@ -12,6 +12,8 @@ import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.entity.Company;
 import com.lightshell.comm.BaseLib;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -48,8 +50,12 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
+    @EJB
+    private CompanyBean companyBean;
     private List<EquipmentRepair> equipmentRepairsList;
     private PieChartModel pieModel;
+    private List<Company> companyList;
+    private String[] company;
 
     public FaultDutyStatisticalManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHelpers.class);
@@ -63,7 +69,9 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         if (equipmentRepairsList != null) {
             equipmentRepairsList.clear();
         }
+        companyList = companyBean.findBySystemName("EAM");
         createPieModel();
+        company = null;
     }
 
 //导出界面的EXCEL数据处理
@@ -222,6 +230,13 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
+        String companySql = "";
+        if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
+            }
+            companySql = companySql.substring(2, companySql.length());
+        }
         if (queryDateBegin != null) {
 
             strdate = simpleDateFormat.format(queryDateBegin);
@@ -230,7 +245,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(strdate, enddate, queryFormId, queryName);
+        equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(strdate, enddate, queryFormId, queryName,companySql);
         createPieModel();
     }
 
@@ -279,6 +294,22 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
 
     public void setPieModel(PieChartModel pieModel) {
         this.pieModel = pieModel;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }

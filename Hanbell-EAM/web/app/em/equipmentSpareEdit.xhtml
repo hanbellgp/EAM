@@ -25,19 +25,20 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><h:outputText value="备件品号" /></p:column>
-                    <p:column styleClass="Wid30">
-                        <p:inputText id="spareno" value="#{equipmentSpareManagedBean.currentEntity.spareno}" title="Spareno"  required="true" requiredMessage="请输入备件品号"/>
-                    </p:column>
                     <p:column styleClass="Wid20"><h:outputText value="备件编号" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:inputText id="sparenum" value="#{equipmentSpareManagedBean.currentEntity.sparenum}" required="true" requiredMessage="请输入备件编号"/>
+                        <h:outputText id="sparenum" value="#{equipmentSpareManagedBean.currentEntity.sparenum}" />
                     </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="请购件号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="spareno" value="#{equipmentSpareManagedBean.currentEntity.spareno}" title="Spareno" />
+                    </p:column>
+
                 </p:row>
                 <p:row>
                     <p:column><h:outputText value="备件名称"/></p:column>
                     <p:column>
-                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.currentEntity.sparedesc}" title="Sparedesc"/>
+                        <h:outputText id="sparedesc" value="#{equipmentSpareManagedBean.currentEntity.sparedesc}" title="Sparedesc" />
                     </p:column>
                     <p:column><p:outputLabel value="规格型号" for="sparemodel" /></p:column>
                     <p:column>
@@ -79,7 +80,7 @@
                 <p:row>
                     <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
                     <p:column>
-                        <p:inputText  id="uprice" value="#{equipmentMaintenanceManagedBean.currentDetail2.uprice}" title="qty" styleClass="inputWithButton"
+                        <p:inputText  id="uprice" value="#{equipmentSpareManagedBean.currentEntity.uprice}" title="qty" styleClass="inputWithButton"
                                       onkeyup="this.value = this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" required="true" requiredMessage="请输入单价"/>
                     </p:column>
                     <p:column><p:outputLabel value="单位" for="unit" /></p:column>

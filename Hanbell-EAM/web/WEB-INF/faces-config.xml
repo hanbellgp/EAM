@@ -464,6 +464,12 @@
             <to-view-id>/app/em/repairFaultRateStatistics.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+          <navigation-case>
+            <description>年月故障统计表</description>
+            <from-outcome>repairYrMonStatistics</from-outcome>
+            <to-view-id>/app/em/repairYrMonStatistics.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>

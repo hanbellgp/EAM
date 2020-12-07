@@ -31,9 +31,9 @@
                     <p:inputText id="queryItemdesc" value="#{assetParametersManagedBean.queryItemdesc}" title="品名" />
                 </p:column>
 
-                <p:column><h:outputLabel value="使用部门" for="queryDeptno" /></p:column>
+                <p:column><h:outputLabel value="部门编号" for="queryDeptno" /></p:column>
                 <p:column>
-                    <p:inputText id="queryDeptno" value="#{assetParametersManagedBean.queryDeptno}" title="使用部门" />
+                    <p:inputText id="queryDeptno" value="#{assetParametersManagedBean.queryDeptno}" title="部门编号" />
                 </p:column>
                 <p:column><h:outputLabel value="部门名称" for="queryDeptname" /></p:column>
                 <p:column>
@@ -95,7 +95,7 @@
                 </p:column>
                 <p:column styleClass="Wid20">
                     <f:facet name="header">
-                        <h:outputText value="使用部门"/>
+                        <h:outputText value="部门名称"/>
                     </f:facet>
                     <h:outputText value="#{item.deptname}"/>
                 </p:column>

@@ -203,7 +203,7 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         }
     }
 
-     public List<AssetCard> getCardList(final Map<String, Object> filters, final Map<String, String> orderBy) {
+    public List<AssetCard> getCardList(final Map<String, Object> filters, final Map<String, String> orderBy) {
         final StringBuilder sb = new StringBuilder();
         sb.append("SELECT e FROM ");
         sb.append(this.className);
@@ -222,11 +222,11 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         if (filters != null) {
             this.setQueryParam(query, filters);
         }
-        return (List<AssetCard>)query.getResultList();
+        return (List<AssetCard>) query.getResultList();
     }
 
-    public List<AssetCard> getAssetCardList(String company, String queryParam, Map<String, Object> filters) {
-        String sqlStr = "SELECT e FROM AssetCard e WHERE e.company = :company AND e.assetItem.category.id = :categoryid AND (e.formid LIKE :formidTemp OR e.assetItem.itemdesc LIKE :itemdesc OR e.assetDesc LIKE :assetDesc OR e.userno LIKE :userno OR e.username LIKE :username)";
+    public List<AssetCard> getAssetCardList(String company, String queryParam, String deptNo, Map<String, Object> filters) {
+        String sqlStr = "SELECT e FROM AssetCard e WHERE e.company = :company AND e.assetItem.category.id = :categoryid AND e.deptno LIKE :deptno AND (e.formid LIKE :formidTemp OR e.assetItem.itemdesc LIKE :itemdesc OR e.assetDesc LIKE :assetDesc OR e.userno LIKE :userno OR e.username LIKE :username)";
         StringBuilder sb = new StringBuilder();
         sb.append(sqlStr);
         if (filters != null) {
@@ -240,9 +240,17 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         if (filters != null) {
             this.setQueryParam(query, filters);
         }
+
+        String deptnoTemp = "";
+        if (deptNo.contains("000")) {
+            deptnoTemp = deptNo.substring(0, 2);
+        } else if(deptNo.length() > 2) {
+            deptnoTemp = deptNo.substring(0, 3);
+        }
         query.setParameter("company", company);
         query.setParameter("formidTemp", "%" + queryParam + "%");
         query.setParameter("categoryid", 3);
+        query.setParameter("deptno", deptnoTemp + "%");
         query.setParameter("itemdesc", "%" + queryParam + "%");
         query.setParameter("assetDesc", "%" + queryParam + "%");
         query.setParameter("userno", "%" + queryParam + "%");

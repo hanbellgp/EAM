@@ -26,13 +26,17 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><h:outputLabel value="资产编号" for="queryName" /></p:column>
+                  
+                    <p:column><h:outputLabel value="报修部门" for="queryFormId" /></p:column>
                     <p:column>
-                        <p:inputText id="queryName" value="#{faultTypeStatisticalManagedBean.queryName}" title="资产编号" />
+                        <p:inputText id="queryFormId" value="#{faultTypeStatisticalManagedBean.queryFormId}" title="报修部门" />
                     </p:column>
-                    <p:column><h:outputLabel value="所属部门" for="queryFormId" /></p:column>
+                     <p:column><h:outputLabel value="公司别" for="company" /> </p:column>
                     <p:column>
-                        <p:inputText id="queryFormId" value="#{faultTypeStatisticalManagedBean.queryFormId}" title="所属部门" />
+                        <p:selectCheckboxMenu id="company" value="#{faultDutyStatisticalManagedBean.company}"  multiple="true"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{faultDutyStatisticalManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
+                        </p:selectCheckboxMenu>
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -59,7 +63,7 @@
                 <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[1]}"  style="text-align: center">
                     <h:outputText value="#{item[1]}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="所属部门" sortBy="#{item[2]}" style="text-align: center">
+                <p:column styleClass="Wid20" headerText="报修部门" sortBy="#{item[2]}" style="text-align: center">
                     <h:outputText value="#{item[2]}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="电器类" sortBy="#{item[3]}" style="text-align: right">

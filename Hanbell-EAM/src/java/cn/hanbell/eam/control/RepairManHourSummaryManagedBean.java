@@ -8,11 +8,15 @@ package cn.hanbell.eam.control;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
+import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.ejb.SystemUserBean;
+import cn.hanbell.eap.entity.Company;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
 import java.io.FileInputStream;
@@ -54,18 +58,23 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
-
+    @EJB
+    private CompanyBean companyBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
-
+    @EJB
+    private SysCodeBean sysCodeBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
-
+    @EJB
+    private SystemUserBean systemUserBean;
     private List<String> usernameList;
     private List<SystemUser> systemUser;
     private String[] selectedUserName;
     private LineChartModel lineModel;
     private LineChartModel zoomModel;
+    private List<Company> companyList;
+    private String[] company;
 
     public RepairManHourSummaryManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHelpers.class);
@@ -76,7 +85,18 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
     public void init() {
         superEJB = equipmentRepairBean;
         detailEJB = equipmentRepairHelpersBean;
+        queryState = "ALL";
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+        systemUser = systemUserBean.findByLikeDeptno("%" + deptno + "%");
+        usernameList = new ArrayList<>();
+        for (int i = 0; i < systemUser.size(); i++) {
+            usernameList.add(systemUser.get(i).getUsername());
+        }
+        companyList = companyBean.findBySystemName("EAM");
+        
         createLineModels();
+        selectedUserName = null;
+        detailList = null;
     }
 
 //导出界面的EXCEL数据处理
@@ -102,7 +122,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
             Row row;
             if (detailList == null || detailList.size() < 0) {
                 showErrorMsg("Error", "当前无数据！请先查询");
-                return ;
+                return;
             }
             List<?> itemList = detailList;
             int j = 1;
@@ -150,7 +170,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
                 }
             }
         } catch (IOException | InvalidFormatException e) {
-               showErrorMsg("Error", e.toString());
+            showErrorMsg("Error", e.toString());
         }
     }
 
@@ -158,10 +178,8 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"维修人", "维修次数", "维修工时", "辅助维修工时", "总维修工时"};
+        return new String[]{"维修人", "维修次数", "维修工时(分)", "辅助维修工时(分)", "总维修工时(分)"};
     }
-
-
 
     /**
      * 设置导出EXCEL表格样式
@@ -220,14 +238,28 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
+        String sql = "";
+        String companySql="";
+        if (selectedUserName.length > 0) {
+            for (String sqlUserName : selectedUserName) {
+                sql += "or A.curnode2= " + " '" + sqlUserName + "'";
+            }
+            sql = sql.substring(2, sql.length());
+        }
+        if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  B.company= " + " '" + sqlCompanyID + "' ";
+            }
+             companySql = companySql.substring(2, companySql.length());
+        }
         if (queryDateBegin != null) {
             strdate = simpleDateFormat.format(queryDateBegin);
         }
         if (queryDateEnd != null) {
             enddate = simpleDateFormat.format(queryDateEnd);
         }
-
-        detailList = equipmentRepairHelpersBean.getRepairManHourSummaryList(strdate, enddate);
+        
+        detailList = equipmentRepairHelpersBean.getRepairManHourSummaryList(strdate, enddate,sql,companySql);
         createLineModels();
     }
 
@@ -362,6 +394,22 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
 
     public void setZoomModel(LineChartModel zoomModel) {
         this.zoomModel = zoomModel;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }
