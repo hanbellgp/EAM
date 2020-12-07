@@ -30,7 +30,7 @@
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="资产编号" for="assetno" /></p:column>
                     <p:column  styleClass="Wid20">
                         <p:inputText id="assetno" value="#{equipmentRepairManagedBean.newEntity.assetno.formid}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
-                        <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.screeningOpenDialog('equipmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnWhenNew}"
                                     update="formOne" />

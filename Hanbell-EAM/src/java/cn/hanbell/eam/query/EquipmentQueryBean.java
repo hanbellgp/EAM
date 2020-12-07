@@ -13,11 +13,12 @@ import cn.hanbell.eam.web.SuperQueryBean;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 /**
  *
- * @author C0160
+ * @author C2079
  */
 @ManagedBean(name = "equipmentQueryBean")
 @ViewScoped
@@ -31,7 +32,7 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
     private String queryUsername;
     private String queryDeptno;
     private String queryDeptname;
-    
+
     private boolean queryZero = false;
 
     public EquipmentQueryBean() {
@@ -51,12 +52,21 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
     public void init() {
         superEJB = assetCardBean;
         model = new EquimentQueryModel(assetCardBean, userManagedBean);
-        String categoryid="3";
-         this.model.getFilterFields().put("assetItem.category.id =", 3);
+        this.model.getFilterFields().put("assetItem.category.id =", 3);
+        params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+        if (params != null) {
+            if (params.containsKey("deptno")) {
+                queryDeptno = String.valueOf(params.get("deptno")[0]);
+            }
+        }
+        if (queryDeptno != null) {
+            model.getFilterFields().put("deptno", queryDeptno);
+        }
         model.getSortFields().put("assetItem.itemno", "ASC");
         model.getSortFields().put("formid", "ASC");
         super.init();
     }
+
     @Override
     public void query() {
         if (this.model != null) {
@@ -83,13 +93,21 @@ public class EquipmentQueryBean extends SuperQueryBean<AssetCard> {
             if (this.queryUsername != null && !"".equals(this.queryUsername)) {
                 this.model.getFilterFields().put("brand", this.queryUsername);
             }
+
             this.model.getFilterFields().put("assetItem.category.id =", 3);
+            params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+            if (params != null) {
+                if (params.containsKey("deptno")) {
+                    queryDeptno = String.valueOf(params.get("deptno")[0]);
+                }
+            }
+            if (queryDeptno != null) {
+                model.getFilterFields().put("deptno", queryDeptno);
+            }
             model.getSortFields().put("assetItem.itemno", "ASC");
             model.getSortFields().put("formid", "ASC");
         }
     }
-
-   
 
     /**
      * @return the queryItemno

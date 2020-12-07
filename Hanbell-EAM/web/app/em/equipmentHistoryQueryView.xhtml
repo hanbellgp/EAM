@@ -145,6 +145,15 @@
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="归档"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="repairarchive" value="#{equipmentHistoryManagedBean.currentEntity.repairarchive}" disabled="true" >
+                            <f:selectItem itemLabel="否" itemValue="N"/>
+                            <f:selectItem itemLabel="是" itemValue="Y"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">

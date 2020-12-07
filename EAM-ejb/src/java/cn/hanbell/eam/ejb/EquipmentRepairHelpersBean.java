@@ -30,11 +30,14 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
     }
 
     //获取维修工时明细
-    public List<EquipmentRepairHelpers> getEquipmentRepairHelpersList(String staDate, String endDate, String sql) {
+    public List<EquipmentRepairHelpers> getEquipmentRepairHelpersList(String staDate, String endDate, String sql, String companySql) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT e.id,e.curnode2,e.pid,r.assetno,if(r.assetno IS NULL ,'其他',c.assetDesc) assetDesc, r.hitchtime,r.repairmethod,r.repairdeptname,r.servicearrivetime,r.completetime,e.rtype,e.userno");
         sb.append(" FROM   EquipmentRepairHelpers e LEFT JOIN equipmentrepair r ON e.pid = r.formid LEFT JOIN assetcard c ON c.formid = r.assetno");
         sb.append(" WHERE r.rstatus='95' ");
+        if (!"".equals(companySql)) {
+            sb.append(" AND (").append(companySql).append(" )");
+        }
         if (!"".equals(sql)) {
             sb.append(" AND (").append(sql).append(" )");
         }
@@ -88,11 +91,17 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
     }
 
     //获取维修工时汇总的List
-    public List<EquipmentRepairHelpers> getRepairManHourSummaryList(String staDate, String endDate) {
+    public List<EquipmentRepairHelpers> getRepairManHourSummaryList(String staDate, String endDate,String sql,String companySql) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  A.curnode2,COUNT(curnode2),sum( if(rtype=0,userno,'0' ))AS Maintenancehours,sum( if(rtype=1,userno,'0' )) AS auxiliary ,SUM(userno)");
         sb.append(" FROM equipmentrepairhelpers A LEFT JOIN equipmentrepair B ON A.pid = B.formid");
         sb.append(" WHERE  B.rstatus='95'");
+         if (!"".equals(companySql)) {
+            sb.append(" AND (").append(companySql).append(" )");
+        }
+        if (!"".equals(sql)) {
+            sb.append(" AND (").append(sql).append(" )");
+        }
         if (!"".equals(staDate)) {
             sb.append(" AND B.hitchtime>= ").append("'").append(staDate).append("'");
         }

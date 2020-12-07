@@ -15,6 +15,8 @@ import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.entity.Company;
 import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
 import java.text.ParseException;
@@ -46,7 +48,8 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
-
+    @EJB
+    private CompanyBean companyBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
 
@@ -54,6 +57,8 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
     private SysCodeBean sysCodeBean;
     private List<EquipmentRepair> equipmentRepairList;
     private List<SysCode> abrasehitchList;
+    private List<Company> companyList;
+    private String[] company;
 
     public RepairCostStatisticsManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
@@ -66,6 +71,8 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
         model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        companyList = companyBean.findBySystemName("EAM");
+        company = null;
         super.init();
     }
 
@@ -187,7 +194,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"报修单号", "资产编号", "设备名称", "所属部门", "故障发生日期", "故障责任原因", "维修方式说明", "其他费用", "人工费用", "备件费用", "费用总计", "维修人"};
+        return new String[]{"报修单号", "资产编号", "设备名称", "报修部门", "故障发生日期", "故障责任原因", "维修方式说明", "其他费用", "人工费用", "备件费用", "费用总计", "维修人"};
     }
 
     /**
@@ -254,6 +261,13 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
+        String companySql = "";
+        if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
+            }
+            companySql = companySql.substring(2, companySql.length());
+        }
         if (queryDateBegin != null) {
 
             strdate = simpleDateFormat.format(queryDateBegin);
@@ -262,7 +276,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairList = equipmentRepairBean.getRepairCostStatisticsList(strdate, enddate, queryFormId, queryName);
+        equipmentRepairList = equipmentRepairBean.getRepairCostStatisticsList(strdate, enddate, queryFormId, queryName, companySql);
     }
 
     public String getAbrasehitchName(String str) {
@@ -299,6 +313,22 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
 
     public void setAbrasehitchList(List<SysCode> abrasehitchList) {
         this.abrasehitchList = abrasehitchList;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }

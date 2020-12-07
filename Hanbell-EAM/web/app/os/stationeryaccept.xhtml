@@ -21,6 +21,10 @@
                     <f:selectItem itemLabel="未审核" itemValue="N"/>
                     <f:selectItem itemLabel="已审核" itemValue="V"/>
                 </p:selectOneMenu>
+                <h:outputLabel value="处理人工号" for="queryName" />
+                <p:inputText id="queryName" value="#{stationeryAcceptanceManagedBean.queryName}" title="处理人" />
+                <h:outputLabel value="厂商" for="queryDeptname" />
+                <p:inputText id="queryDeptname" value="#{stationeryAcceptanceManagedBean.queryDeptname}" title="厂商" />
                 <h:outputLabel value="验收日期" for="queryDateBegin" />
                 <p:calendar id="queryDateBegin" value="#{stationeryAcceptanceManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="截止日期" for="queryDateEnd" />
@@ -45,6 +49,8 @@
                         </p:menuitem>
                         <p:menuitem id="btnCreate" value="新增" action="#{stationeryAcceptanceManagedBean.create('stationeryacceptNew')}" icon="ui-icon-plus"
                                     rendered="#{stationeryAcceptanceManagedBean.doAdd}" process="@this" />
+                        <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{stationeryAcceptanceManagedBean.print()}" icon="ui-icon-print"
+                                    />
                     </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{stationeryAcceptanceManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
@@ -75,13 +81,31 @@
                         <f:convertDateTime pattern="yyyy/MM/dd" />
                     </h:outputText>
                 </p:column>
-                <p:column  styleClass="Wid20">
+                <p:column  styleClass="Wid20" style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="厂商"/>
+                    </f:facet>
+                    <h:outputText value="#{item.vendorno}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="总金额" />
+                    </f:facet>
+                    <h:outputText value="#{stationeryAcceptanceManagedBean.getDetaiSumMoney(item.formid)}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="处理人"/>
+                    </f:facet>
+                    <h:outputText value="#{stationeryAcceptanceManagedBean.getUserName(item.creator).username}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center">
                     <f:facet name="header">
                         <h:outputText value="处理部门"/>
                     </f:facet>
                     <h:outputText value="#{item.deptname}"/>
                 </p:column>
-                <p:column  styleClass="Wid50">
+                <p:column  styleClass="Wid30">
                     <f:facet name="header">
                         <h:outputText value="备注"/>
                     </f:facet>

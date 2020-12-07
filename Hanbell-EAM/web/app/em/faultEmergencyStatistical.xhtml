@@ -25,14 +25,23 @@
                         <p:calendar id="queryDateEnd" value="#{faultEmergencyStatisticalManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
                     </p:column>
                 </p:row>
-              <p:row>
+                <p:row>
                     <p:column><h:outputLabel value="资产编号" for="queryName" /></p:column>
                     <p:column>
                         <p:inputText id="queryName" value="#{faultEmergencyStatisticalManagedBean.queryName}" title="资产编号" />
                     </p:column>
-                       <p:column><h:outputLabel value="所属部门" for="queryFormId" /></p:column>
+                    <p:column><h:outputLabel value="报修部门" for="queryFormId" /></p:column>
                     <p:column>
-                        <p:inputText id="queryFormId" value="#{faultEmergencyStatisticalManagedBean.queryFormId}" title="所属部门" />
+                        <p:inputText id="queryFormId" value="#{faultEmergencyStatisticalManagedBean.queryFormId}" title="报修部门" />
+                    </p:column>
+                </p:row>
+                  <p:row>
+                    <p:column><h:outputLabel value="公司别" for="company" /> </p:column>
+                    <p:column>
+                        <p:selectCheckboxMenu id="company" value="#{faultEmergencyStatisticalManagedBean.company}"  multiple="true"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{faultEmergencyStatisticalManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
+                        </p:selectCheckboxMenu>
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -49,7 +58,7 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-          <p:dataTable value="#{faultEmergencyStatisticalManagedBean.equipmentRepairsList}"  var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+            <p:dataTable value="#{faultEmergencyStatisticalManagedBean.equipmentRepairsList}"  var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                          rowsPerPageTemplate="15,30,45" >
                 <p:ajax event="rowSelect"  />
                 <p:ajax event="rowUnselect" />
@@ -59,7 +68,7 @@
                 <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[1]}"  style="text-align: center">
                     <h:outputText value="#{item[1]}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="所属部门" sortBy="#{item[2]}" style="text-align: center">
+                <p:column styleClass="Wid20" headerText="报修部门" sortBy="#{item[2]}" style="text-align: center">
                     <h:outputText value="#{item[2]}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="紧急(次数)" sortBy="#{item[3]}" style="text-align: right">
@@ -68,11 +77,14 @@
                 <p:column styleClass="Wid15" headerText="急(次数)" sortBy="#{item[4]}"  style="text-align: right">
                     <h:outputText value="#{item[4]}"/>
                 </p:column>
-                  <p:column styleClass="Wid15" headerText="不急(次数)" sortBy="#{item[5]}"  style="text-align: right">
+                <p:column styleClass="Wid15" headerText="不急(次数)" sortBy="#{item[5]}"  style="text-align: right">
                     <h:outputText value="#{item[5]}"/>
                 </p:column>
-             
-               
+                <p:column styleClass="Wid15" headerText="维修总次数" sortBy="#{item[6]}"  style="text-align: right">
+                    <h:outputText value="#{item[6]}"/>
+                </p:column>
+
+
             </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

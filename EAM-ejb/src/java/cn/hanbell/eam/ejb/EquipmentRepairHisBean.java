@@ -24,11 +24,13 @@ public class EquipmentRepairHisBean extends SuperEJBForEAM<EquipmentRepairHis> {
         super(EquipmentRepairHis.class);
     }
      //获取维修转单统计表的List
-    public List<EquipmentRepairHis> getRepairTransferStatisticsList(String staDate, String endDate) {
+    public List<EquipmentRepairHis> getRepairTransferStatisticsList(String staDate, String endDate,String companySql) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT H.optuser,R.serviceusername,H.pid,R.assetno,if(r.assetno IS NULL ,'其他',A.assetDesc) assetDesc,R.hitchtime,H.note");
         sb.append(" FROM equipmentrepairhis H LEFT JOIN equipmentrepair R ON R.formid = H.pid LEFT JOIN assetcard A  ON A.formid = R.assetno WHERE H.contenct = '转派'");
-      
+        if (!"".equals(companySql)) {
+            sb.append(" AND (").append(companySql).append(" )");
+        }
         if (!"".equals(staDate)) {
             sb.append(" AND R.hitchtime>= ").append("'").append(staDate).append("'");
         }

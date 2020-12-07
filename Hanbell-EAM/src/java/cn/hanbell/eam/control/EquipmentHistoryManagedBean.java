@@ -88,6 +88,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private String queryRepairprocess;
     private String queryHitchalarm;
     private String queryFaultTime;
+    private String queryArchive;
     private List<SysCode> hitchurgencyList;
     private List<SysCode> abrasehitchList;
     private List<EquipmentTrouble> equipmentTroubleList;
@@ -111,6 +112,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         equipmentTroubleList = equipmentTroubleBean.findAll();
         model.getFilterFields().put("rstatus", queryState);
         model.getFilterFields().put("company", userManagedBean.getCompany());
+        model.getSortFields().put("hitchtime", "DESC");
         super.init();
     }
 
@@ -213,6 +215,10 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             if (!"NULL".equals(queryState)) {
                 model.getFilterFields().put("rstatus", queryState);
             }
+            if (!"NULL".equals(queryArchive)) {
+                model.getFilterFields().put("repairarchive", queryArchive);
+            }
+            model.getSortFields().put("hitchtime", "DESC");
 
         }
     }
@@ -780,6 +786,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void setQueryFaultTime(String queryFaultTime) {
         this.queryFaultTime = queryFaultTime;
+    }
+
+    public String getQueryArchive() {
+        return queryArchive;
+    }
+
+    public void setQueryArchive(String queryArchive) {
+        this.queryArchive = queryArchive;
     }
 
 }

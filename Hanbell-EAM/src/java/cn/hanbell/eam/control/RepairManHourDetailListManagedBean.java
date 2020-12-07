@@ -14,7 +14,9 @@ import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.CompanyBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
+import cn.hanbell.eap.entity.Company;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
@@ -48,7 +50,8 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
-
+    @EJB
+    private CompanyBean companyBean;
     @EJB
     private SystemUserBean systemUserBean;
     @EJB
@@ -62,6 +65,8 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
     private List<String> usernameList;
     private List<SystemUser> systemUser;
     private String[] selectedUserName;
+    private List<Company> companyList;
+    private String[] company;
 
     public RepairManHourDetailListManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHelpers.class);
@@ -79,6 +84,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         for (int i = 0; i < systemUser.size(); i++) {
             usernameList.add(systemUser.get(i).getUsername());
         }
+        companyList = companyBean.findBySystemName("EAM");
         selectedUserName = null;
         detailList = null;
     }
@@ -200,7 +206,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"维修人", "报修单号", "资产编号", "设备名称", "故障发生日期", "维修方式说明", "报修部门", "维修到达时间", "维修完成时间", "维修工时", "辅助维修工时"};
+        return new String[]{"维修人", "报修单号", "资产编号", "设备名称", "故障发生日期", "维修方式说明", "报修部门", "维修到达时间", "维修完成时间", "维修工时(分)", "辅助维修工时(分)"};
     }
 
     /**
@@ -264,11 +270,18 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
     @Override
     public void query() {
         String sql = "";
+        String companySql="";
         if (selectedUserName.length > 0) {
             for (String sqlUserName : selectedUserName) {
                 sql += "or e.curnode2= " + " '" + sqlUserName + "'";
             }
             sql = sql.substring(2, sql.length());
+        }
+        if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  r.company= " + " '" + sqlCompanyID + "' ";
+            }
+             companySql = companySql.substring(2, companySql.length());
         }
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -282,7 +295,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        detailList = equipmentRepairHelpersBean.getEquipmentRepairHelpersList(strdate, enddate, sql);
+        detailList = equipmentRepairHelpersBean.getEquipmentRepairHelpersList(strdate, enddate, sql, companySql);
 
     }
 
@@ -308,6 +321,22 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
 
     public void setSelectedUserName(String[] selectedUserName) {
         this.selectedUserName = selectedUserName;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }

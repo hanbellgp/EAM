@@ -218,6 +218,15 @@
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="归档"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="repairarchive" value="#{equipmentAcceptanceManagedBean.currentEntity.repairarchive}" >
+                            <f:selectItem itemLabel="否" itemValue="N"/>
+                            <f:selectItem itemLabel="是" itemValue="Y"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
                 <f:facet name="header">
@@ -409,8 +418,16 @@
             <p:panelGrid  id="plgCost">
                 <p:row>
                     <p:column style="background-color: #EEEEEE;height: 40px;width: 180px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>
-                    <p:column  style="width: 550px">
-                        <h:outputText  id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" title="spareno1" styleClass="inputWithButton"/>
+                    <p:column >
+                        <p:inputText id="repaircost" value="#{equipmentAcceptanceManagedBean.currentEntity.repaircost}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="repaircost" >
+                            <p:ajax event="keyup" 
+                                    update="totalCost"  
+                                    listener="#{equipmentAcceptanceManagedBean.calculateTotalCost()}"
+                                    />
+                        </p:inputText>
                     </p:column>
                     <p:column style="background-color: #EEEEEE;width: 400px" ><p:outputLabel value="人工费用（#{equipmentAcceptanceManagedBean.currentEntity.laborcost}元/分）" for="laborcosts" /></p:column>
                     <p:column  style="width: 550px">

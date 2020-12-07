@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -95,6 +96,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private List<SysCode> hitchurgencyList;
     private List<SysCode> abrasehitchList;
     private List<SysCode> repairareaList;
+    private List<String> paramPosition = null;
     private String maintenanceSupervisor;
     private List<EquipmentTrouble> equipmentTroubleList;
     private String contenct;
@@ -247,6 +249,18 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
         currentEntity.setRstatus("98");
         update();
+    }
+
+    //获取报修人对应部门的设备
+    public void screeningOpenDialog(String view) {
+        if (paramPosition == null) {
+            paramPosition = new ArrayList<>();
+        } else {
+            paramPosition.clear();
+        }
+        paramPosition.add(getUserName(userManagedBean.getUserid()).getDeptno().substring(0, 3));
+        openParams.put("deptno", paramPosition);
+        super.openDialog(view, openParams);
     }
 
     //确认维修完成
@@ -464,6 +478,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             equipmentrepairfile.setStatus("N");
             equipmentrepairfile.setSeq(seq);
             equipmentrepairfile.setCredate(getDate());
+            equipmentrepairfile.setCreator(userManagedBean.getUserid());
             detailList.add(equipmentrepairfile);
             addedDetailList.add(equipmentrepairfile);
         }
@@ -1006,6 +1021,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void setRepairareaList(List<SysCode> repairareaList) {
         this.repairareaList = repairareaList;
+    }
+
+    public List<String> getParamPosition() {
+        return paramPosition;
+    }
+
+    public void setParamPosition(List<String> paramPosition) {
+        this.paramPosition = paramPosition;
     }
 
 }

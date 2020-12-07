@@ -25,19 +25,20 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><h:outputText value="备件品号" /></p:column>
-                    <p:column styleClass="Wid30">
-                        <p:inputText id="spareno" value="#{equipmentSpareManagedBean.newEntity.spareno}" title="Spareno"  required="true" requiredMessage="请输入备件品号"/>
-                    </p:column>
                     <p:column styleClass="Wid20"><h:outputText value="备件编号" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="sparenum" value="#{equipmentSpareManagedBean.newEntity.sparenum}" required="true" requiredMessage="请输入备件编号"/>
                     </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="请购件号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="spareno" value="#{equipmentSpareManagedBean.newEntity.spareno}" title="Spareno"  />
+                    </p:column>
+
                 </p:row>
                 <p:row>
                     <p:column><h:outputText value="备件名称"/></p:column>
                     <p:column>
-                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.newEntity.sparedesc}" title="Sparedesc"/>
+                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.newEntity.sparedesc}" title="Sparedesc" required="true" requiredMessage="请输入备件名称"/>
                     </p:column>
                     <p:column><p:outputLabel value="规格型号" for="sparemodel" /></p:column>
                     <p:column>
@@ -84,7 +85,7 @@
                     </p:column>
                     <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                     <p:column>
-                        <p:inputText id="unit" value="#{equipmentSpareManagedBean.newEntity.unit.unit}" title="Unit" styleClass="inputWithButton" readonly="true"
+                        <p:inputText id="unit" value="#{equipmentSpareManagedBean.newEntity.unit.unit}" title="Unit" styleClass="inputWithButton" readonly="true" 
                                      />
                         <p:commandButton id="btnUnitSelect" actionListener="#{equipmentSpareManagedBean.openDialog('unitSelect')}" icon="ui-icon-extlink"
                                          process="@this" >

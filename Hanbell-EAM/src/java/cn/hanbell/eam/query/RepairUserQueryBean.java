@@ -25,7 +25,8 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
     @EJB
     private SystemUserBean systemUserBean;
     @EJB
-    private  SysCodeBean sysCodeBean;
+    private SysCodeBean sysCodeBean;
+
     public RepairUserQueryBean() {
         super(SystemUser.class);
     }
@@ -34,8 +35,10 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
     public void init() {
         this.superEJB = systemUserBean;
         setModel(new SystemUserModel(systemUserBean));
-        String deptno =sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+        this.model.getFilterFields().put("status", "N");
         this.model.getFilterFields().put("deptno", deptno);
+
         model.getSortFields().put("userid", "ASC");
         super.init();
     }
@@ -50,8 +53,9 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
             if (this.queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("username", this.queryName);
             }
-              String deptno =sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
-             this.model.getFilterFields().put("deptno", deptno);
+            this.model.getFilterFields().put("status", "N");
+            String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+            this.model.getFilterFields().put("deptno", deptno);
         }
     }
 

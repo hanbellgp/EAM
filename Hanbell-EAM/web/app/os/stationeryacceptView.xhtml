@@ -61,8 +61,12 @@
                     </p:column>
                 </p:row>
                 <p:row>
+                     <p:column><h:outputText value="厂商"/></p:column>
+                    <p:column >
+                        <h:outputText id="vendorno" value="#{stationeryAcceptanceManagedBean.currentEntity.vendorno}" title="vendorno" />
+                    </p:column>
                     <p:column><h:outputText value="备注"/></p:column>
-                    <p:column colspan="3">
+                    <p:column >
                         <h:outputText id="remark" value="#{stationeryAcceptanceManagedBean.currentEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>

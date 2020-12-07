@@ -15,6 +15,8 @@ import cn.hanbell.eam.lazy.EquipmentRepairModel;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.CompanyBean;
+import cn.hanbell.eap.entity.Company;
 import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
 import java.text.ParseException;
@@ -49,8 +51,11 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
 
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
-
+    @EJB
+    private CompanyBean companyBean;
     private List<EquipmentRepair> equipmentRepairList;
+    private List<Company> companyList;
+    private String[] company;
 
     public RepairCostSummaryManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
@@ -61,6 +66,8 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
     public void init() {
         superEJB = equipmentRepairBean;
         model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        companyList = companyBean.findBySystemName("EAM");
+        company = null;
         super.init();
     }
 
@@ -166,7 +173,7 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "所属部门", "其他费用", "人工费用", "备件费用", "费用总计"};
+        return new String[]{"资产编号", "设备名称", "报修部门", "其他费用", "人工费用", "备件费用", "费用总计"};
     }
 
     /**
@@ -233,6 +240,13 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
+          String companySql = "";
+        if (company.length > 0) {
+            for (String sqlCompanyID : company) {
+                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
+            }
+            companySql = companySql.substring(2, companySql.length());
+        }
         if (queryDateBegin != null) {
 
             strdate = simpleDateFormat.format(queryDateBegin);
@@ -241,7 +255,7 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairList = equipmentRepairBean.getRepairCostSummaryList(strdate, enddate, queryFormId, queryName);
+        equipmentRepairList = equipmentRepairBean.getRepairCostSummaryList(strdate, enddate, queryFormId, queryName,companySql);
     }
 
     public List<EquipmentRepair> getEquipmentRepairList() {
@@ -250,6 +264,22 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
 
     public void setEquipmentRepairList(List<EquipmentRepair> equipmentRepairList) {
         this.equipmentRepairList = equipmentRepairList;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String[] getCompany() {
+        return company;
+    }
+
+    public void setCompany(String[] company) {
+        this.company = company;
     }
 
 }

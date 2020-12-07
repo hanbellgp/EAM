@@ -467,15 +467,21 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             equipmentRepairHelpers.setCompany(currentEntity.getCompany());
             equipmentRepairHelpers.setCurnode(currentEntity.getServiceuser());
             equipmentRepairHelpers.setCurnode2(currentEntity.getServiceusername());
-            String[] maintenanceTimes = currentEntity.getMaintenanceTime().split("小时");
-            String hours = maintenanceTimes[0];
-            maintenanceTimes = maintenanceTimes[1].split("分");
-            int min = Integer.parseInt(maintenanceTimes[0]);
-            if (Integer.parseInt(hours) != 0) {
-                min += Integer.parseInt(hours) * 60;
+            if (currentEntity.getMaintenanceTime() != null) {
+                String[] maintenanceTimes = currentEntity.getMaintenanceTime().split("小时");
+                String hours = maintenanceTimes[0];
+                maintenanceTimes = maintenanceTimes[1].split("分");
+                int min = Integer.parseInt(maintenanceTimes[0]);
+                if (Integer.parseInt(hours) != 0) {
+                    min += Integer.parseInt(hours) * 60;
+                }
+                equipmentRepairHelpers.setUserno(String.valueOf(min));
+            }else{
+                equipmentRepairHelpers.setUserno(String.valueOf(0));
             }
+
             equipmentRepairHelpers.setCredate(getDate());
-            equipmentRepairHelpers.setUserno(String.valueOf(min));
+
             equipmentRepairHelpers.setRtype("0");
             equipmentRepairHelpers.setStatus("N");
             addedDetailList4.add(equipmentRepairHelpers);
@@ -497,7 +503,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (!detailList4.isEmpty()) {
             int min = 0;
             for (EquipmentRepairHelpers equipmentrepairHelpers : detailList4) {
-                min += Integer.parseInt(equipmentrepairHelpers.getUserno());
+                min += Double.parseDouble(equipmentrepairHelpers.getUserno());
             }
             currentEntity.setLaborcost(sysCodeBean.findBySyskindAndCode("RD", "laborcost").getCvalue());
             BigDecimal b1 = new BigDecimal(Double.toString(Double.parseDouble(currentEntity.getLaborcost())));
@@ -512,7 +518,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             //获取联络时间
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
         }
-        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null&& currentEntity.getExcepttime()!=null) {
+        if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null && currentEntity.getExcepttime() != null) {
             //获取维修时间
             currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), currentEntity.getExcepttime()));
         }

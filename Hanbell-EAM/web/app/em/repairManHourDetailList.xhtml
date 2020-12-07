@@ -27,10 +27,18 @@
                 </p:row>
                 <p:row>
                     <p:column><h:outputLabel value="维修人" for="selectedUserName" />  </p:column>
-                    <p:column colspan="6">
+                    <p:column>
                         <p:selectCheckboxMenu id="selectedUserName" value="#{repairManHourDetailListManagedBean.selectedUserName}"  multiple="true"
                                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
                             <f:selectItems value="#{repairManHourDetailListManagedBean.usernameList}" />
+                        </p:selectCheckboxMenu>
+                    </p:column>
+                    <p:column><h:outputLabel value="公司别" for="company" /> </p:column>
+                    
+                    <p:column>
+                        <p:selectCheckboxMenu id="company" value="#{repairManHourDetailListManagedBean.company}"  multiple="true"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{repairManHourDetailListManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
                         </p:selectCheckboxMenu>
                     </p:column>
                 </p:row>
@@ -51,7 +59,7 @@
             <p:dataTable value="#{repairManHourDetailListManagedBean.detailList}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                          rowsPerPageTemplate="15,30,45"   
                          >
-                
+
                 <p:ajax event="rowSelect"  />
                 <p:ajax event="rowUnselect" />
                 <p:column styleClass="Wid10" headerText="维修人" sortBy="#{item[1]}">
@@ -66,14 +74,14 @@
                 <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[4]}">
                     <h:outputText value="#{item[4]}"/>
                 </p:column>
-               
+
                 <p:column styleClass="Wid20" headerText="维修方式说明" sortBy="#{item[6]}" >
                     <h:outputText value="#{item[6]}"/>
                 </p:column>
                 <p:column styleClass="Wid20" headerText="报修部门" sortBy="#{item[7]}" >
                     <h:outputText value="#{item[7]}"/>
                 </p:column>
-                 <p:column styleClass="Wid20" headerText="故障发生日期" sortBy="#{item[5]}" >
+                <p:column styleClass="Wid20" headerText="故障发生日期" sortBy="#{item[5]}" >
                     <h:outputText value="#{item[5]}">
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm"  />
                     </h:outputText>
@@ -88,10 +96,10 @@
                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                     </h:outputText>
                 </p:column>
-                <p:column styleClass="Wid15" headerText="维修工时" sortBy="#{item[11]}" style="text-align: right" >
+                <p:column styleClass="Wid15" headerText="维修工时(分)" sortBy="#{item[11]}" style="text-align: right" >
                     <h:outputText value="#{item[10]==0 ? item[11] : '0'}" />
                 </p:column>
-                <p:column styleClass="Wid15" headerText="辅助维修工时" sortBy="#{item[11]}" style="text-align: right">
+                <p:column styleClass="Wid15" headerText="辅助维修工时(分)" sortBy="#{item[11]}" style="text-align: right">
                     <h:outputText value="#{item[10]==1 ? item[11] : '0'}"  />
                 </p:column>
 

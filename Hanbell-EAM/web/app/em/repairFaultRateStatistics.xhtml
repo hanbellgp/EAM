@@ -26,13 +26,17 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><h:outputLabel value="资产编号" for="queryName" /></p:column>
+
+                    <p:column><h:outputLabel value="报修部门" for="queryFormId" /></p:column>
                     <p:column>
-                        <p:inputText id="queryName" value="#{repairFaultRateStatistics.queryName}" title="资产编号" />
+                        <p:inputText id="queryFormId" value="#{repairFaultRateStatistics.queryFormId}" title="报修部门" />
                     </p:column>
-                    <p:column><h:outputLabel value="所属部门" for="queryFormId" /></p:column>
+                    <p:column><h:outputLabel value="公司别" for="company" /> </p:column>
                     <p:column>
-                        <p:inputText id="queryFormId" value="#{repairFaultRateStatistics.queryFormId}" title="所属部门" />
+                        <p:selectCheckboxMenu id="company" value="#{repairFaultRateStatistics.company}"  multiple="true"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{repairFaultRateStatistics.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
+                        </p:selectCheckboxMenu>
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -60,13 +64,13 @@
                 <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[1]}"  style="text-align: center">
                     <h:outputText value="#{item[1]}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="所属部门" sortBy="#{item[2]}" style="text-align: center">
+                <p:column styleClass="Wid20" headerText="报修部门" sortBy="#{item[2]}" style="text-align: center">
                     <h:outputText value="#{item[2]}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="计划工作时间" sortBy="#{item[3]}" >
+                <p:column styleClass="Wid20" headerText="计划工作时间(分)" sortBy="#{item[3]}" >
                     <h:outputText value="#{item[3]}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="故障停机时间" sortBy="#{item[4]}" >
+                <p:column styleClass="Wid20" headerText="故障停机时间(分)" sortBy="#{item[4]}" >
                     <h:outputText value="#{item[4]}"/>
                 </p:column>
                 <p:column styleClass="Wid20" headerText="设备故障率(%)" sortBy="#{item[5]}" >
