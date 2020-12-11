@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Administrator
+ * @author C2079
  */
 @Entity
 @Table(name = "equipmentspare")
@@ -75,9 +75,21 @@ public class EquipmentSpare extends SuperEntity {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "uprice")
     private BigDecimal uprice;
-     @JoinColumn(name = "unit", referencedColumnName = "id")
+    @JoinColumn(name = "unit", referencedColumnName = "id")
     @ManyToOne
     private Unit unit;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "qty")
+    private BigDecimal qty;
+    @Size(max = 10)
+    @Column(name = "sarea")
+    private String sarea;
+    @Size(max = 15)
+    @Column(name = "slocation")
+    private String slocation;
+    @Size(max = 30)
+    @Column(name = "suse")
+    private String suse;
     @Size(max = 50)
     @Column(name = "brand")
     private String brand;
@@ -102,7 +114,6 @@ public class EquipmentSpare extends SuperEntity {
         this.sparenum = sparenum;
         this.status = status;
     }
-
 
     public String getCompany() {
         return company;
@@ -168,14 +179,44 @@ public class EquipmentSpare extends SuperEntity {
         this.unit = unit;
     }
 
- 
-
     public String getBrand() {
         return brand;
     }
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public BigDecimal getQty() {
+        return qty;
+    }
+
+    public void setQty(BigDecimal qty) {
+        this.qty = qty;
+    }
+
+    public String getSarea() {
+        return sarea;
+    }
+
+    public void setSarea(String sarea) {
+        this.sarea = sarea;
+    }
+
+    public String getSlocation() {
+        return slocation;
+    }
+
+    public void setSlocation(String slocation) {
+        this.slocation = slocation;
+    }
+
+    public String getSuse() {
+        return suse;
+    }
+
+    public void setSuse(String suse) {
+        this.suse = suse;
     }
 
     public Integer getMinstock() {
@@ -202,9 +243,6 @@ public class EquipmentSpare extends SuperEntity {
         this.remark = remark;
     }
 
- 
-
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -226,5 +264,5 @@ public class EquipmentSpare extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentSpare[ id=" + id + " ]";
     }
-    
+
 }

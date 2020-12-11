@@ -299,7 +299,7 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
             row.setHeight((short) 400);
             Cell cell0 = row.createCell(0);
             cell0.setCellStyle(cellStyle);
-            cell0.setCellValue(as.getFormid());
+            cell0.setCellValue(as.getFormid()+" 汇总");
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(cellStyle);
             cell1.setCellValue(sdf.format(as.getFormdate()));
@@ -440,7 +440,7 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{15, 15, 15, 15, 20, 10, 10, 10, 10, 20, 20, 15};
+        return new int[]{20, 15, 15, 15, 20, 10, 10, 10, 10, 20, 20, 15};
     }
 
     /**
