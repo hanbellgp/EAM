@@ -683,6 +683,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             this.showWarnMsg("Warn", "已存在主维修人，无需添加！！！");
             return;
         }
+        if (currentDetail4.getUserno()==null||"".equals(currentDetail4.getUserno())) {
+            this.showWarnMsg("Error", "请输入维修时间！！！");
+            return;
+        }
         if (this.newDetail4 != null && this.newDetail4.equals(this.currentDetail4)) {
             if (!this.addedDetailList4.contains(this.newDetail4) && !this.detailList4.contains(this.newDetail4)) {
                 this.addedDetailList4.add(this.newDetail4);

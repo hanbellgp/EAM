@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer 版本 4.6.0.v201606072122 内部版本 &lt;@BUILD@></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <data-sources>
@@ -66,6 +67,21 @@ detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],tru
                     <property name="name">formdate</property>
                     <property name="dataType">date</property>
                 </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">username</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">categoryname</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">formid</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -94,6 +110,15 @@ detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],tru
                 </structure>
                 <structure>
                     <property name="columnName">formdate</property>
+                </structure>
+                <structure>
+                    <property name="columnName">username</property>
+                </structure>
+                <structure>
+                    <property name="columnName">categoryname</property>
+                </structure>
+                <structure>
+                    <property name="columnName">formid</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -143,6 +168,21 @@ detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],tru
                         <property name="name">formdate</property>
                         <property name="dataType">date</property>
                     </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">username</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">categoryname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">formid</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">scriptDS</property>
@@ -162,8 +202,11 @@ detail = ejbClient.findByFilters(params["filterFields"],params["sortFields"],tru
  	}
 	dataSetRow["qty"] = detail.get(currentRow).getQty();
 	dataSetRow["price"] = detail.get(currentRow).getPrice();
-	dataSetRow["amts"] = detail.get(currentRow).getAmts();
+	dataSetRow["amts"] = detail.get(currentRow).getAmts() ;
  	dataSetRow["formdate"] = detail.get(currentRow).getAssetDistribute().getFormdate();
+ 	dataSetRow["formid"] = detail.get(currentRow).getAssetDistribute().getFormid();
+ 	dataSetRow["username"] = detail.get(currentRow).getUsername();
+ 	dataSetRow["categoryname"] = detail.get(currentRow).getAssetItem().getCategory().getName();
     currentRow++;
     return true;
 } 
@@ -185,7 +228,7 @@ return false;
     </page-setup>
     <body>
         <table id="832">
-            <property name="width">11.291666666666666in</property>
+            <property name="width">11.229166666666666in</property>
             <property name="dataSet">dataDetail</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -242,28 +285,66 @@ return false;
                     <expression name="expression" type="javascript">dataSetRow["formdate"]</expression>
                     <property name="dataType">date</property>
                 </structure>
+                <structure>
+                    <property name="name">username</property>
+                    <text-property name="displayName">username</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["username"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">categoryname</property>
+                    <text-property name="displayName">categoryname</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["categoryname"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">formid</property>
+                    <text-property name="displayName">formid</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["formid"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
-            <column id="866"/>
-            <column id="867">
-                <property name="width">1in</property>
+            <column id="988">
+                <property name="width">1.2916666666666667in</property>
             </column>
-            <column id="868">
-                <property name="width">1in</property>
+            <column id="996">
+                <property name="repeat">1</property>
+                <property name="width">0.6458333333333334in</property>
             </column>
-            <column id="869">
-                <property name="width">2in</property>
+            <column id="866">
+                <property name="width">1.2916666666666667in</property>
             </column>
-            <column id="870">
+            <column id="1006">
+                <property name="repeat">1</property>
                 <property name="width">0.8in</property>
             </column>
-            <column id="871">
+            <column id="1016">
+                <property name="repeat">1</property>
                 <property name="width">0.8in</property>
             </column>
-            <column id="872">
+            <column id="1026">
+                <property name="repeat">1</property>
                 <property name="width">0.8in</property>
             </column>
             <column id="873">
+                <property name="repeat">1</property>
                 <property name="width">0.8in</property>
+            </column>
+            <column id="1040">
+                <property name="repeat">1</property>
+                <property name="width">1.4375in</property>
+            </column>
+            <column id="867">
+                <property name="width">1.1666666666666667in</property>
+            </column>
+            <column id="1050">
+                <property name="repeat">1</property>
+                <property name="width">2in</property>
+            </column>
+            <column id="868">
+                <property name="width">0.8333333333333334in</property>
             </column>
             <column id="874">
                 <property name="width">1.5in</property>
@@ -271,10 +352,52 @@ return false;
             <header>
                 <row id="833">
                     <property name="height">0.3229166666666667in</property>
+                    <cell id="985">
+                        <property name="fontSize">12pt</property>
+                        <label id="990">
+                            <text-property name="text">领用单号</text-property>
+                        </label>
+                    </cell>
+                    <cell id="997">
+                        <property name="fontSize">12pt</property>
+                        <label id="998">
+                            <text-property name="text">用品类别</text-property>
+                        </label>
+                    </cell>
                     <cell id="834">
                         <property name="fontSize">12pt</property>
                         <label id="830">
                             <text-property name="text">用品名称</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1007">
+                        <property name="fontSize">12pt</property>
+                        <label id="1008">
+                            <text-property name="text">单位</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1017">
+                        <property name="fontSize">12pt</property>
+                        <label id="1018">
+                            <text-property name="text">领用数量</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1027">
+                        <property name="fontSize">12pt</property>
+                        <label id="1028">
+                            <text-property name="text">单价</text-property>
+                        </label>
+                    </cell>
+                    <cell id="841">
+                        <property name="fontSize">12pt</property>
+                        <label id="824">
+                            <text-property name="text">金额</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1041">
+                        <property name="fontSize">12pt</property>
+                        <label id="1042">
+                            <text-property name="text">领用人</text-property>
                         </label>
                     </cell>
                     <cell id="835">
@@ -283,40 +406,16 @@ return false;
                             <text-property name="text">领用仓库</text-property>
                         </label>
                     </cell>
+                    <cell id="1051">
+                        <property name="fontSize">12pt</property>
+                        <label id="1052">
+                            <text-property name="text">部门</text-property>
+                        </label>
+                    </cell>
                     <cell id="836">
                         <property name="fontSize">12pt</property>
                         <label id="811">
                             <text-property name="text">部门代号</text-property>
-                        </label>
-                    </cell>
-                    <cell id="837">
-                        <property name="fontSize">12pt</property>
-                        <label id="813">
-                            <text-property name="text">部门</text-property>
-                        </label>
-                    </cell>
-                    <cell id="838">
-                        <property name="fontSize">12pt</property>
-                        <label id="816">
-                            <text-property name="text">单位</text-property>
-                        </label>
-                    </cell>
-                    <cell id="839">
-                        <property name="fontSize">12pt</property>
-                        <label id="818">
-                            <text-property name="text">领用数量</text-property>
-                        </label>
-                    </cell>
-                    <cell id="840">
-                        <property name="fontSize">12pt</property>
-                        <label id="822">
-                            <text-property name="text">单价</text-property>
-                        </label>
-                    </cell>
-                    <cell id="841">
-                        <property name="fontSize">12pt</property>
-                        <label id="824">
-                            <text-property name="text">金额</text-property>
                         </label>
                     </cell>
                     <cell id="842">
@@ -330,10 +429,52 @@ return false;
             <detail>
                 <row id="844">
                     <property name="height">0.3125in</property>
+                    <cell id="986">
+                        <property name="fontSize">12pt</property>
+                        <data id="991">
+                            <property name="resultSetColumn">formid</property>
+                        </data>
+                    </cell>
+                    <cell id="999">
+                        <property name="fontSize">12pt</property>
+                        <data id="1000">
+                            <property name="resultSetColumn">categoryname</property>
+                        </data>
+                    </cell>
                     <cell id="845">
                         <property name="fontSize">12pt</property>
                         <data id="876">
                             <property name="resultSetColumn">itemdesc</property>
+                        </data>
+                    </cell>
+                    <cell id="1009">
+                        <property name="fontSize">12pt</property>
+                        <data id="1010">
+                            <property name="resultSetColumn">unit</property>
+                        </data>
+                    </cell>
+                    <cell id="1019">
+                        <property name="fontSize">12pt</property>
+                        <data id="1020">
+                            <property name="resultSetColumn">qty</property>
+                        </data>
+                    </cell>
+                    <cell id="1029">
+                        <property name="fontSize">12pt</property>
+                        <data id="1030">
+                            <property name="resultSetColumn">price</property>
+                        </data>
+                    </cell>
+                    <cell id="852">
+                        <property name="fontSize">12pt</property>
+                        <data id="883">
+                            <property name="resultSetColumn">amts</property>
+                        </data>
+                    </cell>
+                    <cell id="1043">
+                        <property name="fontSize">12pt</property>
+                        <data id="1044">
+                            <property name="resultSetColumn">username</property>
                         </data>
                     </cell>
                     <cell id="846">
@@ -342,40 +483,16 @@ return false;
                             <property name="resultSetColumn">warehouse</property>
                         </data>
                     </cell>
+                    <cell id="1053">
+                        <property name="fontSize">12pt</property>
+                        <data id="1054">
+                            <property name="resultSetColumn">deptname</property>
+                        </data>
+                    </cell>
                     <cell id="847">
                         <property name="fontSize">12pt</property>
                         <data id="878">
                             <property name="resultSetColumn">deptno</property>
-                        </data>
-                    </cell>
-                    <cell id="848">
-                        <property name="fontSize">12pt</property>
-                        <data id="879">
-                            <property name="resultSetColumn">deptname</property>
-                        </data>
-                    </cell>
-                    <cell id="849">
-                        <property name="fontSize">12pt</property>
-                        <data id="880">
-                            <property name="resultSetColumn">unit</property>
-                        </data>
-                    </cell>
-                    <cell id="850">
-                        <property name="fontSize">12pt</property>
-                        <data id="881">
-                            <property name="resultSetColumn">qty</property>
-                        </data>
-                    </cell>
-                    <cell id="851">
-                        <property name="fontSize">12pt</property>
-                        <data id="882">
-                            <property name="resultSetColumn">price</property>
-                        </data>
-                    </cell>
-                    <cell id="852">
-                        <property name="fontSize">12pt</property>
-                        <data id="883">
-                            <property name="resultSetColumn">amts</property>
                         </data>
                     </cell>
                     <cell id="853">
@@ -389,28 +506,37 @@ return false;
             <footer>
                 <row id="855">
                     <property name="height">0.16666666666666666in</property>
+                    <cell id="987">
+                        <property name="fontSize">12pt</property>
+                    </cell>
+                    <cell id="1001">
+                        <property name="fontSize">12pt</property>
+                    </cell>
                     <cell id="856">
+                        <property name="fontSize">12pt</property>
+                    </cell>
+                    <cell id="1011">
+                        <property name="fontSize">12pt</property>
+                    </cell>
+                    <cell id="1021">
+                        <property name="fontSize">12pt</property>
+                    </cell>
+                    <cell id="1031">
+                        <property name="fontSize">12pt</property>
+                    </cell>
+                    <cell id="863">
+                        <property name="fontSize">12pt</property>
+                    </cell>
+                    <cell id="1045">
                         <property name="fontSize">12pt</property>
                     </cell>
                     <cell id="857">
                         <property name="fontSize">12pt</property>
                     </cell>
+                    <cell id="1055">
+                        <property name="fontSize">12pt</property>
+                    </cell>
                     <cell id="858">
-                        <property name="fontSize">12pt</property>
-                    </cell>
-                    <cell id="859">
-                        <property name="fontSize">12pt</property>
-                    </cell>
-                    <cell id="860">
-                        <property name="fontSize">12pt</property>
-                    </cell>
-                    <cell id="861">
-                        <property name="fontSize">12pt</property>
-                    </cell>
-                    <cell id="862">
-                        <property name="fontSize">12pt</property>
-                    </cell>
-                    <cell id="863">
                         <property name="fontSize">12pt</property>
                     </cell>
                     <cell id="864">
@@ -917,7 +1043,7 @@ return false;
                 lepS93Jp20P4CZML11B1195vcsGrM8dLPbnUretfs9DhXxiMVrnxw6XfQzoQ6eJ/sfp4sDBYsuKTec/Z
                 ACTw0sH7Z13rWieun4R3/2t+XWpo8c97KJtLzL1ffW1Zlc9Prgn+xWENftrsG7FqIsxP/5mL1+r/v35d
                 XANc+t/8PBjN/8mrMpR9s2tX6P87AGqG8QW/l5+gAAAAAElFTkSuQmCC
-</property>
+            </property>
         </structure>
     </list-property>
 </report>

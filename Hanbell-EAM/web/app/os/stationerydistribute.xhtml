@@ -75,11 +75,23 @@
                         <f:convertDateTime pattern="yyyy/MM/dd" />
                     </h:outputText>
                 </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="总金额" />
+                    </f:facet>
+                    <h:outputText value="#{stationeryDistributeManagedBean.getDetaiSumMoney(item.formid)}"/>
+                </p:column>
                 <p:column  styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="领用部门"/>
                     </f:facet>
                     <h:outputText value="#{item.deptname}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="申请人"/>
+                    </f:facet>
+                    <h:outputText value="#{stationeryDistributeManagedBean.getUserName(item.creator).username}"/>
                 </p:column>
                 <p:column  styleClass="Wid50">
                     <f:facet name="header">

@@ -44,6 +44,9 @@
                         </p:menuitem>
                         <p:menuitem id="btnCreate" value="新增" action="#{stationeryItemManagedBean.create('stationeryitemNew')}" icon="ui-icon-plus"
                                     rendered="#{stationeryItemManagedBean.doAdd}"/>
+
+                        <p:menuitem id="btnPrint" value="导出" actionListener="#{stationeryItemManagedBean.print()}" icon="ui-icon-print"/>
+
                     </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{stationeryItemManagedBean.reset()}"  icon="ui-icon-refresh"
                                      update=":formList"/>
@@ -89,6 +92,12 @@
                         <h:outputText value="规格"/>
                     </f:facet>
                     <h:outputText value="#{item.itemspec}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="单价"/>
+                    </f:facet>
+                    <h:outputText value="#{item.purprice}"/>
                 </p:column>
                 <p:column styleClass="Wid5">
                     <f:facet name="header">

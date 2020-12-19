@@ -217,7 +217,7 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
                         ac.setStatus("V");
                         ac.setCreator(e.getCreator());
                         ac.setCredate(e.getCredate());
-                        ac.setSrcapi("assetacceptacnce");
+                        ac.setSrcapi("assetacceptance");
                         ac.setSrcformid(d.getPid());
                         ac.setSrcseq(d.getSeq());
                         assetCardBean.persist(ac);

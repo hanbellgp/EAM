@@ -23,6 +23,8 @@ public class StationeryDistributeQueryBean extends SuperQueryBean<AssetDistribut
 
     @EJB
     private AssetDistributeDetailForQueryBean assetDistributeDetailForQueryBean;
+    private String queryUsername;
+    private String querDeptname;
 
     public StationeryDistributeQueryBean() {
         super(AssetDistributeDetailForQuery.class);
@@ -64,6 +66,12 @@ public class StationeryDistributeQueryBean extends SuperQueryBean<AssetDistribut
             if (queryDateBegin != null) {
                 this.model.getFilterFields().put("assetDistribute.formdateBegin", queryDateBegin);
             }
+            if (querDeptname != null && !"".equals(querDeptname)) {
+                this.model.getFilterFields().put("deptname", querDeptname);
+            }
+            if (queryUsername != null && !"".equals(queryUsername)) {
+                this.model.getFilterFields().put("username", queryUsername);
+            }
             if (queryDateEnd != null) {
                 this.model.getFilterFields().put("assetDistribute.formdateEnd", queryDateEnd);
             }
@@ -71,6 +79,22 @@ public class StationeryDistributeQueryBean extends SuperQueryBean<AssetDistribut
                 this.model.getFilterFields().put("assetDistribute.status", queryState);
             }
         }
+    }
+
+    public String getQueryUsername() {
+        return queryUsername;
+    }
+
+    public void setQueryUsername(String queryUsername) {
+        this.queryUsername = queryUsername;
+    }
+
+    public String getQuerDeptname() {
+        return querDeptname;
+    }
+
+    public void setQuerDeptname(String querDeptname) {
+        this.querDeptname = querDeptname;
     }
 
 }
