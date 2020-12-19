@@ -9,6 +9,7 @@ import cn.hanbell.eam.ejb.StationeryDistributeBean;
 import cn.hanbell.eam.ejb.StationeryDistributeDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
 import cn.hanbell.eam.ejb.WarehouseBean;
+import cn.hanbell.eam.entity.AssetAcceptanceDetail;
 import cn.hanbell.eam.entity.AssetDistribute;
 import cn.hanbell.eam.entity.AssetDistributeDetail;
 import cn.hanbell.eam.entity.AssetInventory;
@@ -16,6 +17,7 @@ import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetDistributeModel;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import java.math.BigDecimal;
@@ -43,7 +45,8 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
     protected AssetInventoryBean assetInventoryBean;
     @EJB
     protected WarehouseBean warehouseBean;
-
+    @EJB
+    private SystemUserBean systemUserBean;
     protected List<String> paramCategory = null;
     protected List<String> paramHascost = null;
 
@@ -357,5 +360,20 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             showWarnMsg("Warn", "没有可更新数据");
         }
     }
+    //根据用户ID获取用户姓名
 
+    public SystemUser getUserName(String userId) {
+        SystemUser s = systemUserBean.findByUserId(userId);
+        return s;
+    }
+
+    //根据领用单号获取该单号下的总金额明细中的总金额
+    public BigDecimal getDetaiSumMoney(String formid) {
+        detailList = stationeryDistributeDetailBean.findByPId(formid);
+        BigDecimal sum = new BigDecimal(0);
+        for (AssetDistributeDetail assetDet : detailList) {
+            sum = sum.add(assetDet.getAmts());
+        }
+        return sum;
+    }
 }

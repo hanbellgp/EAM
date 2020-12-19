@@ -69,12 +69,43 @@
                     </f:facet>
                     <h:outputText value="#{item.assetItem.itemno}"/>
                 </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="库存类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.category.name}"/>
+                </p:column>
                 <p:column  styleClass="Wid30">
                     <f:facet name="header">
                         <h:outputText value="名称"/>
                     </f:facet>
                     <h:outputText value="#{item.assetItem.itemdesc}"/>
                 </p:column>
+                <p:column  styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="单位"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.unit}"/>
+                </p:column>
+                <p:column  styleClass="Wid10" style="text-align: right">
+                    <f:facet name="header">
+                        <h:outputText value="数量"/>
+                    </f:facet>
+                    <h:outputText value="#{item.qty}"/>
+                </p:column>
+                <p:column  styleClass="Wid10" style="text-align: right">
+                    <f:facet name="header">
+                        <h:outputText value="单价"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.purprice}"/>
+                </p:column>
+                <p:column  styleClass="Wid10" style="text-align: right">
+                    <f:facet name="header">
+                        <h:outputText value="总金额"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assetItem.purprice*item.qty}"/>
+                </p:column>
+
                 <p:column  styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="库号"/>
@@ -86,18 +117,6 @@
                         <h:outputText value="库名"/>
                     </f:facet>
                     <h:outputText value="#{item.warehouse.name}"/>
-                </p:column>
-                <p:column  styleClass="Wid10" style="text-align: right">
-                    <f:facet name="header">
-                        <h:outputText value="数量"/>
-                    </f:facet>
-                    <h:outputText value="#{item.qty}"/>
-                </p:column>
-                <p:column  styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="单位"/>
-                    </f:facet>
-                    <h:outputText value="#{item.assetItem.unit}"/>
                 </p:column>
             </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
