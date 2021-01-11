@@ -21,6 +21,10 @@
                     <f:selectItem itemLabel="未审核" itemValue="N"/>
                     <f:selectItem itemLabel="已审核" itemValue="T"/>
                 </p:selectOneMenu>
+                <h:outputLabel value="申请人工号" for="queryUsername" />
+                <p:inputText id="queryUsername" value="#{stationeryDistributeManagedBean.queryUsername}" title="申请人" />
+                <h:outputLabel value="领用部门" for="querDeptname" />
+                <p:inputText id="querDeptname" value="#{stationeryDistributeManagedBean.querDeptname}" title="领用部门" />
                 <h:outputLabel value="领用日期" for="queryDateBegin" />
                 <p:calendar id="queryDateBegin" value="#{stationeryDistributeManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="截止日期" for="queryDateEnd" />

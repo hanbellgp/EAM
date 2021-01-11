@@ -43,8 +43,8 @@
                 </p:selectOneMenu>
                 <h:outputLabel value="报修部门" for="queryDeptname" />
                 <p:inputText id="queryDeptname" value="#{equipmentHistoryManagedBean.queryDeptname}" title="报修部门" />
-                <h:outputLabel value="故障类型" for="queryHitchsort1" />
-                <p:selectOneMenu id="queryHitchsort1" value="#{equipmentHistoryManagedBean.queryHitchsort1}" title="故障类型"  >
+                <h:outputLabel value="故障分类" for="queryHitchsort1" />
+                <p:selectOneMenu id="queryHitchsort1" value="#{equipmentHistoryManagedBean.queryHitchsort1}" title="故障分类"  >
                     <f:selectItem  itemLabel="请选择" itemValue="ALL"/>
                     <f:selectItems value="#{equipmentHistoryManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                 </p:selectOneMenu>

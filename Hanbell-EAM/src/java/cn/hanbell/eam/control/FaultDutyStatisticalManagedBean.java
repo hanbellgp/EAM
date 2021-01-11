@@ -70,8 +70,17 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
             equipmentRepairsList.clear();
         }
         companyList = companyBean.findBySystemName("EAM");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
+        queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
+        String[] str = new String[]{userManagedBean.getCompany()};
+        company = str;
+        String comSql = " R.company= '" + company[0] + "'";
+        queryFormId = null;
+        queryName = null;
+        equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryFormId, queryName, comSql);
         createPieModel();
-        company = null;
+
     }
 
 //导出界面的EXCEL数据处理
@@ -95,7 +104,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
             Sheet sheet;
             sheet = workbook.getSheetAt(0);
             Row row;
-            if (equipmentRepairsList == null || equipmentRepairsList.size() < 0) {
+            if (equipmentRepairsList == null || equipmentRepairsList.isEmpty()) {
                 showErrorMsg("Error", "当前无数据！请先查询");
                 return;
             }
@@ -176,7 +185,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
     /**
      * 设置导出EXCEL表格样式
      */
-    private Map<String, CellStyle> createStyles(Workbook wb) {
+     private Map<String, CellStyle> createStyles(Workbook wb) {
         Map<String, CellStyle> styles = new LinkedHashMap<>();
         // 文件头样式
         CellStyle headStyle = wb.createCellStyle();
@@ -194,7 +203,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         headStyle.setBorderBottom(CellStyle.BORDER_THIN);
         headStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         Font headFont = wb.createFont();
-        headFont.setFontHeightInPoints((short) 12);
+        headFont.setFontHeightInPoints((short) 11);
         headFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
         headStyle.setFont(headFont);
         styles.put("head", headStyle);
@@ -205,6 +214,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         cellFont.setFontHeightInPoints((short) 10);
         cellStyle.setFont(cellFont);
         cellStyle.setWrapText(true);//设置自动换行
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
         cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -218,6 +228,40 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cell", cellStyle);
 
+        CellStyle leftStyle = wb.createCellStyle();
+        leftStyle.setWrapText(true);//设置自动换行
+        leftStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        leftStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        leftStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        leftStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("left", leftStyle);
+
+        CellStyle rightStyle = wb.createCellStyle();
+        rightStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        rightStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        rightStyle.setBorderRight(CellStyle.BORDER_THIN);
+        rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("right", rightStyle);
+        
+        CellStyle titleStyle = wb.createCellStyle();
+        titleStyle.setWrapText(true);//设置自动换行
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        titleStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
+        titleStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        titleStyle.setBorderRight(CellStyle.BORDER_THIN);
+        titleStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        titleStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        titleStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        titleStyle.setBorderTop(CellStyle.BORDER_THIN);
+        titleStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        titleStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        titleStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        Font headFont2 = wb.createFont();
+        headFont2.setFontHeightInPoints((short) 20);
+        headFont2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        titleStyle.setFont(headFont2);
+        styles.put("title", titleStyle);
         return styles;
     }
 
@@ -245,7 +289,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(strdate, enddate, queryFormId, queryName,companySql);
+        equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(strdate, enddate, queryFormId, queryName, companySql);
         createPieModel();
     }
 

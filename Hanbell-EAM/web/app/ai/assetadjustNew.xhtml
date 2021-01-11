@@ -75,7 +75,7 @@
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{assetAdjustManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnUserWhenNew}"
-                                    update="userT,usernameT" />
+                                    update="userT,usernameT,deptnoT,deptnameT" />
                         </p:commandButton>
                     </p:column>
                     <p:column><h:outputText value="姓名"/></p:column>
@@ -177,7 +177,7 @@
                                 <p:commandButton id="btnSystemUserSelect" actionListener="#{assetAdjustManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{assetAdjustManagedBean.handleDialogReturnUserWhenDetailEdit}"
-                                            update="userno2,username2" />
+                                            update="userno2,username2,deptno2,deptname2" />
                                 </p:commandButton>
                             </p:column>
                         </p:row>

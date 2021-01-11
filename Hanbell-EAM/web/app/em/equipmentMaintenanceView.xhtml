@@ -23,11 +23,11 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障紧急度"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型"/></p:column>
                     <p:column > 
                         <h:outputText id="hitchurgency" value="#{equipmentMaintenanceManagedBean.getHitchurgency(equipmentMaintenanceManagedBean.currentEntity.hitchurgency)}" title="troublefrom" />
                     </p:column>
-                     <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
                     <p:column colspan="3">
                         <h:outputText id="troublefrom" value="#{equipmentMaintenanceManagedBean.getTroubleName(equipmentMaintenanceManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
@@ -48,7 +48,7 @@
 
                 </p:row>
                 <p:row>
-                   
+
                     <p:column style="background-color: #EEEEEE" >
                         <p:outputLabel id="repairareas" value="所属厂区"/>
                     </p:column>
@@ -156,16 +156,9 @@
                             <f:selectItems  value="#{equipmentMaintenanceManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
-                    <p:column styleClass="Wid15">
-                        <p:selectOneMenu id="hitchtype" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
-                            <f:selectItem itemLabel="" itemValue="NULL"/>
-                            <f:selectItems  value="#{equipmentMaintenanceManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型1"  /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障分类"  /></p:column>
                     <p:column>
-                        <p:selectOneMenu id="hitchsort1" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchsort1}" title="故障类型1" disabled="true">
+                        <p:selectOneMenu id="hitchsort1" value="#{equipmentMaintenanceManagedBean.currentEntity.hitchsort1}" title="故障分类" disabled="true">
                             <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems value="#{equipmentMaintenanceManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                         </p:selectOneMenu>

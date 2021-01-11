@@ -23,7 +23,7 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障紧急度"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型"/></p:column>
                     <p:column > 
                         <h:outputText id="hitchurgency" value="#{equipmentAcceptanceManagedBean.getHitchurgency(equipmentAcceptanceManagedBean.currentEntity.hitchurgency)}" title="troublefrom" />
                     </p:column>
@@ -168,16 +168,10 @@
                             <f:selectItems  value="#{equipmentAcceptanceManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
-                    <p:column styleClass="Wid15">
-                        <p:selectOneMenu id="hitchtype" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
-                            <f:selectItem itemLabel="" itemValue="NULL"/>
-                            <f:selectItems  value="#{equipmentAcceptanceManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型1"  /></p:column>
+                   
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障分类"  /></p:column>
                     <p:column>
-                        <p:selectOneMenu id="hitchsort1" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchsort1}" title="故障类型1" disabled="true">
+                        <p:selectOneMenu id="hitchsort1" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchsort1}" title="故障分类" disabled="true">
                             <f:selectItem itemLabel="" itemValue="NULL"/>
                             <f:selectItems value="#{equipmentAcceptanceManagedBean.equipmentTroubleList}" var="equipmentTroubleList" itemLabel="#{equipmentTroubleList.troublename}" itemValue="#{equipmentTroubleList.troubleid}" />
                         </p:selectOneMenu>

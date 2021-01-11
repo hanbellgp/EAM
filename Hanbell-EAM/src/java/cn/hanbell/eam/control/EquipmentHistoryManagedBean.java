@@ -347,12 +347,11 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         HSSFSheet sheet1 = workbook.createSheet("Sheet1");
         // 设置表格宽度
         int[] wt1 = getInventoryWidth();
-        for (int i = 0; i < wt1.length; i++) {
-            sheet1.setColumnWidth(i, wt1[i] * 256);
-        }
+
         //创建标题行
         Row row;
         Row row2;
+
         String[] title1 = getInventoryTitle();
         String[] title2 = getInventoryTitle2();
         row = sheet1.createRow(0);
@@ -383,11 +382,17 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         }
         sheet1.addMergedRegion(new CellRangeAddress(0, 0, 8, 13));
         sheet1.addMergedRegion(new CellRangeAddress(0, 0, 14, 17));
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 18, 21));
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 22, 24));
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 18, 20));
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 21, 25));
+        //设置宽度
+        for (int i = 0; i < wt1.length; i++) {
+            sheet1.setColumnWidth(i, wt1[i] * 256);
+        }
+        //设置第二行行高
+        row2.setHeight((short) (18 * 40));
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
         int j = 2;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         for (EquipmentRepair equipmentrepair : equipmentrepairList) {
             if (!queryFaultTime.equals("NULL")) {
                 //从对象中拿到时间
@@ -420,6 +425,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cell2.setCellValue(equipmentrepair.getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
+
             cell3.setCellValue(equipmentrepair.getAssetno() == null ? "其他" : equipmentrepair.getAssetno().getAssetDesc());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
@@ -466,7 +472,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             }
 
             Cell cell13 = row.createCell(13);
-            cell12.setCellStyle(style.get("cell"));
+            cell13.setCellStyle(style.get("cell"));
+            cell13.setCellStyle(style.get("right"));
             if (equipmentrepair.getCompletetime() != null && equipmentrepair.getServicearrivetime() != null) {
                 cell13.setCellValue(getTimeDifference(equipmentrepair.getCompletetime(), equipmentrepair.getServicearrivetime(), 0));
             }
@@ -475,13 +482,13 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cell14.setCellValue(getTroubleName(equipmentrepair.getTroublefrom()));
 
             Cell cell15 = row.createCell(15);
-            cell15.setCellStyle(style.get("cell"));
+            cell15.setCellStyle(style.get("left"));
             cell15.setCellValue(equipmentrepair.getHitchalarm());
 
             Cell cell16 = row.createCell(16);
             cell16.setCellStyle(style.get("cell"));
             if (equipmentrepair.getHitchtype() != null && !equipmentrepair.getHitchtype().equals("NULL")) {
-                String hitchtype = sysCodeBean.getTroubleName("RD", "hitchurgency", equipmentrepair.getHitchtype()).getCdesc();
+                String hitchtype = sysCodeBean.getTroubleName("RD", "hitchurgency", equipmentrepair.getHitchurgency()).getCdesc();
                 cell16.setCellValue(hitchtype);
             }
 
@@ -493,15 +500,15 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             }
 
             Cell cell18 = row.createCell(18);
-            cell18.setCellStyle(style.get("cell"));
+            cell18.setCellStyle(style.get("left"));
             cell18.setCellValue(equipmentrepair.getRepairmethod());
 
             Cell cell19 = row.createCell(19);
-            cell19.setCellStyle(style.get("cell"));
+            cell19.setCellStyle(style.get("left"));
             cell19.setCellValue(equipmentrepair.getHitchreason());
 
             Cell cell20 = row.createCell(20);
-            cell20.setCellStyle(style.get("cell"));
+            cell20.setCellStyle(style.get("left"));
             cell20.setCellValue(equipmentrepair.getRepairprocess());
             detailList2 = equipmentRepairSpareBean.findByPId(equipmentrepair.getFormid());
             maintenanceCosts = 0;
@@ -564,7 +571,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
      */
     private String[] getInventoryTitle() {
 
-        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "报修人", "使用部门", "进度", "维修人", "故障/停机时间", "", "", "", "", "故障", "", "", "", "原因及改善对策", "", "", "", "费用", "", ""};
+        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "报修人", "使用部门", "进度", "维修人", "故障/停机时间", "", "", "", "", "", "故障", "", "", "", "原因及改善对策", "", "", "费用", "", "", "", ""};
     }
 
     /**
@@ -579,7 +586,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{15, 20, 15, 15, 10, 15, 10, 10, 20, 20, 20, 20, 15, 10, 10, 10, 20, 20, 25, 25, 20, 15, 15, 15, 30, 15};
+        return new int[]{15, 20, 15, 15, 10, 15, 10, 10, 20, 20, 20, 10, 10, 10, 10, 20, 10, 10, 25, 25, 25, 10, 10, 10, 15, 10};
     }
 
     /**
@@ -614,6 +621,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         cellFont.setFontHeightInPoints((short) 10);
         cellStyle.setFont(cellFont);
         cellStyle.setWrapText(true);//设置自动换行
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
         cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -627,6 +635,20 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cell", cellStyle);
 
+        CellStyle leftStyle = wb.createCellStyle();
+        leftStyle.setWrapText(true);//设置自动换行
+        leftStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        leftStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        leftStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        leftStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("left", leftStyle);
+
+        CellStyle rightStyle = wb.createCellStyle();
+        rightStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        rightStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        rightStyle.setBorderRight(CellStyle.BORDER_THIN);
+        rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("right", rightStyle);
         return styles;
     }
 

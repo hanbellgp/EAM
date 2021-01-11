@@ -61,31 +61,31 @@
                     </f:facet>
                     <h:outputText value="#{item.assetDistribute.formid}"/>
                 </p:column>
-                 <p:column styleClass="Wid10">
+                 <p:column styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="用品类别"/>
                     </f:facet>
                     <h:outputText value="#{item.assetItem.category.name}"/>
                 </p:column>
-                <p:column styleClass="Wid30">
+                <p:column styleClass="Wid20">
                     <f:facet name="header">
                         <h:outputText value="用品名称"/>
                     </f:facet>
                     <h:outputText value="#{item.assetItem.itemdesc}"/>
                 </p:column>
-                <p:column  styleClass="Wid5" style="text-align: center" >
+                <p:column  styleClass="Wid10" style="text-align: center" >
                     <f:facet name="header" >
                         <h:outputText value="单位"/>
                     </f:facet>
                     <h:outputText value="#{item.assetItem.unit}"/>
                 </p:column>
-                 <p:column  styleClass="Wid5">
+                 <p:column  styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="数量"/>
                     </f:facet>
                     <h:outputText value="#{item.qty}"/>
                 </p:column>
-                <p:column  styleClass="Wid5">
+                <p:column  styleClass="Wid10">
                     <f:facet name="header">
                         <h:outputText value="单价"/>
                     </f:facet>
@@ -111,18 +111,13 @@
                         <f:convertDateTime pattern="yyyy/MM/dd" />
                     </h:outputText>
                 </p:column>
-                 <p:column  styleClass="Wid10">
+                 <p:column  styleClass="Wid15">
                     <f:facet name="header">
                         <h:outputText value="部门"/>
                     </f:facet>
                     <h:outputText value="#{item.deptname}"/>
                 </p:column>
-                <p:column  styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="部门代号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.deptno}"/>
-                </p:column>
+              
                
                
                 <p:column  styleClass="Wid10">
@@ -133,7 +128,7 @@
                         <f:convertDateTime pattern="yyyy/MM/dd" />
                     </h:outputText>
                 </p:column>
-                <p:column  styleClass="Wid5" style="text-align: center">
+                <p:column  styleClass="Wid10" style="text-align: center">
                     <f:facet name="header">
                         <h:outputText value="状态"/>
                     </f:facet>

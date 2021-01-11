@@ -1,120 +1,80 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../WEB-INF/template.xhtml"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
-
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" template="./../../WEB-INF/template.xhtml">
     <ui:define name="content">
         <h:form id="formList">
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
-            <p:panelGrid id="plgQuery"  styleClass="plgQuery Wid100">
-                <f:facet name="header">
-                    <p:row>
-                        <p:column colspan="4">查询条件</p:column>
-                    </p:row>
-                </f:facet>
-              
-                <p:row>
-                    <p:column styleClass="Wid20"><h:outputLabel value="盘点单号" for="queryFormId" /></p:column>
-                    <p:column styleClass="Wid30">
-                        <p:inputText id="queryFormId" value="#{AssetchecktempManagedBean.queryFormId}" title="单号" />
-                    </p:column>
-                    <p:column><h:outputLabel value="盘点日期" for="queryDateBegin" /></p:column>
-                    <p:column>
-                        <p:calendar id="queryDateBegin" value="#{AssetchecktempManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
-                    </p:column>
-                   
-                </p:row>  
-                  
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header"> 查询条件 </f:facet>
+                <p:column>
+                    <h:outputLabel value="盘点单号" for="queryFormId"/>
+                </p:column>
+                <p:column>
+                    <p:inputText id="queryFormId" value="#{assetchecktempManagedBean.queryFormId}" title="单号"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="盘点日期" for="queryDateBegin"/>
+                </p:column>
+                <p:column>
+                    <p:calendar id="queryDateBegin" value="#{assetchecktempManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                </p:column>
+                <h:outputLabel value="类型" for="queryItimes"/>
+                <p:selectOneMenu id="queryItimes" value="#{assetchecktempManagedBean.queryItimes}" title="类型">
+                    <f:selectItem itemLabel="全部" itemValue="2"/>
+                    <f:selectItem itemLabel="初盘" itemValue="0"/>
+                    <f:selectItem itemLabel="复盘" itemValue="1"/>
+                </p:selectOneMenu>
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{AssetchecktempManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
-                     
-                     
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetchecktempManagedBean.init()}" icon="ui-icon-search" update=":formList"/>
                 </f:facet>
                 <f:facet name="right">
-                     <p:commandButton id="btnPrint" value="导出盘点差异" actionListener="#{AssetchecktempManagedBean.print()}" icon="ui-icon-print"
-                                     />
-                     <p:commandButton id="btnUnverify" value="导出初复盘差异" actionListener="#{AssetchecktempManagedBean.printdiff()}" icon="ui-icon-print"
-                                     />
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{AssetchecktempManagedBean.reset()}" icon="ui-icon-refresh"
-                                     update=":formList"/>
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{AssetchecktempManagedBean.query()}" icon="ui-icon-search"
-                                     update=":formList"/>
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnPrint" value="导出数据" actionListener="#{assetchecktempManagedBean.print()}" icon="ui-icon-print"/>
+                        <p:menuitem id="btnPrintinventorydiff" value="导出盘点差异" actionListener="#{assetchecktempManagedBean.printinventorydiff()}" icon="ui-icon-print"/>
+                        <p:menuitem id="btnUnverify" value="导出初复盘差异" actionListener="#{assetchecktempManagedBean.printdiff()}" icon="ui-icon-print"/>
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{assetchecktempManagedBean.reset()}" icon="ui-icon-refresh" update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetchecktempManagedBean.query()}" icon="ui-icon-search" update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:dataTable value="#{AssetchecktempManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="15,30,45"  lazy="true"
-                         selectionMode="single" selection="#{AssetchecktempManagedBean.currentEntity}" rowKey="#{item.id}" >
-                <f:facet name="header">
-                    设备盘点维护
-                </f:facet>
-                <p:ajax event="rowSelect"  update=":formList:toolbar" />
-                <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                <p:column styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="盘点单号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.formid}"/>
+            <p:dataTable value="#{assetchecktempManagedBean.assetchecktempList}" var="item" tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15" rowsPerPageTemplate="15,30,45">
+                <f:facet name="header"> 设备盘点维护 </f:facet>
+                <p:ajax event="rowSelect" update=":formList:toolbar"/>
+                <p:ajax event="rowUnselect" update=":formList:toolbar"/>
+                <p:column styleClass="Wid20" headerText="盘点单号" sortBy="#{item[0]}" style="text-align: center">
+                    <h:outputText value="#{item[0]}"/>
                 </p:column>
-            
-                 <p:column  styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="品号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.assetDesc}"/>
+                <p:column styleClass="Wid20" headerText="品号" sortBy="#{item[1]}" style="text-align: center">
+                    <h:outputText value="#{item[1]}"/>
                 </p:column>
-                  <p:column  styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="名称"/>
-                    </f:facet>
-                    <h:outputText value="#{item.assetSpec}"/>
+                <p:column styleClass="Wid20" headerText="名称" sortBy="#{item[2]}" style="text-align: center">
+                    <h:outputText value="#{item[2]}"/>
                 </p:column>
-                <p:column  styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="编号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.assetno}"/>
+                <p:column styleClass="Wid20" headerText="编号" sortBy="#{item[3]}" style="text-align: center">
+                    <h:outputText value="#{item[3]}"/>
                 </p:column>
-                 <p:column  styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="数量"/>
-                    </f:facet>
-                    <h:outputText value="#{item.qty}"/>
+                <p:column styleClass="Wid10" headerText="数量" sortBy="#{item[4]}" style="text-align: right">
+                    <h:outputText value="#{item[4]}"/>
                 </p:column>
-             
-                 <p:column  styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="类型"/>
-                    </f:facet>
-                    <h:outputText value="#{item.itimes==0 ?'初盘':'复盘'}"/>
-                </p:column> 
-                <p:column  styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="部门"/>
-                    </f:facet>
-                    <h:outputText value="#{item.deptname}"/>
+                <p:column styleClass="Wid20" headerText="类型" sortBy="#{item[5]}" style="text-align: center">
+                    <h:outputText value="#{item[5]==0 ?'初盘':'复盘'}"/>
                 </p:column>
-                <p:column  styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="使用人"/>
-                    </f:facet>
-                    <h:outputText value="#{item.username}"/>
+                <p:column styleClass="Wid20" headerText="部门" sortBy="#{item[6]}" style="text-align: center">
+                    <h:outputText value="#{item[6]}"/>
                 </p:column>
-               
+                <p:column styleClass="Wid20" headerText="使用人" sortBy="#{item[7]}" style="text-align: center">
+                    <h:outputText value="#{item[7]}"/>
+                </p:column>
             </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
             </p:confirmDialog>
             <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnPrint,btnUnverify">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>
     </ui:define>
-
 </ui:composition>

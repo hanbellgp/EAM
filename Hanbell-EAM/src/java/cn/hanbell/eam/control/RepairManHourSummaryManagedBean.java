@@ -47,6 +47,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.HorizontalBarChartModel;
 
 /**
  *
@@ -71,8 +75,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
     private List<String> usernameList;
     private List<SystemUser> systemUser;
     private String[] selectedUserName;
-    private LineChartModel lineModel;
-    private LineChartModel zoomModel;
+    private BarChartModel barModel;
     private List<Company> companyList;
     private String[] company;
 
@@ -93,10 +96,17 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
             usernameList.add(systemUser.get(i).getUsername());
         }
         companyList = companyBean.findBySystemName("EAM");
-        
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
+        queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
+        companyList = companyBean.findBySystemName("EAM");
+        selectedUserName = null;
+        String[] str = new String[]{userManagedBean.getCompany()};//获得公司别
+        company = str;//初始化公司别
+        String comSql = " B.company= '" + company[0] + "'";//根据公司别查询数据的SQL条件
+        detailList = equipmentRepairHelpersBean.getRepairManHourSummaryList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), "", comSql);
         createLineModels();
         selectedUserName = null;
-        detailList = null;
     }
 
 //导出界面的EXCEL数据处理
@@ -120,7 +130,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
             Sheet sheet;
             sheet = workbook.getSheetAt(0);
             Row row;
-            if (detailList == null || detailList.size() < 0) {
+            if (detailList == null || detailList.isEmpty()) {
                 showErrorMsg("Error", "当前无数据！请先查询");
                 return;
             }
@@ -172,13 +182,6 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         } catch (IOException | InvalidFormatException e) {
             showErrorMsg("Error", e.toString());
         }
-    }
-
-    /**
-     * 设置表头名称字段
-     */
-    private String[] getInventoryTitle() {
-        return new String[]{"维修人", "维修次数", "维修工时(分)", "辅助维修工时(分)", "总维修工时(分)"};
     }
 
     /**
@@ -239,7 +242,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         String strdate = "";
         String enddate = "";
         String sql = "";
-        String companySql="";
+        String companySql = "";
         if (selectedUserName.length > 0) {
             for (String sqlUserName : selectedUserName) {
                 sql += "or A.curnode2= " + " '" + sqlUserName + "'";
@@ -250,7 +253,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
             for (String sqlCompanyID : company) {
                 companySql += "or  B.company= " + " '" + sqlCompanyID + "' ";
             }
-             companySql = companySql.substring(2, companySql.length());
+            companySql = companySql.substring(2, companySql.length());
         }
         if (queryDateBegin != null) {
             strdate = simpleDateFormat.format(queryDateBegin);
@@ -258,29 +261,27 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         if (queryDateEnd != null) {
             enddate = simpleDateFormat.format(queryDateEnd);
         }
-        
-        detailList = equipmentRepairHelpersBean.getRepairManHourSummaryList(strdate, enddate,sql,companySql);
+
+        detailList = equipmentRepairHelpersBean.getRepairManHourSummaryList(strdate, enddate, sql, companySql);
         createLineModels();
     }
 
     private void createLineModels() {
-
-        lineModel = initCategoryModel();
-        lineModel.setShowPointLabels(true);
-        lineModel.getAxes().put(AxisType.X, new CategoryAxis(""));
-        Axis yAxis = lineModel.getAxis(AxisType.Y);
+        barModel = initCategoryModel();
+        barModel.getAxis(AxisType.X);
+        Axis yAxis = barModel.getAxis(AxisType.Y);
         yAxis.setLabel("工时（分）");
-        lineModel.setTitle("维修工时折线图");
-        lineModel.setMouseoverHighlight(false);
+        barModel.setTitle("维修工时汇总山积图");
+        barModel.setLegendPosition("ne");
         yAxis.setMin(0);
         Axis y2Axis = new LinearAxis("次数");
         y2Axis.setMin(0);
-        lineModel.getAxes().put(AxisType.Y2, y2Axis);
-
+        barModel.getAxes().put(AxisType.Y2, y2Axis);
+        barModel.setShowPointLabels(true);
     }
 
-    private LineChartModel initCategoryModel() {
-        LineChartModel model1 = new LineChartModel();
+    private BarChartModel initCategoryModel() {
+        barModel = new BarChartModel();
         List<?> itemList = detailList;
         List<Object[]> list = (List<Object[]>) itemList;
         List<Object[]> arrList = new ArrayList<>();
@@ -312,48 +313,53 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
                 arrList.add(obj);
             }
         }
-
+        ChartSeries maintenanceTime = new ChartSeries();
+        ChartSeries auxiliaryTime = new ChartSeries();
+        LineChartSeries totalTime = new LineChartSeries();
+        LineChartSeries maintenanceCount = new LineChartSeries();
+        maintenanceCount.setLabel("maintenanceCount");
+        maintenanceCount.setXaxis(AxisType.X);
+        maintenanceCount.setYaxis(AxisType.Y2);
+        totalTime.setShowLine(false);
         for (int i = 0; i < arrList.size(); i++) {
-            LineChartSeries boys = new LineChartSeries();
-            LineChartSeries girls = new LineChartSeries();
-            girls.setLabel("Girls");
-            girls.setXaxis(AxisType.X);
-            girls.setYaxis(AxisType.Y2);
-            for (int j = 0; j < list.size(); j++) {
-                if (i == 0) {
-                    if (j == 0) {
-                        girls.setLabel(arrList.get(i)[0].toString());
-                    }
-                    girls.set(list.get(j)[0], Double.parseDouble(arrList.get(i)[j + 1].toString()));
-                } else {
-                    if (j == 0) {
-                        boys.setLabel(arrList.get(i)[0].toString());
-                    }
-                    boys.set(list.get(j)[0], Double.parseDouble(arrList.get(i)[j + 1].toString()));
-                }
 
-            }
-            if (i == 0) {
-                model1.addSeries(girls);
-            } else {
-                model1.addSeries(boys);
+            for (int j = 0; j < list.size(); j++) {
+                switch (i) {
+                    case 0:
+                        if (j == 0) {
+                            maintenanceCount.setLabel(arrList.get(i)[0].toString());
+                        }
+                        maintenanceCount.set(list.get(j)[0], Double.parseDouble(arrList.get(i)[j + 1].toString()));
+                        break;
+                    case 1:
+                        if (j == 0) {
+                            maintenanceTime.setLabel(arrList.get(i)[0].toString());
+                        }
+                        maintenanceTime.set(list.get(j)[0], Double.parseDouble(arrList.get(i)[j + 1].toString()));
+                        break;
+                    case 2:
+                        if (j == 0) {
+                            auxiliaryTime.setLabel(arrList.get(i)[0].toString());
+                        }
+                        auxiliaryTime.set(list.get(j)[0], Double.parseDouble(arrList.get(i)[j + 1].toString()));
+                        break;
+                    case 3:
+                        if (j == 0) {
+                            totalTime.setLabel(arrList.get(i)[0].toString());
+                        }
+                        totalTime.set(list.get(j)[0], Double.parseDouble(arrList.get(i)[j + 1].toString()));
+                        break;
+                }
             }
 
         }
 
-//        arrList.forEach(objects -> {
-//            LineChartSeries boys = new LineChartSeries();
-//            boys.setLabel(objects[0].toString());
-//            boys.set(objects[0].toString(), Double.parseDouble(objects[1].toString()) / 60);
-//            for (Object[] li : list) {
-//                  boys.set(li[0], Double.parseDouble(objects[2].toString()) / 60);
-//            }
-//            boys.set("维修工时", Double.parseDouble(objects[2].toString()) / 60);
-//            boys.set("辅助维修工时", Double.parseDouble(objects[3].toString()) / 60);
-//            boys.set("总维修工时", Double.parseDouble(objects[4].toString()) / 60);
-//        });
-        model1.setLegendPosition("e");
-        return model1;
+        barModel.addSeries(maintenanceTime);
+        barModel.addSeries(auxiliaryTime);
+//        barModel.addSeries(maintenanceCount);
+//        barModel.addSeries(totalTime);
+        barModel.setStacked(true);
+        return barModel;
     }
 
     public List<String> getUsernameList() {
@@ -380,22 +386,6 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         this.selectedUserName = selectedUserName;
     }
 
-    public LineChartModel getLineModel() {
-        return lineModel;
-    }
-
-    public void setLineModel(LineChartModel lineModel) {
-        this.lineModel = lineModel;
-    }
-
-    public LineChartModel getZoomModel() {
-        return zoomModel;
-    }
-
-    public void setZoomModel(LineChartModel zoomModel) {
-        this.zoomModel = zoomModel;
-    }
-
     public List<Company> getCompanyList() {
         return companyList;
     }
@@ -410,6 +400,14 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
 
     public void setCompany(String[] company) {
         this.company = company;
+    }
+
+    public BarChartModel getBarModel() {
+        return barModel;
+    }
+
+    public void setBarModel(BarChartModel barModel) {
+        this.barModel = barModel;
     }
 
 }

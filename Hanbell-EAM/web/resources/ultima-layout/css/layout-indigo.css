@@ -72,7 +72,14 @@
   padding: 0; }
   .nopad .ui-panel-content {
     padding: 0; }
-
+.layout-wrapper .layout-menu .layout-menu-tooltip {
+    display: none;
+    padding: 0 5px;
+    position: absolute;
+    left: 76px;
+    top: 7px;
+    z-index: 101;
+    line-height: 1; }
 @-webkit-keyframes fadeInDown {
   from {
     opacity: 0;

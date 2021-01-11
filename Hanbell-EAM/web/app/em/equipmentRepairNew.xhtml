@@ -41,10 +41,11 @@
                         <h:outputText id="itemno" value="#{equipmentRepairManagedBean.newEntity.itemno.equals('9')?'其他':equipmentRepairManagedBean.newEntity.assetno.assetDesc}" title="itemno" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE">
-                        <p:outputLabel value="故障紧急度" for="hitchurgency"/>
+                        <p:outputLabel value="故障类型" for="hitchurgency"/>
                     </p:column>
                     <p:column styleClass="Wid15">
-                        <p:selectOneMenu id="hitchurgency" value="#{equipmentRepairManagedBean.newEntity.hitchurgency}" title="troublefrom" required="true" requiredMessage="请选择故障来源">
+                        <p:selectOneMenu id="hitchurgency" value="#{equipmentRepairManagedBean.newEntity.hitchurgency}" title="troublefrom" required="true" requiredMessage="请选择故障类型">
+                            <f:selectItem itemLabel="请选择故障类型" itemValue=""/>
                             <f:selectItems  value="#{equipmentRepairManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>

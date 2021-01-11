@@ -23,11 +23,11 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障紧急度"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障类型"/></p:column>
                     <p:column > 
                         <h:outputText id="hitchurgency" value="#{equipmentHistoryManagedBean.getHitchurgency(equipmentHistoryManagedBean.currentEntity.hitchurgency)}" title="troublefrom" />
                     </p:column>
-                       <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
                     <p:column colspan="3">
                         <h:outputText id="troublefrom" value="#{equipmentHistoryManagedBean.getTroubleName(equipmentHistoryManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
@@ -48,7 +48,7 @@
 
                 </p:row>
                 <p:row>
-                 
+
                     <p:column style="background-color: #EEEEEE" >
                         <p:outputLabel id="repairareas" value="所属厂区"/>
                     </p:column>
@@ -137,7 +137,7 @@
                     <p:column>
                         <h:outputText id="hitchdutydeptname" value="#{equipmentHistoryManagedBean.currentEntity.hitchdutydeptname}"  title="downtime" />
                     </p:column>
-                      <p:column style="background-color: #EEEEEE"><h:outputText value="是否重复维修"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="是否重复维修"/></p:column>
                     <p:column>
                         <p:selectOneMenu id="remark" value="#{equipmentHistoryManagedBean.currentEntity.remark}" disabled="true">
                             <f:selectItem itemLabel="否" itemValue="false"/>
@@ -168,13 +168,7 @@
                             <f:selectItems  value="#{equipmentHistoryManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障类型"  /></p:column>
-                    <p:column styleClass="Wid15">
-                        <p:selectOneMenu id="hitchtype" value="#{equipmentHistoryManagedBean.currentEntity.hitchtype}" title="hitchtype" disabled="true" >
-                            <f:selectItems  value="#{equipmentHistoryManagedBean.hitchurgencyList}" var="hitchurgencyList" itemLabel="#{hitchurgencyList.cdesc}" itemValue="#{hitchurgencyList.cvalue}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15" ><h:outputText value="故障类型1"  /></p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15" ><h:outputText value="故障分类"  /></p:column>
                     <p:column >
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentHistoryManagedBean.currentEntity.hitchsort1}" title="hitchsort1" disabled="true">
                             <f:selectItem itemLabel="" itemValue="NULL"/>
@@ -197,7 +191,7 @@
                         </c:if>  
                         <c:forEach items="#{equipmentHistoryManagedBean.detailList}" var ="li" varStatus="status">
                             <c:if test="${li.filefrom=='报修图片'}">  
-                                <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width=200,height=200" onclick="width=500,height=500"  alt="#{li.filename}"/>
+                                <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width = 200, height = 200" onclick="width = 500, height = 500"  alt="#{li.filename}"/>
                             </c:if>  
                         </c:forEach>
                     </p:column>
@@ -236,7 +230,7 @@
                             </c:if>  
                             <c:forEach items="#{equipmentHistoryManagedBean.detailList}" var ="li" varStatus="status">
                                 <c:if test="${li.filefrom=='维修图片'}">   
-                                    <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width=200,height=200" onclick="width=500,height=500"  alt="#{li.filename}"/>
+                                    <img src="#{li.filepath}" width="200px" height="200px"  onMouseOut="width = 200, height = 200" onclick="width = 500, height = 500"  alt="#{li.filename}"/>
                                 </c:if> 
                             </c:forEach>
 

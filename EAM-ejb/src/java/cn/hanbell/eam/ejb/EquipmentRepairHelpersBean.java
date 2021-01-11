@@ -40,6 +40,8 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
         }
         if (!"".equals(sql)) {
             sb.append(" AND (").append(sql).append(" )");
+        } else {
+            sb.append(" AND (").append("e.curnode2=  '施惠军'or e.curnode2=  '彭希民'or e.curnode2=  '孙爱'or e.curnode2=  '张国荣'or e.curnode2=  '杨卫君'or e.curnode2=  '张秦'or e.curnode2=  '顾超超'or e.curnode2=  '曹雪平'or e.curnode2=  '张勇'or e.curnode2=  '章国君'or e.curnode2=  '杜玮'or e.curnode2=  '任峰'or e.curnode2=  '刘振'").append(" )");
         }
         if (!"".equals(staDate)) {
             sb.append(" AND r.hitchtime>= ").append("'").append(staDate).append("'");
@@ -91,16 +93,18 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
     }
 
     //获取维修工时汇总的List
-    public List<EquipmentRepairHelpers> getRepairManHourSummaryList(String staDate, String endDate,String sql,String companySql) {
+    public List<EquipmentRepairHelpers> getRepairManHourSummaryList(String staDate, String endDate, String sql, String companySql) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  A.curnode2,COUNT(curnode2),sum( if(rtype=0,userno,'0' ))AS Maintenancehours,sum( if(rtype=1,userno,'0' )) AS auxiliary ,SUM(userno)");
         sb.append(" FROM equipmentrepairhelpers A LEFT JOIN equipmentrepair B ON A.pid = B.formid");
         sb.append(" WHERE  B.rstatus='95'");
-         if (!"".equals(companySql)) {
+        if (!"".equals(companySql)) {
             sb.append(" AND (").append(companySql).append(" )");
         }
         if (!"".equals(sql)) {
             sb.append(" AND (").append(sql).append(" )");
+        } else {
+            sb.append(" AND (").append("A.curnode2=  '施惠军'or A.curnode2=  '彭希民'or A.curnode2=  '孙爱'or A.curnode2=  '张国荣'or A.curnode2=  '杨卫君'or A.curnode2=  '张秦'or A.curnode2=  '顾超超'or A.curnode2=  '曹雪平'or A.curnode2=  '张勇'or A.curnode2=  '章国君'or A.curnode2=  '杜玮'or A.curnode2=  '任峰'or A.curnode2=  '刘振'").append(" )");
         }
         if (!"".equals(staDate)) {
             sb.append(" AND B.hitchtime>= ").append("'").append(staDate).append("'");
