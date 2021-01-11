@@ -34,6 +34,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  *
@@ -66,14 +67,23 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
             equipmentRepairsList.clear();
         }
         companyList = companyBean.findBySystemName("EAM");
-        company=null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
+        queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
+        companyList = companyBean.findBySystemName("EAM");
+        String[] str = new String[]{userManagedBean.getCompany()};//获得公司别
+        company = str;//初始化公司别
+        String comSql = " R.company= '" + company[0] + "'";//根据公司别查询数据的SQL条件
+        queryName = null;
+        queryFormId = null;
+        equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryName, queryFormId, comSql);
     }
 
 //导出界面的EXCEL数据处理
     @Override
     public void print() throws ParseException {
 
-        fileName = "故障统计表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        fileName = "故障停线统计表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式
@@ -87,22 +97,37 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         }
         //创建标题行
         Row row;
+        Row row1;
+        Row row2;
         //表格一
         String[] title1 = getInventoryTitle();
         row = sheet1.createRow(0);
-        row.setHeight((short) 800);
-
+        row.setHeight((short) 900);
+        row1 = sheet1.createRow(1);
+        row1.setHeight((short) 800);
+        row2 = sheet1.createRow(2);
+        row2.setHeight((short) 800);
         for (int i = 0; i < title1.length; i++) {
-            Cell cell = row.createCell(i);
+            Cell cell = row2.createCell(i);
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
-        if (equipmentRepairsList==null||equipmentRepairsList.size() <=0) {
+
+        if (equipmentRepairsList == null || equipmentRepairsList.isEmpty()) {
             showErrorMsg("Error", "当前无数据！请先查询");
             return;
         }
 
-        int j = 1;
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));
+        Cell cellTitle = row.createCell(0);
+        cellTitle.setCellStyle(style.get("title"));
+        cellTitle.setCellValue("故障停线统计表");
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 6));
+        Cell cellTime = row1.createCell(0);
+        cellTime.setCellStyle(style.get("date"));
+        SimpleDateFormat date = new SimpleDateFormat("yyyy年MM月dd日");
+        cellTime.setCellValue(date.format(queryDateBegin) + "-----" + date.format(queryDateEnd));
+        int j = 3;
         List<?> itemList = equipmentRepairsList;
 
         List<Object[]> list = (List<Object[]>) itemList;
@@ -159,14 +184,14 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "报修部门", "紧急(次数)", "急(次数)", "不急(次数)","维修总次数"};
+        return new String[]{"资产编号", "设备名称", "报修部门", "停线    (次数)", "不停线 (次数)", "功能不完整(次数)", "维修总 次数"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{20, 20, 20, 15, 15, 15,20};
+        return new int[]{20, 15, 20, 10, 10, 13, 10};
     }
 
     /**
@@ -190,7 +215,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         headStyle.setBorderBottom(CellStyle.BORDER_THIN);
         headStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         Font headFont = wb.createFont();
-        headFont.setFontHeightInPoints((short) 12);
+        headFont.setFontHeightInPoints((short) 11);
         headFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
         headStyle.setFont(headFont);
         styles.put("head", headStyle);
@@ -201,6 +226,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         cellFont.setFontHeightInPoints((short) 10);
         cellStyle.setFont(cellFont);
         cellStyle.setWrapText(true);//设置自动换行
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
         cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -214,6 +240,39 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cell", cellStyle);
 
+        CellStyle leftStyle = wb.createCellStyle();
+        leftStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        leftStyle.setWrapText(true);//设置自动换行
+        leftStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        leftStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        leftStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        leftStyle.setBorderRight(CellStyle.BORDER_THIN);
+        styles.put("left", leftStyle);
+
+        CellStyle rightStyle = wb.createCellStyle();
+        rightStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        rightStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        rightStyle.setBorderRight(CellStyle.BORDER_THIN);
+        rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("right", rightStyle);
+
+        CellStyle titleStyle = wb.createCellStyle();
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font headFont2 = wb.createFont();
+        headFont2.setFontHeightInPoints((short) 20);
+        headFont2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        titleStyle.setFont(headFont2);
+        styles.put("title", titleStyle);
+
+        CellStyle dateStyle = wb.createCellStyle();
+        dateStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        dateStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font dateFont = wb.createFont();
+        dateFont.setFontHeightInPoints((short) 11);
+        dateFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        dateStyle.setFont(headFont);
+        styles.put("date", dateStyle);
         return styles;
     }
 
@@ -226,12 +285,12 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String strdate = "";
         String enddate = "";
-        String companySql="";
-         if (company.length > 0) {
+        String companySql = "";
+        if (company.length > 0) {
             for (String sqlCompanyID : company) {
-                companySql += "or  R.company= " + " '" + sqlCompanyID + "' "; 
+                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
             }
-             companySql = companySql.substring(2, companySql.length());
+            companySql = companySql.substring(2, companySql.length());
         }
         if (queryDateBegin != null) {
 
@@ -241,7 +300,7 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
             enddate = simpleDateFormat.format(queryDateEnd);
         }
 
-        equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(strdate, enddate, queryName, queryFormId,companySql);
+        equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(strdate, enddate, queryName, queryFormId, companySql);
 
     }
 

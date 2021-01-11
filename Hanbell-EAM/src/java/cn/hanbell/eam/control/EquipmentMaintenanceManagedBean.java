@@ -203,12 +203,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "请选择故障责任原因！");
             return;
         }
-        if (currentEntity.getHitchtype().equals("NULL")) {
-            showErrorMsg("Error", "请选择故障类型！");
-            return;
-        }
         if (currentEntity.getHitchsort1().equals("NULL")) {
-            showErrorMsg("Error", "请选择故障类型1！");
+            showErrorMsg("Error", "请选择故障分类！");
             return;
         }
         if (detailList4.size() == 1) {

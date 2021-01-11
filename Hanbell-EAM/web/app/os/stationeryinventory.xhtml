@@ -103,7 +103,7 @@
                     <f:facet name="header">
                         <h:outputText value="总金额"/>
                     </f:facet>
-                    <h:outputText value="#{item.assetItem.purprice*item.qty}"/>
+                    <h:outputText value="#{stationeryInventoryQueryBean.getAstm(item.assetItem.purprice,item.qty)}"/>
                 </p:column>
 
                 <p:column  styleClass="Wid10">

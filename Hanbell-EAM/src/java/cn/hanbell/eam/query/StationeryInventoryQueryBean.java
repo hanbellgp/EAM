@@ -11,6 +11,7 @@ import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetInventoryModel;
 import cn.hanbell.eam.web.SuperQueryBean;
+import java.math.BigDecimal;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -81,6 +82,11 @@ public class StationeryInventoryQueryBean extends SuperQueryBean<AssetInventory>
         model.getFilterFields().put("warehouse.warehouseno", this.queryWarehouse.getWarehouseno());
         queryFormId = null;
         queryName = null;
+    }
+
+    //获取每个库存单的总金额计算
+    public double getAstm(BigDecimal qty,BigDecimal price) {
+      return qty.multiply(price).doubleValue();
     }
 
     /**

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package cn.hanbell.eam.entity;
-
 import com.lightshell.comm.SuperEntity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,7 +14,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  *
  * @author C2231
@@ -28,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetCheckTemp.findById", query = "SELECT a FROM AssetCheckTemp a WHERE a.id = :id"),
     @NamedQuery(name = "AssetCheckTemp.findByCompany", query = "SELECT e FROM AssetCheckTemp e WHERE e.company = :company"),
     @NamedQuery(name = "AssetCheckTemp.findByFormid", query = "SELECT e FROM AssetCheckTemp e WHERE e.formid = :formid"),
-    @NamedQuery(name = "AssetCheckTemp.findByItemno", query = "SELECT a FROM AssetCheckTemp a WHERE a.itemno = :itemno"),
+    @NamedQuery(name = "AssetCheckTemp.findByItemno", query = "SELECT e FROM AssetCheckTemp e WHERE e.itemno = :itemno"),
     @NamedQuery(name = "AssetCheckTemp.findByAssetno", query = "SELECT e FROM AssetCheckTemp e WHERE e.assetno = :assetno"),
     @NamedQuery(name = "AssetCheckTemp.findByAssetDesc", query = "SELECT e FROM AssetCheckTemp e WHERE e.assetDesc = :assetDesc"),
     @NamedQuery(name = "AssetCheckTemp.findByAssetSpec", query = "SELECT e FROM AssetCheckTemp e WHERE e.assetSpec = :assetSpec"),
@@ -108,7 +106,7 @@ public class AssetCheckTemp extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-
+ 
 
     public AssetCheckTemp() {
     }
@@ -127,7 +125,6 @@ public class AssetCheckTemp extends SuperEntity {
         this.iqty = iqty;
         this.status = status;
     }
-
 
     public String getCompany() {
         return company;
@@ -257,7 +254,6 @@ public class AssetCheckTemp extends SuperEntity {
         this.remark = remark;
     }
 
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -279,5 +275,5 @@ public class AssetCheckTemp extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.AssetCheckTemp[ id=" + id + " ]";
     }
-    
+
 }

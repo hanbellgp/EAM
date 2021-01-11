@@ -78,32 +78,6 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
     public void print() throws ParseException {
 
         List<Object[]> monthList = equipmentRepairBean.getYearMTBFAndMTTR(stayear);
-        Map<String, List<Object>> moMap = new LinkedHashMap<>();
-        //将资产编号相同几部门相同的数据存在一起
-        monthList.forEach(objects -> {
-            List<Object> assetno = new ArrayList<>();
-            String anKey = "";
-            if (objects[0] == null) {
-                anKey = 9 + objects[2].toString();
-            } else {
-                anKey = objects[0].toString() + objects[2].toString();
-            }
-            if (moMap.containsKey(anKey)) {
-                for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
-                    if (entry.getKey().equals(anKey)) {
-                        assetno = entry.getValue();
-                        assetno.add(objects);
-                        moMap.put(anKey, assetno);
-
-                    }
-                }
-
-            } else {
-                assetno.add(objects);
-                moMap.put(anKey, assetno);
-
-            }
-        });
 
         fileName = "月单位故障统计" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
@@ -122,7 +96,6 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         Row row1;
         Row row2;
         //表格一
-
         String[] title2 = getInventoryTitle2();
         String[] title3 = getInventoryTitle3();
         row = sheet1.createRow(0);
@@ -131,7 +104,7 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         row2 = sheet1.createRow(2);
         Cell cell = row.createCell(0);
         cell.setCellStyle(style.get("head"));
-        cell.setCellValue(stayear + "年设备故障统计表");
+        cell.setCellValue(stayear + "年设备故障月统计表");
         sheet1.createFreezePane(3, 0);//固定第一行十五个列
         for (int i = 0; i < 12; i++) {
             sheet1.addMergedRegion(new CellRangeAddress(0, 1, 3 + (i * 3) + i, 6 + (i * 3) + i));
@@ -153,204 +126,31 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
             cell1.setCellValue(title3[i]);
         }
         sheet1.addMergedRegion(new CellRangeAddress(0, 1, 0, 2));
-
+        row2.setHeight((short) (18 * 40));
         if (monthList == null || monthList.isEmpty()) {
             showErrorMsg("Error", "当前无数据！请先查询");
             return;
         }
-        DecimalFormat df = new DecimalFormat("0.00%");
-        df.setRoundingMode(RoundingMode.DOWN);
-        HSSFCellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
-
         int j = 3;
-        for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
+        for (Object[] eq : monthList) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);
-            List<?> itemList = entry.getValue();;
-
-            List<Object[]> list = (List<Object[]>) itemList;
-            Cell cell0 = row.createCell(0);
-            cell0.setCellStyle(style.get("cell"));
-            if (list.get(0)[0] != null) {
-                cell0.setCellValue(list.get(0)[0].toString());
-            }
-            Cell cell1 = row.createCell(1);
-            cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(list.get(0)[1].toString());
-            Cell cell2 = row.createCell(2);
-            cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(list.get(0)[2].toString());
-            for (Object[] eq : list) {
-                switch (Integer.parseInt(eq[8].toString())) {
-                    case 1:
-                        cell = row.createCell(3);
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(4);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(5);
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(6);
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 2:
-                        cell = row.createCell(7);
-
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(8);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(9);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(10);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 3:
-                        cell = row.createCell(11);
-
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(12);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(13);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(14);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 4:
-                        cell = row.createCell(15);
-
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(16);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(17);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(18);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 5:
-                        cell = row.createCell(19);
-
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(20);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(21);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(22);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 6:
-                        cell = row.createCell(23);
-
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(24);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(25);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(26);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 7:
-                        cell = row.createCell(27);
-
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(28);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(29);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(30);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 8:
-                        cell = row.createCell(31);
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(32);
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(33);
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(34);
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 9:
-                        cell = row.createCell(35);
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(36);
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(37);
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(38);
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 10:
-                        cell = row.createCell(39);
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(40);
-
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-
-                        cell = row.createCell(41);
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(42);
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 11:
-                        cell = row.createCell(43);
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(44);
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(45);
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(46);
-                        
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-                    case 12:
-                        cell = row.createCell(47);
-                        cell.setCellValue(Integer.parseInt(eq[4].toString()));
-                        cell = row.createCell(48);
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(49);
-
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(50);
-
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-                        break;
-
+            for (int i = 0; i < eq.length; i++) {
+                Cell cell1 = row.createCell(i);
+                cell1.setCellStyle(style.get("cell"));
+                if (eq[i] != null) {
+                    if (i > 2) {
+                        cell1.setCellValue(Double.parseDouble(eq[i].toString()));
+                    } else {
+                        cell1.setCellValue(eq[i].toString());
+                    }
+                } else {
+                    cell1.setCellValue(0);
                 }
+
             }
         }
-
         OutputStream os = null;
         try {
             os = new FileOutputStream(fileFullName);
@@ -375,33 +175,10 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
     public void printYear() throws ParseException {
 
         List<Object[]> monthList = equipmentRepairBean.getEveryYearMTBFAndMTTR(stayear, endyear);
-        Map<String, List<Object>> moMap = new LinkedHashMap<>();
-        //将资产编号相同几部门相同的数据存在一起
-        monthList.forEach(objects -> {
-            List<Object> assetno = new ArrayList<>();
-            String anKey = "";
-            if (objects[0] == null) {
-                anKey = 9 + objects[2].toString();
-            } else {
-                anKey = objects[0].toString() + objects[2].toString();
-            }
-            if (moMap.containsKey(anKey)) {
-                for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
-                    if (entry.getKey().equals(anKey)) {
-                        assetno = entry.getValue();
-                        assetno.add(objects);
-                        moMap.put(anKey, assetno);
-
-                    }
-                }
-
-            } else {
-                assetno.add(objects);
-                moMap.put(anKey, assetno);
-
-            }
-        });
-
+        if (monthList == null || monthList.isEmpty()) {
+            showErrorMsg("Error", "当前无数据！请先查询");
+            return;
+        }
         fileName = "年单位故障统计" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -431,7 +208,7 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         cell.setCellValue(stayear + "-" + endyear + "年设备故障统计表");
         sheet1.createFreezePane(3, 0);//固定第一行十五个列
         for (int i = 0; i < Integer.parseInt(endyear) - Integer.parseInt(stayear); i++) {
-            sheet1.addMergedRegion(new CellRangeAddress(0, 1, 3 + (i * 3) , 5 + (i * 3) ));
+            sheet1.addMergedRegion(new CellRangeAddress(0, 1, 3 + (i * 3), 5 + (i * 3)));
         }
         for (int i = 3; i < title2.length + 3; i++) {
             Cell cell1 = row.createCell(i);
@@ -450,52 +227,27 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
             cell1.setCellValue(title3[i]);
         }
         sheet1.addMergedRegion(new CellRangeAddress(0, 1, 0, 2));
-
-        if (monthList == null || monthList.isEmpty()) {
-            showErrorMsg("Error", "当前无数据！请先查询");
-            return;
-        }
-        DecimalFormat df = new DecimalFormat("0.00%");
-        df.setRoundingMode(RoundingMode.DOWN);
-        HSSFCellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
-        int[] year = getYear();
+        row.setHeight((short) 800);
         int j = 3;
-        for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
+        for (Object[] eq : monthList) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);
-            List<?> itemList = entry.getValue();;
-
-            List<Object[]> list = (List<Object[]>) itemList;
-            Cell cell0 = row.createCell(0);
-            cell0.setCellStyle(style.get("cell"));
-            if (list.get(0)[0] != null) {
-                cell0.setCellValue(list.get(0)[0].toString());
-            }
-            Cell cell1 = row.createCell(1);
-            cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(list.get(0)[1].toString());
-            Cell cell2 = row.createCell(2);
-            cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(list.get(0)[2].toString());
-            for (Object[] eq : list) {
-                for (int i = 0; i < year.length; i++) {
-                    if (Integer.parseInt(eq[8].toString()) == year[i]) {
-                        int item = 3 * i + 3;
-                        cell = row.createCell(item);
-                        cell.setCellValue(Double.parseDouble(eq[7].toString()));
-                        cell.setCellStyle(cellStyle);
-                        cell = row.createCell(item + 1);
-                        cell.setCellValue(Double.parseDouble(eq[5].toString()));
-                        cell = row.createCell(item + 2);
-                        cell.setCellValue(Double.parseDouble(eq[6].toString()));
-
+            for (int i = 0; i < eq.length; i++) {
+                Cell cell1 = row.createCell(i);
+                cell1.setCellStyle(style.get("cell"));
+                if (eq[i] != null) {
+                    if (i > 2) {
+                        cell1.setCellValue(Double.parseDouble(eq[i].toString()));
+                    } else {
+                        cell1.setCellValue(eq[i].toString());
                     }
+                } else {
+                    cell1.setCellValue(0);
                 }
+
             }
         }
-
         OutputStream os = null;
         try {
             os = new FileOutputStream(fileFullName);
@@ -524,14 +276,21 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
     }
 
     private String[] getInventoryTitle3() {
-        return new String[]{"资产编号", "设备名称", "报修部门", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)", "故障次数", "故障率", "MTBF(小时/件)", "MTTR(小时/件)"};
+        return new String[]{"资产编号", "设备名称", "报修部门", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)", "故障次数", "故障率(%)", "MTBF (分钟/件)", "MTTR (分钟/件)"};
+    }
+
+    /**
+     * 设置单元格宽度
+     */
+    private int[] getInventoryWidth1() {
+        return new int[]{20, 15, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
     }
 //    年单位表头
 
     private String[] getYearInventoryTitle() {
         int item = Integer.parseInt(endyear) - Integer.parseInt(stayear);
         String[] str = new String[3 * item];
-        int size=0;
+        int size = 0;
         for (int i = 0; i < item * 3; i++) {
             if (i % 3 == 0) {
                 str[i] = Integer.parseInt(stayear) + size + "年";
@@ -539,16 +298,6 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
             } else {
                 str[i] = "";
             }
-        }
-        return str;
-    }
-//    年单位表头
-
-    private int[] getYear() {
-        int item = Integer.parseInt(endyear) - Integer.parseInt(stayear);
-        int[] str = new int[item];
-        for (int i = 0; i < item; i++) {
-            str[i] = Integer.parseInt(stayear) + i;
         }
         return str;
     }
@@ -561,31 +310,24 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         str[2] = "报修部门";
         for (int i = 0; i < item; i++) {
             int y = (i + 1) * 3;
-            str[y] = "故障率";
-            str[y + 1] = "MTBF(小时/件)";
-            str[y + 2] = "MTTR(小时/件)";
+            str[y] = "故障率(%)";
+            str[y + 1] = "MTBF (分钟/件)";
+            str[y + 2] = "MTTR (分钟/件)";
         }
         return str;
-    }
-
-    /**
-     * 设置单元格宽度
-     */
-    private int[] getInventoryWidth1() {
-        return new int[]{20, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20, 15, 10, 20, 20};
     }
 
     private int[] getYearInventoryWidth() {
         int item = Integer.parseInt(endyear) - Integer.parseInt(stayear);
         int[] str = new int[item * 3 + 3];
         str[0] = 20;
-        str[1] = 20;
+        str[1] = 15;
         str[2] = 20;
         for (int i = 0; i < item; i++) {
             int y = (i + 1) * 3;
             str[y] = 10;
-            str[y + 1] = 20;
-            str[y + 2] = 20;
+            str[y + 1] = 10;
+            str[y + 2] = 10;
         }
         return str;
     }
@@ -611,7 +353,7 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         headStyle.setBorderBottom(CellStyle.BORDER_THIN);
         headStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         Font headFont = wb.createFont();
-        headFont.setFontHeightInPoints((short) 12);
+        headFont.setFontHeightInPoints((short) 11);
         headFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
         headStyle.setFont(headFont);
         styles.put("head", headStyle);
@@ -622,6 +364,7 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         cellFont.setFontHeightInPoints((short) 10);
         cellStyle.setFont(cellFont);
         cellStyle.setWrapText(true);//设置自动换行
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
         cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -635,6 +378,39 @@ public class RepairYrMonStatisticsManagedBean extends FormMultiBean<EquipmentRep
         cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cell", cellStyle);
 
+        CellStyle leftStyle = wb.createCellStyle();
+        leftStyle.setWrapText(true);//设置自动换行
+        leftStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        leftStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        leftStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        leftStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        leftStyle.setBorderRight(CellStyle.BORDER_THIN);
+        styles.put("left", leftStyle);
+
+        CellStyle rightStyle = wb.createCellStyle();
+        rightStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        rightStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        rightStyle.setBorderRight(CellStyle.BORDER_THIN);
+        rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("right", rightStyle);
+
+        CellStyle titleStyle = wb.createCellStyle();
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font headFont2 = wb.createFont();
+        headFont2.setFontHeightInPoints((short) 20);
+        headFont2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        titleStyle.setFont(headFont2);
+        styles.put("title", titleStyle);
+
+        CellStyle dateStyle = wb.createCellStyle();
+        dateStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        dateStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font dateFont = wb.createFont();
+        dateFont.setFontHeightInPoints((short) 11);
+        dateFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        dateStyle.setFont(headFont);
+        styles.put("date", dateStyle);
         return styles;
     }
 

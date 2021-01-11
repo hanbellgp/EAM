@@ -9,7 +9,6 @@ import cn.hanbell.eam.ejb.StationeryDistributeBean;
 import cn.hanbell.eam.ejb.StationeryDistributeDetailBean;
 import cn.hanbell.eam.ejb.AssetInventoryBean;
 import cn.hanbell.eam.ejb.WarehouseBean;
-import cn.hanbell.eam.entity.AssetAcceptanceDetail;
 import cn.hanbell.eam.entity.AssetDistribute;
 import cn.hanbell.eam.entity.AssetDistributeDetail;
 import cn.hanbell.eam.entity.AssetInventory;
@@ -49,6 +48,8 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
     private SystemUserBean systemUserBean;
     protected List<String> paramCategory = null;
     protected List<String> paramHascost = null;
+    private String queryUsername;
+    private String querDeptname;
 
     public StationeryDistributeManagedBean() {
         super(AssetDistribute.class, AssetDistributeDetail.class);
@@ -301,6 +302,12 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             if (queryDateEnd != null) {
                 this.model.getFilterFields().put("formdateEnd", queryDateEnd);
             }
+            if (querDeptname != null&&!"".equals(querDeptname)) {
+                this.model.getFilterFields().put("deptname", querDeptname);
+            }
+            if (queryUsername != null&&!"".equals(queryUsername)) {
+                this.model.getFilterFields().put("creator", queryUsername);
+            }
             if (queryState != null && !"ALL".equals(queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
@@ -376,4 +383,21 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
         }
         return sum;
     }
+
+    public String getQueryUsername() {
+        return queryUsername;
+    }
+
+    public void setQueryUsername(String queryUsername) {
+        this.queryUsername = queryUsername;
+    }
+
+    public String getQuerDeptname() {
+        return querDeptname;
+    }
+
+    public void setQuerDeptname(String querDeptname) {
+        this.querDeptname = querDeptname;
+    }
+
 }

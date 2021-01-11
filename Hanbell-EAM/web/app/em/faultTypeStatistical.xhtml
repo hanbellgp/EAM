@@ -33,7 +33,7 @@
                     </p:column>
                      <p:column><h:outputLabel value="公司别" for="company" /> </p:column>
                     <p:column>
-                        <p:selectCheckboxMenu id="company" value="#{faultDutyStatisticalManagedBean.company}"  multiple="true"
+                        <p:selectCheckboxMenu id="company" value="#{faultTypeStatisticalManagedBean.company}"  multiple="true"
                                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
                             <f:selectItems value="#{faultDutyStatisticalManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
                         </p:selectCheckboxMenu>
@@ -63,7 +63,7 @@
                 <p:column styleClass="Wid20" headerText="设备名称" sortBy="#{item[1]}"  style="text-align: center">
                     <h:outputText value="#{item[1]}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="报修部门" sortBy="#{item[2]}" style="text-align: center">
+                <p:column styleClass="Wid20" headerText="所属部门" sortBy="#{item[2]}" style="text-align: center">
                     <h:outputText value="#{item[2]}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="电器类" sortBy="#{item[3]}" style="text-align: right">

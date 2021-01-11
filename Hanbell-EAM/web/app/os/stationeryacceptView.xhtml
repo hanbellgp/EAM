@@ -61,7 +61,7 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                     <p:column><h:outputText value="厂商"/></p:column>
+                    <p:column><h:outputText value="厂商"/></p:column>
                     <p:column >
                         <h:outputText id="vendorno" value="#{stationeryAcceptanceManagedBean.currentEntity.vendorno}" title="vendorno" />
                     </p:column>
@@ -124,6 +124,12 @@
                                 <h:outputText value="仓库"/>
                             </f:facet>
                             <h:outputText value="#{item.warehouse.name}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid20" style="text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="处理人"/>
+                            </f:facet>
+                            <h:outputText value="#{stationeryAcceptanceManagedBean.getUserName(stationeryAcceptanceManagedBean.currentEntity.creator).username}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>
