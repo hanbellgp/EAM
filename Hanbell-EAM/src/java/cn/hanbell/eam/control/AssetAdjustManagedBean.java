@@ -19,7 +19,6 @@ import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetAdjustModel;
 import cn.hanbell.eam.web.FormMultiBean;
-import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import java.math.BigDecimal;
@@ -51,9 +50,6 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
 
     @EJB
     private TransactionTypeBean transactoinTypeBean;
-
-    @EJB
-    private DepartmentBean departmentBean;
 
     private TransactionType trtype;
 
@@ -254,13 +250,8 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             currentEntity.setUserno2(u.getUserid());
             currentEntity.setUsername2(u.getUsername());
             currentEntity.setDeptno2(u.getDeptno());
-            Department dept = departmentBean.findByDeptno(u.getDeptno());
-            //如果有没有维护进去的资料，则手动选择部门
-            if (dept != null) {
-                currentEntity.setDeptname2(departmentBean.findByDeptno(u.getDeptno()).getDept());
-            } else {
-                currentEntity.setDeptname2(null);
-            }
+            currentEntity.setDeptname2(u.getDept().getDept());
+
         }
     }
 
@@ -270,13 +261,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             newEntity.setUserno2(u.getUserid());
             newEntity.setUsername2(u.getUsername());
             newEntity.setDeptno2(u.getDeptno());
-            Department dept = departmentBean.findByDeptno(u.getDeptno());
-            //如果有没有维护进去的资料，则手动选择部门
-            if (dept != null) {
-                newEntity.setDeptname2(departmentBean.findByDeptno(u.getDeptno()).getDept());
-            } else {
-                newEntity.setDeptname2(null);
-            }
+            newEntity.setDeptname2(u.getDept().getDept());
         }
     }
 
@@ -459,13 +444,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             currentDetail.setUserno2(u.getUserid());
             currentDetail.setUsername2(u.getUsername());
             currentDetail.setDeptno2(u.getDeptno());
-            Department dept = departmentBean.findByDeptno(u.getDeptno());
-            //如果有没有维护进去的资料，则手动选择部门
-            if (dept != null) {
-                currentDetail.setDeptname2(departmentBean.findByDeptno(u.getDeptno()).getDept());
-            } else {
-                currentDetail.setDeptname2(null);
-            }
+            currentDetail.setDeptname2(u.getDept().getDept());
 
         }
     }

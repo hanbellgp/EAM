@@ -9,7 +9,7 @@
         <script-data-source name="scriptDS" id="6">
             <method name="open"><![CDATA[importPackage(Packages.cn.hanbell.eam.rpt);
 
-ejbClient = new AssetAdjustReport();
+ejbClient = new AssetTransferReport();
 ejbClient.setEJB(params["JNDIName"]);
 
 master = ejbClient.getEntity(params["id"]);
@@ -528,7 +528,7 @@ if(master!=null){
             <property name="dataSource">scriptDS</property>
             <method name="open"><![CDATA[currentRow = 0;]]></method>
             <method name="fetch"><![CDATA[if(currentRow < detail.size()){
-	dataSetRow["company"] = params["companyFullName"];
+		dataSetRow["company"] = params["companyFullName"];
 	dataSetRow["formid"] = master.getFormid();
 	dataSetRow["formdate"] = master.getFormdate();
 	dataSetRow["optdeptno"] = master.getDeptno();
@@ -543,43 +543,25 @@ if(master!=null){
 	if(detail.get(currentRow).getAssetCard()!=null){
 		dataSetRow["assetdesc"] = detail.get(currentRow).getAssetCard().getAssetDesc();
 		dataSetRow["assetspec"] = detail.get(currentRow).getAssetCard().getAssetSpec();
+                dataSetRow["userno"] = detail.get(currentRow).getAssetCard().getUserno();
+                dataSetRow["username"] = detail.get(currentRow).getAssetCard().getUsername();
+                dataSetRow["deptno"] = detail.get(currentRow).getAssetCard().getDeptno();
+                dataSetRow["deptname"] = detail.get(currentRow).getAssetCard().getDeptname();
+                dataSetRow["warehouse"] = detail.get(currentRow).getAssetCard().getWarehouse().getName();
+                if (detail.get(currentRow).getAssetCard().getPosition1()!=null){
+                    dataSetRow["position1"] = detail.get(currentRow).getAssetCard().getPosition1().getName();
+                }
 	}
-	dataSetRow["userno"] = detail.get(currentRow).getUserno();
-	dataSetRow["username"] = detail.get(currentRow).getUsername();
-	dataSetRow["deptno"] = detail.get(currentRow).getDeptno();
-	dataSetRow["deptname"] = detail.get(currentRow).getDeptname();
-	if (detail.get(currentRow).getPosition1()!=null){
-		dataSetRow["position1"] = detail.get(currentRow).getPosition1().getName();
-	}
-	if (detail.get(currentRow).getPosition2()!=null){
-		dataSetRow["position2"] = detail.get(currentRow).getPosition2().getName();
-	}
-	if (detail.get(currentRow).getPosition3()!=null){
-		dataSetRow["position3"] = detail.get(currentRow).getPosition3().getName();
-	}
-	if (detail.get(currentRow).getPosition4()!=null){
-		dataSetRow["position4"] = detail.get(currentRow).getPosition4().getName();
-	}
+        if (detail.get(currentRow).getPosition1()!=null){
+            dataSetRow["position12"] = detail.get(currentRow).getPosition1().getName();
+        }
+	dataSetRow["userno2"] = detail.get(currentRow).getUserno();
+	dataSetRow["username2"] = detail.get(currentRow).getUsername();
+	dataSetRow["deptno2"] = detail.get(currentRow).getDeptno();
+	dataSetRow["deptname2"] = detail.get(currentRow).getDeptname();
 	dataSetRow["qty"] = detail.get(currentRow).getQty();
 	dataSetRow["unit"] = detail.get(currentRow).getUnit();
-	dataSetRow["warehouse"] = detail.get(currentRow).getWarehouse().getName();
-	dataSetRow["userno2"] = detail.get(currentRow).getUserno2();
-	dataSetRow["username2"] = detail.get(currentRow).getUsername2();
-	dataSetRow["deptno2"] = detail.get(currentRow).getDeptno2();
-	dataSetRow["deptname2"] = detail.get(currentRow).getDeptname2();
-	if (detail.get(currentRow).getPosition12()!=null){
-		dataSetRow["position12"] = detail.get(currentRow).getPosition12().getName();
-	}
-	if (detail.get(currentRow).getPosition22()!=null){
-		dataSetRow["position22"] = detail.get(currentRow).getPosition22().getName();
-	}
-	if (detail.get(currentRow).getPosition32()!=null){
-		dataSetRow["position32"] = detail.get(currentRow).getPosition32().getName();
-	}
-	if (detail.get(currentRow).getPosition42()!=null){
-		dataSetRow["position42"] = detail.get(currentRow).getPosition42().getName();
-	}
-	dataSetRow["warehouse2"] = detail.get(currentRow).getWarehouse2().getName();	
+	dataSetRow["warehouse2"] = detail.get(currentRow).getWarehouse().getName();
 	currentRow++;
 	return true;
 }
@@ -653,7 +635,7 @@ return false;]]></method>
                     <label id="354">
                         <property name="fontSize">12pt</property>
                         <property name="textAlign">center</property>
-                        <text-property name="text">EAM异动单</text-property>
+                        <text-property name="text">EAM转移单</text-property>
                     </label>
                 </cell>
             </row>
@@ -668,7 +650,7 @@ return false;]]></method>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <label id="36">
-                        <text-property name="text">异动单号</text-property>
+                        <text-property name="text">转移单号</text-property>
                     </label>
                 </cell>
                 <cell id="17">
@@ -703,7 +685,7 @@ return false;]]></method>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <label id="39">
-                        <text-property name="text">异动日期</text-property>
+                        <text-property name="text">转移日期</text-property>
                     </label>
                 </cell>
                 <cell id="19">
@@ -779,7 +761,7 @@ return false;]]></method>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <label id="37">
-                        <text-property name="text">部门编号</text-property>
+                        <text-property name="text">处理部门编号</text-property>
                     </label>
                 </cell>
                 <cell id="24">
@@ -814,7 +796,7 @@ return false;]]></method>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <label id="40">
-                        <text-property name="text">部门名称</text-property>
+                        <text-property name="text">处理部门名称</text-property>
                     </label>
                 </cell>
                 <cell id="26">
@@ -1281,8 +1263,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="235">
-                            <property name="resultSetColumn">userno</property>
+                        <data id="249">
+                            <property name="resultSetColumn">position1</property>
                         </data>
                     </cell>
                     <cell id="242">
@@ -1294,8 +1276,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="436">
-                            <property name="resultSetColumn">userno2</property>
+                        <data id="440">
+                            <property name="resultSetColumn">position12</property>
                         </data>
                     </cell>
                     <cell id="260">
@@ -1363,8 +1345,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="380">
-                            <property name="resultSetColumn">username</property>
+                        <data id="235">
+                            <property name="resultSetColumn">userno</property>
                         </data>
                     </cell>
                     <cell id="314">
@@ -1376,8 +1358,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="435">
-                            <property name="resultSetColumn">username2</property>
+                        <data id="436">
+                            <property name="resultSetColumn">userno2</property>
                         </data>
                     </cell>
                     <cell id="323">
@@ -1441,8 +1423,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="231">
-                            <property name="resultSetColumn">deptno</property>
+                        <data id="380">
+                            <property name="resultSetColumn">username</property>
                         </data>
                     </cell>
                     <cell id="361">
@@ -1454,8 +1436,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="442">
-                            <property name="resultSetColumn">deptno2</property>
+                        <data id="435">
+                            <property name="resultSetColumn">username2</property>
                         </data>
                     </cell>
                     <cell id="363">
@@ -1512,8 +1494,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="233">
-                            <property name="resultSetColumn">deptname</property>
+                        <data id="231">
+                            <property name="resultSetColumn">deptno</property>
                         </data>
                     </cell>
                     <cell id="372">
@@ -1525,8 +1507,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="441">
-                            <property name="resultSetColumn">deptname2</property>
+                        <data id="442">
+                            <property name="resultSetColumn">deptno2</property>
                         </data>
                     </cell>
                     <cell id="374">
@@ -1580,8 +1562,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="249">
-                            <property name="resultSetColumn">position1</property>
+                        <data id="233">
+                            <property name="resultSetColumn">deptname</property>
                         </data>
                     </cell>
                     <cell id="402">
@@ -1593,8 +1575,8 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="440">
-                            <property name="resultSetColumn">position12</property>
+                        <data id="441">
+                            <property name="resultSetColumn">deptname2</property>
                         </data>
                     </cell>
                     <cell id="403">
@@ -1608,210 +1590,6 @@ return false;]]></method>
                         <property name="borderTopWidth">thin</property>
                     </cell>
                     <cell id="404">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                </row>
-                <row id="405">
-                    <cell id="406">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="407">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="408">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="251">
-                            <property name="resultSetColumn">position2</property>
-                        </data>
-                    </cell>
-                    <cell id="409">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="438">
-                            <property name="resultSetColumn">position22</property>
-                        </data>
-                    </cell>
-                    <cell id="410">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="411">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                </row>
-                <row id="421">
-                    <cell id="422">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="423">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="424">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="253">
-                            <property name="resultSetColumn">position3</property>
-                        </data>
-                    </cell>
-                    <cell id="425">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="439">
-                            <property name="resultSetColumn">position32</property>
-                        </data>
-                    </cell>
-                    <cell id="426">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="427">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                </row>
-                <row id="428">
-                    <cell id="429">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="430">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="431">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="255">
-                            <property name="resultSetColumn">position4</property>
-                        </data>
-                    </cell>
-                    <cell id="432">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="437">
-                            <property name="resultSetColumn">position42</property>
-                        </data>
-                    </cell>
-                    <cell id="433">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="434">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1901,54 +1679,52 @@ return false;]]></method>
             </footer>
         </table>
         <grid id="382">
+            <property name="height">1in</property>
             <property name="width">7.7in</property>
             <column id="383"/>
-            <column id="384"/>
-            <column id="385"/>
             <column id="386"/>
             <column id="387"/>
             <column id="388"/>
             <row id="445">
+                <property name="height">0.3229166666666667in</property>
                 <cell id="446">
                     <label id="452"/>
                 </cell>
-                <cell id="447"/>
-                <cell id="448"/>
                 <cell id="449"/>
                 <cell id="450"/>
                 <cell id="451"/>
             </row>
             <row id="389">
+                <property name="height">0.4166666666666667in</property>
                 <cell id="390">
                     <label id="443">
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <text-property name="text">转出方(签字):</text-property>
                     </label>
                 </cell>
-                <cell id="391">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
-                <cell id="392">
-                    <label id="444">
-                        <property name="textAlign">right</property>
+                <cell id="393"/>
+                <cell id="394">
+                    <label id="396">
+                        <property name="textAlign">left</property>
                         <text-property name="text">转入方(签字):</text-property>
                     </label>
                 </cell>
-                <cell id="393">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
-                <cell id="394">
-                    <label id="396">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">领用人</text-property>
+                <cell id="395"/>
+            </row>
+            <row id="461">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="462">
+                    <label id="466">
+                        <text-property name="text">转出方主管(签字):</text-property>
                     </label>
                 </cell>
-                <cell id="395">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
+                <cell id="463"/>
+                <cell id="464">
+                    <label id="467">
+                        <text-property name="text">转入方主管(签字):</text-property>
+                    </label>
                 </cell>
+                <cell id="465"/>
             </row>
         </grid>
     </body>

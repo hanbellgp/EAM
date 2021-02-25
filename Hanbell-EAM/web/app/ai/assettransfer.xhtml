@@ -45,6 +45,7 @@
                         </p:menuitem>
                         <p:menuitem id="btnCreate" value="新增" action="#{assetTransferManagedBean.create('assettransferNew')}" icon="ui-icon-plus"
                                     rendered="#{assetTransferManagedBean.doAdd}" process="@this" />
+                        <p:menuitem id="btnPrint" value="导出" actionListener="#{assetTransferManagedBean.printSingle()}" icon="ui-icon-print"/>
                     </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{assetTransferManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>

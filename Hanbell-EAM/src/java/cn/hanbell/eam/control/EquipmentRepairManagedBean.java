@@ -191,10 +191,17 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                 }
                 long completetime = newEntity.getCompletetime().getTime();
                 long servicearrivetime = newEntity.getServicearrivetime().getTime();
-                if (completetime < servicearrivetime) {
+                if (completetime <= servicearrivetime) {
                     showErrorMsg("Error", "请注意:维修完成时间一定比维修到达时间晚！！！");
                     return false;
                 }
+                  
+                long hitchtime = newEntity.getHitchtime().getTime();
+                if (servicearrivetime <= hitchtime) {
+                    showErrorMsg("Error", "请注意:维修到达时间一定比维修发生时间晚！！！");
+                    return false;
+                }
+                
             }
 
             if (newEntity.getCompletetime() == null && newEntity.getServicearrivetime() != null) {
@@ -205,7 +212,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                 newEntity.setRstatus("20");
                 long servicearrivetime = newEntity.getServicearrivetime().getTime();
                 long hitchtime = newEntity.getHitchtime().getTime();
-                if (servicearrivetime < hitchtime) {
+                if (servicearrivetime <= hitchtime) {
                     showErrorMsg("Error", "请注意:维修到达时间一定比维修发生时间晚！！！");
                     return false;
                 }

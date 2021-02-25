@@ -208,6 +208,7 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             AssetItem e = (AssetItem) event.getObject();
             currentDetail.setAssetItem(e);
             currentDetail.setUnit(e.getUnit());
+            currentDetail.setPrice(e.getPurprice());
             if (e.getCategory().getWarehouse() != null) {
                 currentDetail.setWarehouse(e.getCategory().getWarehouse());
                 currentDetail.setWarehouse2(e.getCategory().getWarehouse());
@@ -302,10 +303,10 @@ public class StationeryDistributeManagedBean extends FormMultiBean<AssetDistribu
             if (queryDateEnd != null) {
                 this.model.getFilterFields().put("formdateEnd", queryDateEnd);
             }
-            if (querDeptname != null&&!"".equals(querDeptname)) {
+            if (querDeptname != null && !"".equals(querDeptname)) {
                 this.model.getFilterFields().put("deptname", querDeptname);
             }
-            if (queryUsername != null&&!"".equals(queryUsername)) {
+            if (queryUsername != null && !"".equals(queryUsername)) {
                 this.model.getFilterFields().put("creator", queryUsername);
             }
             if (queryState != null && !"ALL".equals(queryState)) {

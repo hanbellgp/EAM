@@ -452,7 +452,7 @@
             <to-view-id>/app/em/repairSceneStatistics.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>设备MTBF.MTTR</description>
             <from-outcome>repairMTBFAndMTTR</from-outcome>
             <to-view-id>/app/em/repairMTBFAndMTTR.xhtml</to-view-id>
@@ -464,10 +464,34 @@
             <to-view-id>/app/em/repairFaultRateStatistics.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-          <navigation-case>
+        <navigation-case>
             <description>年月故障统计表</description>
             <from-outcome>repairYrMonStatistics</from-outcome>
             <to-view-id>/app/em/repairYrMonStatistics.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>车间设备月报</description>
+            <from-outcome>workshopEquipment</from-outcome>
+            <to-view-id>/app/em/workshopEquipment.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>BD119月设备故障件数统计表</description>
+            <from-outcome>monthFailuresNumberStatistical</from-outcome>
+            <to-view-id>/app/em/monthFailuresNumberStatistical.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>BD120年设备故障件数统计表</description>
+            <from-outcome>yearFailuresNumberStatistical</from-outcome>
+            <to-view-id>/app/em/yearFailuresNumberStatistical.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>BD121年设备总合效率表</description>
+            <from-outcome>equipmentTotalEfficiency</from-outcome>
+            <to-view-id>/app/em/equipmentTotalEfficiency.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>  
