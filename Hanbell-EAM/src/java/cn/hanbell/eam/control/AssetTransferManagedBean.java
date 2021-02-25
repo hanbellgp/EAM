@@ -16,18 +16,37 @@ import cn.hanbell.eam.entity.AssetTransferDetail;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.AssetPosition;
+import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetTransferModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
+import com.lightshell.comm.BaseLib;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -409,6 +428,118 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
         }
     }
 
+    public void printSingle() {
+        if (detailList == null && deletedDetailList.isEmpty()) {
+            showErrorMsg("Error", "请选择需要导出的转移单！");
+            return;
+        }
+        fileName = "EAM转移单明细" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        String fileFullName = reportOutputPath + fileName;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        //获得表格样式
+        Map<String, CellStyle> style = createStyles(workbook);
+        // 生成一个表格
+        HSSFSheet sheet1 = workbook.createSheet("Sheet1");
+        // 设置表格宽度
+        int[] wt1 = getInventoryWidth();
+        for (int i = 0; i < wt1.length; i++) {
+            sheet1.setColumnWidth(i, wt1[i] * 256);
+        }
+        //创建标题行
+        Row row;
+        Row row2;
+        //表格一
+        String[] title1 = getInventoryTitle();
+        row = sheet1.createRow(1);
+        row.setHeight((short) 800);
+        row2 = sheet1.createRow(0);
+        row2.setHeight((short) 800);
+        for (int i = 0; i < title1.length; i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellStyle(style.get("head"));
+            cell.setCellValue(title1[i]);
+        }
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 13));
+        Cell cellTitle = row2.createCell(0);
+        cellTitle.setCellStyle(style.get("title"));
+        cellTitle.setCellValue("资产转移单明细");
+
+        int j = 2;
+        for (AssetTransferDetail assetTransferDetail : detailList) {
+            row = sheet1.createRow(j);
+            j++;
+            row.setHeight((short) 400);
+            Cell cell0 = row.createCell(0);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(assetTransferDetail.getSeq());
+            Cell cell1 = row.createCell(1);
+            cell1.setCellStyle(style.get("cell"));
+            cell1.setCellValue(assetTransferDetail.getAssetItem().getItemno());
+            Cell cell2 = row.createCell(2);
+            cell2.setCellStyle(style.get("cell"));
+            cell2.setCellValue(assetTransferDetail.getAssetno());
+            Cell cell3 = row.createCell(3);
+            cell3.setCellStyle(style.get("cell"));
+            cell3.setCellValue(assetTransferDetail.getAssetCard().getAssetDesc());
+            Cell cell4 = row.createCell(4);
+            cell4.setCellStyle(style.get("cell"));
+            cell4.setCellValue(assetTransferDetail.getQty().toString());
+            Cell cell5 = row.createCell(5);
+            cell5.setCellStyle(style.get("cell"));
+            cell5.setCellValue(assetTransferDetail.getSurplusValue().toString());
+
+            Cell cell6 = row.createCell(6);
+            cell6.setCellStyle(style.get("cell"));
+            cell6.setCellValue(assetTransferDetail.getAssetCard().getCompany());
+
+            Cell cell7 = row.createCell(7);
+            cell7.setCellStyle(style.get("cell"));
+            cell7.setCellValue(assetTransferDetail.getAssetCard().getDeptname());
+            Cell cell8 = row.createCell(8);
+            cell8.setCellStyle(style.get("cell"));
+            cell8.setCellValue(assetTransferDetail.getAssetCard().getUserno());
+
+            Cell cell9 = row.createCell(9);
+            cell9.setCellStyle(style.get("cell"));
+            cell9.setCellValue(assetTransferDetail.getAssetCard().getWarehouse().getName());
+
+            Cell cell10 = row.createCell(10);
+            cell10.setCellStyle(style.get("cell"));
+            cell10.setCellValue(assetTransferDetail.getCompany());
+
+            Cell cell11 = row.createCell(11);
+            cell11.setCellStyle(style.get("cell"));
+            cell11.setCellValue(assetTransferDetail.getDeptname());
+
+            Cell cell12 = row.createCell(12);
+            cell12.setCellStyle(style.get("cell"));
+            cell12.setCellValue(assetTransferDetail.getUsername());
+
+            Cell cell13 = row.createCell(13);
+            cell13.setCellStyle(style.get("cell"));
+            cell13.setCellValue(assetTransferDetail.getWarehouse().getName());
+
+        }
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(fileFullName);
+            workbook.write(os);
+            this.reportViewPath = reportViewContext + fileName;
+            this.preview();
+        } catch (Exception ex) {
+            showErrorMsg("Error", ex.getMessage());
+        } finally {
+            try {
+                if (null != os) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
+    }
+
     @Override
     public void query() {
         if (this.model != null && this.model.getFilterFields() != null) {
@@ -428,4 +559,99 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
         }
     }
 
+    /**
+     * 设置导出EXCEL表格样式
+     */
+    private Map<String, CellStyle> createStyles(Workbook wb) {
+        Map<String, CellStyle> styles = new LinkedHashMap<>();
+        // 文件头样式
+        CellStyle headStyle = wb.createCellStyle();
+        headStyle.setWrapText(true);//设置自动换行
+        headStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        headStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        headStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
+        headStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        headStyle.setBorderRight(CellStyle.BORDER_THIN);
+        headStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        headStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        headStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        headStyle.setBorderTop(CellStyle.BORDER_THIN);
+        headStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        headStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        headStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        Font headFont = wb.createFont();
+        headFont.setFontHeightInPoints((short) 11);
+        headFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        headStyle.setFont(headFont);
+        styles.put("head", headStyle);
+
+        // 正文样式
+        CellStyle cellStyle = wb.createCellStyle();
+        Font cellFont = wb.createFont();
+        cellFont.setFontHeightInPoints((short) 10);
+        cellStyle.setFont(cellFont);
+        cellStyle.setWrapText(true);//设置自动换行
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());//单元格背景颜色
+        cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+        cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+        cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cell", cellStyle);
+
+        CellStyle leftStyle = wb.createCellStyle();
+        leftStyle.setWrapText(true);//设置自动换行
+        leftStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        leftStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        leftStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        leftStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        leftStyle.setBorderRight(CellStyle.BORDER_THIN);
+        styles.put("left", leftStyle);
+
+        CellStyle rightStyle = wb.createCellStyle();
+        rightStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        rightStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        rightStyle.setBorderRight(CellStyle.BORDER_THIN);
+        rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        styles.put("right", rightStyle);
+
+        CellStyle titleStyle = wb.createCellStyle();
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font headFont2 = wb.createFont();
+        headFont2.setFontHeightInPoints((short) 20);
+        headFont2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        titleStyle.setFont(headFont2);
+        styles.put("title", titleStyle);
+
+        CellStyle dateStyle = wb.createCellStyle();
+        dateStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        dateStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font dateFont = wb.createFont();
+        dateFont.setFontHeightInPoints((short) 11);
+        dateFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        dateStyle.setFont(headFont);
+        styles.put("date", dateStyle);
+        return styles;
+    }
+
+    /**
+     * 设置表头名称字段
+     */
+    private String[] getInventoryTitle() {
+        return new String[]{"序号", "件号", "资产编码", "资产名称", "数量", "残值", "原公司别", "转出部门名称", "原使用人", "来源仓库", "新公司别", "转入部门名称", "新使用人", "转入仓库"};
+    }
+
+    /**
+     * 设置单元格宽度
+     */
+    private int[] getInventoryWidth() {
+        return new int[]{10, 15, 20, 15, 10, 15, 10, 15, 15, 15, 15, 15, 15, 15};
+    }
 }

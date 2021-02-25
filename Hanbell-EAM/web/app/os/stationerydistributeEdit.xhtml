@@ -115,7 +115,7 @@
                                 <p:commandButton id="btnAssetItemSelect" actionListener="#{stationeryDistributeManagedBean.openDialog('assetitemSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{stationeryDistributeManagedBean.handleDialogReturnWhenDetailEdit}"
-                                            update="assetItem,itemdesc,itemspec,unit,warehouse" />
+                                            update="assetItem,itemdesc,itemspec,unit,warehouse,price" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><h:outputText value="品名"/></p:column>
@@ -130,8 +130,8 @@
                             </p:column>
                             <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                             <p:column>
-                                <p:inputText id="unit" value="#{stationeryDistributeManagedBean.currentDetail.unit}" title="Unit"
-                                             required="true" requiredMessage="请输入单位"/>
+                                <h:outputText id="unit" value="#{stationeryDistributeManagedBean.currentDetail.unit}" title="Unit"
+                                             />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -140,6 +140,14 @@
                                 <p:spinner id="qty" value="#{stationeryDistributeManagedBean.currentDetail.qty}" title="Qty"
                                            required="true" requiredMessage="请输入数量"/>
                             </p:column>
+                            <p:column><p:outputLabel value="单价" for="price" /></p:column>
+                            <p:column>
+                                <p:inputText id="price" value="#{stationeryDistributeManagedBean.currentDetail.price}" title="Price"
+                                             required="true" requiredMessage="请输入单价"/>
+                            </p:column>
+
+                        </p:row>
+                         <p:row>
                             <p:column><p:outputLabel value="来源仓库" for="warehouse" /></p:column>
                             <p:column>
                                 <p:inputText id="warehouse" value="#{stationeryDistributeManagedBean.currentDetail.warehouse.name}" title="warehouse" styleClass="inputWithButton"
@@ -180,18 +188,25 @@
                             </f:facet>
                             <h:outputText value="#{item.username}"/>
                         </p:column>
-                        <p:column styleClass="Wid10" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="数量"/>
-                            </f:facet>
-                            <h:outputText value="#{item.qty}"/>
-                        </p:column>
                         <p:column styleClass="Wid10">
                             <f:facet name="header">
                                 <h:outputText value="单位"/>
                             </f:facet>
                             <h:outputText value="#{item.unit}"/>
                         </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.price}"/>
+                        </p:column>
+                        
                     </p:dataTable>
                 </p:tab>
             </p:tabView>

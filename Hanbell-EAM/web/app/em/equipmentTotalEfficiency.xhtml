@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6"> 查询条件</p:column>
+                    </p:row>
+                </f:facet>
+
+                <p:row>
+                    <p:column><h:outputLabel value="数据年份" for="stayear" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="stayear" value="#{equipmentTotalEfficiencyManagedBean.stayear}" title="数据年份"  >
+                            <c:forEach items="#{equipmentTotalEfficiencyManagedBean.yearsList}" var ="li" varStatus="status">
+                                <f:selectItem  itemLabel="${li}" itemValue="${li}"/>
+                            </c:forEach>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column><h:outputLabel value="月份" for="month" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="month" value="#{equipmentTotalEfficiencyManagedBean.month}" title="月份"  >
+                            <c:forEach items="#{equipmentTotalEfficiencyManagedBean.monthList}" var ="li" varStatus="status">
+                                <f:selectItem  itemLabel="${li}" itemValue="${li}"/>
+                            </c:forEach>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column><h:outputLabel value="数据分类" for="type" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="selectedUserName" value="#{equipmentTotalEfficiencyManagedBean.EPQID}" effect="fade" 
+                                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{equipmentTotalEfficiencyManagedBean.EPQIDList}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentTotalEfficiencyManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                </f:facet>
+
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出设备总合效率表" actionListener="#{equipmentTotalEfficiencyManagedBean.print()}" icon="ui-icon-print"
+                                     />
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentTotalEfficiencyManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable var="car" value="#{equipmentTotalEfficiencyManagedBean.equipmentTotalEfficiencyList}"  >
+                <p:column headerText="日期" style="text-align: center" >
+                    <h:outputText value="#{car[0]}" style="text-align: center" />
+                </p:column>
+                <p:column headerText="生产计划时间(分)" style="text-align: center">
+                    <h:outputText value="#{car[1]}" />
+                </p:column>
+                <p:column headerText="计划产出件数(件)" style="text-align: center">
+                    <h:outputText value="#{car[2]}" />
+                </p:column>
+                <p:column headerText="实际投入产出数(件)" style="text-align: center">
+                    <h:outputText value="#{car[3]}" />
+                </p:column>
+                <p:column headerText="产出标准工时(分)" style="text-align: center">
+                    <h:outputText value="#{car[4]}" />
+                </p:column>
+                <p:column headerText="不良品件数(件)" style="text-align: center">
+                    <h:outputText value="#{car[5]}" />
+                </p:column>
+                <p:column headerText="计划停止时间(分)" style="text-align: center">
+                    <h:outputText value="#{car[6]}" />
+                </p:column>
+                <p:column headerText="停机待测(分)" style="text-align: center">
+                    <h:outputText value="#{car[7]}" />
+                </p:column>
+                <p:column headerText="生技试模(分)" style="text-align: center">
+                    <h:outputText value="#{car[8]}" />
+                </p:column>
+                <p:column headerText="欠料等待(分)" style="text-align: center">
+                    <h:outputText value="#{car[9]}" />
+                </p:column>
+                <p:column headerText="刀具调试更换(分)" style="text-align: center">
+                    <h:outputText value="#{car[10]}" />
+                </p:column>
+                <p:column headerText="停机换模(分)" style="text-align: center">
+                    <h:outputText value="#{car[11]}" />
+                </p:column>
+                <p:column headerText="物料返修(分)" style="text-align: center">
+                    <h:outputText value="#{car[12]}" />
+                </p:column>
+                <p:column headerText="上下料干涉等待(分)" style="text-align: center">
+                    <h:outputText value="#{car[13]}" />
+                </p:column>
+                <p:column headerText="单模拆装(分)" style="text-align: center">
+                    <h:outputText value="#{car[14]}" />
+                </p:column>
+                <p:column headerText="共用刀具模具等待(分)" style="text-align: center">
+                    <h:outputText value="#{car[15]}" />
+                </p:column>
+                <p:column headerText="带教新人讲解(分)" style="text-align: center">
+                    <h:outputText value="#{car[16]}" />
+                </p:column>
+                <p:column headerText="绿灯暖机(分)" style="text-align: center">
+                    <h:outputText value="#{car[17]}" />
+                </p:column>
+                <p:column headerText="其他(分)" style="text-align: center">
+                    <h:outputText value="#{car[18]}" />
+                </p:column>
+                <p:column headerText="未填(分)" style="text-align: center">
+                    <h:outputText value="#{car[19]}" />
+                </p:column>
+                <p:column headerText="计划停机(分)" style="text-align: center">
+                    <h:outputText value="#{car[20]}" />
+                </p:column>
+                <p:column headerText="设备故障时间(分)" style="text-align: center">
+                    <h:outputText value="#{car[21]}" />
+                </p:column>
+                <p:column headerText="设备故障次数(次)" style="text-align: center">
+                    <h:outputText value="#{car[22]}" />
+                </p:column>
+
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnPrint">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

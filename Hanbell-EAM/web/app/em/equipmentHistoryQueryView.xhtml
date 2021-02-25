@@ -14,7 +14,10 @@
                 <f:facet name="left">
                     <p:button id="btnReturn" value="返回" outcome="equipmentHistoryQuery" icon="ui-icon-restore"/>
                 </f:facet>
-
+                <f:facet name="right">
+                    <p:commandButton id="printSingleData" value="导出单台EXCEL" actionListener="#{equipmentHistoryManagedBean.printSingleData()}" icon="ui-icon-print"
+                                     />
+                </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
@@ -220,7 +223,6 @@
                 </p:row>
                 <p:row>
                     <p:column rowspan="4" style="background-color: #EEEEEE"><h:outputText value="维修策略(具体的维修方案及维修过程)"  /></p:column>
-
                 </p:row>
                 <p:row>
                     <p:column colspan="7"  >

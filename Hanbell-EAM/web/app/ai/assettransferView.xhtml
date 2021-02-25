@@ -103,9 +103,21 @@
                         </p:column>
                         <p:column styleClass="Wid10">
                             <f:facet name="header">
+                                <h:outputText value="转出公司"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetCard.company}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10">
+                            <f:facet name="header">
                                 <h:outputText value="转入公司"/>
                             </f:facet>
                             <h:outputText value="#{item.company}"/>
+                        </p:column>
+                           <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="转出部门"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetCard.deptname}"/>
                         </p:column>
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
@@ -113,9 +125,15 @@
                             </f:facet>
                             <h:outputText value="#{item.deptname}"/>
                         </p:column>
+                         <p:column styleClass="Wid10">
+                            <f:facet name="header">
+                                <h:outputText value="原使用人"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetCard.username}"/>
+                        </p:column>
                         <p:column styleClass="Wid10">
                             <f:facet name="header">
-                                <h:outputText value="使用人"/>
+                                <h:outputText value="新使用人"/>
                             </f:facet>
                             <h:outputText value="#{item.username}"/>
                         </p:column>
@@ -135,15 +153,39 @@
                         <p:column styleClass="Wid30">
                             <h:outputText id="assetItem" value="#{assetTransferManagedBean.currentDetail.assetItem.itemno}" title="itemno" />
                         </p:column>
+                        <p:column><h:outputText value="品名"/></p:column>
+                        <p:column>
+                            <h:outputText id="itemdesc" value="#{assetTransferManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                        </p:column>
+
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="编号"/></p:column>
+                        <p:column>
+                            <h:outputText id="assetno" value="#{assetTransferManagedBean.currentDetail.assetno}" title="assetno" />
+                        </p:column>
+                        <p:column><h:outputText value="名称"/></p:column>
+                        <p:column>
+                            <h:outputText id="assetDesc" value="#{assetTransferManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                        </p:column>
+
+                    </p:row>
+
+                    <p:row>
+                        <p:column styleClass="Wid20"><p:outputLabel value="转出部门" for="deptno1" /></p:column>
+                        <p:column styleClass="Wid30">
+                            <h:outputText id="deptno1" value="#{assetTransferManagedBean.currentDetail.assetCard.deptno}" title="Deptno" />
+                        </p:column>
                         <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptno2" /></p:column>
                         <p:column styleClass="Wid30">
                             <h:outputText id="deptno2" value="#{assetTransferManagedBean.currentDetail.deptno}" title="Deptno" />
                         </p:column>
+
                     </p:row>
                     <p:row>
-                        <p:column><h:outputText value="品名"/></p:column>
-                        <p:column>
-                            <h:outputText id="itemdesc" value="#{assetTransferManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                        <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname1" /></p:column>
+                        <p:column styleClass="Wid30">
+                            <h:outputText id="deptname1" value="#{assetTransferManagedBean.currentDetail.assetCard.deptname}" title="Deptno" />
                         </p:column>
                         <p:column><h:outputText value="部门名称"/></p:column>
                         <p:column>
@@ -151,19 +193,19 @@
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column><h:outputText value="编号"/></p:column>
+                        <p:column><h:outputText value="原使用人"/></p:column>
                         <p:column>
-                            <h:outputText id="assetno" value="#{assetTransferManagedBean.currentDetail.assetno}" title="assetno" />
+                            <h:outputText id="userno1" value="#{assetTransferManagedBean.currentDetail.assetCard.userno}" title="userno1" />
                         </p:column>
-                        <p:column><h:outputText value="使用人"/></p:column>
+                        <p:column><h:outputText value="新使用人"/></p:column>
                         <p:column>
                             <h:outputText id="userno2" value="#{assetTransferManagedBean.currentDetail.userno}" title="RequireUserno" />
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column><h:outputText value="名称"/></p:column>
+                        <p:column><h:outputText value="姓名"/></p:column>
                         <p:column>
-                            <h:outputText id="assetDesc" value="#{assetTransferManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                            <h:outputText id="username1" value="#{assetTransferManagedBean.currentDetail.assetCard.username}" title="username1" />
                         </p:column>
                         <p:column><h:outputText value="姓名" /></p:column>
                         <p:column>
@@ -171,33 +213,53 @@
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column><h:outputText value="规格"/></p:column>
-                        <p:column>
-                            <h:outputText id="assetSpec" value="#{assetTransferManagedBean.currentDetail.assetCard.assetSpec}" title="assetSpec" />
-                        </p:column>
-                        <p:column><h:outputText value="公司"/></p:column>
-                        <p:column>
-                            <h:outputText id="position1" value="#{assetTransferManagedBean.currentDetail.position1.name}" title="position1" />
-                        </p:column>
-                    </p:row>
-                    <p:row>
                         <p:column><h:outputText value="数量" /></p:column>
                         <p:column>
                             <h:outputText id="qty" value="#{assetTransferManagedBean.currentDetail.qty}" title="Qty"/>
                         </p:column>
-                        <p:column><h:outputText value="厂区"/></p:column>
-                        <p:column>
-                            <h:outputText id="position2" value="#{assetTransferManagedBean.currentDetail.position2.name}" title="position2" />
-                        </p:column>
-                    </p:row>
-                    <p:row>
                         <p:column><h:outputText value="单位"/></p:column>
                         <p:column>
                             <h:outputText id="unit" value="#{assetTransferManagedBean.currentDetail.unit}" title="Unit"/>
                         </p:column>
-                        <p:column><h:outputText value="厂房" /></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="原公司"/></p:column>
                         <p:column>
-                            <h:outputText id="position3" value="#{assetTransferManagedBean.currentDetail.position3.name}" title="position3" />
+                            <h:outputText id="position1" value="#{assetTransferManagedBean.currentDetail.assetCard.position1.name}" title="position1" />
+                        </p:column>
+                        <p:column><h:outputText value="新公司"/></p:column>
+                        <p:column>
+                            <h:outputText id="position11" value="#{assetTransferManagedBean.currentDetail.position1.name}" title="position11" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="原厂区"/></p:column>
+                        <p:column>
+                            <h:outputText id="position2" value="#{assetTransferManagedBean.currentDetail.assetCard.position2.name}" title="position2" />
+                        </p:column>
+                        <p:column><h:outputText value="新厂区"/></p:column>
+                        <p:column>
+                            <h:outputText id="position12" value="#{assetTransferManagedBean.currentDetail.position2.name}" title="position12" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="原厂房" /></p:column>
+                        <p:column>
+                            <h:outputText id="position3" value="#{assetTransferManagedBean.currentDetail.assetCard.position3.name}" title="position3" />
+                        </p:column>
+                        <p:column><h:outputText value="原厂房" /></p:column>
+                        <p:column>
+                            <h:outputText id="position13" value="#{assetTransferManagedBean.currentDetail.position3.name}" title="position13" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="原地点" /></p:column>
+                        <p:column>
+                            <h:outputText id="position4" value="#{assetTransferManagedBean.currentDetail.assetCard.position4.name}" title="position4" />
+                        </p:column>
+                        <p:column><h:outputText value="新地点" /></p:column>
+                        <p:column>
+                            <h:outputText id="position14" value="#{assetTransferManagedBean.currentDetail.position4.name}" title="position14" />
                         </p:column>
                     </p:row>
                     <p:row>
@@ -205,9 +267,9 @@
                         <p:column>
                             <h:outputText id="surplusValue" value="#{assetTransferManagedBean.currentDetail.surplusValue}" title="surplusValue"/>
                         </p:column>
-                        <p:column><h:outputText value="地点" /></p:column>
+                        <p:column><h:outputText value="规格"/></p:column>
                         <p:column>
-                            <h:outputText id="position4" value="#{assetTransferManagedBean.currentDetail.position4.name}" title="position4" />
+                            <h:outputText id="assetSpec" value="#{assetTransferManagedBean.currentDetail.assetCard.assetSpec}" title="assetSpec" />
                         </p:column>
                     </p:row>
                     <p:row>

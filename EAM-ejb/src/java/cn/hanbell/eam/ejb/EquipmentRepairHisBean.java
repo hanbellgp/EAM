@@ -44,5 +44,5 @@ public class EquipmentRepairHisBean extends SuperEJBForEAM<EquipmentRepairHis> {
         List results = query.getResultList();
         return results;
     }
-   
+
 }

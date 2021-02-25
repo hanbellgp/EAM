@@ -24,8 +24,12 @@ import cn.hanbell.eam.web.FormMulti3Bean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -39,15 +43,20 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
@@ -351,11 +360,12 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         //创建标题行
         Row row;
         Row row2;
-
+        Row row3;
         String[] title1 = getInventoryTitle();
         String[] title2 = getInventoryTitle2();
-        row = sheet1.createRow(0);
-        row2 = sheet1.createRow(1);
+        row = sheet1.createRow(1);
+        row2 = sheet1.createRow(2);
+        row3 = sheet1.createRow(0);
         for (int k = 0; k < title2.length; k++) {
             sheet1.autoSizeColumn(k);
         }
@@ -376,14 +386,24 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title2[i]);
         }
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 25));
+        Cell cellTitle = row3.createCell(0);
+        cellTitle.setCellStyle(style.get("title"));
+        SimpleDateFormat date = new SimpleDateFormat("yyyy年MM月dd日");
+        if (queryDateBegin != null && queryDateEnd != null) {
+            cellTitle.setCellValue(date.format(queryDateBegin) + "-----" + date.format(queryDateEnd) + "  维修履历表");
+        } else {
+            cellTitle.setCellValue("维修履历表");
+        }
+
         //合并单元格
         for (int i = 0; i < 8; i++) {
-            sheet1.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+            sheet1.addMergedRegion(new CellRangeAddress(1, 2, i, i));
         }
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 8, 13));
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 14, 17));
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 18, 20));
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 21, 25));
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 8, 13));
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 14, 17));
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 18, 20));
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 21, 25));
         //设置宽度
         for (int i = 0; i < wt1.length; i++) {
             sheet1.setColumnWidth(i, wt1[i] * 256);
@@ -391,7 +411,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         //设置第二行行高
         row2.setHeight((short) (18 * 40));
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
-        int j = 2;
+        int j = 3;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         for (EquipmentRepair equipmentrepair : equipmentrepairList) {
             if (!queryFaultTime.equals("NULL")) {
@@ -565,6 +585,196 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             }
         }
     }
+//导出单台设备数据
+
+    public void printSingleData() throws ParseException {
+        String finalFilePath = "";
+        try {
+            finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+            int index = finalFilePath.indexOf("WEB-INF");
+
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/设备故障单台履历模板.xls");
+            Workbook workbook = WorkbookFactory.create(is);
+            //获得表格样式
+            Map<String, CellStyle> style = createStyles(workbook);
+            Sheet sheet;
+            sheet = workbook.getSheetAt(0);
+            SimpleDateFormat date = new SimpleDateFormat("yyyy年MM月dd日");
+            SimpleDateFormat date2 = new SimpleDateFormat("yyyy/MM/dd HH:ss");
+            if (currentEntity == null) {
+                showErrorMsg("Error", "请先选择数据！！！");
+                return;
+            }
+            Cell cellTitle = sheet.getRow(3).getCell(6);
+            cellTitle.setCellValue(date.format(getDate()));
+            cellTitle = sheet.getRow(4).getCell(2);
+            cellTitle.setCellValue(currentEntity.getItemno().equals("9") ? "其他" : currentEntity.getAssetno().getAssetDesc());
+            cellTitle = sheet.getRow(4).getCell(11);
+            cellTitle.setCellValue(currentEntity.getAssetno().getDeptname());
+            cellTitle = sheet.getRow(4).getCell(6);
+            cellTitle.setCellValue(currentEntity.getAssetno().getFormid());
+            cellTitle = sheet.getRow(5).getCell(2);
+            cellTitle.setCellValue(date2.format(currentEntity.getHitchtime()));
+            cellTitle = sheet.getRow(5).getCell(9);
+            cellTitle.setCellValue(date2.format(currentEntity.getCompletetime()));
+
+            if (currentEntity.getHitchalarm() != null && !"".equals(currentEntity.getHitchalarm())) {
+                cellTitle = sheet.getRow(6).getCell(1);
+                cellTitle.setCellValue("故障报警: " + currentEntity.getHitchalarm());
+            }
+            if (currentEntity.getHitchdesc() != null && !"".equals(currentEntity.getHitchdesc())) {
+                cellTitle = sheet.getRow(8).getCell(1);
+                cellTitle.setCellValue("故障详情:" + currentEntity.getHitchdesc());
+            }
+
+            Drawing patriarch = sheet.createDrawingPatriarch();
+            List<EquipmentRepairFile> equipmentRepairFiles = equipmentRepairFileBean.findByPId(currentEntity.getFormid());
+            FileInputStream fileInputStream = null;
+            int a = 0;
+            int b = 0;
+            int repairSize = 0;
+            int serviceSize = 0;
+            //得道维修图片和报修图片的数量
+            for (EquipmentRepairFile equipmentRepairFile : equipmentRepairFiles) {
+                if (equipmentRepairFile.getFilefrom().equals("报修图片")) {
+                    //清空文字
+                    cellTitle = sheet.getRow(9).getCell(1);
+                    cellTitle.setCellValue(" ");
+                    repairSize++;
+                } else if (equipmentRepairFile.getFilefrom().equals("维修图片")) {
+                    //清空文字
+                    cellTitle = sheet.getRow(19).getCell(1);
+                    cellTitle.setCellValue(" ");
+                    serviceSize++;
+                }
+            }
+            for (int i = 0; i < equipmentRepairFiles.size(); i++) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                String file = equipmentRepairFiles.get(i).getFilename();
+                file = file.substring(file.length() - 3, file.length());//获取文件格式
+                if (!file.equals("jpg") && !file.equals("png")) {
+                    continue;
+                }
+                int index2 = equipmentRepairFiles.get(i).getFilepath().indexOf("res/");
+                //获取完整文件路径
+                String path = finalFilePath.substring(1, index) + "resources/app/" + equipmentRepairFiles.get(i).getFilepath().substring(index2, equipmentRepairFiles.get(i).getFilepath().length());
+                File files = new File(path);
+                //判断图片是否存着，不存在则进行下次循环
+                if (!files.exists() && !files.isDirectory()) {
+                    continue;
+                }
+                fileInputStream = new FileInputStream(files);//输入文件流
+                byte[] data = new byte[1024];
+                int len = 0;
+                while ((len = fileInputStream.read(data)) != -1) {
+                    outputStream.write(data, 0, len);//读取文件流
+                }
+
+                // anchor主要用于设置图片的属性
+                HSSFClientAnchor anchor2 = new HSSFClientAnchor(0, 125, 1023, 255, (short) 10, 1 + i * 10, (short) (80), (8 + i * 10));
+                if (equipmentRepairFiles.get(i).getFilefrom().equals("报修图片")) {
+                    if (repairSize > 3) {
+                        anchor2.setCol1(a * 2 + 1);
+                        anchor2.setCol2(2 * a + 2);
+                        anchor2.setRow1((9));
+                        anchor2.setRow2((11));
+                    } else {
+                        anchor2.setCol1(a * 3 + 1);
+                        anchor2.setCol2(3 * a + 3);
+                        anchor2.setRow1((9));
+                        anchor2.setRow2((11));
+                    }
+                    a++;
+                } else if (equipmentRepairFiles.get(i).getFilefrom().equals("维修图片")) {
+                    if (serviceSize > 3) {
+                        anchor2.setCol1(b * 2 + 1);
+                        anchor2.setCol2(2 * b + 2);
+                        anchor2.setRow1((19));
+                        anchor2.setRow2((22));
+                    } else {
+                        anchor2.setCol1(b * 3 + 1);
+                        anchor2.setCol2(3 * b + 3);
+                        anchor2.setRow1((19));
+                        anchor2.setRow2((22));
+                    }
+
+                    b++;
+                }
+                patriarch.createPicture(anchor2, workbook.addPicture(outputStream.toByteArray(), HSSFWorkbook.PICTURE_TYPE_JPEG));
+                outputStream.close();
+            }
+            if (currentEntity.getAssetno().getUsername() != null) {
+                cellTitle = sheet.getRow(11).getCell(12);
+                cellTitle.setCellValue(currentEntity.getRepairusername());
+            }
+            cellTitle = sheet.getRow(9).getCell(12);
+            cellTitle.setCellValue(currentEntity.getAssetno().getUsername());
+            if (currentEntity.getRepairmethod() != null && !"".equals(currentEntity.getRepairmethod())) {
+                cellTitle = sheet.getRow(12).getCell(1);
+                cellTitle.setCellValue("维修方式说明:" + currentEntity.getRepairmethod());
+            }
+            if (currentEntity.getHitchreason() != null && !"".equals(currentEntity.getHitchreason())) {
+                cellTitle = sheet.getRow(14).getCell(1);
+                cellTitle.setCellValue("故障判断过程及原因描述:" + currentEntity.getHitchreason());
+            }
+            if (currentEntity.getRepairprocess() != null && !"".equals(currentEntity.getRepairprocess())) {
+                cellTitle = sheet.getRow(15).getCell(1);
+                cellTitle.setCellValue("维修策略:" + currentEntity.getRepairprocess());
+            }
+            if (currentEntity.getMeasure() != null && !"".equals(currentEntity.getMeasure())) {
+                cellTitle = sheet.getRow(16).getCell(1);
+                cellTitle.setCellValue("预防措施:" + currentEntity.getMeasure());
+            }
+            cellTitle = sheet.getRow(19).getCell(12);
+            cellTitle.setCellValue(currentEntity.getStopworktime());
+            cellTitle = sheet.getRow(20).getCell(12);
+            cellTitle.setCellValue(currentEntity.getMaintenanceTime());
+            cellTitle = sheet.getRow(21).getCell(12);
+            cellTitle.setCellValue(totalCost);
+            cellTitle = sheet.getRow(22).getCell(12);
+            cellTitle.setCellValue(currentEntity.getServiceusername());
+            deletedDetailList3 = equipmentRepairHisBean.findByPId(currentEntity.getFormid());
+            for (EquipmentRepairHis equipmentRepairHis : deletedDetailList3) {
+                if (equipmentRepairHis.getCurnode().equals("课长审核")) {
+                    cellTitle = sheet.getRow(23).getCell(1);
+                    cellTitle.setCellValue(equipmentRepairHis.getNote());
+                    cellTitle = sheet.getRow(23).getCell(12);
+                    cellTitle.setCellValue(getUserName(equipmentRepairHis.getUserno()));
+                }
+                if (equipmentRepairHis.getCurnode().equals("经理审核")) {
+                    if (totalCost > 5000) {
+                        cellTitle = sheet.getRow(27).getCell(1);
+                        cellTitle.setCellValue(equipmentRepairHis.getNote());
+                        cellTitle = sheet.getRow(27).getCell(12);
+                        cellTitle.setCellValue(getUserName(equipmentRepairHis.getUserno()));
+                    }
+                }
+            }
+
+            OutputStream os = null;
+            fileName = "设备故障单台履历表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            String fileFullName = reportOutputPath + fileName;
+            try {
+                os = new FileOutputStream(fileFullName);
+                workbook.write(os);
+                this.reportViewPath = reportViewContext + fileName;
+                this.preview();
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            } finally {
+                try {
+                    if (null != os) {
+                        os.flush();
+                        os.close();
+                    }
+                } catch (IOException ex) {
+                    showErrorMsg("Error", ex.getMessage());
+                }
+            }
+        } catch (IOException | InvalidFormatException e) {
+            showErrorMsg("Error", e.toString());
+        }
+    }
 
     /**
      * 设置表头名称字段
@@ -641,6 +851,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         leftStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
         leftStyle.setBorderLeft(CellStyle.BORDER_THIN);
         leftStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        leftStyle.setBorderRight(CellStyle.BORDER_THIN);
         styles.put("left", leftStyle);
 
         CellStyle rightStyle = wb.createCellStyle();
@@ -649,6 +860,24 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         rightStyle.setBorderRight(CellStyle.BORDER_THIN);
         rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
         styles.put("right", rightStyle);
+
+        CellStyle titleStyle = wb.createCellStyle();
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font headFont2 = wb.createFont();
+        headFont2.setFontHeightInPoints((short) 20);
+        headFont2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        titleStyle.setFont(headFont2);
+        styles.put("title", titleStyle);
+
+        CellStyle dateStyle = wb.createCellStyle();
+        dateStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        dateStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        Font dateFont = wb.createFont();
+        dateFont.setFontHeightInPoints((short) 11);
+        dateFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        dateStyle.setFont(headFont);
+        styles.put("date", dateStyle);
         return styles;
     }
 
