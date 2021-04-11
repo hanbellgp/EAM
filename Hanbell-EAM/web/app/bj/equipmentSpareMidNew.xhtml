@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentSpareMid" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentSpareMidManagedBean.persist()}"  icon="ui-icon-save"  update="plgHead"/>
+
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件大类" for="scategory" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="scategory" value="#{equipmentSpareMidManagedBean.newEntity.scategory.scategory}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentSpareMidManagedBean.openDialog('equipmentSpareClassSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentSpareMidManagedBean.handleDialogReturnWhenNew}"
+                                    update="formOne" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="备件大类名称" for="sname" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="sname" value="#{equipmentSpareMidManagedBean.newEntity.scategory.sname}" title="sname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件中类" for="mcategory" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <h:outputText id="mcategory" value="#{equipmentSpareMidManagedBean.newEntity.mcategory}" title="mcategory" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="备件中类名称" for="mname" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <p:inputText id="mname" value="#{equipmentSpareMidManagedBean.newEntity.mname}" title="mname"  required="true" requiredMessage="请输入备件中类名称" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

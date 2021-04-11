@@ -35,15 +35,15 @@
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产异动－查看</p:column>
+                        <p:column colspan="4">资产调拨－查看</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><h:outputText value="异动单号" /></p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="调拨单号" /></p:column>
                     <p:column styleClass="Wid30">
                         <h:outputText id="formid" value="#{assetAdjustManagedBean.currentEntity.formid}" title="Formid"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><h:outputText value="异动日期"/></p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="调拨日期"/></p:column>
                     <p:column styleClass="Wid30">
                         <h:outputText id="formdate" value="#{assetAdjustManagedBean.currentEntity.formdate}" title="Formdate">
                             <f:convertDateTime pattern="yyyy/MM/dd"/>
@@ -68,7 +68,7 @@
                 </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
-                <p:tab title="异动明细">
+                <p:tab title="调拨明细">
                     <p:dataTable id="tableList" value="#{assetAdjustManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
                                  selectionMode="single" selection="#{assetAdjustManagedBean.currentDetail}" rowKey="#{item.id}" >
                         <p:ajax event="rowSelect"  update="formOne:plgDetail" oncomplete="PF('dlgDetail').show();" />
@@ -87,7 +87,7 @@
                         </p:column>
                         <p:column styleClass="Wid20">
                             <f:facet name="header">
-                                <h:outputText value="转入部门"/>
+                                <h:outputText value="调入部门"/>
                             </f:facet>
                             <h:outputText value="#{item.deptname2}"/>
                         </p:column>
@@ -135,11 +135,11 @@
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column styleClass="Wid20"><h:outputText value="转出部门" /></p:column>
+                        <p:column styleClass="Wid20"><h:outputText value="调出部门" /></p:column>
                         <p:column styleClass="Wid30">
                             <h:outputText id="deptno1" value="#{assetAdjustManagedBean.currentDetail.deptno}" title="RequireDeptno" />
                         </p:column>
-                        <p:column styleClass="Wid20"><h:outputText value="转入部门"/></p:column>
+                        <p:column styleClass="Wid20"><h:outputText value="调入部门"/></p:column>
                         <p:column styleClass="Wid30">
                             <h:outputText id="deptno2" value="#{assetAdjustManagedBean.currentDetail.deptno2}" title="RequireDeptno" />
                         </p:column>

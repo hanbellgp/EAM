@@ -10,6 +10,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
+import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.AssetCard;
@@ -18,6 +19,7 @@ import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
+import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
@@ -86,6 +88,8 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private DepartmentBean departmentBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
+     @EJB
+    private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
 
     private String queryEquipmentName;
     private String imageName;
@@ -105,6 +109,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
     private boolean checkSingleSupplement;
+    private List<EquipmentSpareRecodeDta> eDtaList;
 
     public EquipmentRepairManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -195,13 +200,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                     showErrorMsg("Error", "请注意:维修完成时间一定比维修到达时间晚！！！");
                     return false;
                 }
-                  
+
                 long hitchtime = newEntity.getHitchtime().getTime();
                 if (servicearrivetime <= hitchtime) {
                     showErrorMsg("Error", "请注意:维修到达时间一定比维修发生时间晚！！！");
                     return false;
                 }
-                
+
             }
 
             if (newEntity.getCompletetime() == null && newEntity.getServicearrivetime() != null) {
@@ -349,6 +354,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         calculateTotalCost();
         return super.edit(path);
     }
@@ -500,7 +506,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                 newEntity.setServiceuser(e.getRepairuser());
                 newEntity.setServiceusername(e.getRepairusername());
                 newEntity.setItemno(e.getAssetItem().getItemno());
-                newEntity.setRepairarea(e.getPosition2().getName());
+                if (e.getPosition2() != null) {
+                    if (e.getPosition2().getPosition().equals("C0-1")) {
+                        newEntity.setRepairarea("兴塔厂");
+                    } else if (e.getPosition2().getPosition().equals("C0-2")) {
+                        newEntity.setRepairarea("枫泾厂");
+                    }
+                }
             } else {
                 newEntity.setAssetno(null);
                 newEntity.setItemno("9");
@@ -605,21 +617,28 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             if (equipmentrepair.getItemno().equals("9")) {
                 cell3.setCellValue("其他");
             } else {
-                cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
+                if (equipmentrepair.getAssetno() != null) {
+                    cell3.setCellValue(equipmentrepair.getAssetno().getAssetDesc());
+                }
             }
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
             if (equipmentrepair.getItemno().equals("9")) {
                 cell4.setCellValue(equipmentrepair.getRepairusername());
             } else {
-                cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
+                if (equipmentrepair.getAssetno() != null) {
+                    cell4.setCellValue(equipmentrepair.getAssetno().getUsername());
+                }
+
             }
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
             if (equipmentrepair.getItemno().equals("9")) {
                 cell5.setCellValue(equipmentrepair.getRepairdeptname());
             } else {
-                cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
+                if (equipmentrepair.getAssetno() != null) {
+                    cell5.setCellValue(equipmentrepair.getAssetno().getDeptname());
+                }
             }
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
@@ -1036,6 +1055,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void setParamPosition(List<String> paramPosition) {
         this.paramPosition = paramPosition;
+    }
+
+    public List<EquipmentSpareRecodeDta> geteDtaList() {
+        return eDtaList;
+    }
+
+    public void seteDtaList(List<EquipmentSpareRecodeDta> eDtaList) {
+        this.eDtaList = eDtaList;
     }
 
 }

@@ -429,8 +429,12 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
     }
 
     public void printSingle() {
-        if (detailList == null && deletedDetailList.isEmpty()) {
+        if (currentEntity == null || currentEntity.equals("")) {
             showErrorMsg("Error", "请选择需要导出的转移单！");
+            return;
+        }
+        if (detailList == null || detailList.isEmpty()) {
+            showErrorMsg("Error", "你选择的转移单无明细数据");
             return;
         }
         fileName = "EAM转移单明细" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";

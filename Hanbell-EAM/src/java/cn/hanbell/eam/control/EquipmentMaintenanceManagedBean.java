@@ -10,6 +10,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
+import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
@@ -18,6 +19,7 @@ import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentSpare;
+import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
@@ -87,6 +89,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
 
+    @EJB
+    private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
+
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
@@ -108,6 +113,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     protected List<EquipmentRepairHelpers> deletedDetailList4;
     private EquipmentRepairHelpers currentDetail4;
     private List<EquipmentRepairHelpers> addedDetailList4;
+    private List<EquipmentSpareRecodeDta> eDtaList;
     private String note;
     private boolean checkRepeat;
     private String disabledShow;
@@ -183,6 +189,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     //提交
     public void submit() {
+        if (getMaintenanceDelay().equals("true") && (currentDetail3.getNote() == null || currentDetail3.getNote().equals(""))) {
+            showErrorMsg("Error", "联络时间大于1小时，请填写维修延时原因！");
+            return;
+        }
         if (Integer.parseInt(currentEntity.getRstatus()) < 30) {
             showErrorMsg("Error", "当前进度为：" + getStateName(currentEntity.getRstatus()) + ", 不能提交");
             return;
@@ -215,7 +225,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentDetail3.setUserno(userManagedBean.getUserid());
             currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
             currentDetail3.setStatus("N");
-            currentDetail3.setContenct("已发起");
+            currentDetail3.setContenct("维修验收");
             currentDetail3.setPid(currentEntity.getFormid());
             currentDetail3.setCredate(getDate());
             doConfirmDetail3();
@@ -226,7 +236,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         } else {
             currentEntity.setRstatus("50");//更新状态
         }
-
+        note = null;
         super.update();//To change body of generated methods, choose Tools | Templates.
     }
 
@@ -251,19 +261,43 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         update();
     }
 
+    //维修领料
+    public String editPicking(String path) {
+        if (currentEntity == null) {
+            showErrorMsg("Error", "请选择需要领料的单子！");
+            return "";
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
+            showErrorMsg("Error", "已发起验收不能领料！");
+            return "";
+        }
+        return super.edit(path); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    //维修退料
+    public String editRetreat(String path) {
+        if (currentEntity == null) {
+            showErrorMsg("Error", "请选择需要退料的单子！");
+            return "";
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
+            showErrorMsg("Error", "已发起验收不能退料！");
+            return "";
+        }
+        return super.edit(path); //To change body of generated methods, choose Tools | Templates.
+    }
+
 //选择备件数据处理
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             EquipmentSpare u = (EquipmentSpare) event.getObject();
-            currentDetail2.setUprice(u.getUprice());
             currentDetail2.setSpareno(u.getSpareno());
             currentDetail2.setUserno(currentEntity.getServiceuser());
             currentDetail2.setSparenum(u);
             currentDetail2.setUserdate(getDate());
             currentDetail2.setUnit(u.getUnit());
             currentDetail2.setBrand(u.getBrand());
-
         }
     }
 
@@ -347,7 +381,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         } else {
             showErrorMsg("Error", "只有对应的维修人或维修课长才能转派单据");
         }
-
     }
 
     //获取责任人及责任部门
@@ -472,7 +505,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
                     min += Integer.parseInt(hours) * 60;
                 }
                 equipmentRepairHelpers.setUserno(String.valueOf(min));
-            }else{
+            } else {
                 equipmentRepairHelpers.setUserno(String.valueOf(0));
             }
 
@@ -490,6 +523,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         } else {
             disabledShow = "none";
         }
+        //获取使用的备件及价格
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         return super.edit(path);
     }
 
@@ -528,6 +563,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
         calculateTotalCost();
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -542,10 +578,18 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 //获取零件费用
     public Double getPartsCost() {
         maintenanceCosts = 0;
-        detailList2.forEach(equipmentrepair -> {
-            BigDecimal price = equipmentrepair.getUprice();
-            maintenanceCosts += equipmentrepair.getQty().doubleValue() * price.doubleValue();
-        });
+//        detailList2.forEach(equipmentrepair -> {
+//            BigDecimal price = equipmentrepair.getUprice();
+//            maintenanceCosts += equipmentrepair.getQty().doubleValue() * price.doubleValue();
+//        });
+        List<?> itemList = eDtaList;
+        if (itemList != null) {
+            List<Object[]> list = (List<Object[]>) itemList;
+            for (Object[] eDta : list) {
+                maintenanceCosts += Double.valueOf(eDta[4].toString());
+            }
+        }
+
         currentEntity.setSparecost(BigDecimal.valueOf(maintenanceCosts));
         return maintenanceCosts;
     }
@@ -679,7 +723,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             this.showWarnMsg("Warn", "已存在主维修人，无需添加！！！");
             return;
         }
-        if (currentDetail4.getUserno()==null||"".equals(currentDetail4.getUserno())) {
+        if (currentDetail4.getUserno() == null || "".equals(currentDetail4.getUserno())) {
             this.showWarnMsg("Error", "请输入维修时间！！！");
             return;
         }
@@ -1146,9 +1190,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             case "25":
                 return "暂停原因";
             default:
+
                 break;
         }
-        return "";
+        return "维修延误原因:";
     }
 
     //关闭时添加记录
@@ -1220,6 +1265,24 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (this.deletedDetailList4 != null && !this.deletedDetailList4.isEmpty()) {
             this.deletedDetailList4.clear();
         }
+    }
+
+    //获取维修延误是否大于1小时
+    public String getMaintenanceDelay() {
+        long hitchtime = currentEntity.getHitchtime().getTime();
+        long servicearrivetime = currentEntity.getServicearrivetime().getTime();
+        long diff = servicearrivetime - hitchtime;
+        long nd = 1000 * 24 * 60 * 60;// 一天的毫秒数
+        long nh = 1000 * 60 * 60;// 一小时的毫秒数
+        long nm = 1000 * 60;// 一分钟的毫秒数
+        long day = diff / nd;// 计算差多少天
+        long hour = diff % nd / nh + day * 24;// 计算差多少小时
+        long min = diff % nd % nh / nm + day * 24 * 60;// 计算差多少分钟
+        min = day * 24 * 60 + hour * 60 + min;
+        if (min >= 60) {
+            return "true";
+        }
+        return "none";
     }
 
     @Override
@@ -1418,6 +1481,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public List<EquipmentSpareRecodeDta> geteDtaList() {
+        return eDtaList;
+    }
+
+    public void seteDtaList(List<EquipmentSpareRecodeDta> eDtaList) {
+        this.eDtaList = eDtaList;
     }
 
 }

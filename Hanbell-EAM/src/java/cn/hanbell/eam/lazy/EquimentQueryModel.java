@@ -31,7 +31,7 @@ public class EquimentQueryModel extends BaseLazyModel<AssetCard> {
         filterFields.put("company =", userManagedBean.getCompany());
         setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
         setRowCount(superEJB.getRowCount(filterFields));
-        if (first == 0 && filterFields.size() < 3) {
+        if (first == 0 && filterFields.size() <=3) {
             AssetCard as = new AssetCard();
             as.setId(0);
             as.setAssetDesc("其他");

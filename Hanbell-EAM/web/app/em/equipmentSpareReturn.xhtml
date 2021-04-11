@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentMaintenance" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentSpareRetreatManagedBean.persist()}"  icon="ui-icon-save"  
+                                     process="@this,plgHead"  update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">备件退库-新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="退库单号" for="formid" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formid" value="#{equipmentSpareRetreatManagedBean.newEntity.formid}" title="formid" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="退库时间" for="formdate" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formdate"  value="#{equipmentSpareRetreatManagedBean.newEntity.formdate}">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                        </h:outputText>   
+                    </p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="对应出库单单号" for="relano" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="relano" value="#{equipmentSpareRetreatManagedBean.newEntity.relano}" title="relano" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnSparenumSelect" actionListener="#{equipmentSpareRetreatManagedBean.openDialog('equipmentSpareDeliverySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentSpareRetreatManagedBean.handleDialogReturnWhenNew}"
+                                    update="relano,sarea,:formOne:tabView:tableList" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="退库人" for="creator" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="creator" value="#{equipmentSpareRetreatManagedBean.newEntity.creator}" title="creator" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="所属厂区" for="sarea" /></p:column>
+                    <p:column>
+                        <h:outputText id="sarea" value="#{equipmentSpareRetreatManagedBean.newEntity.sarea}" title="sarea" />
+                    </p:column>
+                    <p:column styleClass="Wid15" style="display: none">
+                        <c:if test="${equipmentSpareRetreatManagedBean.newEntity.remark==null||equipmentSpareRetreatManagedBean.newEntity.remark!=equipmentMaintenanceManagedBean.currentEntity.formid}">   
+                            #{equipmentSpareRetreatManagedBean.newEntity.remark=equipmentMaintenanceManagedBean.currentEntity.formid}
+                            #{equipmentSpareRetreatManagedBean.newEntity.relano=null}
+                            #{equipmentSpareRetreatManagedBean.detailList=null}
+                        </c:if> 
+                    </p:column>
+                </p:row>
+
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="退库明细">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{equipmentSpareRetreatManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{equipmentSpareRetreatManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件编号" for="sparenum" /></p:column>
+                            <p:column  styleClass="Wid20">
+                                <p:inputText id="sparenum" value="#{equipmentSpareRetreatManagedBean.currentDetail.sparenum.sparenum}" title="sparenum" styleClass="inputWithButton" readonly="true"/>
+                            </p:column>
+                            <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件名称" for="sparedesc" /></p:column>
+                            <p:column  styleClass="Wid20">
+                                <h:outputText id="sparedesc" value="#{equipmentSpareRetreatManagedBean.currentDetail.sparenum.sparedesc}" title="sparedesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="规格" for="sparemodel" /></p:column>
+                            <p:column>
+                                <h:outputText id="sparemodel" value="#{equipmentSpareRetreatManagedBean.currentDetail.sparenum.sparemodel}" title="sparemodel"
+                                              />
+                            </p:column>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="单位" for="unit" /></p:column>
+                            <p:column>
+                                <h:outputText id="unit" value="#{equipmentSpareRetreatManagedBean.currentDetail.sparenum.unit.unit}" title="Unit" styleClass="inputWithButton"
+                                              />
+
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="数量" for="qty" /></p:column>
+                            <p:column>
+                                <p:spinner id="qty" value="#{equipmentSpareRetreatManagedBean.currentDetail.cqty}" 
+                                           required="true" requiredMessage="请输入数量"/>
+                            </p:column>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="退库单价" for="uprice" /></p:column>
+                            <p:column>
+                                <h:outputText id="uprice" value="#{equipmentSpareRetreatManagedBean.currentDetail.uprice}" title="uprice" 
+                                              />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{equipmentSpareRetreatManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentSpareRetreatManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparenum}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparedesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" >
+                            <f:facet name="header">
+                                <h:outputText value="退库数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="退库单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uprice}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.unit.unit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="规格型号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparemodel}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>    
+
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

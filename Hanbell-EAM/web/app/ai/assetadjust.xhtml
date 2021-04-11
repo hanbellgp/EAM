@@ -13,7 +13,7 @@
                 <f:facet name="header">
                     查询条件
                 </f:facet>
-                <h:outputLabel value="异动单号" for="queryFormId" />
+                <h:outputLabel value="调拨单号" for="queryFormId" />
                 <p:inputText id="queryFormId" value="#{assetAdjustManagedBean.queryFormId}" title="单号" />
                 <h:outputLabel value="状态" for="queryState" />
                 <p:selectOneMenu id="queryState" value="#{assetAdjustManagedBean.queryState}" title="状态" >
@@ -21,7 +21,7 @@
                     <f:selectItem itemLabel="未审核" itemValue="N"/>
                     <f:selectItem itemLabel="已审核" itemValue="V"/>
                 </p:selectOneMenu>
-                <h:outputLabel value="异动日期" for="queryDateBegin" />
+                <h:outputLabel value="调拨日期" for="queryDateBegin" />
                 <p:calendar id="queryDateBegin" value="#{assetAdjustManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="截止日期" for="queryDateEnd" />
                 <p:calendar id="queryDateEnd" value="#{assetAdjustManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
@@ -57,19 +57,19 @@
                          rowsPerPageTemplate="15,30,45"  lazy="true"
                          selectionMode="single" selection="#{assetAdjustManagedBean.currentEntity}" rowKey="#{item.id}" >
                 <f:facet name="header">
-                    资产异动维护
+                    资产调拨维护
                 </f:facet>
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
                 <p:column styleClass="Wid10">
                     <f:facet name="header">
-                        <h:outputText value="异动单号"/>
+                        <h:outputText value="调拨单号"/>
                     </f:facet>
                     <h:outputText value="#{item.formid}"/>
                 </p:column>
                 <p:column styleClass="Wid10">
                     <f:facet name="header">
-                        <h:outputText value="异动日期"/>
+                        <h:outputText value="调拨日期"/>
                     </f:facet>
                     <h:outputText value="#{item.formdate}">
                         <f:convertDateTime pattern="yyyy/MM/dd" />

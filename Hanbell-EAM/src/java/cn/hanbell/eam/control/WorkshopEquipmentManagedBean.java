@@ -73,7 +73,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
         stayear = String.valueOf(year);//初始化数据年份为当前年份
         type = "半成品方型件";//默认查询半成品方型件的数据
         reportType = "H";
-       // workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, type, reportType);
+        // workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, type, reportType);
 
     }
 
@@ -90,7 +90,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             } else {
                 edition = "汉钟版车间设备月报模板";
             }
-            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/"+edition+".xls");
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/" + edition + ".xls");
             Workbook workbook = WorkbookFactory.create(is);
             //获得表格样式
             Map<String, CellStyle> style = createStyles(workbook);
@@ -125,43 +125,17 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
                 Cell cell0 = row.createCell(0);
                 cell0.setCellStyle(style.get("left"));
                 cell0.setCellValue(eq[0].toString());
-                Cell cell1 = row.createCell(1);
-                cell1.setCellStyle(style.get("cell"));
-                cell1.setCellValue(Double.parseDouble(eq[1].toString()));
-                Cell cell2 = row.createCell(2);
-                cell2.setCellStyle(style.get("cell"));
-                cell2.setCellValue(Double.parseDouble(eq[2].toString()));
-                Cell cell3 = row.createCell(3);
-                cell3.setCellStyle(style.get("cell"));
-                cell3.setCellValue(Double.parseDouble(eq[3].toString()));
-                Cell cell4 = row.createCell(4);
-                cell4.setCellStyle(style.get("cell"));
-                cell4.setCellValue(Double.parseDouble(eq[4].toString()));
-                Cell cell5 = row.createCell(5);
-                cell5.setCellStyle(style.get("cell"));
-                cell5.setCellValue(Double.parseDouble(eq[5].toString()));
-                Cell cell6 = row.createCell(6);
-                cell6.setCellStyle(style.get("cell"));
-                cell6.setCellValue(Double.parseDouble(eq[6].toString()));
-                Cell cell7 = row.createCell(7);
-                cell7.setCellStyle(style.get("cell"));
-                cell7.setCellValue(Double.parseDouble(eq[7].toString()));
-                Cell cell8 = row.createCell(8);
-                cell8.setCellStyle(style.get("cell"));
-                cell8.setCellValue(Double.parseDouble(eq[8].toString()));
-                Cell cell9 = row.createCell(9);
-                cell9.setCellStyle(style.get("cell"));
-                cell9.setCellValue(Double.parseDouble(eq[9].toString()));
-                Cell cell10 = row.createCell(10);
-                cell10.setCellStyle(style.get("cell"));
-                cell10.setCellValue(Double.parseDouble(eq[10].toString()));
-                Cell cell11 = row.createCell(11);
-                cell11.setCellStyle(style.get("cell"));
-                cell11.setCellValue(Double.parseDouble(eq[11].toString()));
-                Cell cell12 = row.createCell(12);
-                cell12.setCellStyle(style.get("cell"));
-                cell12.setCellValue(Double.parseDouble(eq[12].toString()));
+                for (int i = 1; i < 13; i++) {
+                    cell0 = row.createCell(i);
+                    cell0.setCellStyle(style.get("cell"));
+                    if (eq[i] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[i].toString()));
+                    }
 
+                }
+                cell0 = row.createCell(13);
+                cell0.setCellStyle(style.get("left"));
+                cell0.setCellValue(eq[13].toString());
             }
 
             OutputStream os = null;

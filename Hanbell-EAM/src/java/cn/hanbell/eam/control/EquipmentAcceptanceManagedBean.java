@@ -10,6 +10,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
+import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
@@ -18,6 +19,7 @@ import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
 import cn.hanbell.eam.entity.EquipmentSpare;
+import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
@@ -67,6 +69,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private SysCodeBean sysCodeBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
+    @EJB
+    private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
@@ -82,6 +86,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private List<SysCode> hitchurgencyList;
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
+    private List<EquipmentSpareRecodeDta> eDtaList;
 
     public EquipmentAcceptanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -111,7 +116,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             EquipmentSpare u = (EquipmentSpare) event.getObject();
-            currentDetail2.setUprice(u.getUprice());
+
             currentDetail2.setSpareno(u.getSpareno());
             currentDetail2.setUserno(currentEntity.getServiceuser());
             currentDetail2.setSparenum(u);
@@ -222,6 +227,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         calculateTotalCost();
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -294,6 +300,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         getPartsCost();
         calculateTotalCost();
         return super.edit(path);
@@ -329,6 +336,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 this.setCurrentEntity((EquipmentRepair) this.model.getDataList().get(idx));
                 detailList2 = equipmentRepairSpareBean.findByPId(currentEntity.getFormid());
                 detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
+                 eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
             }
         }
     }
@@ -420,7 +428,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         final int idx = this.model.getDataList().indexOf(this.currentEntity);
 
         model.getDataList().remove(idx);
-        
+
         toNext();
     }
     //获取故障紧急度
@@ -770,6 +778,14 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
     public void setAbrasehitchList(List<SysCode> abrasehitchList) {
         this.abrasehitchList = abrasehitchList;
+    }
+
+    public List<EquipmentSpareRecodeDta> geteDtaList() {
+        return eDtaList;
+    }
+
+    public void seteDtaList(List<EquipmentSpareRecodeDta> eDtaList) {
+        this.eDtaList = eDtaList;
     }
 
 }

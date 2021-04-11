@@ -244,6 +244,9 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
                 sql += "or A.curnode2= " + " '" + sqlUserName + "'";
             }
             sql = sql.substring(2, sql.length());
+        } else {
+            sql = usernameList.stream().map(sqlUserName -> "or A.curnode2= " + " '" + sqlUserName + "'").reduce(sql, String::concat);
+            sql = sql.substring(2, sql.length());
         }
         if (company.length > 0) {
             for (String sqlCompanyID : company) {
