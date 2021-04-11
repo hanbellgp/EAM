@@ -25,7 +25,7 @@
                         <p:calendar id="queryDateEnd" value="#{repairManHourSummaryManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
                     </p:column>
                 </p:row>
-                 <p:row>
+                <p:row>
                     <p:column><h:outputLabel value="维修人" for="selectedUserName" />  </p:column>
                     <p:column>
                         <p:selectCheckboxMenu id="selectedUserName" value="#{repairManHourSummaryManagedBean.selectedUserName}"  multiple="true"
@@ -34,7 +34,7 @@
                         </p:selectCheckboxMenu>
                     </p:column>
                     <p:column><h:outputLabel value="公司别" for="company" /> </p:column>
-                    
+
                     <p:column>
                         <p:selectCheckboxMenu id="company" value="#{repairManHourSummaryManagedBean.company}"  multiple="true"
                                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
@@ -52,12 +52,12 @@
                 <f:facet name="right">
                     <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{repairManHourSummaryManagedBean.print()}" icon="ui-icon-print"
                                      />
-                    
+
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{repairManHourSummaryManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:dataTable value="#{repairManHourSummaryManagedBean.detailList}" var="item"  tableStyleClass="tableList"  >
+            <p:dataTable value="#{repairManHourSummaryManagedBean.detailList}" var="item"  tableStyleClass="tableList" rows="20"  >
                 <p:ajax event="rowSelect"  />
                 <p:ajax event="rowUnselect" />
                 <p:column styleClass="Wid10" headerText="维修人" sortBy="#{item[0]}" style="text-align: center">
@@ -75,11 +75,11 @@
                 <p:column styleClass="Wid20" headerText="总维修工时(分)" sortBy="#{item[4]}"  style="text-align: right">
                     <h:outputText value="#{item[4]}"/>
                 </p:column>
-             
-               
+
+
             </p:dataTable>
             <p:chart type="bar" model="#{repairManHourSummaryManagedBean.barModel}" style="height:300px; word-break:keep-all"   />
-           
+
         </h:form>
     </ui:define>
 

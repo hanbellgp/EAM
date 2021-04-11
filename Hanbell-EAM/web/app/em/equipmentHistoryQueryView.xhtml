@@ -267,50 +267,37 @@
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="备件使用明细">
-                    <p:dataTable id="tableList" value="#{equipmentHistoryManagedBean.detailList2}" var="item" styleClass="tableList Mtop10"
-                                 selectionMode="single" selection="#{equipmentHistoryManagedBean.currentDetail2}" rowKey="#{item.seq}" >
-
-                        <p:column styleClass="Wid15">
-                            <f:facet name="header">
-                                <h:outputText value="备件品号"/>
-                            </f:facet>
-                            <h:outputText value="#{item.spareno}"/>
-                        </p:column>
+                    <p:dataTable id="tableList" value="#{equipmentHistoryManagedBean.eDtaList}" var="item" styleClass="tableList Mtop10"
+                                 >
                         <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件编号"/>
                             </f:facet>
-                            <h:outputText value="#{item.sparenum.sparenum}"/>
+                            <h:outputText value="#{item[0]}"/>
                         </p:column>
                         <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件名称"/>
                             </f:facet>
-                            <h:outputText value="#{item.sparenum.sparedesc}"/>
+                            <h:outputText value="#{item[1]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="规格"/>
+                            </f:facet>
+                            <h:outputText value="#{item[2]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;" >
+                            <f:facet name="header">
+                                <h:outputText value="数量" />
+                            </f:facet>
+                            <h:outputText value="#{item[3]}"/>
                         </p:column>
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
-                                <h:outputText value="数量"/>
+                                <h:outputText value="总金额"/>
                             </f:facet>
-                            <h:outputText value="#{item.qty}"/>
-                        </p:column>
-                        <p:column styleClass="Wid15" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="单价"/>
-                            </f:facet>
-                            <h:outputText value="#{item.uprice}"/>
-                        </p:column>
-                        <p:column styleClass="Wid15" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="单位"/>
-                            </f:facet>
-                            <h:outputText value="#{item.unit.unit}"/>
-                        </p:column>
-                        <p:column styleClass="Wid15" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="品牌"/>
-                            </f:facet>
-                            <h:outputText value="#{item.brand}"/>
+                            <h:outputText value="#{item[4]}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

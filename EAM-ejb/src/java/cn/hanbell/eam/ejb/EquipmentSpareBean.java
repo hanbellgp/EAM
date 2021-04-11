@@ -37,4 +37,13 @@ public class EquipmentSpareBean extends SuperEJBForEAM<EquipmentSpare> {
         }
     }
 
+    public List<EquipmentSpare> findBySparenum(String sparenum) {
+        Query query = getEntityManager().createNamedQuery("EquipmentSpare.findBySparenum");
+        query.setParameter("sparenum", sparenum + "%");
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

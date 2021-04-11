@@ -653,7 +653,7 @@ return false;]]></method>
                     <label id="354">
                         <property name="fontSize">12pt</property>
                         <property name="textAlign">center</property>
-                        <text-property name="text">EAM异动单</text-property>
+                        <text-property name="text">EAM调拨单</text-property>
                     </label>
                 </cell>
             </row>
@@ -668,7 +668,7 @@ return false;]]></method>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <label id="36">
-                        <text-property name="text">异动单号</text-property>
+                        <text-property name="text">调拨单号</text-property>
                     </label>
                 </cell>
                 <cell id="17">
@@ -703,7 +703,7 @@ return false;]]></method>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <label id="39">
-                        <text-property name="text">异动日期</text-property>
+                        <text-property name="text">调拨日期</text-property>
                     </label>
                 </cell>
                 <cell id="19">
@@ -1197,7 +1197,7 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <label id="196">
-                            <text-property name="text">转出信息</text-property>
+                            <text-property name="text">调出信息</text-property>
                         </label>
                     </cell>
                     <cell id="203">
@@ -1212,7 +1212,7 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <label id="206">
-                            <text-property name="text">转入信息</text-property>
+                            <text-property name="text">调入信息</text-property>
                         </label>
                     </cell>
                     <cell id="221">
@@ -1901,13 +1901,12 @@ return false;]]></method>
             </footer>
         </table>
         <grid id="382">
+            <property name="height">0.9583333333333334in</property>
             <property name="width">7.7in</property>
             <column id="383"/>
             <column id="384"/>
             <column id="385"/>
             <column id="386"/>
-            <column id="387"/>
-            <column id="388"/>
             <row id="445">
                 <cell id="446">
                     <label id="452"/>
@@ -1915,40 +1914,38 @@ return false;]]></method>
                 <cell id="447"/>
                 <cell id="448"/>
                 <cell id="449"/>
-                <cell id="450"/>
-                <cell id="451"/>
             </row>
             <row id="389">
+                <property name="height">0.4270833333333333in</property>
                 <cell id="390">
                     <label id="443">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">转出方(签字):</text-property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">调出方(签字):</text-property>
                     </label>
                 </cell>
-                <cell id="391">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
+                <cell id="391"/>
                 <cell id="392">
                     <label id="444">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">转入方(签字):</text-property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">调入方(签字):</text-property>
                     </label>
                 </cell>
-                <cell id="393">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                </cell>
-                <cell id="394">
-                    <label id="396">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">领用人</text-property>
+                <cell id="393"/>
+            </row>
+            <row id="461">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="462">
+                    <label id="466">
+                        <text-property name="text">调出方主管(签字):</text-property>
                     </label>
                 </cell>
-                <cell id="395">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
+                <cell id="463"/>
+                <cell id="464">
+                    <label id="467">
+                        <text-property name="text">调入方主管(签字):</text-property>
+                    </label>
                 </cell>
+                <cell id="465"/>
             </row>
         </grid>
     </body>

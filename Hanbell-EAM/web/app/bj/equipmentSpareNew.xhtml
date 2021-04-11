@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentSpare" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentSpareManagedBean.persist()}"  icon="ui-icon-save"  update="plgHead"/>
+
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件编号" for="sparenum" /></p:column>
+                    <p:column>
+                        <p:inputText id="sparenum" value="#{equipmentSpareManagedBean.newEntity.sparenum}" title="sparenum" disabled="true"
+                                     />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件名称" for="sparedesc" /></p:column>
+                    <p:column>
+                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.newEntity.sparedesc}" title="sparedesc"
+                                     />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件大类" for="scategory" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="scategory" value="#{equipmentSpareManagedBean.newEntity.scategory.sname}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnScategorySelect" actionListener="#{equipmentSpareManagedBean.openDialog('equipmentSpareClassSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleEquipmentSpareClassReturnWhenNew}"
+                                    update="scategory" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件中类" for="mcategory" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="mcategory" value="#{equipmentSpareManagedBean.newEntity.mcategory.mname}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="btnMcategorySelect" actionListener="#{equipmentSpareManagedBean.openDialog('equipmentSpareMidSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleDialogReturnWhenNew}"
+                                    update="mcategory" />
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+
+
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <p:inputText id="unit" value="#{equipmentSpareManagedBean.newEntity.unit.unit}" title="Unit" styleClass="inputWithButton"
+                                     readonly="true"/>
+                        <p:commandButton id="btnUnitSelect" actionListener="#{equipmentSpareManagedBean.openDialog('unitSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleDialogReturnUnitWhenNew}"
+                                    update="unit" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="规格" for="sparemodel" /></p:column>
+                    <p:column>
+                        <p:inputText id="sparemodel" value="#{equipmentSpareManagedBean.newEntity.sparemodel}" title="sparemodel"
+                                     />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="最低储备" for="minstock" /></p:column>
+                    <p:column>
+                        <p:inputText id="minstock" value="#{equipmentSpareManagedBean.newEntity.minstock}" title="minstock"
+                                     />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="最高储备" for="maxstock" /></p:column>
+                    <p:column>
+                        <p:inputText id="maxstock" value="#{equipmentSpareManagedBean.newEntity.maxstock}" title="maxstock"
+                                     />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="采购周期" for="leadtime" /></p:column>
+                    <p:column>
+                        <p:inputText id="leadtime" value="#{equipmentSpareManagedBean.newEntity.leadtime}" title="leadtime"
+                                     />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="品牌" for="brand" /></p:column>
+                    <p:column>
+                        <p:inputText id="brand" value="#{equipmentSpareManagedBean.newEntity.brand}" title="brand"
+                                     />
+                    </p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件用途" for="suse" /></p:column>
+                    <p:column>
+                        <p:inputText id="suse" value="#{equipmentSpareManagedBean.newEntity.suse}" title="suse"
+                                     />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="请购件号" for="spareno" /></p:column>
+                    <p:column>
+                        <p:inputText id="spareno" value="#{equipmentSpareManagedBean.newEntity.spareno}" title="spareno"
+                                     />
+                    </p:column>
+                </p:row>
+
+            </p:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

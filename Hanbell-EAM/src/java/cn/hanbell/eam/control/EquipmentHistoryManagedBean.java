@@ -10,6 +10,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
+import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
@@ -17,6 +18,7 @@ import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
+import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
 import cn.hanbell.eam.lazy.EquipmentRepairModel;
@@ -83,6 +85,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private SysCodeBean sysCodeBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
+    @EJB
+    private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
@@ -103,6 +107,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private List<EquipmentTrouble> equipmentTroubleList;
     protected List<EquipmentRepairHelpers> detailList4;
     private EquipmentRepairHelpers currentDetail4;
+    private List<EquipmentSpareRecodeDta> eDtaList;
 
     public EquipmentHistoryManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -146,6 +151,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -223,6 +229,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             model.getFilterFields().put("company", userManagedBean.getCompany());
             if (!"NULL".equals(queryState)) {
                 model.getFilterFields().put("rstatus", queryState);
+            } else {
+                model.getFilterFields().put("rstatus <=", "95");
             }
             if (!"NULL".equals(queryArchive)) {
                 model.getFilterFields().put("repairarchive", queryArchive);
@@ -1045,6 +1053,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void setQueryArchive(String queryArchive) {
         this.queryArchive = queryArchive;
+    }
+
+    public List<EquipmentSpareRecodeDta> geteDtaList() {
+        return eDtaList;
+    }
+
+    public void seteDtaList(List<EquipmentSpareRecodeDta> eDtaList) {
+        this.eDtaList = eDtaList;
     }
 
 }

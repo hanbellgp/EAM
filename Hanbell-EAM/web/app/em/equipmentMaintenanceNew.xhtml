@@ -249,6 +249,7 @@
                                          style=" border: darkgray solid 1px" readonly="true"/>
                     </p:column>
                 </p:row>
+
                 <p:row>
 
                     <p:column colspan="6">
@@ -263,7 +264,13 @@
                         </c:forEach>
                     </p:column>
                 </p:row>
-
+                <p:row style="display: #{equipmentMaintenanceManagedBean.getMaintenanceDelay()}">
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="维修延误原因"/></p:column>
+                    <p:column  colspan="6">
+                        <p:inputTextarea id="note"  value="#{equipmentMaintenanceManagedBean.currentDetail3.note}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" />
+                    </p:column>
+                </p:row>
                 <p:row>
                     <p:column  style="background-color: #EEEEEE"><h:outputText value="设备故障报警号"  /></p:column>
                     <p:column colspan="7">
@@ -337,104 +344,37 @@
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="备件使用明细">
-                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
-                        <f:facet name="left">
-                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{equipmentMaintenanceManagedBean.createDetail2()}" icon="ui-icon-plus"
-                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
-                                             process="@this" update=":formOne:tabView:plgDetail"/>
-                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{equipmentMaintenanceManagedBean.deleteDetail2()}" icon="ui-icon-trash"
-                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
-                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList,:formOne:plgCost" />
-                        </f:facet>
-                        <f:facet name="right">
-                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{equipmentMaintenanceManagedBean.doConfirmDetail2()}" icon="ui-icon-check"
-                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
-                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList,:formOne:plgCost"/>
-                        </f:facet>
-                    </p:toolbar>
-                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
-                        <p:row>
-                            <p:column><p:outputLabel value="备件品号" for="spareno"/></p:column>
-                            <p:column styleClass="Wid30">
-                                <p:inputText id="spareno" value="#{equipmentMaintenanceManagedBean.currentDetail2.spareno}" title="spareno" styleClass="inputWithButton"
-                                             required="true" requiredMessage="请输入品号" readonly="true"/>
-                                <p:commandButton id="btnAssetItemSelect" actionListener="#{equipmentMaintenanceManagedBean.openDialog('equipmentSpareSelect')}" icon="ui-icon-extlink" process="@this" >
-                                    <p:ajax event="dialogReturn" listener="#{equipmentMaintenanceManagedBean.handleDialogReturnWhenDetailEdit}" update="sparenum,uprice,spareno,brand,unit" />
-                                </p:commandButton>
-                            </p:column>
-                            <p:column><h:outputText value="备件名称"/></p:column>
-                            <p:column>
-                                <h:outputText id="sparenum" value="#{equipmentMaintenanceManagedBean.currentDetail2.sparenum.sparedesc}" title="sparenum" />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column><p:outputLabel value="数量" for="qty" /></p:column>
-                            <p:column>
-                                <p:inputText  id="qty" value="#{equipmentMaintenanceManagedBean.currentDetail2.qty}" title="qty" styleClass="inputWithButton"
-                                              onkeyup="this.value = this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" required="true" requiredMessage="请输入数量"/>
-                            </p:column>
-                            <p:column><p:outputLabel value="单位" for="unit" /></p:column>
-                            <p:column>
-                                <h:outputText id="unit" value="#{equipmentMaintenanceManagedBean.currentDetail2.unit.unit}" title="uprice" />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column><p:outputLabel value="单价" for="uprice" /></p:column>
-                            <p:column>
-                                <h:outputText id="uprice" value="#{equipmentMaintenanceManagedBean.currentDetail2.uprice}" title="uprice" />
-                            </p:column>
-                            <p:column><p:outputLabel value="品牌" for="brand" /></p:column>
-                            <p:column>
-                                <h:outputText id="brand" value="#{equipmentMaintenanceManagedBean.currentDetail2.brand}" title="uprice" />
-                            </p:column>
-                        </p:row>
-
-                    </p:panelGrid>
-                    <p:dataTable id="tableList" value="#{equipmentMaintenanceManagedBean.detailList2}" var="item" styleClass="tableList Mtop10"
-                                 selectionMode="single" selection="#{equipmentMaintenanceManagedBean.currentDetail2}" rowKey="#{item.seq}" >
-                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
-                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail" oncomplete="" />
-                        <p:column styleClass="Wid15">
-                            <f:facet name="header">
-                                <h:outputText value="备件品号"/>
-                            </f:facet>
-                            <h:outputText value="#{item.spareno}"/>
-                        </p:column>
+                    <p:dataTable id="tableList" value="#{equipmentMaintenanceManagedBean.eDtaList}" var="item" styleClass="tableList Mtop10"
+                                 >
                         <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件编号"/>
                             </f:facet>
-                            <h:outputText value="#{item.sparenum.sparenum}"/>
+                            <h:outputText value="#{item[0]}"/>
                         </p:column>
                         <p:column styleClass="Wid15">
                             <f:facet name="header">
                                 <h:outputText value="备件名称"/>
                             </f:facet>
-                            <h:outputText value="#{item.sparenum.sparedesc}"/>
+                            <h:outputText value="#{item[1]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="规格"/>
+                            </f:facet>
+                            <h:outputText value="#{item[2]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;" >
+                            <f:facet name="header">
+                                <h:outputText value="数量" />
+                            </f:facet>
+                            <h:outputText value="#{item[3]}"/>
                         </p:column>
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
-                                <h:outputText value="数量"/>
+                                <h:outputText value="总金额"/>
                             </f:facet>
-                            <h:outputText value="#{item.qty}"/>
-                        </p:column>
-                        <p:column styleClass="Wid15" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="单价"/>
-                            </f:facet>
-                            <h:outputText value="#{item.uprice}"/>
-                        </p:column>
-                        <p:column styleClass="Wid15" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="单位"/>
-                            </f:facet>
-                            <h:outputText value="#{item.unit.unit}"/>
-                        </p:column>
-                        <p:column styleClass="Wid15" style="text-align: right;">
-                            <f:facet name="header">
-                                <h:outputText value="品牌"/>
-                            </f:facet>
-                            <h:outputText value="#{item.brand}"/>
+                            <h:outputText value="#{item[4]}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

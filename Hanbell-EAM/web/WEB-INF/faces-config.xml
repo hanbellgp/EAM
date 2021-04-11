@@ -392,12 +392,7 @@
             <to-view-id>/app/em/equipmentHistoryQuery.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-        <navigation-case>
-            <description>BD105维修备件维护</description>
-            <from-outcome>equipmentSpare</from-outcome>
-            <to-view-id>/app/em/equipmentSpare.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
+      
         <navigation-case>
             <description>维修工时明细表</description>
             <from-outcome>repairManHourDetailList</from-outcome>
@@ -494,6 +489,55 @@
             <to-view-id>/app/em/equipmentTotalEfficiency.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <description>备件大类维护</description>
+            <from-outcome>equipmentSpareClass</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareClass.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件中类维护</description>
+            <from-outcome>equipmentSpareMid</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareMid.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>设备备件维护</description>
+            <from-outcome>equipmentSpare</from-outcome>
+            <to-view-id>/app/bj/equipmentSpare.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件入库作业</description>
+            <from-outcome>equipmentSpareRecode</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareRecode.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件出库作业</description>
+            <from-outcome>equipmentSpareDelivery</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareDelivery.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件退库作业</description>
+            <from-outcome>equipmentSpareRetreat</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareRetreat.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件库存查询</description>
+            <from-outcome>equipmentSpareStock</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareStock.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件使用台账</description>
+            <from-outcome>equipmentSpareUse</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareUse.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        
     </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>
@@ -556,6 +600,26 @@
         <navigation-case>
             <from-outcome>equipmentSpareSelect</from-outcome>
             <to-view-id>/app/df/equipmentSpareSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>equipmentSpareClassSelect</from-outcome>
+            <to-view-id>/app/df/equipmentSpareClassSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>equipmentSpareMidSelect</from-outcome>
+            <to-view-id>/app/df/equipmentSpareMidSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>equipmentSpareStockSelect</from-outcome>
+            <to-view-id>/app/df/equipmentSpareStockSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>equipmentSpareDeliverySelect</from-outcome>
+            <to-view-id>/app/df/equipmentSpareDeliverySelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

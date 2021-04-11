@@ -37,12 +37,7 @@
                          rowsPerPageTemplate="10,15,30"  lazy="true" selectionMode="single" selection="#{equipmentSpareQueryBean.currentEntity}" rowKey="#{item.id}" >
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                <p:column styleClass="Wid20">
-                    <f:facet name="header">
-                        <h:outputText value="品号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.spareno}"/>
-                </p:column>
+
                 <p:column styleClass="">
                     <f:facet name="header">
                         <h:outputText value="编号"/>
@@ -55,18 +50,19 @@
                     </f:facet>
                     <h:outputText value="#{item.sparedesc}"/>
                 </p:column>
-                 <p:column styleClass="">
+                <p:column styleClass="">
+                    <f:facet name="header">
+                        <h:outputText value="规格"/>
+                    </f:facet>
+                    <h:outputText value="#{item.sparemodel}"/>
+                </p:column>
+                <p:column styleClass="">
                     <f:facet name="header">
                         <h:outputText value="品牌"/>
                     </f:facet>
                     <h:outputText value="#{item.brand}"/>
                 </p:column>
-                  <p:column styleClass="Wid10">
-                    <f:facet name="header">
-                        <h:outputText value="单价"/>
-                    </f:facet>
-                    <h:outputText value="#{item.uprice}"/>
-                </p:column>
+
             </p:dataTable>
         </h:form>
     </ui:define>

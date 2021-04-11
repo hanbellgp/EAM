@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentSpareDelivery" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnVerify" value="审核" action="#{equipmentSpareDeliveryManagedBean.verify()}" icon="ui-icon-check"
+                                     process="@this" rendered="#{equipmentSpareDeliveryManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">备件出库-详情</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="出库单号" for="formid" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formid" value="#{equipmentSpareDeliveryManagedBean.currentEntity.formid}" title="formid" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="出库时间" for="formdate" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formdate"  value="#{equipmentSpareDeliveryManagedBean.currentEntity.formdate}">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                        </h:outputText>   
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="所属厂区" for="sarea" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="sarea" value="#{equipmentSpareDeliveryManagedBean.currentEntity.sarea}" title="sarea" disabled="true">
+                            <f:selectItem itemLabel="请选择" itemValue="" />
+                            <f:selectItems  value="#{equipmentSpareManagedBean.repairareaList}" var="repairareaList" itemLabel="#{repairareaList.cdesc}" itemValue="#{repairareaList.cvalue}"  />
+                        </p:selectOneMenu>
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="出库人" for="creator" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="creator" value="#{equipmentSpareDeliveryManagedBean.currentEntity.creator}" title="creator" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="入库摘要"  /></p:column>
+                    <p:column colspan="7">
+                        <p:inputTextarea id="remark"  value="#{equipmentSpareDeliveryManagedBean.currentEntity.remark}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" maxlength="200" readonly="true"/>
+                    </p:column> 
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="出库明细">
+                    <p:dataTable id="tableList" value="#{equipmentSpareDeliveryManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentSpareRecodeManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparenum}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparedesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" >
+                            <f:facet name="header">
+                                <h:outputText value="出库数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="出库单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uprice}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.unit.unit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="规格型号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparemodel}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="存放储位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.slocation}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>    
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnVerify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

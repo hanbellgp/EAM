@@ -58,7 +58,10 @@
                                     />
                         <p:menuitem id="btnCreate" value="发起维修验收" action="#{equipmentMaintenanceManagedBean.initiateMaintenanceAcceptance('equipmentMaintenanceNew')}" icon="ui-icon-plus"
                                     />
-                    
+                        <p:menuitem  value="维修领料" action="#{equipmentMaintenanceManagedBean.editPicking('equipmentSparePicking')}" icon="ui-icon-plus"
+                                     />
+                        <p:menuitem  value="维修退料" action="#{equipmentMaintenanceManagedBean.editRetreat('equipmentSpareReturn')}" icon="ui-icon-plus"
+                                     />
                     </p:splitButton>
                     <p:commandButton  value="转派维修人" actionListener="#{equipmentMaintenanceManagedBean.openDialogCheck('equipmentMaintenanceEdit')}" icon="ui-icon-sync"
                                       update=":formList">
@@ -68,7 +71,7 @@
                     </p:commandButton>
 
                     <p:commandButton style="display: #{equipmentMaintenanceManagedBean.getButtonDisplay()}"   value="#{equipmentMaintenanceManagedBean.getButtonName()}" actionListener="#{equipmentMaintenanceManagedBean.openDialogTime('equipmentAcceptanceEdit')}"    icon="ui-icon-check" update=":formList">
-                    <p:ajax event="dialogReturn" listener="#{equipmentMaintenanceManagedBean.handleRecordApprovalComments}" update=":formList"
+                        <p:ajax event="dialogReturn" listener="#{equipmentMaintenanceManagedBean.handleRecordApprovalComments}" update=":formList"
                                 />
                     </p:commandButton>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentMaintenanceManagedBean.query()}" icon="ui-icon-search"

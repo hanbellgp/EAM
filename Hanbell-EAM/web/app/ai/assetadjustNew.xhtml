@@ -21,19 +21,19 @@
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">资产异动－新增</p:column>
+                        <p:column colspan="4">资产调拨－新增</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="异动单号" for="formid" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="调拨单号" for="formid" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="formid" value="#{assetAdjustManagedBean.newEntity.formid}" title="Formid"
-                                     required="true" requiredMessage="请输入异动单号"  disabled="#{assetAdjustManagedBean.currentPrgGrant.sysprg.noauto}"/>
+                                     required="true" requiredMessage="请输入调拨单号"  disabled="#{assetAdjustManagedBean.currentPrgGrant.sysprg.noauto}"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="异动日期" for="formdate" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="调拨日期" for="formdate" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:calendar id="formdate" value="#{assetAdjustManagedBean.newEntity.formdate}" title="Formdate"
-                                    pattern="yyyy/MM/dd" required="true" requiredMessage="请输入异动日期"/>
+                                    pattern="yyyy/MM/dd" required="true" requiredMessage="请输入调拨日期"/>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -52,7 +52,7 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptnoT" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="调入部门" for="deptnoT" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="deptnoT" value="#{assetAdjustManagedBean.newEntity.deptno2}" title="deptno2" styleClass="inputWithButton"
                                      required="true" readonly="true"/>
@@ -91,7 +91,7 @@
                 </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
-                <p:tab title="异动明细">
+                <p:tab title="调拨明细">
                     <p:toolbar id="detailToolbar" styleClass="detailToolbar">
                         <f:facet name="left">
                             <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{assetAdjustManagedBean.createDetailNew()}" icon="ui-icon-plus"
@@ -140,11 +140,11 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column styleClass="Wid20"><h:outputText value="转出部门" /></p:column>
+                            <p:column styleClass="Wid20"><h:outputText value="调出部门" /></p:column>
                             <p:column styleClass="Wid30">
                                 <h:outputText id="deptno" value="#{assetAdjustManagedBean.currentDetail.deptno}" title="RequireDeptno" />
                             </p:column>
-                            <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptno2" /></p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="调入部门" for="deptno2" /></p:column>
                             <p:column styleClass="Wid30">
                                 <p:inputText id="deptno2" value="#{assetAdjustManagedBean.currentDetail.deptno2}" title="RequireDeptno" styleClass="inputWithButton"
                                              required="true" readonly="true"/>

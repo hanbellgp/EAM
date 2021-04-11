@@ -31,11 +31,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findById", query = "SELECT e FROM EquipmentSpare e WHERE e.id = :id"),
     @NamedQuery(name = "EquipmentSpare.findByCompany", query = "SELECT e FROM EquipmentSpare e WHERE e.company = :company"),
     @NamedQuery(name = "EquipmentSpare.findBySpareno", query = "SELECT e FROM EquipmentSpare e WHERE e.spareno = :spareno"),
-    @NamedQuery(name = "EquipmentSpare.findBySparenum", query = "SELECT e FROM EquipmentSpare e WHERE e.sparenum = :sparenum"),
+    @NamedQuery(name = "EquipmentSpare.findBySparenum", query = "SELECT e FROM EquipmentSpare e WHERE e.sparenum LIKE :sparenum"),
     @NamedQuery(name = "EquipmentSpare.findBySparedesc", query = "SELECT e FROM EquipmentSpare e WHERE e.sparedesc = :sparedesc"),
     @NamedQuery(name = "EquipmentSpare.findBySparemodel", query = "SELECT e FROM EquipmentSpare e WHERE e.sparemodel = :sparemodel"),
     @NamedQuery(name = "EquipmentSpare.findByLeadtime", query = "SELECT e FROM EquipmentSpare e WHERE e.leadtime = :leadtime"),
-    @NamedQuery(name = "EquipmentSpare.findByUprice", query = "SELECT e FROM EquipmentSpare e WHERE e.uprice = :uprice"),
     @NamedQuery(name = "EquipmentSpare.findByUnit", query = "SELECT e FROM EquipmentSpare e WHERE e.unit = :unit"),
     @NamedQuery(name = "EquipmentSpare.findByBrand", query = "SELECT e FROM EquipmentSpare e WHERE e.brand = :brand"),
     @NamedQuery(name = "EquipmentSpare.findByMinstock", query = "SELECT e FROM EquipmentSpare e WHERE e.minstock = :minstock"),
@@ -64,6 +63,23 @@ public class EquipmentSpare extends SuperEntity {
     @Size(min = 1, max = 45)
     @Column(name = "sparenum")
     private String sparenum;
+
+    @JoinColumn(name = "scategory", referencedColumnName = "scategory")
+    @ManyToOne
+    private EquipmentSpareClass scategory;
+    @JoinColumn(name = "mcategory", referencedColumnName = "id")
+    @ManyToOne
+    private EquipmentSpareMid mcategory;
+    @Size(max = 50)
+    @Column(name = "brand")
+    private String brand;
+
+    @Size(max = 30)
+    @Column(name = "suse")
+    private String suse;
+    @Size(max = 200)
+    @Column(name = "remark")
+    private String remark;
     @Size(max = 45)
     @Column(name = "sparedesc")
     private String sparedesc;
@@ -72,34 +88,13 @@ public class EquipmentSpare extends SuperEntity {
     private String sparemodel;
     @Column(name = "leadtime")
     private Integer leadtime;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "uprice")
-    private BigDecimal uprice;
     @JoinColumn(name = "unit", referencedColumnName = "id")
     @ManyToOne
     private Unit unit;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "qty")
-    private BigDecimal qty;
-    @Size(max = 10)
-    @Column(name = "sarea")
-    private String sarea;
-    @Size(max = 15)
-    @Column(name = "slocation")
-    private String slocation;
-    @Size(max = 30)
-    @Column(name = "suse")
-    private String suse;
-    @Size(max = 50)
-    @Column(name = "brand")
-    private String brand;
     @Column(name = "minstock")
     private Integer minstock;
     @Column(name = "maxstock")
     private Integer maxstock;
-    @Size(max = 200)
-    @Column(name = "remark")
-    private String remark;
 
     public EquipmentSpare() {
     }
@@ -163,14 +158,6 @@ public class EquipmentSpare extends SuperEntity {
         this.leadtime = leadtime;
     }
 
-    public BigDecimal getUprice() {
-        return uprice;
-    }
-
-    public void setUprice(BigDecimal uprice) {
-        this.uprice = uprice;
-    }
-
     public Unit getUnit() {
         return unit;
     }
@@ -185,30 +172,6 @@ public class EquipmentSpare extends SuperEntity {
 
     public void setBrand(String brand) {
         this.brand = brand;
-    }
-
-    public BigDecimal getQty() {
-        return qty;
-    }
-
-    public void setQty(BigDecimal qty) {
-        this.qty = qty;
-    }
-
-    public String getSarea() {
-        return sarea;
-    }
-
-    public void setSarea(String sarea) {
-        this.sarea = sarea;
-    }
-
-    public String getSlocation() {
-        return slocation;
-    }
-
-    public void setSlocation(String slocation) {
-        this.slocation = slocation;
     }
 
     public String getSuse() {
@@ -242,6 +205,23 @@ public class EquipmentSpare extends SuperEntity {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    public EquipmentSpareClass getScategory() {
+        return scategory;
+    }
+
+    public void setScategory(EquipmentSpareClass scategory) {
+        this.scategory = scategory;
+    }
+
+    public EquipmentSpareMid getMcategory() {
+        return mcategory;
+    }
+
+    public void setMcategory(EquipmentSpareMid mcategory) {
+        this.mcategory = mcategory;
+    }
+
 
     @Override
     public int hashCode() {

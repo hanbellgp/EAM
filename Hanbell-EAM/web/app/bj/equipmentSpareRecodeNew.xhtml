@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentSpareRecode" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentSpareRecodeManagedBean.persist()}"  icon="ui-icon-save"  
+                                     process="@this,plgHead"  update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">备件入库-新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="入库单号" for="formid" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formid" value="#{equipmentSpareRecodeManagedBean.newEntity.formid}" title="formid" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="入库时间" for="formdate" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formdate"  value="#{equipmentSpareRecodeManagedBean.newEntity.formdate}">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                        </h:outputText>   
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="所属厂区" for="sarea" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="sarea" value="#{equipmentSpareRecodeManagedBean.newEntity.sarea}" title="sarea" required="true" requiredMessage="请选择所属厂区" >
+                            <f:selectItem itemLabel="请选择" itemValue="" />
+                            <f:selectItems  value="#{equipmentSpareManagedBean.repairareaList}" var="repairareaList" itemLabel="#{repairareaList.cdesc}" itemValue="#{repairareaList.cvalue}"  />
+                        </p:selectOneMenu>
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="入库人" for="creator" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="creator" value="#{equipmentSpareRecodeManagedBean.newEntity.creator}" title="creator" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="存放位置" for="slocation"  /></p:column>
+                    <p:column styleClass="Wid15">
+                        <p:inputText id="slocation" value="#{equipmentSpareRecodeManagedBean.newEntity.slocation}" title="slocation" required="true" requiredMessage="请输入存放位置" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column  style="background-color: #EEEEEE"><h:outputText value="入库摘要"  /></p:column>
+                    <p:column colspan="7">
+                        <p:inputTextarea id="remark"  value="#{equipmentSpareRecodeManagedBean.newEntity.remark}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" maxlength="200"/>
+                    </p:column> 
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="入库明细">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{equipmentSpareRecodeManagedBean.createDetail()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update=":formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{equipmentSpareRecodeManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{equipmentSpareRecodeManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件编号" for="sparenum" /></p:column>
+                            <p:column  styleClass="Wid20">
+                                <p:inputText id="sparenum" value="#{equipmentSpareRecodeManagedBean.currentDetail.sparenum.sparenum}" title="sparenum" styleClass="inputWithButton" readonly="true"/>
+                                <p:commandButton id="btnSparenumSelect" actionListener="#{equipmentSpareRecodeManagedBean.openDialog('equipmentSpareSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{equipmentSpareRecodeManagedBean.handleDialogReturnWhenNew}"
+                                            update="sparenum,sparedesc,sparemodel,unit,uprice" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件名称" for="sparedesc" /></p:column>
+                            <p:column  styleClass="Wid20">
+                                <h:outputText id="sparedesc" value="#{equipmentSpareRecodeManagedBean.currentDetail.sparenum.sparedesc}" title="sparedesc" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="规格" for="sparemodel" /></p:column>
+                            <p:column>
+                                <h:outputText id="sparemodel" value="#{equipmentSpareRecodeManagedBean.currentDetail.sparenum.sparemodel}" title="sparemodel"
+                                              />
+                            </p:column>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="单位" for="unit" /></p:column>
+                            <p:column>
+                                <h:outputText id="unit" value="#{equipmentSpareRecodeManagedBean.currentDetail.sparenum.unit.unit}" title="Unit" styleClass="inputWithButton"
+                                              />
+
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="数量" for="qty" /></p:column>
+                            <p:column>
+                                <p:spinner id="qty" value="#{equipmentSpareRecodeManagedBean.currentDetail.cqty}" title="Qty" min="1"
+                                           required="true" requiredMessage="请输入数量"/>
+                            </p:column>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="入库单价" for="uprice" /></p:column>
+                            <p:column>
+                                <p:inputText id="uprice" value="#{equipmentSpareRecodeManagedBean.currentDetail.uprice}" title="uprice" required="true" requiredMessage="请输入入库单价"
+                                             />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{equipmentSpareRecodeManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{equipmentSpareRecodeManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparenum}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparedesc}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" >
+                            <f:facet name="header">
+                                <h:outputText value="入库数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="入库单价"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uprice}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="单位"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.unit.unit}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="规格型号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sparenum.sparemodel}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>    
+
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
