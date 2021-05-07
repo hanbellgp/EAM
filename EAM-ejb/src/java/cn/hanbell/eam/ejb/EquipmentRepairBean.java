@@ -11,6 +11,7 @@ import cn.hanbell.eam.entity.EquipmentRepair;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -109,6 +110,91 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List results = query.getResultList();
         return results;
 
+    }
+    
+    public List<EquipmentRepair> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
+        StringBuilder sb = new StringBuilder();
+        StringBuilder exFilterStr = new StringBuilder();
+        sb.append("SELECT * FROM ");
+        sb.append(this.className);
+        sb.append(" equipmentrepair WHERE (1=1 ");
+        Map<String, Object> strMap = new LinkedHashMap<>();
+
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (!"repairuser".equals(key)) {
+                if ("ALL".equals(value)) {
+                    sb.append("  AND rstatus<'95'");
+                }
+                else if("repairdeptno".equals(key)){
+                    String deptnoTemp = "";
+                    if(value.toString().contains("000"))
+                    {
+                        deptnoTemp = value.toString().substring(0,2);
+                    }
+                    else
+                    {
+                        deptnoTemp = value.toString().substring(0,3);
+                    }
+                    sb.append("  AND repairdeptno LIKE '").append(deptnoTemp).append("%'");
+                }
+                else if("ManagerCheck".equals(key)){
+                    exFilterStr.append(" OR rstatus = '60'");
+                }
+                else if("ExtraFilter".equals(key)){
+                    sb.append(MessageFormat.format(" AND (formid LIKE ''%{0}%'' OR hitchalarm LIKE ''%{0}%'' OR repairusername LIKE ''%{0}%'' OR serviceusername LIKE ''%{0}%'')", value.toString()));
+                }
+                else if("formdateBegin".equals(key)){
+                    SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+                    String formdateBeginStr = fmt.format(new Date(value.toString()));
+                    sb.append(MessageFormat.format(" AND formdate >= ''{0}''", formdateBeginStr));
+                }
+                else if("formdateEnd".equals(key)){
+                    SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+                    String formdateEndStr = fmt.format(new Date(value.toString()));
+                    sb.append(MessageFormat.format(" AND formdate <= ''{0}''", formdateEndStr));
+                }
+                else if("RepairmentDelay".equals(key)){
+                    sb.append(" AND ((rstatus >= '20' AND rstatus < '28' AND TIMESTAMPDIFF(HOUR,servicearrivetime,now()) > 0) OR (rstatus >= '10' AND rstatus < '20' AND TIMESTAMPDIFF(HOUR,credate,now()) > 0)) ");
+                }
+                else {
+                    strMap.put(key, value);
+                }
+            }
+            else {
+                //strMap.put("repairuser", filters.get("repairuser"));
+                sb.append("  AND (repairuser = '");
+                sb.append(filters.get("repairuser")).append("'");
+                sb.append("  OR hitchdutyuser = '");
+                sb.append(filters.get("repairuser")).append("')");
+            }
+        }
+        sb.append(")").append(exFilterStr);
+
+        filters = strMap;
+        setNativeQueryFilter(sb, filters);
+
+        if (orderBy != null && orderBy.size() > 0) {
+            sb.append(" ORDER BY ");
+            for (final Map.Entry<String, String> o : orderBy.entrySet()) {
+                sb.append(o.getKey()).append(" ").append(o.getValue()).append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+        }
+
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentRepair.class).setMaxResults(50);
+        
+        List<EquipmentRepair> results = query.getResultList();
+        return results;
+    }
+    
+    private void setNativeQueryFilter(StringBuilder queryStrBuilder,Map<String, Object> filters)
+    {
+        filters.forEach((key, value) -> {
+            queryStrBuilder.append(MessageFormat.format(" AND {0} LIKE ''%{1}%''", key, value.toString()));
+        });
     }
 
     @Override
