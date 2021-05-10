@@ -76,6 +76,7 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         return resList;
     }
 
+
     //获取库存盘点数量List，按厂区及存放位置分类
     public List<EquipmentSpareStock> getEquipmentSpareStockCheckList(String sarea, String company) {
         StringBuilder sb = new StringBuilder();
@@ -94,6 +95,8 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         List results = query.getResultList();
         return results;
     }
+
+
 
     public List<EquipmentSpareStock> findBySparenum(String sparenum) {
         Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenum");

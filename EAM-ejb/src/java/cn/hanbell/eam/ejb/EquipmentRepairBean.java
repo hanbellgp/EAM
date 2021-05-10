@@ -112,7 +112,8 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
     }
     
-        public List<EquipmentRepair> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
+
+    public List<EquipmentRepair> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
         sb.append("SELECT * FROM ");
