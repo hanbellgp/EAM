@@ -54,7 +54,7 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
         if (sArea != null) {
             model.getFilterFields().put("sarea", sArea);
         }
-       
+
         this.model.getFilterFields().put("status", "V");
         //默认不含零数量
         this.model.getFilterFields().put("qty <>", 0);
@@ -72,7 +72,9 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
             if (queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("sparenum.sparedesc", queryName);
             }
-           
+            if (sArea != null) {
+                model.getFilterFields().put("sarea", sArea);
+            }
             this.model.getFilterFields().put("status", "V");
             this.model.getFilterFields().put("qty <>", 0);
         }

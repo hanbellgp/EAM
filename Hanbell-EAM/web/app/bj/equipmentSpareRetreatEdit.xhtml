@@ -28,11 +28,11 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="退库单号" for="formid" /></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText id="formid" value="#{equipmentSpareRetreatManagedBean.newEntity.formid}" title="formid" />
+                        <h:outputText id="formid" value="#{equipmentSpareRetreatManagedBean.currentEntity.formid}" title="formid" />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="退库时间" for="formdate" /></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText id="formdate"  value="#{equipmentSpareRetreatManagedBean.newEntity.formdate}">
+                        <h:outputText id="formdate"  value="#{equipmentSpareRetreatManagedBean.currentEntity.formdate}">
                             <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                         </h:outputText>   
                     </p:column>
@@ -41,18 +41,18 @@
 
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="对应出库单单号" for="relano" /></p:column>
                     <p:column  styleClass="Wid20">
-                        <h:outputText id="relano" value="#{equipmentSpareRetreatManagedBean.newEntity.relano}" title="relano" styleClass="inputWithButton"/>
+                        <h:outputText id="relano" value="#{equipmentSpareRetreatManagedBean.currentEntity.relano}" title="relano" styleClass="inputWithButton"/>
                        
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="退库人" for="creator" /></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText id="creator" value="#{equipmentSpareRetreatManagedBean.newEntity.creator}" title="creator" />
+                        <h:outputText id="creator" value="#{equipmentSpareRetreatManagedBean.currentEntity.creator}" title="creator" />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="所属厂区" for="sarea" /></p:column>
                     <p:column>
-                        <p:selectOneMenu id="sarea" value="#{equipmentSpareRetreatManagedBean.newEntity.sarea}" title="sarea" disabled="true">
+                        <p:selectOneMenu id="sarea" value="#{equipmentSpareRetreatManagedBean.currentEntity.sarea}" title="sarea" disabled="true">
                             <f:selectItem itemLabel=" " itemValue="" />
                             <f:selectItems  value="#{equipmentSpareManagedBean.repairareaList}" var="repairareaList" itemLabel="#{repairareaList.cdesc}" itemValue="#{repairareaList.cvalue}"  />
                         </p:selectOneMenu>

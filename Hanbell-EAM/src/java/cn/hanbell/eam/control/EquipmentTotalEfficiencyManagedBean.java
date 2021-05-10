@@ -135,7 +135,10 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             }
             sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
             OutputStream os = null;
-            fileName = stayear + "年" + month + "月  ---"+EPQID  + "---设备总合效率管理表---" +  BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            if (EPQID.contains("/")) {
+                EPQID=EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
+            }
+            fileName = stayear + "年" + month + "月---"+EPQID+ "---设备总合效率管理表---" +  BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);
