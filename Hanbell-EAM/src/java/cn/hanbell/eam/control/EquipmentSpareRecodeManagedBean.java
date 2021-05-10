@@ -101,7 +101,7 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
         model = new EquipmentSpareRecodeModel(equipmentSpareRecodeBean, userManagedBean);
         detailEJB = equipmentSpareRecodeDtaBean;
         this.model.getFilterFields().put("status", "N");
-        this.model.getFilterFields().put("accepttype", "10");
+        this.model.getFilterFields().put("formid", "LK");
         queryState = "N";
         this.model.getSortFields().put("formid", "ASC");
         super.init();
@@ -144,7 +144,7 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
             if (queryState != null && !"".equals(this.queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
-            this.model.getFilterFields().put("accepttype", "10");
+            this.model.getFilterFields().put("formid", "LK");
         }
     }
 

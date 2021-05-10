@@ -5,7 +5,6 @@
  */
 package cn.hanbell.eam.control;
 
-import cn.hanbell.eam.ejb.EquipmentSpareRecodeBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.lazy.EquipmentSpareRecodeDtaModel;
@@ -35,6 +34,7 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
         model = new EquipmentSpareRecodeDtaModel(equipmentSpareRecodeDtaBean, userManagedBean);
         this.model.getFilterFields().put("status", "V");
         this.model.getSortFields().put("pid", "ASC");
+        queryState="LK";
         super.init();
     }
 

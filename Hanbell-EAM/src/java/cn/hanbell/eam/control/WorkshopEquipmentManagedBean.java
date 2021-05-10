@@ -26,6 +26,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -100,7 +101,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             Row row1;
             row = sheet.createRow(0);
             row.setHeight((short) 900);
-            row1 = sheet.createRow(1);
+            row1 = sheet.createRow(14);
             row1.setHeight((short) 800);
             if (workshopEquipmentList == null || workshopEquipmentList.isEmpty()) {
                 showErrorMsg("Error", "当前无数据！请先查询");
@@ -110,34 +111,26 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             Cell cellTitle = row.createCell(0);
             cellTitle.setCellStyle(style.get("title"));
             cellTitle.setCellValue(stayear + "年车间设备月报-----" + type);
-            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 12));
-            Cell cellTime = row1.createCell(0);
-            cellTime.setCellStyle(style.get("date"));
+            Cell cellTime = row1.createCell(13);
+            cellTime.setCellStyle(style.get("right"));
             String version = reportType.equals("G") ? "顾问版" : "汉钟版";
             cellTime.setCellValue(version);
             List<?> itemList = workshopEquipmentList;
-            int j = 3;
+            int j = 2;
             List<Object[]> list = (List<Object[]>) itemList;
             for (Object[] eq : list) {
-                row = sheet.createRow(j);
+                row = sheet.getRow(j);
                 j++;
                 row.setHeight((short) 400);
-                Cell cell0 = row.createCell(0);
-                cell0.setCellStyle(style.get("left"));
+                Cell cell0 = row.getCell(0);
                 cell0.setCellValue(eq[0].toString());
                 for (int i = 1; i < 13; i++) {
-                    cell0 = row.createCell(i);
-                    cell0.setCellStyle(style.get("cell"));
+                    cell0 = row.getCell(i);
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
-
                 }
-                cell0 = row.createCell(13);
-                cell0.setCellStyle(style.get("left"));
-                cell0.setCellValue(eq[13].toString());
             }
-
             OutputStream os = null;
             fileName = stayear + "年车间设备月报-" + type + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
@@ -221,8 +214,6 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
         CellStyle rightStyle = wb.createCellStyle();
         rightStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
         rightStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-        rightStyle.setBorderRight(CellStyle.BORDER_THIN);
-        rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
         styles.put("right", rightStyle);
 
         CellStyle titleStyle = wb.createCellStyle();
@@ -242,6 +233,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
         dateFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
         dateStyle.setFont(headFont);
         styles.put("date", dateStyle);
+
         return styles;
     }
 

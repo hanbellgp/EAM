@@ -106,7 +106,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
         super.verify(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    //作废更改单价转态为N
+    //作废更改单价转态为Z
     public void invalid() {
         currentEntity.setStatus("Z");
         super.update();
@@ -162,7 +162,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
 
     @Override
     public void doConfirmDetail() {
-        List<EquipmentSpareStock> list = equipmentSpareStockBean.findBySparenumAndLocation(currentDetail.getSparenum().getSparenum(), currentEntity.getSarea());
+        List<EquipmentSpareStock> list = equipmentSpareStockBean.findBySparenumAndSarea(currentDetail.getSparenum().getSparenum(), currentEntity.getSarea());
         BigDecimal deliveryQty = BigDecimal.ZERO;//存放需要出库的数量
         for (EquipmentSpareRecodeDta eDta : detailList) {
             if (eDta.getSparenum().getSparenum().equals(currentDetail.getSparenum().getSparenum())) {

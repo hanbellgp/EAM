@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="spareCheck" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{spareCheckManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{spareCheckManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{spareCheckManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{spareCheckManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnExport" value="导出" actionListener="#{spareCheckManagedBean.print('xls')}" icon="ui-icon-print"
+                                     process="@this" rendered="#{spareCheckManagedBean.doPrt}"/>
+                    <p:commandButton id="btnPrint" value="打印" actionListener="#{spareCheckManagedBean.print()}" icon="ui-icon-print"
+                                     process="@this" rendered="#{spareCheckManagedBean.doPrt}"/>
+                    <p:commandButton id="btnVerify" value="审核" action="#{spareCheckManagedBean.verify()}" icon="ui-icon-check"
+                                     process="@this" rendered="#{spareCheckManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{spareCheckManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     process="@this" rendered="#{spareCheckManagedBean.doUnCfm}"  update="toolbar">
+                        <p:confirm header="系统提示" message="还原吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">盘点作业－查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="盘点单号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{spareCheckManagedBean.currentEntity.formid}" title="Formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="盘点日期"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formdate" value="#{spareCheckManagedBean.currentEntity.formdate}" title="Formdate">
+                            <f:convertDateTime  pattern="yyyy/MM/dd"/>
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="盘点对象" /></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="useDeptno" value="#{spareCheckManagedBean.currentEntity.deptno}" title="useDeptno" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="备注" /></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="remark" value="#{spareCheckManagedBean.currentEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="盘点明细">
+                    <p:dataTable id="tableList" value="#{spareCheckManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{spareCheckManagedBean.currentDetail}" rowKey="#{item.id}" >
+                        <p:ajax event="rowSelect"  update="formOne:plgDetail" oncomplete="PF('dlgDetail').show();" />
+                        <p:ajax event="rowUnselect"  update="formOne:plgDetail" oncomplete="" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="备件编号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.assetno}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="备件名称"/>
+                            </f:facet>
+                            <h:outputText value="#{item.batch}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="数量"/>
+                            </f:facet>
+                            <h:outputText value="#{item.qty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="实盘"/>
+                            </f:facet>
+                            <h:outputText value="#{item.actqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="差异"/>
+                            </f:facet>
+                            <h:outputText value="#{item.diffqty}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="存储位置"/>
+                            </f:facet>
+                            <h:outputText value="#{item.brand}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+            <p:dialog id="dlgDetail" widgetVar="dlgDetail" width="80%">
+                <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                    <p:row>
+                        <p:column styleClass="Wid20"><h:outputText value="编号"/></p:column>
+                        <p:column styleClass="Wid30">
+                            <h:outputText id="assetno" value="#{spareCheckManagedBean.currentDetail.assetno}" title="assetno" />
+                        </p:column>
+                        <p:column styleClass="Wid20"><h:outputText value="名称"/></p:column>
+                        <p:column styleClass="Wid30">
+                            <h:outputText id="assetDesc" value="#{spareCheckManagedBean.currentDetail.assetCard.assetDesc}" title="assetDesc" />
+                        </p:column>
+                    </p:row>                    <p:row>
+                        <p:column><h:outputText value="品号"/></p:column>
+                        <p:column>
+                            <h:outputText id="assetItem" value="#{spareCheckManagedBean.currentDetail.assetItem.itemno}" title="itemno" />
+                        </p:column>
+                        <p:column><h:outputText value="品名"/></p:column>
+                        <p:column>
+                            <h:outputText id="itemdesc" value="#{spareCheckManagedBean.currentDetail.assetItem.itemdesc}" title="Itemdesc" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="使用部门"/></p:column>
+                        <p:column>
+                            <h:outputText id="deptno" value="#{spareCheckManagedBean.currentDetail.assetCard.deptno}" title="deptno"/>
+                        </p:column>
+                        <p:column><h:outputText value="新部门"/></p:column>
+                        <p:column>
+                            <h:outputText id="deptno2" value="#{spareCheckManagedBean.currentDetail.deptno}" title="deptno2"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="部门名称"/></p:column>
+                        <p:column>
+                            <h:outputText id="deptname" value="#{spareCheckManagedBean.currentDetail.assetCard.deptname}" title="deptname" />
+                        </p:column>
+                        <p:column><h:outputText value="部门名称"/></p:column>
+                        <p:column>
+                            <h:outputText id="deptname2" value="#{spareCheckManagedBean.currentDetail.deptname}" title="deptname2" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="原使用人"/></p:column>
+                        <p:column>
+                            <h:outputText id="userno" value="#{spareCheckManagedBean.currentDetail.assetCard.userno}" title="userno" />
+                        </p:column>
+                        <p:column><h:outputText value="新使用人"/></p:column>
+                        <p:column>
+                            <h:outputText id="userno2" value="#{spareCheckManagedBean.currentDetail.userno}" title="userno2" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="姓名"/></p:column>
+                        <p:column>
+                            <h:outputText id="username" value="#{spareCheckManagedBean.currentDetail.assetCard.username}" title="username" />
+                        </p:column>
+                        <p:column><h:outputText value="姓名"/></p:column>
+                        <p:column>
+                            <h:outputText id="username2" value="#{spareCheckManagedBean.currentDetail.username}" title="username2" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="账面数量" /></p:column>
+                        <p:column>
+                            <h:outputText id="qty" value="#{spareCheckManagedBean.currentDetail.qty}" title="Qty"/>
+                        </p:column>
+                        <p:column><h:outputText value="单位"/></p:column>
+                        <p:column>
+                            <h:outputText id="unit" value="#{spareCheckManagedBean.currentDetail.unit}" title="Unit"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="实盘数量"/></p:column>
+                        <p:column>
+                            <h:outputText id="actqty" value="#{spareCheckManagedBean.currentDetail.actqty}" title="actqty"/>
+                        </p:column>
+                        <p:column><h:outputText value="差异数量"/></p:column>
+                        <p:column>
+                            <h:outputText id="diffqty" value="#{spareCheckManagedBean.currentDetail.diffqty}" title="diffqty"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="来源仓库"/></p:column>
+                        <p:column>
+                            <h:outputText id="warehouse" value="#{spareCheckManagedBean.currentDetail.warehouse.name}" title="warehouse"/>
+                        </p:column>
+                        <p:column></p:column>
+                        <p:column>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:dialog>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnExport,btnPrint,btnVerify,btnUnverify">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

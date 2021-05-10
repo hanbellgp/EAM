@@ -537,6 +537,18 @@
             <to-view-id>/app/bj/equipmentSpareUse.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+          <navigation-case>
+            <description>备件盘点作业</description>
+            <from-outcome>spareCheck</from-outcome>
+            <to-view-id>/app/bj/spareCheck.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <description>备件消耗统计表</description>
+            <from-outcome>equipmentSpareConsume</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareConsume.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
         
     </navigation-rule>  
     <navigation-rule>
