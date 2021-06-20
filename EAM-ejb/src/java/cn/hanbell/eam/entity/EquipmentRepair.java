@@ -119,7 +119,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 20)
     @Column(name = "hitchtype")
     private String hitchtype;
-    @Size(max = 50)
+    @Size(max = 200)
     @Column(name = "hitchalarm")
     private String hitchalarm;
     @Size(max = 200)

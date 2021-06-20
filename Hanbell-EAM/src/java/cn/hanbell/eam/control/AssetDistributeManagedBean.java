@@ -68,6 +68,10 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
 
     @Override
     protected boolean doBeforePersist() throws Exception {
+        if (detailList.isEmpty()) {
+            showErrorMsg("Error", "请输入对应的领用明细！！！");
+            return false;
+        }
         if (super.doBeforePersist()) {
             if (newEntity.getDeptno() == null || "".equals(newEntity.getDeptno())) {
                 showErrorMsg("Error", "请输入领用部门");
@@ -147,6 +151,10 @@ public class AssetDistributeManagedBean extends FormMultiBean<AssetDistribute, A
 
     @Override
     protected boolean doBeforeVerify() throws Exception {
+        if (detailList.isEmpty()) {
+            showErrorMsg("Error", "未添加领用明细不能审核！！！");
+            return false;
+        }
         if (super.doBeforeVerify()) {
             if (currentEntity.getDeptno() == null || "".equals(currentEntity.getDeptno())) {
                 showErrorMsg("Error", "请输入领用部门");

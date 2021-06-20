@@ -49,7 +49,7 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         return results;
     }
     
-    //获取库存数量List
+       //获取库存数量List
     public List<EquipmentSpareStockResponse> getEquipmentSpareStockListByNativeQuery(String spareInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT * FROM equipmentsparestock T LEFT JOIN equipmentspare S ON T.sparenum = S.sparenum WHERE 1 = 1 AND qty > 0 ");

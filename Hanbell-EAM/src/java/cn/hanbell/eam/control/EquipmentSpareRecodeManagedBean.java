@@ -49,6 +49,8 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
         newEntity.setStatus("N");
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCreator(userManagedBean.getUserid());
+        newEntity.setDeptno(userManagedBean.getCurrentUser().getDeptno());
+        newEntity.setDeptname(userManagedBean.getCurrentUser().getDept().getDept());
     }
 
     @Override
@@ -77,7 +79,7 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
             eSpareStock.setUprice(eSpareRecodeDta.getUprice());
             eSpareStock.setSparenum(eSpareRecodeDta.getSparenum());
             eSpareStock.setSarea(currentEntity.getSarea());
-            eSpareStock.setSlocation(currentEntity.getSlocation());
+            eSpareStock.setSlocation(eSpareRecodeDta.getSlocation());
             eSpareStock.setWarehouseno(currentEntity.getWarehouseno());
             eSpareStock.setCompany(userManagedBean.getCompany());
             eSpareStock.setStatus("V");
@@ -127,6 +129,7 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
                 }
             }
             currentDetail.setSparenum(e);
+            currentDetail.setSlocation(currentEntity.getSlocation());
         }
     }
 

@@ -52,6 +52,8 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
         newEntity.setStatus("N");
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCreator(userManagedBean.getUserid());
+        newEntity.setDeptno(userManagedBean.getCurrentUser().getDeptno());
+        newEntity.setDeptname(userManagedBean.getCurrentUser().getDept().getDept());
     }
 
     @Override

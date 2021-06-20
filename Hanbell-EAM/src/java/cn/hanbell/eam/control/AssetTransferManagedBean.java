@@ -308,6 +308,8 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
             SystemUser u = (SystemUser) event.getObject();
             currentDetail.setUserno(u.getUserid());
             currentDetail.setUsername(u.getUsername());
+            currentDetail.setDeptno(u.getDeptno());
+            currentDetail.setDeptname(u.getDept().getDept());
         }
     }
 
