@@ -149,7 +149,7 @@
                                 <p:commandButton id="btnSystemUserSelect" actionListener="#{assetTransferManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
                                                  process="@this" >
                                     <p:ajax event="dialogReturn" listener="#{assetTransferManagedBean.handleDialogReturnUserWhenDetailEdit}"
-                                            update="userno,username" />
+                                            update="userno,username,deptno,deptname" />
                                 </p:commandButton>
                             </p:column>
                         </p:row>

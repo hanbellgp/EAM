@@ -72,6 +72,12 @@ public class EquipmentSpareRecode extends FormEntity {
     @Size(max = 45)
     @Column(name = "relano")
     private String relano;
+    @Size(max = 20)
+    @Column(name = "deptno")
+    private String deptno;
+    @Size(max = 45)
+    @Column(name = "deptname")
+    private String deptname;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
@@ -136,6 +142,22 @@ public class EquipmentSpareRecode extends FormEntity {
 
     public void setRelano(String relano) {
         this.relano = relano;
+    }
+
+    public String getDeptno() {
+        return deptno;
+    }
+
+    public void setDeptno(String deptno) {
+        this.deptno = deptno;
+    }
+
+    public String getDeptname() {
+        return deptname;
+    }
+
+    public void setDeptname(String deptname) {
+        this.deptname = deptname;
     }
 
     public String getRemark() {

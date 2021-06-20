@@ -103,16 +103,14 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
         }
         if (!"".equals(sql)) {
             sb.append(" AND (").append(sql).append(" )");
-        } else {
-            sb.append(" AND (").append("A.curnode2=  '施惠军'or A.curnode2=  '彭希民'or A.curnode2=  '孙爱'or A.curnode2=  '张国荣'or A.curnode2=  '杨卫君'or A.curnode2=  '张秦'or A.curnode2=  '顾超超'or A.curnode2=  '曹雪平'or A.curnode2=  '张勇'or A.curnode2=  '章国君'or A.curnode2=  '杜玮'or A.curnode2=  '任峰'or A.curnode2=  '刘振'").append(" )");
-        }
+        } 
         if (!"".equals(staDate)) {
             sb.append(" AND B.hitchtime>= ").append("'").append(staDate).append("'");
         }
         if (!"".equals(endDate)) {
             sb.append(" AND B.hitchtime< ").append("'").append(endDate).append("'");
         }
-        sb.append(" GROUP BY A.curnode2  ORDER BY curnode2 DESC");
+        sb.append(" GROUP BY A.curnode  ORDER BY curnode DESC");
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString());
 

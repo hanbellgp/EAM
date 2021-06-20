@@ -264,11 +264,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     //维修领料
     public String editPicking(String path) {
         if (currentEntity == null) {
-            showErrorMsg("Error", "请选择需要领料的单子！");
+            showErrorMsg("Error", "请选择需要领料的维修单！");
             return "";
         }
-        if (Integer.parseInt(currentEntity.getRstatus()) > 40) {
-            showErrorMsg("Error", "已发起验收不能领料！");
+        if (Integer.parseInt(currentEntity.getRstatus()) < 20) {
+            showErrorMsg("Error", "维修未到达,不能发起领料单！");
             return "";
         }
         return super.edit(path); //To change body of generated methods, choose Tools | Templates.

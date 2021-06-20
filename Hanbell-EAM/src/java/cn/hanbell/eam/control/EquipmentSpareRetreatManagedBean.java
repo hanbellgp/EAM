@@ -8,7 +8,6 @@ package cn.hanbell.eam.control;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentSpareStockBean;
-import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentSpareRecode;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentSpareStock;
@@ -51,6 +50,8 @@ public class EquipmentSpareRetreatManagedBean extends FormMultiBean<EquipmentSpa
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCreator(userManagedBean.getUserid());
         newEntity.setRelano(null);
+        newEntity.setDeptno(userManagedBean.getCurrentUser().getDeptno());
+        newEntity.setDeptname(userManagedBean.getCurrentUser().getDept().getDept());
     }
 
     @Override
@@ -138,7 +139,7 @@ public class EquipmentSpareRetreatManagedBean extends FormMultiBean<EquipmentSpa
         detailEJB = equipmentSpareRecodeDtaBean;
         queryState = "N";
         this.model.getFilterFields().put("formid", "TK");
-         this.model.getFilterFields().put("status", queryState);
+        this.model.getFilterFields().put("status", queryState);
         this.model.getSortFields().put("formid", "ASC");
         openParams = new HashMap<>();
         super.init();

@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentStandard" icon="ui-icon-restore"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">点检基准-编辑</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="设备编号" for="assetno" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <h:outputText id="assetno" value="#{equipmentStandardManagedBean.currentEntity.assetno}" title="assetno"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备名称" for="assetdesc" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="assetdesc" value="#{equipmentStandardManagedBean.currentEntity.assetdesc}" title="assetdesc" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备件号" for="itemno" /></p:column>
+                    <p:column styleClass="Wid15" >
+                        <h:outputText id="itemno" value="#{equipmentStandardManagedBean.currentEntity.itemno}" title="itemno" />
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="所属部门" for="deptname"/></p:column>
+                    <p:column >
+                        <h:outputText id="deptname" value="#{equipmentStandardManagedBean.currentEntity.deptname}" title="deptname" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="基准类型" for="standardtype"/></p:column>
+                    <p:column >
+
+                        <h:outputText id="standardtype" value="#{equipmentStandardManagedBean.currentEntity.standardtype}" title="standardtype" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="基准等级" for="standardlevel"/></p:column>
+                    <p:column>
+                        <h:outputText id="standardlevel" value="#{equipmentStandardManagedBean.currentEntity.standardlevel}" title="standardlevel" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="责任单位" for="respondept"/></p:column>
+                    <p:column >
+                        <h:outputText id="respondept" value="#{equipmentStandardManagedBean.currentEntity.respondept}" title="respondept" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="检验区域" for="checkarea"/></p:column>
+                    <p:column >
+                        <h:outputText id="checkarea" value="#{equipmentStandardManagedBean.currentEntity.checkarea}" title="checkarea" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="检验区域图示" for="areaimage"/></p:column>
+                    <p:column >
+                        <p:graphicImage id="areaimage" height="100" width="200" value="#{equipmentStandardManagedBean.currentEntity.areaimage}"  library="demo"/>
+                    </p:column>
+
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="检验内容" for="checkcontent"/></p:column>
+                    <p:column >
+                        <h:outputText id="checkcontent" value="#{equipmentStandardManagedBean.currentEntity.checkcontent}" title="checkcontent" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="判定标准" for="judgestandard"/></p:column>
+                    <p:column >
+                        <h:outputText   id="judgestandard" value="#{equipmentStandardManagedBean.currentEntity.judgestandard}" title="judgestandard"
+                                        />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="检验方法" for="method"/></p:column>
+                    <p:column >
+                        <h:outputText id="method" value="#{equipmentStandardManagedBean.currentEntity.method}" title="method"
+                                      />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="使用工具" for="methodname"/></p:column>
+                    <p:column >
+                        <h:outputText id="methodname" value="#{equipmentStandardManagedBean.currentEntity.methodname}" title="methodname" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="检验周期(M)" for="frequency"/></p:column>
+                    <p:column >
+                        <h:outputText id="frequency" value="#{equipmentStandardManagedBean.getFrequencyunitName(equipmentStandardManagedBean.currentEntity.frequencyunit,equipmentStandardManagedBean.currentEntity.frequency)}"/>
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="固定保全时间" for="lasttime"/></p:column>
+                    <p:column >
+                        <h:outputText id="lasttime" value="#{equipmentStandardManagedBean.currentEntity.lasttime}">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                        </h:outputText>  
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="需要人力" for="manpower"/></p:column>
+                    <p:column >
+                        <h:outputText id="manpower" value="#{equipmentStandardManagedBean.currentEntity.manpower}" title="manpower" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="需要工时(h)" for="manhour"/></p:column>
+                    <p:column >
+                        <h:outputText   id="manhour" value="#{equipmentStandardManagedBean.currentEntity.manhour}" title="manhour"
+                                        />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机时间(h)" for="downtime"/></p:column>
+                    <p:column >
+                        <h:outputText id="downtime" value="#{equipmentStandardManagedBean.currentEntity.downtime}" title="downtime"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

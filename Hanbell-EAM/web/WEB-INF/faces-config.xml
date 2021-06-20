@@ -537,7 +537,7 @@
             <to-view-id>/app/bj/equipmentSpareUse.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-          <navigation-case>
+        <navigation-case>
             <description>备件盘点作业</description>
             <from-outcome>spareCheck</from-outcome>
             <to-view-id>/app/bj/spareCheck.xhtml</to-view-id>
@@ -549,7 +549,22 @@
             <to-view-id>/app/bj/equipmentSpareConsume.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-        
+        <navigation-rule>
+            <description>维护保全模块</description>
+            <from-view-id>/*</from-view-id>
+            <navigation-case>
+                <description>保全基准维护</description>
+                <from-outcome>equipmentStandard</from-outcome>
+                <to-view-id>/app/mp/equipmentStandard.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+            <navigation-case>
+                <description>自主保全记录</description>
+                <from-outcome>equipmentAnalyResult</from-outcome>
+                <to-view-id>/app/mp/equipmentAnalyResult.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+        </navigation-rule>
     </navigation-rule>  
     <navigation-rule>
         <description>模态开窗</description>

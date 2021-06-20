@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentStandard" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentStandardManagedBean.persist()}"  icon="ui-icon-save"  update="plgHead"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">点检基准-新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="设备编号" for="assetno" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="assetno" value="#{equipmentStandardManagedBean.newEntity.assetno}" title="assetno" styleClass="inputWithButton" readonly="true"  requiredMessage="请输入设备编号"/>
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentStandardManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentStandardManagedBean.handleDialogReturnWhenNew}"
+                                    update="formOne" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备名称" for="assetdesc" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="assetdesc" value="#{equipmentStandardManagedBean.newEntity.assetdesc}" title="assetdesc" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备件号" for="itemno" /></p:column>
+                    <p:column styleClass="Wid15" >
+                        <h:outputText id="itemno" value="#{equipmentStandardManagedBean.newEntity.itemno}" title="itemno" />
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="所属部门" for="deptname"/></p:column>
+                    <p:column >
+                        <h:outputText id="deptname" value="#{equipmentStandardManagedBean.newEntity.deptname}" title="deptname" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="基准类型" for="standardtype"/></p:column>
+                    <p:column >
+                        <p:selectOneMenu id="standardtype" value="#{equipmentStandardManagedBean.newEntity.standardtype}" title="standardtype" required="true" requiredMessage="请选择基准类型">
+                            <f:selectItems value="#{equipmentStandardManagedBean.standardtypeList}" var="standardtypeList" itemLabel="#{standardtypeList.cdesc}" itemValue="#{standardtypeList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="基准等级" for="standardlevel"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="standardlevel" value="#{equipmentStandardManagedBean.queryStandardLevel}" title="standardlevel" required="true" requiredMessage="请选择基准登记">
+                            <f:selectItems value="#{equipmentStandardManagedBean.standardlevelList}" var="standardlevelpeList" itemLabel="#{standardlevelpeList.cdesc}" itemValue="#{standardlevelpeList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="责任单位" for="respondept"/></p:column>
+                    <p:column >
+                        <p:selectOneMenu id="respondept" value="#{equipmentStandardManagedBean.newEntity.respondept}" title="respondept" required="true" requiredMessage="请选择责任单位">
+                            <f:selectItems value="#{equipmentStandardManagedBean.respondeptList}" var="respondeptList" itemLabel="#{respondeptList.cdesc}" itemValue="#{respondeptList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="检验区域" for="checkarea"/></p:column>
+                    <p:column >
+                        <p:inputText id="checkarea" value="#{equipmentStandardManagedBean.newEntity.checkarea}" title="checkarea" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="检验区域图示" for="areaimage"/></p:column>
+                    <p:column >
+                        <p:graphicImage id="areaimage" height="100" width="200" value="#{equipmentStandardManagedBean.newEntity.areaimage}"  library="demo"/>
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE">
+                        <p:outputLabel value="检验区域图示上传"/>
+                    </p:column>
+                    <p:column colspan="7" style="height: 180px; ">
+                        <p:fileUpload id="fileUploadDetail" fileUploadListener="#{equipmentStandardManagedBean.handleFileUploadWhenDetailNew}"
+                                      sizeLimit="10000000" fileLimit="1"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" multiple="true" sequential="true" 
+                                      label="选择" uploadLabel="上传" cancelLabel="取消" update="areaimage"  />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="检验内容" for="checkcontent"/></p:column>
+                    <p:column >
+                        <p:inputText id="checkcontent" value="#{equipmentStandardManagedBean.newEntity.checkcontent}" title="checkcontent"  requiredMessage="请输入检验内容"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="判定标准" for="judgestandard"/></p:column>
+                    <p:column >
+                        <p:inputText   id="judgestandard" value="#{equipmentStandardManagedBean.newEntity.judgestandard}" title="judgestandard" />
+                    </p:column>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="检验方法" for="method"/></p:column>
+                    <p:column >
+                        <p:inputText id="method" value="#{equipmentStandardManagedBean.newEntity.method}" title="method"  requiredMessage="请输入检验方法"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="使用工具" for="methodname"/></p:column>
+                    <p:column >
+                        <p:inputText id="methodname" value="#{equipmentStandardManagedBean.newEntity.methodname}" title="methodname" requiredMessage="请输入使用工具" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="检验周期(M)" for="frequency"/></p:column>
+                    <p:column >
+                        <p:inputText id="frequency" value="#{equipmentStandardManagedBean.newEntity.frequency}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="frequency" requiredMessage="请输入检验周期(M)" />
+
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="周期频度" for="frequencyunit"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="frequencyunit" value="#{equipmentStandardManagedBean.newEntity.frequencyunit}" autoWidth="10">
+                            <f:selectItems value="#{equipmentStandardManagedBean.frequencyunitList}" var="frequencyunitList" itemLabel="#{frequencyunitList.cdesc}" itemValue="#{frequencyunitList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="需要人力" for="manpower"/></p:column>
+                    <p:column >
+                        <p:inputText id="manpower" value="#{equipmentStandardManagedBean.newEntity.manpower}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="manpower" requiredMessage="请输入需要人力"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="需要工时(h)" for="manhour"/></p:column>
+                    <p:column >
+                        <p:inputText id="manhour" value="#{equipmentStandardManagedBean.newEntity.manhour}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="manhour" requiredMessage="请输入需要工时(h)"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="需要工时频度" for="manhourunit"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="manhourunit" value="#{equipmentStandardManagedBean.newEntity.manhourunit}" autoWidth="10">
+                            <f:selectItems value="#{equipmentStandardManagedBean.manhourunitList}" var="manhourunitList" itemLabel="#{manhourunitList.cdesc}" itemValue="#{manhourunitList.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机时间(h)" for="downtime"/></p:column>
+                    <p:column >
+                        <p:inputText id="downtime" value="#{equipmentStandardManagedBean.newEntity.downtime}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                         }).call(this)" onblur="this.v();"
+                                     title="downtime" requiredMessage="请输入设备停机时间(h)"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="固定保全时间" for="lasttime"/></p:column>
+                    <p:column >
+                        <p:calendar id="lasttime"  value="#{equipmentStandardManagedBean.newEntity.lasttime}" title="固定保全时间" pattern="yyyy/MM/dd HH:mm"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
