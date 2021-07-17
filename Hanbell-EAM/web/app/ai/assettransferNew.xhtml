@@ -51,12 +51,55 @@
                         <h:outputText id="deptname" value="#{assetTransferManagedBean.newEntity.deptname}" title="RequireDeptname" />
                     </p:column>
                 </p:row>
+
                 <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="转入部门" for="deptnoT" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="deptnoT" value="#{assetTransferManagedBean.deptno2}" title="deptno2" styleClass="inputWithButton"
+                                     required="true" readonly="true"/>
+                        <p:commandButton id="btnDepartmentSelect" actionListener="#{assetTransferManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetTransferManagedBean.handleDialogReturnDeptWhenNew}"
+                                    update="deptnoT,deptnameT" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><p:outputLabel value="部门名称" for="deptnameT" /></p:column>
+                    <p:column>
+                        <h:outputText id="deptnameT" value="#{assetTransferManagedBean.deptname2}" title="deptname2" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="新使用人" for="userT" /></p:column>
+                    <p:column>
+                        <p:inputText id="userT" value="#{assetTransferManagedBean.userno2}" title="userno2" styleClass="inputWithButton"
+                                     required="true" readonly="true"/>
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{assetTransferManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{assetTransferManagedBean.handleDialogReturnUserWhenNew}"
+                                    update="userT,usernameT,deptnoT,deptnameT" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><h:outputText value="姓名"/></p:column>
+                    <p:column>
+                        <h:outputText id="usernameT" value="#{assetTransferManagedBean.username2}" title="username2" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="转入公司" for="company2" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="company2" value="#{assetTransferManagedBean.company2}" title="公司"
+                                         required="true" requiredMessage="请选择公司" >
+                            <p:ajax event="itemSelect" update="company2" />
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{userManagedBean.companyList}" var="c" itemLabel="#{c.name}" itemValue="#{c.company}"/>
+                        </p:selectOneMenu>
+                    </p:column>
                     <p:column><p:outputLabel value="备注" for="remark" /></p:column>
-                    <p:column colspan="3">
+                    <p:column >
                         <p:inputText id="remark" value="#{assetTransferManagedBean.newEntity.remark}" title="Remark" />
                     </p:column>
                 </p:row>
+
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="移转明细">
@@ -70,6 +113,11 @@
                                              process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
                         </f:facet>
                         <f:facet name="right">
+                            <p:commandButton id="btnMulitiSelect" widgetVar="btnMulitiSelect" value="批量" actionListener="#{assetTransferManagedBean.openDialog('assetcardMultiSelect')}" icon="ui-icon-plus"
+                                             process="@this,:formOne:plgHead" update=":formOne:plgHead" >
+                                <p:ajax event="dialogReturn" listener="#{assetTransferManagedBean.handleDialogReturnWhenDetailAllNew}"
+                                        update=":formOne:tabView:tableList" />
+                            </p:commandButton>
                             <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{assetTransferManagedBean.doConfirmDetail()}" icon="ui-icon-check"
                                              onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
                                              process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
@@ -238,7 +286,7 @@
                             <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                             <p:column>
                                 <h:outputText id="unit" value="#{assetTransferManagedBean.currentDetail.unit}" title="Unit"
-                                            />
+                                              />
                             </p:column>
 
                         </p:row>

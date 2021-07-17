@@ -808,7 +808,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
         //每月报工数及标准工时
         StringBuilder sbQty = new StringBuilder();
-        sbQty.append(" SELECT month(PROCESSCOMPLETETIME) MONTH ,count(CASE WHEN A.STEPID LIKE '%").append(str).append("清洗%' THEN A.EQPID END )  QTY,sum(round(B.REAL_TIME / 60, 1)) MINUTE ");
+        sbQty.append(" SELECT month(PROCESSCOMPLETETIME) MONTH ,count(CASE WHEN A.STEPID LIKE '%").append(str).append("清洗%' THEN A.EQPID END )  QTY,sum(round(B.STD_TIME / 60, 1)) MINUTE ");
         sbQty.append(" FROM PROCESS_STEP  A   LEFT JOIN PROCESS_STEP_TIME B ON A.SYSID = B.SYSID  AND A.EQPID = B.EQPID");
         sbQty.append(" LEFT JOIN  MEQP C ON C.EQPID = B.EQPID WHERE C.PRODUCTTYPE = '").append(type).append("'  AND A.PROCESSCOMPLETETIME LIKE'%").append(year).append("%' GROUP BY  month(PROCESSCOMPLETETIME)");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbQty.toString());
@@ -889,7 +889,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 BigDecimal HAVA = BigDecimal.valueOf(Double.valueOf(oMes[0].toString()));//月度总生产工时
                 BigDecimal GAVA = BigDecimal.valueOf(Double.valueOf(oMes[1].toString()));//月度平均生产工时
                 BigDecimal ALA = BigDecimal.valueOf(Double.valueOf(oMes[4].toString()));//故障停机时间
-                BigDecimal count10 ;
+                BigDecimal count10;
                 if (oMes[2] == null) {
                     count10 = BigDecimal.ONE;
                 } else {
@@ -952,7 +952,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         obj4[13] = "=(月度生产总工时-故障停机工时合计)/月度生产总工时";
         obj5[0] = "MTTR(分/件)";
         obj5[13] = "=故障停机工时合计/故障件数合计";
-        obj6[0] = "MTBF(分/件)";
+        obj6[0] = "MTBF(小时/件)";
         obj6[13] = "=全车间单台设备MTBF总和均值(单台的MTBF=(计划工作时间-故障停机时间)/维修次数)\n"
                 + "仅记录停线10分钟以上数据  ";
         obj7[0] = "时间稼动率(%)";
@@ -1081,7 +1081,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         //更改在EAM里类别名称说明   
         if (type.equals("半成品方型件")) {
             type = "方型加工课";
-        } else {
+        } else if (type.equals("半成品圆型件")) {
             type = "圆型加工课";
         }
         time = time.replace("/", "-");//在EAM中时间格式替换
@@ -1227,6 +1227,29 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     }
 
     /**
+     * 获取故障明细
+     *
+     * @param type
+     * @return
+     */
+    public List getFaultDetail(String type) {
+        StringBuilder sbEAM = new StringBuilder();
+        if (type.equals("半成品方型件")) {
+            type = "方型加工课";
+        } else {
+            type = "圆型加工课";
+        }
+        sbEAM.append(" SELECT E.hitchtime,A.deptname,A.remark,E.serviceusername,TIMESTAMPDIFF(MINUTE,E.hitchtime,E.completetime) STOP,E.hitchreason,E.repairmethod,E.repairprocess");
+        sbEAM.append(" FROM equipmentrepair E LEFT JOIN assetcard A ON E.assetno=A.formid ");
+        sbEAM.append(" WHERE hitchtime>SUBSTR(CURDATE(),1,7) AND A.remark IS NOT NULL AND A.deptname = '").append(type).append("'");
+        sbEAM.append(" AND hitchurgency='03' AND TIMESTAMPDIFF(MINUTE, hitchtime, completetime) > 60");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sbEAM.toString());
+        List<Object[]> resultsEAM = query.getResultList();
+        return resultsEAM;
+    }
+
+    /**
      * 获取年故障件数统计数据
      *
      * @param year 获取数据的年份
@@ -1248,7 +1271,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         //更改在EAM里类别名称说明   
         if (type.equals("半成品方型件")) {
             type = "方型加工课";
-        } else {
+        } else if (type.equals("半成品圆型件")) {
             type = "圆型加工课";
         }
 
@@ -1406,13 +1429,13 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sbMES.append(" SELECT A.day, 1440,CASE WHEN D.estimateNUM IS NULL THEN 0 ELSE D.estimateNUM END,C.QTY,C.MINUTE,CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END,1440-A.AVAILABLEMINS,B.停机待测,B.生技试模,B.欠料等待,B.刀具调试更换,B.停机换模,B.物料返修,B.上下料干涉等待,B.单模拆装,B.共用刀具模具等待,B.带教新人讲解,B.绿灯暖机,B.其他,B.未填,B.计划停机,B.设备故障,CASE WHEN A.counts IS NULL THEN 0 ELSE A.counts END counts,(A.AVAILABLEMINS-(1440-A.AVAILABLEMINS))/A.AVAILABLEMINS*100,1440-B.计划停机");
         sbMES.append(" ,A.AVAILABLEMINS-B.SUMLEN JiadongTime,C.QTY- (CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END) productQTY,convert(decimal(10,2),(C.QTY*1.0- (CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END))/C.QTY*100,2) productRate,convert(decimal(10,2),round((A.AVAILABLEMINS-B.设备故障*1.0)/A.AVAILABLEMINS*100,2))  equipmentRate,");
         sbMES.append(" convert(decimal(10,2),round(C.MINUTE/(A.AVAILABLEMINS-B.SUMLEN)*100,2)) xingNengRate,convert(decimal(10,2),round((A.AVAILABLEMINS-B.SUMLEN*1.0)/A.AVAILABLEMINS*100,2))  timeRate,convert(decimal(10,2),round(((C.QTY*1.0- (CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END))/C.QTY)*(C.MINUTE/(A.AVAILABLEMINS-B.SUMLEN))*((A.AVAILABLEMINS-B.SUMLEN*1.0)/A.AVAILABLEMINS*100),2)) OEE,B.设备故障/A.counts MTTR,CASE WHEN (A.AVAILABLEMINS-B.设备故障)/A.counts IS NULL THEN A.AVAILABLEMINS ELSE (A.AVAILABLEMINS-B.设备故障)/A.counts END MTBF");
-        sbMES.append(" FROM ( SELECT B.EQPID,B.AVAILABLEMINS,A.counts,A.ALARMTIME_LEN,B.day  FROM ( SELECT E.EQPID, COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN, day(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
+        sbMES.append(" FROM ( SELECT B.EQPID,B.AVAILABLEMINS,A.counts,A.ALARMTIME_LEN,B.day  FROM ( SELECT E.EQPID, COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN, day(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM_D E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
         sbMES.append(" WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%' AND M.ALARMNAME = '设备故障' GROUP BY day(E.ALARMSTARTTIME), E.EQPID) A RIGHT JOIN ( SELECT E.EQPID,sum(AVAILABLEMINS) AVAILABLEMINS ,day(PLANDATE) day FROM MEQP M  LEFT JOIN EQP_AVAILABLETIME_SCHEDULE E  ON E.EQPID=M.EQPID WHERE PLANDATE LIKE '").append(year).append("%' AND E.EQPID='").append(EPQID).append("' AND AVAILABLEMINS!=0");
         sbMES.append(" GROUP BY day(PLANDATE),E.EQPID) B ON A.day=B.day AND A.EQPID=B.EQPID) A LEFT JOIN (SELECT  A.DAY,MAX( case A.ALARMNAME when '设备故障' then A.ALARMTIME_LEN else 0 end) 设备故障,MAX( case A.ALARMNAME when '停机待测' then A.ALARMTIME_LEN else 0 end) 停机待测,MAX( case A.ALARMNAME when '生技试模' then A.ALARMTIME_LEN else 0 end) 生技试模,MAX( case A.ALARMNAME when '欠料等待' then A.ALARMTIME_LEN else 0 end) 欠料等待,MAX( case A.ALARMNAME when '刀具调试更换' then A.ALARMTIME_LEN else 0 end) 刀具调试更换,");
         sbMES.append(" MAX( case A.ALARMNAME when '停机换模' then A.ALARMTIME_LEN else 0 end) 停机换模,MAX( case A.ALARMNAME when '物料返修' then A.ALARMTIME_LEN else 0 end) 物料返修,MAX( case A.ALARMNAME when '计划停机' then A.ALARMTIME_LEN else 0 end) 计划停机,MAX( case A.ALARMNAME when '绿灯暖机' then A.ALARMTIME_LEN else 0 end) 绿灯暖机,MAX( case A.ALARMNAME when NULL then A.ALARMTIME_LEN else 0 end) 未填,MAX( case A.ALARMNAME when '上下料干涉等待' then A.ALARMTIME_LEN else 0 end) 上下料干涉等待,MAX( case A.ALARMNAME when '单模拆装' then A.ALARMTIME_LEN else 0 end) 单模拆装,");
         sbMES.append(" MAX( case A.ALARMNAME when '其他' then A.ALARMTIME_LEN else 0 end) 其他,MAX( case A.ALARMNAME when '共用刀具模具等待' then A.ALARMTIME_LEN else 0 end) 共用刀具模具等待,MAX( case A.ALARMNAME when '带教新人讲解' then A.ALARMTIME_LEN else 0 end) 带教新人讲解,SUM(A.ALARMTIME_LEN) SUMLEN FROM (");
-        sbMES.append(" SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN))/60 ALARMTIME_LEN,DAY(A.DATE) DAY FROM (SELECT EQPID, B.ALARMNAME,convert(VARCHAR(10), ALARMSTARTTIME, 111) AS DATE, ALARMTIME_LEN FROM EQP_RESULT_ALARM A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE EQPID='").append(EPQID).append("' AND A.ALARMSTARTTIME LIKE '").append(year).append("%') A GROUP BY A.ALARMNAME,DAY(A.DATE)) A GROUP BY A.DAY) B ON A.day=B.DAY");
-        sbMES.append(" LEFT JOIN (SELECT COUNT(A.EQPID) AS QTY, round(SUM(REAL_TIME) / 60, 1) AS MINUTE,day FROM(SELECT A.EQPID, B.REAL_TIME,day(PROCESSCOMPLETETIME) AS day FROM MEQP C LEFT JOIN PROCESS_STEP A ON A.EQPID = C.EQPID LEFT JOIN PROCESS_STEP_TIME B ON A.PRODUCTCOMPID = B.PRODUCTCOMPID AND A.EQPID = B.EQPID AND A.PRODUCTORDERID = B.PRODUCTORDERID AND A.SYSID = B.SYSID AND A.STEPID = B.STEPID WHERE");
+        sbMES.append(" SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN))/60 ALARMTIME_LEN,DAY(A.DATE) DAY FROM (SELECT EQPID, B.ALARMNAME,convert(VARCHAR(10), ALARMSTARTTIME, 111) AS DATE, ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE EQPID='").append(EPQID).append("' AND A.ALARMSTARTTIME LIKE '").append(year).append("%') A GROUP BY A.ALARMNAME,DAY(A.DATE)) A GROUP BY A.DAY) B ON A.day=B.DAY");
+        sbMES.append(" LEFT JOIN (SELECT COUNT(A.EQPID) AS QTY, round(SUM(STD_TIME) / 60, 1) AS MINUTE,day FROM(SELECT A.EQPID, B.STD_TIME,day(PROCESSCOMPLETETIME) AS day FROM MEQP C LEFT JOIN PROCESS_STEP A ON A.EQPID = C.EQPID LEFT JOIN PROCESS_STEP_TIME B ON A.PRODUCTCOMPID = B.PRODUCTCOMPID AND A.EQPID = B.EQPID AND A.PRODUCTORDERID = B.PRODUCTORDERID AND A.SYSID = B.SYSID AND A.STEPID = B.STEPID WHERE");
         sbMES.append("  A.PROCESSCOMPLETETIME LIKE '").append(year).append("%' AND A.EQPID='").append(EPQID).append("' AND A.PROCESSCOMPLETETIME IS NOT NULL) A GROUP BY  day) C ON C.day=A.day LEFT JOIN (SELECT SUM(convert(INT, NUM)) estimateNUM,day(PLANDATE) day FROM PLAN_SEMI_SQUARE WHERE EQPID ='").append(EPQID).append("'  AND PLANDATE LIKE '").append(year).append("%'  GROUP BY DAY(PLANDATE)) D ON D.day=A.day");
         sbMES.append(" LEFT JOIN ( SELECT SUM ( convert(INT, DEFECTNUM)) AS DEFECTSUM,day(B.PROJECTCREATETIME) day FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID");
         sbMES.append(" WHERE  B.PROJECTID LIKE 'QC%' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003' AND S.EQPID ='").append(EPQID).append("' GROUP BY day(B.PROJECTCREATETIME)) E ON E.day=A.day");

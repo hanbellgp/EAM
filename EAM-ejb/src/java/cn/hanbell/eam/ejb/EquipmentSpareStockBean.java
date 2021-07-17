@@ -32,7 +32,7 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
     }
 
     //获取库存数量List
-    public List<EquipmentSpareStock> getEquipmentSpareStockList(String sparenum, String sparedesc) {
+    public List<EquipmentSpareStock> getEquipmentSpareStockList(String sparenum, String sparedesc,String sparemodel) {
         StringBuilder sb = new StringBuilder();
         sb.append(" Select T.sparenum,S.sparedesc,S.sparemodel, C.sname,M.mname,sum(T.qty) FROM  equipmentsparestock T  LEFT JOIN equipmentspare S on T.sparenum=S.sparenum");
         sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.mcategory Where 1=1");
@@ -41,6 +41,9 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         }
         if (!"".equals(sparedesc) && sparedesc != null) {
             sb.append(" AND T.sparenum LIKE  ").append("'%").append(sparedesc).append("%'");
+        }
+        if (!"".equals(sparemodel) && sparemodel != null) {
+            sb.append(" AND S.sparemodel LIKE  ").append("'%").append(sparemodel).append("%'");
         }
         sb.append(" GROUP BY sparenum");
         //生成SQL

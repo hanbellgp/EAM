@@ -54,11 +54,11 @@
                 <h:outputLabel value="故障判断" for="queryHitchreason" />
                 <p:inputText id="queryHitchreason" value="#{equipmentHistoryManagedBean.queryHitchreason}" title="故障判断" />
 
-                <h:outputLabel value="维修策略" for="queryRepairprocess" />
-                <p:inputText id="queryRepairprocess" value="#{equipmentHistoryManagedBean.queryRepairprocess}" title="维修策略" />
+                <h:outputLabel value="再发防止对策" for="queryRepairprocess" />
+                <p:inputText id="queryRepairprocess" value="#{equipmentHistoryManagedBean.queryRepairprocess}" title="再发防止对策" />
 
-                <h:outputLabel value="设备故障报警号" for="queryHitchalarm" />
-                <p:inputText id="queryHitchalarm" value="#{equipmentHistoryManagedBean.queryHitchalarm}" title="故障报警" />
+                <h:outputLabel value="故障内容" for="queryHitchalarm" />
+                <p:inputText id="queryHitchalarm" value="#{equipmentHistoryManagedBean.queryHitchalarm}" title="故障内容" />
 
                 <h:outputLabel value="报修人" for="queryRepairuser" />
                 <p:inputText id="queryRepairuser" value="#{equipmentHistoryManagedBean.queryRepairuser}" title="报修人" />
@@ -114,7 +114,7 @@
                 <p:column styleClass="Wid15" headerText="故障现象" sortBy="#{item.hitchdesc}">
                     <h:outputText value="#{item.hitchdesc}"/>
                 </p:column>
-                <p:column styleClass="Wid20" headerText="设备故障报警号" sortBy="#{item.hitchalarm}">
+                <p:column styleClass="Wid20" headerText="故障内容" sortBy="#{item.hitchalarm}">
                     <h:outputText value="#{item.hitchalarm}"/>
                 </p:column>
                 <p:column styleClass="Wid20" headerText="故障发生时间" sortBy="#{item.hitchtime}">

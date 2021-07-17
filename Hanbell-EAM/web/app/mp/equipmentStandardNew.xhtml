@@ -111,7 +111,7 @@
                     <p:column >
                         <p:inputText id="methodname" value="#{equipmentStandardManagedBean.newEntity.methodname}" title="methodname" requiredMessage="请输入使用工具" />
                     </p:column>
-                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="检验周期(M)" for="frequency"/></p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="检验周期" for="frequency"/></p:column>
                     <p:column >
                         <p:inputText id="frequency" value="#{equipmentStandardManagedBean.newEntity.frequency}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
@@ -135,7 +135,7 @@
                                 }).call(this)" onblur="this.v();"
                                      title="manpower" requiredMessage="请输入需要人力"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="需要工时(h)" for="manhour"/></p:column>
+                    <p:column style="background-color: #EEEEEE" ><p:outputLabel value="需要工时" for="manhour"/></p:column>
                     <p:column >
                         <p:inputText id="manhour" value="#{equipmentStandardManagedBean.newEntity.manhour}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');

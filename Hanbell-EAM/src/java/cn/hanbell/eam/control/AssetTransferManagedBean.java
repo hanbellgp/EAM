@@ -16,7 +16,6 @@ import cn.hanbell.eam.entity.AssetTransferDetail;
 import cn.hanbell.eam.entity.AssetInventory;
 import cn.hanbell.eam.entity.AssetItem;
 import cn.hanbell.eam.entity.AssetPosition;
-import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetTransferModel;
 import cn.hanbell.eam.web.FormMultiBean;
@@ -27,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -72,6 +70,12 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
     protected List<String> paramPosition = null;
     protected List<String> paramUsed = null;
     protected List<String> paramHascost = null;
+    private List<String> paramPause = null;
+    private String userno2;
+    private String username2;
+    private String deptno2;
+    private String deptname2;
+    private String company2;
 
     public AssetTransferManagedBean() {
         super(AssetTransfer.class, AssetTransferDetail.class);
@@ -190,6 +194,75 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
         }
 
         return false;
+    }
+
+    public void handleDialogReturnWhenDetailAllNew(SelectEvent event) {
+        if ("".equals(company2) || company2 == null) {
+            showErrorMsg("Error", "请选择转入公司");
+            return;
+        }
+        if ("".equals(deptno2) || deptno2 == null) {
+            showErrorMsg("Error", "请输入转入部门");
+            return;
+        }
+        if ("".equals(userno2) || userno2 == null) {
+            showErrorMsg("Error", "请选择变更人");
+            return;
+        }
+
+        if (event.getObject() != null) {
+            List<AssetCard> cardList = (List<AssetCard>) event.getObject();
+            for (AssetCard e : cardList) {
+                if (!isExist(e)) {
+                    this.createDetail();
+                    currentDetail.setAssetCard(e);
+                    currentDetail.setAssetno(e.getFormid());
+                    currentDetail.setAssetItem(e.getAssetItem());
+                    currentDetail.setDeptno(deptno2);
+                    currentDetail.setDeptname(deptname2);
+                    currentDetail.setUserno(userno2);
+                    currentDetail.setUsername(username2);
+                    currentDetail.setCompany(company2);
+                    currentDetail.setUnit(e.getUnit());
+                    currentDetail.setQty(e.getQty());
+                    currentDetail.setSurplusValue(e.getAmts());
+                    currentDetail.setUsed(e.getUsed());
+                    currentDetail.setWarehouse(e.getWarehouse());
+                    super.doConfirmDetail();
+                } else {
+                    showErrorMsg("Error", "转移编号为" + e.getFormid() + "不能重复存在,");
+                }
+            }
+        }
+    }
+
+    public boolean isExist(AssetCard e) {
+        boolean aa = false;
+        for (AssetTransferDetail ad : detailList) {
+            if (e.getFormid().equals(ad.getAssetno())) {
+                aa = true;
+                break;
+            }
+        }
+        return aa;
+    }
+
+    public void handleDialogReturnDeptWhenNew(SelectEvent event) {
+        if (event.getObject() != null && newEntity != null) {
+            Department d = (Department) event.getObject();
+            deptno2 = d.getDeptno();
+            deptname2 = d.getDept();
+        }
+    }
+
+    public void handleDialogReturnUserWhenNew(SelectEvent event) {
+        if (event.getObject() != null && newEntity != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            userno2 = u.getUserid();
+            username2 = u.getUsername();
+            deptno2 = u.getDeptno();
+            deptname2 = u.getDept().getDept();
+        }
     }
 
     @Override
@@ -357,6 +430,29 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
                     openOptions.put("contentWidth", "900");
                 }
                 super.openDialog("assetcardSelect", openOptions, openParams);
+                break;
+            case "assetcardMultiSelect":
+                openParams.clear();
+                if (paramUsed == null) {
+                    paramUsed = new ArrayList<>();
+                } else {
+                    paramUsed.clear();
+                }
+                paramUsed.add("1");
+                openParams.put("used", paramUsed);//只能转移已领用的卡片
+                if (paramPause == null) {
+                    paramPause = new ArrayList<>();
+                } else {
+                    paramPause.clear();
+                }
+                paramPause.add("0");
+                openParams.put("pause", paramPause);//排除报废申请签核中的卡片
+                if (openOptions == null) {
+                    openOptions = new HashMap();
+                    openOptions.put("modal", true);
+                    openOptions.put("contentWidth", "1000");
+                }
+                super.openDialog(view, openOptions, openParams);
                 break;
             case "warehouseSelect":
                 openParams.clear();
@@ -660,4 +756,53 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
     private int[] getInventoryWidth() {
         return new int[]{10, 15, 20, 15, 10, 15, 10, 15, 15, 15, 15, 15, 15, 15};
     }
+
+    public WarehouseBean getWarehouseBean() {
+        return warehouseBean;
+    }
+
+    public void setWarehouseBean(WarehouseBean warehouseBean) {
+        this.warehouseBean = warehouseBean;
+    }
+
+    public String getUserno2() {
+        return userno2;
+    }
+
+    public void setUserno2(String userno2) {
+        this.userno2 = userno2;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public void setUsername2(String username2) {
+        this.username2 = username2;
+    }
+
+    public String getDeptno2() {
+        return deptno2;
+    }
+
+    public void setDeptno2(String deptno2) {
+        this.deptno2 = deptno2;
+    }
+
+    public String getDeptname2() {
+        return deptname2;
+    }
+
+    public void setDeptname2(String deptname2) {
+        this.deptname2 = deptname2;
+    }
+
+    public String getCompany2() {
+        return company2;
+    }
+
+    public void setCompany2(String company2) {
+        this.company2 = company2;
+    }
+
 }

@@ -32,4 +32,8 @@ public class AssetTransferReport extends SuperMultiReportBean<AssetTransferBean,
         return this.superEJB.findById(i);
     }
 
+    public String getCompany(String company) {
+        return this.superEJB.getCompany(company);
+    }
+
 }

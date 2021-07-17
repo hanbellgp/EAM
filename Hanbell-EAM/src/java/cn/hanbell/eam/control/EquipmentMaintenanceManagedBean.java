@@ -209,6 +209,10 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "停工时间不能为空！");
             return;
         }
+         if (currentEntity.getHitchalarm()== null) {
+            showErrorMsg("Error", "故障内容不能为空！");
+            return;
+        }
         if (currentEntity.getAbrasehitch().equals("NULL")) {
             showErrorMsg("Error", "请选择故障责任原因！");
             return;
@@ -910,7 +914,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间", "非工作时间(分)", "维修时间", "故障来源", "故障描述", "故障报警", "故障类型", "维修方式说明"};
+        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间", "非工作时间(分)", "维修时间", "故障来源", "故障描述", "故障内容", "故障类型", "维修作业方式"};
     }
 
     /**

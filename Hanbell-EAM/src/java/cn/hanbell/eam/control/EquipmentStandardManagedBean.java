@@ -93,9 +93,13 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
         return super.create(path);
     }
 
-    //作废更改单价转态为W
+    //作废更改单价转态为Z
     public void invalid() {
-        currentEntity.setStatus("W");
+        if (currentEntity == null) {
+            showErrorMsg("Error", "请选择要作废的基准");
+            return;
+        }
+        currentEntity.setStatus("Z");
         super.update();
     }
 
@@ -147,10 +151,6 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
         }
         if (newEntity.getFrequency() == null) {
             showErrorMsg("Error", "请先选择输入检验周期(M)！！！");
-            return false;
-        }
-        if (newEntity.getLasttime() == null) {
-            showErrorMsg("Error", "请先选择输入固定保全时间！！！");
             return false;
         }
 

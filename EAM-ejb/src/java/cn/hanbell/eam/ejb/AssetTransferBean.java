@@ -308,4 +308,14 @@ public class AssetTransferBean extends SuperEJBForEAM<AssetTransfer> {
         return detailList;
     }
 
+    /**
+     * 根据公司编号获取公司
+     *
+     * @param company
+     * @return
+     */
+    public String getCompany(String company) {
+        Company com = companyBean.findByCompany(company);
+        return com.getName();
+    }
 }
