@@ -564,6 +564,12 @@
                 <to-view-id>/app/mp/equipmentAnalyResult.xhtml</to-view-id>
                 <redirect/>
             </navigation-case>
+            <navigation-case>
+                <description>计划保全记录</description>
+                <from-outcome>equipmentPlanResult</from-outcome>
+                <to-view-id>/app/mp/equipmentPlanResult.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
         </navigation-rule>
     </navigation-rule>  
     <navigation-rule>

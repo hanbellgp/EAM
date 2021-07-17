@@ -237,7 +237,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"维修人", "报修单号", "资产编号", "设备名称", "故障发生日期", "维修方式说明", "报修部门", "维修到达时间", "维修完成时间", "维修工时(分)", "辅助维修工时(分)"};
+        return new String[]{"维修人", "报修单号", "资产编号", "设备名称", "故障发生日期", "维修作业方式", "报修部门", "维修到达时间", "维修完成时间", "维修工时(分)", "辅助维修工时(分)"};
     }
 
     /**

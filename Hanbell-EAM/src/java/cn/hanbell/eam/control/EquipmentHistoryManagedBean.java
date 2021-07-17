@@ -527,11 +527,11 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 cell17.setCellValue(trouble);
             }
 
-            Cell cell18 = row.createCell(18);
+            Cell cell18 = row.createCell(19);
             cell18.setCellStyle(style.get("left"));
             cell18.setCellValue(equipmentrepair.getRepairmethod());
 
-            Cell cell19 = row.createCell(19);
+            Cell cell19 = row.createCell(18);
             cell19.setCellStyle(style.get("left"));
             cell19.setCellValue(equipmentrepair.getHitchreason());
 
@@ -628,7 +628,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
             if (currentEntity.getHitchalarm() != null && !"".equals(currentEntity.getHitchalarm())) {
                 cellTitle = sheet.getRow(6).getCell(1);
-                cellTitle.setCellValue("故障报警: " + currentEntity.getHitchalarm());
+                cellTitle.setCellValue("故障内容: " + currentEntity.getHitchalarm());
             }
             if (currentEntity.getHitchdesc() != null && !"".equals(currentEntity.getHitchdesc())) {
                 cellTitle = sheet.getRow(8).getCell(1);
@@ -719,15 +719,15 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cellTitle.setCellValue(currentEntity.getAssetno().getUsername());
             if (currentEntity.getRepairmethod() != null && !"".equals(currentEntity.getRepairmethod())) {
                 cellTitle = sheet.getRow(12).getCell(1);
-                cellTitle.setCellValue("维修方式说明:" + currentEntity.getRepairmethod());
+                cellTitle.setCellValue("维修作业方式:" + currentEntity.getRepairmethod());
             }
             if (currentEntity.getHitchreason() != null && !"".equals(currentEntity.getHitchreason())) {
                 cellTitle = sheet.getRow(14).getCell(1);
-                cellTitle.setCellValue("故障判断过程及原因描述:" + currentEntity.getHitchreason());
+                cellTitle.setCellValue("故障现状过程及原因:" + currentEntity.getHitchreason());
             }
             if (currentEntity.getRepairprocess() != null && !"".equals(currentEntity.getRepairprocess())) {
                 cellTitle = sheet.getRow(15).getCell(1);
-                cellTitle.setCellValue("维修策略:" + currentEntity.getRepairprocess());
+                cellTitle.setCellValue("再发防止对策:" + currentEntity.getRepairprocess());
             }
             if (currentEntity.getMeasure() != null && !"".equals(currentEntity.getMeasure())) {
                 cellTitle = sheet.getRow(16).getCell(1);
@@ -797,7 +797,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
      */
     private String[] getInventoryTitle2() {
 
-        return new String[]{"", "", "", "", "", "", "", "", "报修时间", "维修到达时间", "维修完成时间", "非工作时间(分)", "停工时间(分)", "维修时间", "故障来源", "故障报警", "故障类型", "故障分类", "维修方式说明", "故障判断过程及原因", "维修策略", "备件费用", "人工成本", "其他费用", "总维修费用<不含人工费>", "总维修费用"};
+        return new String[]{"", "", "", "", "", "", "", "", "报修时间", "维修到达时间", "维修完成时间", "非工作时间(分)", "停工时间(分)", "维修时间", "故障来源", "故障内容", "故障类型", "故障分类", "故障现状过程及原因", "维修作业方式", "再发防止对策", "备件费用", "人工成本", "其他费用", "总维修费用<不含人工费>", "总维修费用"};
     }
 
     /**

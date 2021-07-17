@@ -52,12 +52,16 @@
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="基准类型" for="standardtype" /></p:column>
                     <p:column>
                         <p:selectOneMenu id="standardtype" value="#{equipmentAnalyResultManagedBean.queryStandardType}" title="基准类型"  >
+                            <p:ajax event="itemSelect" update="standardtype" />
+                            <f:selectItem  itemLabel="请选择" itemValue=""/>
                             <f:selectItems value="#{equipmentAnalyResultManagedBean.standardtypeList}" var="standardtypeList" itemLabel="#{standardtypeList.cdesc}" itemValue="#{standardtypeList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="基准等级" for="standardlevel" /></p:column>
                     <p:column>
-                        <p:selectOneMenu id="standardlevel" value="#{equipmentAnalyResultManagedBean.newEntity.standardlevel}" title="standardlevel" required="true" requiredMessage="请选择所属厂区" >
+                        <p:selectOneMenu id="standardlevel" value="#{equipmentAnalyResultManagedBean.newEntity.standardlevel}" title="standardlevel" required="true" requiredMessage="请选择基准等级"  >
+                            <p:ajax event="itemSelect" update="standardtype" />
+                            <f:selectItem  itemLabel="请选择" itemValue=""/>
                             <f:selectItems value="#{equipmentAnalyResultManagedBean.standardlevelList}" var="standardlevelpeList" itemLabel="#{standardlevelpeList.cdesc}" itemValue="#{standardlevelpeList.cvalue}"  />
                         </p:selectOneMenu>
                     </p:column>
@@ -66,7 +70,9 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="责任单位" for="respondept"/></p:column>
                     <p:column >
-                        <p:selectOneMenu id="respondept" value="#{equipmentAnalyResultManagedBean.queryDept}" title="责任单位"  onchange="" >
+                        <p:selectOneMenu id="respondept" value="#{equipmentAnalyResultManagedBean.queryDept}" title="责任单位"  >
+                            <p:ajax event="itemSelect" update="respondept" />
+                            <f:selectItem  itemLabel="请选择" itemValue=""/>
                             <f:selectItems value="#{equipmentAnalyResultManagedBean.respondeptList}" var="respondeptList" itemLabel="#{respondeptList.cdesc}" itemValue="#{respondeptList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>

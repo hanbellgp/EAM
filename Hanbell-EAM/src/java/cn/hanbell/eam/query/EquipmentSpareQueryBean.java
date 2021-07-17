@@ -26,6 +26,7 @@ public class EquipmentSpareQueryBean extends SuperQueryBean<EquipmentSpare> {
     private EquipmentSpareBean equipmentSpareBean;
     private String querySparenum;
     private String querySparedesc;
+    private String querySparemodel;
 
     public EquipmentSpareQueryBean() {
         super(EquipmentSpare.class);
@@ -56,6 +57,9 @@ public class EquipmentSpareQueryBean extends SuperQueryBean<EquipmentSpare> {
             if (this.querySparedesc != null && !"".equals(this.querySparedesc)) {
                 this.model.getFilterFields().put("sparedesc", this.querySparedesc);
             }
+              if (this.querySparemodel != null && !"".equals(this.querySparemodel)) {
+                this.model.getFilterFields().put("sparemodel", this.querySparemodel);
+            }
         }
     }
 
@@ -80,6 +84,12 @@ public class EquipmentSpareQueryBean extends SuperQueryBean<EquipmentSpare> {
         this.querySparedesc = querySparedesc;
     }
 
- 
+    public String getQuerySparemodel() {
+        return querySparemodel;
+    }
+
+    public void setQuerySparemodel(String querySparemodel) {
+        this.querySparemodel = querySparemodel;
+    }
 
 }

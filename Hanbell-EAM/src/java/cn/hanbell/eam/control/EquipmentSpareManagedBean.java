@@ -46,7 +46,7 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCredate(getDate());
-        newEntity.setStatus("V");
+        newEntity.setStatus("N");
         newEntity.setCreator(userManagedBean.getUserid());
         repairareaList = sysCodeBean.getTroubleNameList("RD", "repairarea");
     }

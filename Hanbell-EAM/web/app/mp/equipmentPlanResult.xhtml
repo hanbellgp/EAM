@@ -14,21 +14,21 @@
                     查询条件
                 </f:facet>
                 <h:outputLabel value="保养计划日期" for="queryDateBegin" />
-                <p:calendar id="queryDateBegin" value="#{equipmentAnalyResultManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                <p:calendar id="queryDateBegin" value="#{equipmentPlanResultManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="保养计划日期" for="queryDateEnd" />
-                <p:calendar id="queryDateEnd" value="#{equipmentAnalyResultManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                <p:calendar id="queryDateEnd" value="#{equipmentPlanResultManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="设备编号" for="queryFormId" />
-                <p:inputText id="queryFormId" value="#{equipmentAnalyResultManagedBean.queryFormId}" title="设备编号" />
+                <p:inputText id="queryFormId" value="#{equipmentPlanResultManagedBean.queryFormId}" title="设备编号" />
                 <h:outputLabel value="设备名称" for="queryEquipmentName" />
-                <p:inputText id="queryEquipmentName" value="#{equipmentAnalyResultManagedBean.queryEquipmentName}" title="设备名称" />
+                <p:inputText id="queryEquipmentName" value="#{equipmentPlanResultManagedBean.queryEquipmentName}" title="设备名称" />
                 <h:outputLabel value="设备所属部门" for="queryDept" />
-                <p:inputText id="queryDept" value="#{equipmentAnalyResultManagedBean.queryDept}" title="设备所属部门"    />
+                <p:inputText id="queryDept" value="#{equipmentPlanResultManagedBean.queryDept}" title="设备所属部门"    />
                 <h:outputLabel value="基准等级" for="queryStandardLevel" />
-                <p:selectOneMenu id="queryStandardLevel" value="#{equipmentAnalyResultManagedBean.queryStandardLevel}" title="queryStandardLevel" >
+                <p:selectOneMenu id="queryStandardLevel" value="#{equipmentPlanResultManagedBean.queryStandardLevel}" title="queryStandardLevel" >
                     <f:selectItems value="#{equipmentAnalyResultManagedBean.standardlevelList}" var="standardlevelpeList" itemLabel="#{standardlevelpeList.cdesc}" itemValue="#{standardlevelpeList.cvalue}" />
                 </p:selectOneMenu>
                 <h:outputLabel value="设备状态" for="queryState" />
-                <p:selectOneMenu id="queryState" value="#{equipmentAnalyResultManagedBean.queryState}" title="设备状态"   >
+                <p:selectOneMenu id="queryState" value="#{equipmentPlanResultManagedBean.queryState}" title="设备状态"   >
                     <f:selectItem itemLabel="待实施" itemValue="N" />
                     <f:selectItem itemLabel="实施中" itemValue="S" />
                     <f:selectItem itemLabel="已完成" itemValue="V" />
@@ -36,45 +36,44 @@
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentAnalyResultManagedBean.init()}" icon="ui-icon-sync"
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentPlanResultManagedBean.init()}" icon="ui-icon-sync"
                                      update=":formList"/>
 
-                    <p:commandButton id="btnView" value="查看" action="#{equipmentAnalyResultManagedBean.view('equipmentAnalyResultView')}" icon="ui-icon-document"/>
+                    <p:commandButton id="btnView" value="查看" action="#{equipmentPlanResultManagedBean.view('equipmentPlanResultView')}" icon="ui-icon-document"/>
                 </f:facet>
 
                 <f:facet name="right">
 
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
-                        <p:menuitem id="btnCreate" value="新增" action="#{equipmentAnalyResultManagedBean.create('equipmentAnalyResultNew')}" icon="ui-icon-plus"
-                                    update=":formList"      />
-                        <p:menuitem id="btnEdit" value="保全作业" action="#{equipmentAnalyResultManagedBean.edit('equipmentAnalyResultEdit')}" icon="ui-icon-pencil"
-                                    update=":formList"      />
-                        <p:menuitem id="btnDelete" actionListener="#{equipmentAnalyResultManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
+                        <p:menuitem id="btnEdit1" value="保全作业" action="#{equipmentPlanResultManagedBean.edit('equipmentPlanResultEdit')}" icon="ui-icon-pencil"
+                                    update=":formList"/>
+                        <p:menuitem id="btnEdit" value="派工" action="#{equipmentPlanResultManagedBean.dispatching('equipmentPlanResultSet')}" icon="ui-icon-pencil"
+                                    update=":formList"/>
+                        <p:menuitem id="btnDelete" actionListener="#{equipmentPlanResultManagedBean.invalid()}" icon="ui-icon-trash" value="作废" 
                                     update=":formList">
                             <p:confirm header="系统提示" message="作废吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-
                     </p:splitButton>
 
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentAnalyResultManagedBean.query()}" icon="ui-icon-search"
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentPlanResultManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:dataTable value="#{equipmentAnalyResultManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+            <p:dataTable value="#{equipmentPlanResultManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="15,30,45"   
-                         lazy="true"  selectionMode="single" selection="#{equipmentAnalyResultManagedBean.currentEntity}" rowKey="#{item.id}" >
-                <p:column styleClass="Wid20" headerText="自主保养单号" >
+                         lazy="true"  selectionMode="single" selection="#{equipmentPlanResultManagedBean.currentEntity}" rowKey="#{item.id}" >
+                <p:column styleClass="Wid20" headerText="计划保养单号" >
                     <h:outputText value="#{item.formid}"/>
                 </p:column>
                 <p:column styleClass="Wid10" headerText="状态" >
-                    <h:outputText value="#{equipmentAnalyResultManagedBean.getStutusName(item.status)}"/>
+                    <h:outputText value="#{equipmentPlanResultManagedBean.getStutusName(item.status)}"/>
                 </p:column>
                 <p:column styleClass="Wid10" headerText="保养结果" >
                     <h:outputText value="#{item.analysisresult}"/>
                 </p:column>
                 <p:column styleClass="Wid15" headerText="保养计划日期" >
-                      <h:outputText value="#{item.formdate}">
+                    <h:outputText value="#{item.formdate}">
                         <f:convertDateTime pattern="yyyy-MM-dd" />
                     </h:outputText>   
                 </p:column>

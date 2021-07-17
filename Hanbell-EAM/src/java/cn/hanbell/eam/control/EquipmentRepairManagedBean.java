@@ -141,7 +141,6 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
         newEntity.setHitchtime(getDate());
-
         newEntity.setRepairuser(userManagedBean.getUserid());
         newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()).getUsername());
         newEntity.setRepairdeptno(this.getDepartment(userManagedBean.getUserid()).getDeptno());
@@ -716,7 +715,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间", "故障来源", "故障描述", "故障报警", "故障类型", "维修方式说明"};
+        return new String[]{"报修单号", "资产编号", "资产件号", "资产名称", "使用人", "使用部门", "进度", "维修人", "报修时间", "维修到达时间", "维修完成时间", "故障来源", "故障描述", "故障内容", "故障类型", "维修作业方式"};
     }
 
     /**

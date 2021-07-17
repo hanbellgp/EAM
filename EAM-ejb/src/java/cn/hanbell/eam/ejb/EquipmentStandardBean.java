@@ -24,9 +24,10 @@ public class EquipmentStandardBean extends SuperEJBForEAM<EquipmentStandard> {
         super(EquipmentStandard.class);
     }
 
-    public List<EquipmentStandard> findByAssetno(String assetno) {
-        Query query = getEntityManager().createNamedQuery("EquipmentStandard.findByAssetno");
+    public List<EquipmentStandard> findByAssetno(String assetno,String standardlevel) {
+        Query query = getEntityManager().createNamedQuery("EquipmentStandard.findByAssetnoAndStandardlevel");
         query.setParameter("assetno", assetno);
+        query.setParameter("standardlevel", standardlevel);
         query.setParameter("status", "V");
         try {
             List results = query.getResultList();
@@ -36,27 +37,6 @@ public class EquipmentStandardBean extends SuperEJBForEAM<EquipmentStandard> {
         }
     }
 
-    public List<EquipmentStandard> getEquipmentStandardList(String respondept, String standardlevel, String standardtype, String assetno) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT e FROM ");
-        sb.append(this.className);
-        sb.append(" WHERE e.status='V'");
-        if (respondept != null && !"".equals(respondept)) {
-            sb.append(" AND e.respondept='").append(respondept).append("'");
-        }
-        if (standardlevel != null && !"".equals(standardlevel)) {
-            sb.append(" AND e.standardlevel='").append(standardlevel).append("'");
-        }
-        if (standardtype != null && !"".equals(standardtype)) {
-            sb.append(" AND e.standardtype='").append(standardtype).append("'");
-        }
-        if (assetno != null && !"".equals(assetno)) {
-            sb.append(" AND e.assetno='").append(assetno).append("'");
-        }
-        //生成SQL
-        Query query = getEntityManager().createQuery(sb.toString());
-        List results = query.getResultList();
-        return results;
-    }
+
 
 }

@@ -218,7 +218,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"报修单号", "资产编号", "设备名称", "报修部门", "故障发生日期", "故障责任原因", "维修方式说明", "其他费用(元)", "人工费用(元)", "备件费用(元)", "费用总计(元)", "维修人"};
+        return new String[]{"报修单号", "资产编号", "设备名称", "报修部门", "故障发生日期", "故障责任原因", "维修作业方式", "其他费用(元)", "人工费用(元)", "备件费用(元)", "费用总计(元)", "维修人"};
     }
 
     /**

@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
@@ -96,9 +97,12 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             //获得表格样式
             Map<String, CellStyle> style = createStyles(workbook);
             Sheet sheet;
+            Sheet sheet1;
             sheet = workbook.getSheetAt(0);
+            sheet1 = workbook.getSheet("图表");
             Row row;
             Row row1;
+            Row row3;
             row = sheet.createRow(0);
             row.setHeight((short) 900);
             row1 = sheet.createRow(14);
@@ -129,6 +133,36 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
+                }
+            }
+            //获取超过60分钟的故障明细
+            List<?> itemList2 = equipmentRepairBean.getFaultDetail(type);
+            List<Object[]> faultList = (List<Object[]>) itemList2;
+            int faultCount = 87;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            for (Object[] faDet : faultList) {
+                row3 = sheet1.createRow(faultCount);
+                row3.setHeight((short) 400);
+                faultCount++;
+                Cell cell;
+                for (int i = 0; i < 8; i++) {
+                    cell = row3.createCell(i);
+                    if (faDet[i] != null) {
+                        switch (i) {
+                            case 0:
+                                cell.setCellValue(sdf.format(faDet[i]));
+                                break;
+                            case 4:
+                                cell.setCellValue(Integer.parseInt(faDet[i].toString()));
+                                break;
+                            default:
+                                cell.setCellValue(faDet[i].toString());
+                                break;
+                        }
+                    } else {
+                        cell.setCellValue("");
+                    }
+                    cell.setCellStyle(style.get("cell"));
                 }
             }
             OutputStream os = null;

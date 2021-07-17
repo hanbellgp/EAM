@@ -23,6 +23,7 @@ public class EquipmentSpareStockManagedBean extends SuperSingleBean<EquipmentSpa
     @EJB
     private EquipmentSpareStockBean equipmentSpareStockBean;
     private List<EquipmentSpareStock> listStock;
+    private String querySparemodel;
     private Object obj;
 
     public EquipmentSpareStockManagedBean() {
@@ -32,12 +33,12 @@ public class EquipmentSpareStockManagedBean extends SuperSingleBean<EquipmentSpa
     @Override
     public void init() {
         superEJB = equipmentSpareStockBean;
-        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId);
+        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId,querySparemodel);
     }
 
     @Override
     public void query() {
-        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId);
+        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId,querySparemodel);
     }
 
     @Override
@@ -61,6 +62,14 @@ public class EquipmentSpareStockManagedBean extends SuperSingleBean<EquipmentSpa
 
     public void setObj(Object obj) {
         this.obj = obj;
+    }
+
+    public String getQuerySparemodel() {
+        return querySparemodel;
+    }
+
+    public void setQuerySparemodel(String querySparemodel) {
+        this.querySparemodel = querySparemodel;
     }
 
 }

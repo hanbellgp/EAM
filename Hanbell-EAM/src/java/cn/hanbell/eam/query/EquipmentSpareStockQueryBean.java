@@ -27,6 +27,7 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
     private EquipmentSpareStockBean equipmentSpareStockBean;
     private String sArea;
     private String warehouseno;
+    private String querySparemodel;
 
     public EquipmentSpareStockQueryBean() {
         super(EquipmentSpareStock.class);
@@ -72,6 +73,10 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
             if (queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("sparenum.sparedesc", queryName);
             }
+            if (querySparemodel != null && !"".equals(this.querySparemodel)) {
+                this.model.getFilterFields().put("sparenum.sparemodel", queryName);
+            }
+            
             if (sArea != null) {
                 model.getFilterFields().put("sarea", sArea);
             }
@@ -99,6 +104,14 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
 
     public void setWarehouseno(String warehouseno) {
         this.warehouseno = warehouseno;
+    }
+
+    public String getQuerySparemodel() {
+        return querySparemodel;
+    }
+
+    public void setQuerySparemodel(String querySparemodel) {
+        this.querySparemodel = querySparemodel;
     }
 
 }

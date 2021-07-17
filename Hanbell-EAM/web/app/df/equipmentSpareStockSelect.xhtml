@@ -19,8 +19,12 @@
                     <p:column>
                         <p:inputText id="queryName" value="#{equipmentSpareStockQueryBean.queryName}" title="备件名称" />
                     </p:column>
+                     <p:column><h:outputLabel value="规格" for="querySparemodel" /></p:column>
+                    <p:column>
+                        <p:inputText id="querySparemodel" value="#{equipmentSpareStockQueryBean.querySparemodel}" title="规格" />
+                    </p:column>
                 </p:row>
-            </p:panelGrid>
+            </p:panelGrid> 
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
                 </f:facet>

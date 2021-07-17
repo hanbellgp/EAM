@@ -549,11 +549,11 @@ if(master!=null){
                 dataSetRow["deptname"] = detail.get(currentRow).getAssetCard().getDeptname();
                 dataSetRow["warehouse"] = detail.get(currentRow).getAssetCard().getWarehouse().getName();
                 if (detail.get(currentRow).getAssetCard().getPosition1()!=null){
-                    dataSetRow["position1"] = detail.get(currentRow).getAssetCard().getPosition1().getName();
+                    dataSetRow["position1"] = ejbClient.getCompany(detail.get(currentRow).getAssetCard().getCompany());
                 }
 	}
-        if (detail.get(currentRow).getPosition1()!=null){
-            dataSetRow["position12"] = detail.get(currentRow).getPosition1().getName();
+        if (detail.get(currentRow).getCompany()!=null){
+            dataSetRow["position12"] =ejbClient.getCompany(detail.get(currentRow).getCompany()) ;
         }
 	dataSetRow["userno2"] = detail.get(currentRow).getUserno();
 	dataSetRow["username2"] = detail.get(currentRow).getUsername();

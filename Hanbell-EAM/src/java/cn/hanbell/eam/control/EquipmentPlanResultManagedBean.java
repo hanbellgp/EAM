@@ -16,8 +16,7 @@ import cn.hanbell.eam.entity.EquipmentStandard;
 import cn.hanbell.eam.entity.SysCode;
 import cn.hanbell.eam.lazy.EquipmentAnalyResultModel;
 import cn.hanbell.eam.web.FormMultiBean;
-import com.google.common.collect.HashBiMap;
-import java.util.HashMap;
+import cn.hanbell.eap.entity.SystemUser;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -27,16 +26,15 @@ import org.primefaces.event.SelectEvent;
 /**
  * @author C2079
  */
-@ManagedBean(name = "equipmentAnalyResultManagedBean")
+@ManagedBean(name = "equipmentPlanResultManagedBean")
 @SessionScoped
-public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnalyResult, EquipmentAnalyResultDta> {
+public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnalyResult, EquipmentAnalyResultDta> {
 
     @EJB
     private EquipmentAnalyResultBean equipmentAnalyResultBean;
     @EJB
     private EquipmentAnalyResultDtaBean equipmentAnalyResultDtaBean;
-    @EJB
-    private EquipmentStandardBean equipmentStandardBean;
+
     @EJB
     private SysCodeBean sysCodeBean;
     private String queryEquipmentName;
@@ -50,18 +48,8 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
     private List<SysCode> frequencyunitList;
     private List<SysCode> manhourunitList;
 
-    public EquipmentAnalyResultManagedBean() {
+    public EquipmentPlanResultManagedBean() {
         super(EquipmentAnalyResult.class, EquipmentAnalyResultDta.class);
-    }
-
-    @Override
-    public void create() {
-        super.create();
-        newEntity.setCredate(getDate());
-        newEntity.setFormdate(getDate());
-        newEntity.setStatus("N");
-        newEntity.setCompany(userManagedBean.getCompany());
-        newEntity.setCreator(userManagedBean.getUserid());
     }
 
     @Override
@@ -92,11 +80,11 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         super.update(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    //作废更改单价转态为N
+    //作废更状态为N
     public void invalid() {
-        if (currentEntity == null) {
-            showErrorMsg("Error", "请选择要作废的保全记录");
-            return;
+        if (currentEntity==null) {
+             showErrorMsg("Error", "请选择要作废的保全记录");
+             return;
         }
         currentEntity.setStatus("Z");
         super.update();
@@ -113,63 +101,11 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         frequencyunitList = sysCodeBean.getTroubleNameList("RD", "frequencyunit");
         manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
         queryState = "N";//初始查询待实施的数据
-        queryStandardLevel = "一级";//初始查询等级一级的数据
+        queryStandardLevel = "二级";//初始查询等级二级的数据
         this.model.getFilterFields().put("status", queryState);
         this.model.getFilterFields().put("standardlevel", queryStandardLevel);
         this.model.getSortFields().put("formid", "ASC");
         super.init();
-    }
-
-    @Override
-    public void handleDialogReturnWhenNew(SelectEvent event) {
-        detailList.clear();//清除前面选择的设备基准
-        if (event.getObject() != null && newEntity != null) {
-            AssetCard e = (AssetCard) event.getObject();
-            openOptions = new HashMap<>();
-            if (queryDept != null && !"".equals(queryDept)) {
-                openOptions.put("respondept", queryDept);
-            }
-            if (newEntity.getStandardlevel() != null && !"".equals(newEntity.getStandardlevel())) {
-                openOptions.put("standardlevel", newEntity.getStandardlevel());
-            }
-            if (queryStandardType != null && !"".equals(queryStandardType)) {
-                openOptions.put("standardtype", queryStandardType);
-            }
-            if (e.getFormid() != null && !"".equals(e.getFormid())) {
-                openOptions.put("assetno", e.getFormid());
-            }
-            // List<EquipmentStandard> eStandard = equipmentStandardBean.getEquipmentStandardList(queryDept, newEntity.getStandardlevel(), queryStandardType, e.getFormid());//获取设备下对应的基准
-            List<EquipmentStandard> eStandard = equipmentStandardBean.findByFilters(openOptions); //List<EquipmentStandard> eStandard = equipmentStandardBean.findByAssetno(e.getFormid(),newEntity.getStandardlevel());//获取设备下对应的基准
-            newEntity.setAssetno(e.getFormid());
-            newEntity.setSpareno(e.getAssetItem().getItemno());
-            newEntity.setDeptname(e.getDeptname());
-            newEntity.setDeptno(e.getDeptno());
-            newEntity.setAssetdesc(e.getAssetDesc());
-            int seq = 1;
-            for (EquipmentStandard eS : eStandard) {
-                EquipmentAnalyResultDta eArDta = new EquipmentAnalyResultDta();//将查出的基准一一筛入保全子类
-                eArDta.setStandardtype(eS.getStandardtype());
-                eArDta.setCompany(newEntity.getCompany());
-                eArDta.setRespondept(eS.getRespondept());
-                eArDta.setSeq(seq);
-                eArDta.setCheckarea(eS.getCheckarea());
-                eArDta.setCheckcontent(eS.getCheckcontent());
-                eArDta.setJudgestandard(eS.getJudgestandard());
-                eArDta.setMethod(eS.getMethod());
-                eArDta.setMethodname(eS.getMethodname());
-                eArDta.setDowntime(eS.getDowntime());
-                eArDta.setManhour(eS.getManhour());
-                eArDta.setManpower(eS.getManpower());
-                eArDta.setAreaimage(eS.getAreaimage());
-                eArDta.setPlandate(eS.getNexttime());
-                eArDta.setCreator(userManagedBean.getUserid());
-                eArDta.setCredate(getDate());
-                eArDta.setStatus("N");
-                seq++;
-                detailList.add(eArDta);
-                addedDetailList.add(eArDta);
-            }
-        }
     }
 
     @Override
@@ -191,6 +127,10 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
     }
 
+    public void doConfirmDetail2() {
+        super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public String edit(String path) {
         //给第一个保全时间赋初值
@@ -202,12 +142,24 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         return super.edit(path); //To change body of generated methods, choose Tools | Templates.
     }
 
+    //派工
+    public String dispatching(String path) {
+        return super.edit(path); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public void createDetail() {
         super.createDetail(); //To change body of generated methods, choose Tools | Templates.
         currentDetail.setStatus("N");
         currentDetail.setCredate(getDate());
         currentDetail.setCreator(userManagedBean.getUserid());
+    }
+
+    public void handleDialogReturnSysuserWhenNew(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            currentDetail.setAnalysisuser(u.getUsername());
+        }
     }
 
     @Override

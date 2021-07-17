@@ -189,7 +189,7 @@ public class RepairSceneStatisticsManagedBean extends FormMultiBean<EquipmentRep
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "报修部门", "故障发生日期", "故障现象", "维修方式", "维修人"};
+        return new String[]{"资产编号", "设备名称", "报修部门", "故障发生日期", "故障现象", "维修作业方式", "维修人"};
     }
 
     /**

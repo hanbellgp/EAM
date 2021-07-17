@@ -30,22 +30,23 @@
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
 
                         <p:menuitem id="btnCreate" value="新增" action="#{equipmentSpareManagedBean.create('equipmentSpareNew')}" icon="ui-icon-plus"
-                                    update=":formList"      />
+                                    update=":formList"      rendered="#{equipmentSpareManagedBean.doAdd}" process="@this"  />
                         <p:menuitem id="btnEdit" value="编辑" action="#{equipmentSpareManagedBean.edit('equipmentSpareEdit')}" icon="ui-icon-pencil"
-                                    update=":formList" />
-
+                                    rendered="#{equipmentSpareManagedBean.doEdit}"      update=":formList" />
+                        <p:menuitem id="btnDelete" value="删除" actionListener="#{equipmentSpareManagedBean.delete()}" icon="ui-icon-trash"
+                                    rendered="#{equipmentSpareManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
 
                     </p:splitButton>
-
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentSpareManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
 
             </p:toolbar>
             <p:dataTable value="#{equipmentSpareManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="15,30,45"   
-                         lazy="true"  selectionMode="single" selection="#{equipmentSpareManagedBean.currentEntity}" rowKey="#{item.id}" >
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"  selectionMode="single" selection="#{equipmentSpareManagedBean.currentEntity}" rowKey="#{item.id}" >
 
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
@@ -79,20 +80,20 @@
                     </f:facet>
                     <h:outputText value="#{item.sparemodel}"/>
                 </p:column>
-             
+
                 <p:column styleClass="Wid15" >
                     <f:facet name="header">
                         <h:outputText value="单位"/>
                     </f:facet>
                     <h:outputText value="#{item.unit.unit}"/>
                 </p:column>
-               
+
             </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formList" trigger="btnLoad">
+            <p:blockUI id="blockUI" block="formList" trigger="btnOperate">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
             </p:blockUI>
         </h:form>
