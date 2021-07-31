@@ -58,7 +58,7 @@
 
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="基准等级" for="standardlevel"/></p:column>
                     <p:column>
-                        <p:selectOneMenu id="standardlevel" value="#{equipmentStandardManagedBean.queryStandardLevel}" title="standardlevel" required="true" requiredMessage="请选择基准登记">
+                        <p:selectOneMenu id="standardlevel" value="#{equipmentStandardManagedBean.newEntity.standardlevel}" title="standardlevel" required="true" requiredMessage="请选择基准登记">
                             <f:selectItems value="#{equipmentStandardManagedBean.standardlevelList}" var="standardlevelpeList" itemLabel="#{standardlevelpeList.cdesc}" itemValue="#{standardlevelpeList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>

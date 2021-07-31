@@ -68,11 +68,10 @@
 
                             <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="保养结果" for="analysisresult" /></p:column>
                             <p:column >
-                                <p:selectOneMenu id="analysisresult" value="#{equipmentPlanResultManagedBean.currentDetail.analysisresult}" title="责任单位"  onchange="" >
-                                    <f:selectItem itemLabel="请选择" itemValue="" />
-                                    <f:selectItem itemLabel="正常" itemValue="正常" />
-                                    <f:selectItem itemLabel="异常" itemValue="异常" />
-                                </p:selectOneMenu>
+                                <p:selectOneButton id="analysisresult"  value="#{equipmentPlanResultManagedBean.currentDetail.analysisresult}">
+                                    <f:selectItem itemLabel="正常" itemValue="正常"/>
+                                    <f:selectItem itemLabel="异常" itemValue="异常"/>
+                                </p:selectOneButton>
 
                             </p:column>
                             <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="异常描述" for="exception" /></p:column>

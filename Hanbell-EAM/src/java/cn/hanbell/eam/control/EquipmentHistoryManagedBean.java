@@ -515,7 +515,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
             Cell cell16 = row.createCell(16);
             cell16.setCellStyle(style.get("cell"));
-            if (equipmentrepair.getHitchtype() != null && !equipmentrepair.getHitchtype().equals("NULL")) {
+            if (equipmentrepair.getHitchurgency() != null && !equipmentrepair.getHitchurgency().equals("NULL")) {
                 String hitchtype = sysCodeBean.getTroubleName("RD", "hitchurgency", equipmentrepair.getHitchurgency()).getCdesc();
                 cell16.setCellValue(hitchtype);
             }

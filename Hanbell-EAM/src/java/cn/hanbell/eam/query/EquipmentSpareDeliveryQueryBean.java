@@ -70,16 +70,14 @@ public class EquipmentSpareDeliveryQueryBean extends SuperQueryBean<EquipmentSpa
             }
             if (relanos != null && !"".equals(relanos)) {
                 model.getFilterFields().put("relano", relanos);
+            } else {
+                this.model.getFilterFields().put("accepttype", "20");
             }
             this.model.getFilterFields().put("status", "V");
-            this.model.getFilterFields().put("accepttype", "20");
+
         }
     }
 
-    @Override
-    public void reset() {
-        super.reset();
-    }
 
     public String getRelanos() {
         return relanos;

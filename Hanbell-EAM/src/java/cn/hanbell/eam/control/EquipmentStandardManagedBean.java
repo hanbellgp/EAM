@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -132,6 +131,24 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
     public void update() {
         currentEntity.setOptdate(getDate());
         currentEntity.setOptuser(userManagedBean.getUserid());
+         Calendar cal = Calendar.getInstance();
+        cal.setTime(newEntity.getLasttime());//设置起时间
+        if (newEntity.getFrequencyunit().equals("天")) {
+            cal.add(Calendar.DATE, newEntity.getFrequency());
+            newEntity.setNexttime(cal.getTime());
+        } else if (newEntity.getFrequencyunit().equals("周")) {
+            cal.add(Calendar.DATE, newEntity.getFrequency() * 7);
+            newEntity.setNexttime(cal.getTime());
+        } else if (newEntity.getFrequencyunit().equals("月")) {
+            cal.add(Calendar.MONTH, newEntity.getFrequency());
+            newEntity.setNexttime(cal.getTime());
+        } else if (newEntity.getFrequencyunit().equals("季")) {
+            cal.add(Calendar.MONTH, newEntity.getFrequency() * 3);
+            newEntity.setNexttime(cal.getTime());
+        } else if (newEntity.getFrequencyunit().equals("年")) {
+            cal.add(Calendar.YEAR, 1);
+            newEntity.setNexttime(cal.getTime());
+        }
         super.update(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -153,8 +170,10 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
             showErrorMsg("Error", "请先选择输入检验周期(M)！！！");
             return false;
         }
-
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd EE hh:mm:ss");
+         if (newEntity.getLasttime()== null) {
+            showErrorMsg("Error", "请先选择输入固定保全时间！！！");
+            return false;
+        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(newEntity.getLasttime());//设置起时间
         if (newEntity.getFrequencyunit().equals("天")) {

@@ -58,7 +58,7 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
 
         this.model.getFilterFields().put("status", "V");
         //默认不含零数量
-        this.model.getFilterFields().put("qty <>", 0);
+      //  this.model.getFilterFields().put("qty <>", 0);
 
         super.init();
     }
@@ -81,7 +81,7 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
                 model.getFilterFields().put("sarea", sArea);
             }
             this.model.getFilterFields().put("status", "V");
-            this.model.getFilterFields().put("qty <>", 0);
+            //this.model.getFilterFields().put("qty <>", 0);
         }
     }
 

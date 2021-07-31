@@ -209,7 +209,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "停工时间不能为空！");
             return;
         }
-         if (currentEntity.getHitchalarm()== null) {
+        if (currentEntity.getHitchalarm() == null) {
             showErrorMsg("Error", "故障内容不能为空！");
             return;
         }
@@ -476,7 +476,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (currentEntity.getCompletetime() != null && currentEntity.getServicearrivetime() != null && currentEntity.getExcepttime() != null) {
             currentEntity.setMaintenanceTime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getServicearrivetime(), currentEntity.getExcepttime()));
         }
-
+ 
         //获取总的停机时间
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
@@ -489,7 +489,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
-        currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
+        
 
         createDetail3();
         //检查是否存在主维修人，不存在添加
@@ -520,6 +520,9 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             addedDetailList4.add(equipmentRepairHelpers);
             detailList4.add(equipmentRepairHelpers);
         }
+        //获取使用的备件及价格
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
+        currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
         getTotalLaborcost();
         calculateTotalCost();
         if (detailList3.size() > 0) {
@@ -527,8 +530,6 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         } else {
             disabledShow = "none";
         }
-        //获取使用的备件及价格
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         return super.edit(path);
     }
 
@@ -566,8 +567,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
-        calculateTotalCost();
         eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
+        calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 //获取停机时间
@@ -594,7 +595,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             }
         }
 
-        currentEntity.setSparecost(BigDecimal.valueOf(maintenanceCosts));
+      
         return maintenanceCosts;
     }
 //加载文件

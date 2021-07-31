@@ -23,10 +23,6 @@
                 <p:inputText id="queryEquipmentName" value="#{equipmentAnalyResultManagedBean.queryEquipmentName}" title="设备名称" />
                 <h:outputLabel value="设备所属部门" for="queryDept" />
                 <p:inputText id="queryDept" value="#{equipmentAnalyResultManagedBean.queryDept}" title="设备所属部门"    />
-                <h:outputLabel value="基准等级" for="queryStandardLevel" />
-                <p:selectOneMenu id="queryStandardLevel" value="#{equipmentAnalyResultManagedBean.queryStandardLevel}" title="queryStandardLevel" >
-                    <f:selectItems value="#{equipmentAnalyResultManagedBean.standardlevelList}" var="standardlevelpeList" itemLabel="#{standardlevelpeList.cdesc}" itemValue="#{standardlevelpeList.cvalue}" />
-                </p:selectOneMenu>
                 <h:outputLabel value="设备状态" for="queryState" />
                 <p:selectOneMenu id="queryState" value="#{equipmentAnalyResultManagedBean.queryState}" title="设备状态"   >
                     <f:selectItem itemLabel="待实施" itemValue="N" />

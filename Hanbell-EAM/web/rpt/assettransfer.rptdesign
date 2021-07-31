@@ -548,7 +548,7 @@ if(master!=null){
                 dataSetRow["deptno"] = detail.get(currentRow).getAssetCard().getDeptno();
                 dataSetRow["deptname"] = detail.get(currentRow).getAssetCard().getDeptname();
                 dataSetRow["warehouse"] = detail.get(currentRow).getAssetCard().getWarehouse().getName();
-                if (detail.get(currentRow).getAssetCard().getPosition1()!=null){
+                if (detail.get(currentRow).getAssetCard().getCompany()!=null){
                     dataSetRow["position1"] = ejbClient.getCompany(detail.get(currentRow).getAssetCard().getCompany());
                 }
 	}
