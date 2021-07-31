@@ -7,12 +7,10 @@ package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentAnalyResultBean;
 import cn.hanbell.eam.ejb.EquipmentAnalyResultDtaBean;
-import cn.hanbell.eam.ejb.EquipmentStandardBean;
+import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
-import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentAnalyResult;
 import cn.hanbell.eam.entity.EquipmentAnalyResultDta;
-import cn.hanbell.eam.entity.EquipmentStandard;
 import cn.hanbell.eam.entity.SysCode;
 import cn.hanbell.eam.lazy.EquipmentAnalyResultModel;
 import cn.hanbell.eam.web.FormMultiBean;
@@ -30,6 +28,8 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnalyResult, EquipmentAnalyResultDta> {
 
+    @EJB
+    protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     private EquipmentAnalyResultBean equipmentAnalyResultBean;
     @EJB
@@ -82,9 +82,9 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
 
     //作废更状态为N
     public void invalid() {
-        if (currentEntity==null) {
-             showErrorMsg("Error", "请选择要作废的保全记录");
-             return;
+        if (currentEntity == null) {
+            showErrorMsg("Error", "请选择要作废的保全记录");
+            return;
         }
         currentEntity.setStatus("Z");
         super.update();
@@ -97,10 +97,13 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
         detailEJB = equipmentAnalyResultDtaBean;
         standardtypeList = sysCodeBean.getTroubleNameList("RD", "standardtype");
         standardlevelList = sysCodeBean.getTroubleNameList("RD", "standardlevel");
+        standardlevelList.remove(0);//计划保全不能筛选一级基准
         respondeptList = sysCodeBean.getTroubleNameList("RD", "respondept");
         frequencyunitList = sysCodeBean.getTroubleNameList("RD", "frequencyunit");
         manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
         queryState = "N";//初始查询待实施的数据
+        queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
+        queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
         queryStandardLevel = "二级";//初始查询等级二级的数据
         this.model.getFilterFields().put("status", queryState);
         this.model.getFilterFields().put("standardlevel", queryStandardLevel);

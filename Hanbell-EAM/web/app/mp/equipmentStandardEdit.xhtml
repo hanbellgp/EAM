@@ -148,11 +148,10 @@
                     <p:column >
                         <p:inputText id="downtime" value="#{equipmentStandardManagedBean.currentEntity.downtime}" title="downtime"/>
                     </p:column>
+
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="固定保全时间" for="lasttime"/></p:column>
                     <p:column >
-                        <h:outputText id="lasttime" value="#{equipmentStandardManagedBean.currentEntity.lasttime}">
-                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-                        </h:outputText>  
+                        <p:calendar id="lasttime"  value="#{equipmentStandardManagedBean.currentEntity.lasttime}" title="固定保全时间" pattern="yyyy/MM/dd HH:mm"/>
                     </p:column>
                 </p:row>
             </p:panelGrid>

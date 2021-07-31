@@ -214,6 +214,8 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
             this.model.getSortFields().clear();
             if (queryFormId != null && !"".equals(queryFormId)) {
                 this.model.getFilterFields().put("formid", queryFormId);
+            } else {
+                this.model.getFilterFields().put("formid", "CK");
             }
             if (queryUserno != null && !"".equals(this.queryUserno)) {
                 this.model.getFilterFields().put("creator", queryUserno);
@@ -224,8 +226,6 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
             if (queryState != null && !"".equals(this.queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
-
-            this.model.getFilterFields().put("formid", "CK");
 
         }
     }

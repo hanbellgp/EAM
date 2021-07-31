@@ -114,6 +114,8 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
         queryState = "N";//初始查询待实施的数据
         queryStandardLevel = "一级";//初始查询等级一级的数据
+        queryDateBegin = getDate();
+        queryDateEnd = getDate();
         this.model.getFilterFields().put("status", queryState);
         this.model.getFilterFields().put("standardlevel", queryStandardLevel);
         this.model.getSortFields().put("formid", "ASC");
