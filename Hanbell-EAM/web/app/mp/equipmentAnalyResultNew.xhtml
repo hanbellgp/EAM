@@ -59,11 +59,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="基准等级" for="standardlevel" /></p:column>
                     <p:column>
-                        <p:selectOneMenu id="standardlevel" value="#{equipmentAnalyResultManagedBean.newEntity.standardlevel}" title="standardlevel" required="true" requiredMessage="请选择基准等级"  >
-                            <p:ajax event="itemSelect" update="standardtype" />
-                            <f:selectItem  itemLabel="请选择" itemValue=""/>
-                            <f:selectItems value="#{equipmentAnalyResultManagedBean.standardlevelList}" var="standardlevelpeList" itemLabel="#{standardlevelpeList.cdesc}" itemValue="#{standardlevelpeList.cvalue}"  />
-                        </p:selectOneMenu>
+                        <h:outputText id="deptname" value="#{equipmentAnalyResultManagedBean.newEntity.standardlevel}" title="deptname" />
                     </p:column>
 
                 </p:row>
@@ -122,9 +118,9 @@
                         </p:column>
                         <p:column styleClass="Wid15" >
                             <f:facet name="header">
-                                <h:outputText value="设备停机时间(h)"/>
+                                <h:outputText value="设备停机时间"/>
                             </f:facet>
-                            <h:outputText value="#{item.downtime}"/>
+                            <h:outputText value="#{equipmentStandardManagedBean.getDownunitName( item.downunit,item.downtime) }"/>
                         </p:column>
                         <p:column styleClass="Wid15" >
                             <f:facet name="header">

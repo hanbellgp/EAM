@@ -114,6 +114,9 @@ public class EquipmentStandard extends SuperEntity {
     private String frequencyunit;
     @Column(name = "downtime")
     private Float downtime;
+    @Size(max = 2)
+    @Column(name = "downunit")
+    private String downunit;
     @Column(name = "manpower")
     private Float manpower;
     @Column(name = "manhour")
@@ -291,6 +294,14 @@ public class EquipmentStandard extends SuperEntity {
 
     public void setDowntime(Float downtime) {
         this.downtime = downtime;
+    }
+
+    public String getDownunit() {
+        return downunit;
+    }
+
+    public void setDownunit(String downunit) {
+        this.downunit = downunit;
     }
 
     public Float getManpower() {

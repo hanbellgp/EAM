@@ -78,7 +78,11 @@
                         </p:menuitem>
 
                     </p:splitButton>
-
+                    <p:commandButton  value="转派维修人" actionListener="#{equipmentRepairManagedBean.openDialogCheck('equipmentRepairEdit')}" icon="ui-icon-sync"
+                                      update=":formList">
+                        <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.confirmTransfer}" update=":formList"
+                                />
+                    </p:commandButton>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentRepairManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>

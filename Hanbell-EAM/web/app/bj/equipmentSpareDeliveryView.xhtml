@@ -54,6 +54,12 @@
                     </p:column>
                 </p:row>
                 <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="维修单号" for="relano" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="relano" value="#{equipmentSpareDeliveryManagedBean.currentEntity.relano}" title="relano" />
+                    </p:column>
+                </p:row>
+                <p:row>
                     <p:column  style="background-color: #EEEEEE"><h:outputText value="入库摘要"  /></p:column>
                     <p:column colspan="7">
                         <p:inputTextarea id="remark"  value="#{equipmentSpareDeliveryManagedBean.currentEntity.remark}" rows="5" cols="70" 

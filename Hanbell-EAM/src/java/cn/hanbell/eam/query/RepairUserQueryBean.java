@@ -6,6 +6,7 @@
 package cn.hanbell.eam.query;
 
 import cn.hanbell.eam.ejb.SysCodeBean;
+import cn.hanbell.eam.lazy.RepairUserModel;
 import cn.hanbell.eam.lazy.SystemUserModel;
 import cn.hanbell.eam.web.SuperQueryBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
@@ -13,6 +14,7 @@ import cn.hanbell.eap.entity.SystemUser;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -34,7 +36,11 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
     @Override
     public void init() {
         this.superEJB = systemUserBean;
-        setModel(new SystemUserModel(systemUserBean));
+        setModel(new RepairUserModel(systemUserBean,sysCodeBean));
+        params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+        if (params.containsKey("deptname")) {
+            this.model.getFilterFields().put("deptname", params.get("deptname")[0]);
+        }
         String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
         this.model.getFilterFields().put("status", "N");
         this.model.getFilterFields().put("deptno", deptno);

@@ -99,7 +99,7 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
             sheet1.setColumnWidth(i, wt1[i] * 256);
         }
         //创建标题行
-           //创建标题行
+        //创建标题行
         Row row;
         Row row1;
         Row row2;
@@ -152,7 +152,10 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
             cell2.setCellValue(eq[2].toString());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(Double.parseDouble(eq[3].toString()));
+            if (eq[3] != null) {
+                cell3.setCellValue(Double.parseDouble(eq[3].toString()));
+            }
+
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
             cell4.setCellValue(Double.parseDouble(eq[4].toString()));
@@ -164,7 +167,9 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
             cell6.setCellValue(Double.parseDouble(eq[6].toString()));
             Cell cell7 = row.createCell(7);
             cell7.setCellStyle(style.get("cell"));
-            cell7.setCellValue(Double.parseDouble(eq[7].toString()));
+            if (eq[7] != null) {
+                cell7.setCellValue(Double.parseDouble(eq[7].toString()));
+            }
             Cell cell8 = row.createCell(8);
             cell8.setCellStyle(style.get("cell"));
             cell8.setCellValue(Double.parseDouble(eq[8].toString()));
@@ -206,7 +211,7 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
     /**
      * 设置导出EXCEL表格样式
      */
-   private Map<String, CellStyle> createStyles(Workbook wb) {
+    private Map<String, CellStyle> createStyles(Workbook wb) {
         Map<String, CellStyle> styles = new LinkedHashMap<>();
         // 文件头样式
         CellStyle headStyle = wb.createCellStyle();

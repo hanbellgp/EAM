@@ -200,6 +200,11 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
         return frequency + frequencyunit;
     }
 
+    public String getDownunitName(String downunit, float down) {
+        return down + downunit;
+    }
+    
+    
     @Override
     public void query() {
         if (this.model != null) {

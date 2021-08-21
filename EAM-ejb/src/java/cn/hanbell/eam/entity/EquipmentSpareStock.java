@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpareStock.findByCompany", query = "SELECT e FROM EquipmentSpareStock e WHERE e.company = :company"),
     @NamedQuery(name = "EquipmentSpareStock.findByIntime", query = "SELECT e FROM EquipmentSpareStock e WHERE e.intime = :intime"),
     @NamedQuery(name = "EquipmentSpareStock.findBySparenum", query = "SELECT e FROM EquipmentSpareStock e WHERE e.sparenum.sparenum = :sparenum"),
-    @NamedQuery(name = "EquipmentSpareStock.findBySparenumAndRemark", query = "SELECT e FROM EquipmentSpareStock e WHERE e.sparenum.sparenum = :sparenum And e.remark = :remark ORDER BY e.intime ASC"),
+    @NamedQuery(name = "EquipmentSpareStock.findBySparenumAndRemark", query = "SELECT e FROM EquipmentSpareStock e WHERE e.sparenum.sparenum = :sparenum And e.remark = :remark AND e.slocation = :slocation ORDER BY e.intime ASC"),
     @NamedQuery(name = "EquipmentSpareStock.findBySparenumAndSarea", query = "SELECT e FROM EquipmentSpareStock e WHERE e.sparenum.sparenum = :sparenum And e.sarea = :sarea  And e.qty !=:qty  ORDER BY e.intime ASC"),
     @NamedQuery(name = "EquipmentSpareStock.findBySparenumAndLocation", query = "SELECT e FROM EquipmentSpareStock e WHERE e.sparenum.sparenum = :sparenum And e.slocation = :slocation   ORDER BY e.intime ASC"),
     @NamedQuery(name = "EquipmentSpareStock.findByQty", query = "SELECT e FROM EquipmentSpareStock e WHERE e.qty = :qty"),

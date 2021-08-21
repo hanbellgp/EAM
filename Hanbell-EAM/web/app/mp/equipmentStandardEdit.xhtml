@@ -148,7 +148,12 @@
                     <p:column >
                         <p:inputText id="downtime" value="#{equipmentStandardManagedBean.currentEntity.downtime}" title="downtime"/>
                     </p:column>
-
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机频度" for="downunit"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="downunit" value="#{equipmentStandardManagedBean.currentEntity.downunit}" autoWidth="10">
+                            <f:selectItems value="#{equipmentStandardManagedBean.manhourunitList}" var="downunit" itemLabel="#{downunit.cdesc}" itemValue="#{downunit.cvalue}" />
+                        </p:selectOneMenu>
+                    </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="固定保全时间" for="lasttime"/></p:column>
                     <p:column >
                         <p:calendar id="lasttime"  value="#{equipmentStandardManagedBean.currentEntity.lasttime}" title="固定保全时间" pattern="yyyy/MM/dd HH:mm"/>

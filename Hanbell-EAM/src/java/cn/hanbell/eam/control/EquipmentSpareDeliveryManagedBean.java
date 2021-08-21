@@ -5,9 +5,11 @@
  */
 package cn.hanbell.eam.control;
 
+import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentSpareStockBean;
+import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentSpareRecode;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentSpareStock;
@@ -36,6 +38,8 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
     @EJB
     private EquipmentSpareStockBean equipmentSpareStockBean;
+    @EJB
+    protected EquipmentRepairBean equipmentRepairBean;
     protected List<String> paramPosition = null;
     private BigDecimal stockQty;//选择的库存数量
     private String queryUserno;
@@ -58,11 +62,16 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
 
     @Override
     protected boolean doBeforePersist() throws Exception {
-        if (newEntity.getRelano() != null) {
+        if (newEntity.getRelano() != null && !"".equals(newEntity.getRelano())) {
+            if (equipmentRepairBean.findByFormid(newEntity.getRelano()).isEmpty()) {
+                showErrorMsg("Error", "关联的维修单号不存在,请重新输入!");
+                return false;
+            }
             newEntity.setAccepttype("25");
         } else {
             newEntity.setAccepttype("20");
         }
+
         if (this.newEntity != null) {
             String formid = this.superEJB.getFormId(newEntity.getFormdate(), "CK", "YYMM", 4);
             this.newEntity.setFormid(formid);
@@ -92,7 +101,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
     public void verify() {
         List<EquipmentSpareStock> stock = new ArrayList<>();
         for (EquipmentSpareRecodeDta eSpareRecodeDta : detailList) {
-            EquipmentSpareStock eSpareStock = equipmentSpareStockBean.findBySparenumAndRemark(eSpareRecodeDta.getSparenum().getSparenum(), eSpareRecodeDta.getRemark());
+            EquipmentSpareStock eSpareStock = equipmentSpareStockBean.findBySparenumAndRemark(eSpareRecodeDta.getSparenum().getSparenum(), eSpareRecodeDta.getRemark(), eSpareRecodeDta.getSlocation());
             if (eSpareRecodeDta.getCqty().compareTo(eSpareStock.getQty()) == 1) {
                 showErrorMsg("Error", "库存检验失败，请确认库存");
                 return;
@@ -105,7 +114,27 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
         }
         equipmentSpareStockBean.update(stock);
         equipmentSpareRecodeDtaBean.update(detailList);//更新对应字表状态
+        //当具有relano值时，查询是否存着对应维修单，否则不关联维修单
+        if (currentEntity.getRelano() != null && !"".equals(currentEntity.getRelano())) {
+            List<EquipmentRepair> equipmentRepair = equipmentRepairBean.findByFormid(currentEntity.getRelano()); //获取关联维修单号对应的维修单
+            if (!equipmentRepair.isEmpty()) {
+                EquipmentRepair eRepair = equipmentRepair.get(0);
+                eRepair.setSparecost(getPartsCost());//给该维修单的备件价格赋值
+                equipmentRepairBean.update(eRepair);//更新维修单备件价格信息
+            }
+        }
         super.verify(); //To change body of generated methods, choose Tools | Templates.
+    }
+//获取零件费用
+
+    public BigDecimal getPartsCost() {
+        BigDecimal maintenanceCosts = BigDecimal.ZERO;
+        if (detailList != null) {
+            for (EquipmentSpareRecodeDta eDta : detailList) {
+                maintenanceCosts = maintenanceCosts.add(eDta.getUprice().multiply(eDta.getCqty()));
+            }
+        }
+        return maintenanceCosts;
     }
 
     //作废更改单价转态为Z
@@ -120,9 +149,10 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
         model = new EquipmentSpareRecodeModel(equipmentSpareRecodeBean, userManagedBean);
         detailEJB = equipmentSpareRecodeDtaBean;
         this.model.getFilterFields().put("status", "N");
-        queryState = "N";
+        queryState = "N";//初始查询未审核单据
         this.model.getFilterFields().put("formid", "CK");
-        this.model.getSortFields().put("formid", "ASC");
+        model.getSortFields().put("status", "ASC");
+        model.getSortFields().put("formid", "DESC");
         openParams = new HashMap<>();
         super.init();
     }
@@ -211,7 +241,6 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
     public void query() {
         if (this.model != null) {
             this.model.getFilterFields().clear();
-            this.model.getSortFields().clear();
             if (queryFormId != null && !"".equals(queryFormId)) {
                 this.model.getFilterFields().put("formid", queryFormId);
             } else {
@@ -223,7 +252,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
             if (queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("relano", queryName);
             }
-            if (queryState != null && !"".equals(this.queryState)) {
+            if (queryState != null && !"ALL".equals(this.queryState)) {
                 this.model.getFilterFields().put("status", queryState);
             }
 

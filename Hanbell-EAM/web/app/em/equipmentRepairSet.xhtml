@@ -94,7 +94,7 @@
                     <p:column > 
                         <h:outputText id="hitchurgency" value="#{equipmentRepairManagedBean.getHitchurgency(equipmentRepairManagedBean.currentEntity.hitchurgency)}" title="hitchurgency" />
                     </p:column>
-                      <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="故障来源"/></p:column>
                     <p:column colspan="3">
                         <h:outputText id="troublefrom" value="#{equipmentRepairManagedBean.getTroubleName(equipmentRepairManagedBean.currentEntity.troublefrom)}" title="troublefrom" />
                     </p:column>
@@ -115,7 +115,7 @@
 
                 </p:row>
                 <p:row>
-                  <p:column style="background-color: #EEEEEE" >
+                    <p:column style="background-color: #EEEEEE" >
                         <p:outputLabel id="repairareas" value="所属厂区"/>
                     </p:column>
                     <p:column>
@@ -219,13 +219,13 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                   <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障责任原因"  /></p:column>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid20"><h:outputText value="故障责任原因"  /></p:column>
                     <p:column styleClass="Wid20">
                         <p:selectOneMenu id="abrasehitch" value="#{equipmentRepairManagedBean.currentEntity.abrasehitch}" title="abrasehitch" disabled="true">
                             <f:selectItems  value="#{equipmentRepairManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
-                   
+
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15" ><h:outputText value="故障分类"  /></p:column>
                     <p:column >
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentRepairManagedBean.currentEntity.hitchsort1}" title="hitchsort1" disabled="true">
@@ -321,7 +321,7 @@
                 </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
-               <p:tab title="备件使用明细">
+                <p:tab title="备件使用明细">
                     <p:dataTable id="tableList" value="#{equipmentRepairManagedBean.eDtaList}" var="item" styleClass="tableList Mtop10"
                                  >
                         <p:column styleClass="Wid15">
@@ -350,9 +350,21 @@
                         </p:column>
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
-                                <h:outputText value="总金额"/>
+                                <h:outputText value="单价"/>
                             </f:facet>
                             <h:outputText value="#{item[4]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="领用位置"/>
+                            </f:facet>
+                            <h:outputText value="#{item[6]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="总金额"/>
+                            </f:facet>
+                            <h:outputText value="#{item[5]}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>
@@ -382,7 +394,7 @@
                     </p:dataTable>
                 </p:tab>
             </p:tabView>
-           
+
             <p:panelGrid  id="plgCost">
                 <p:row>
                     <p:column style="background-color: #EEEEEE;height: 40px;width: 180px" ><p:outputLabel value="其他费用:" for="repaircost" /></p:column>

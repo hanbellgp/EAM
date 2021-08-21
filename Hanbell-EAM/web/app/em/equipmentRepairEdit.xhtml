@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/df.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <p:toolbar id="toolbar" styleClass="topToolbar">
+                    <f:facet name="right">
+                         <p:commandButton id="btnSave" value="确认" actionListener="#{equipmentRepairManagedBean.closeDialog()}" icon="ui-icon-save"
+                                     process="@this,formList" update="formList"/>
+                    </f:facet>
+                </p:toolbar>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="维修人" for="serviceuser" /></p:column>
+                    <p:column  styleClass="Wid20">
+                        <p:inputText id="serviceuser" value="#{equipmentRepairManagedBean.currentEntity.serviceusername}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:commandButton id="queryCategory" actionListener="#{equipmentRepairManagedBean.openDialog('repairUserSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleTransferDocuments}"
+                                    update="serviceuser" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE" styleClass="Wid100"><h:outputText value="转派原因"/></p:column>
+                    <p:column>
+                        <p:inputTextarea id="note"  value="#{equipmentRepairManagedBean.note}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px"  maxlength="200"/> 
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

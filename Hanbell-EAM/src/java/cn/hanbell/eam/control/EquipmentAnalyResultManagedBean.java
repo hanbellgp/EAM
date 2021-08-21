@@ -60,6 +60,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         newEntity.setCredate(getDate());
         newEntity.setFormdate(getDate());
         newEntity.setStatus("N");
+        newEntity.setStandardlevel("一级");//自主保全只能生成一级的保全单
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCreator(userManagedBean.getUserid());
     }
@@ -116,6 +117,12 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         queryStandardLevel = "一级";//初始查询等级一级的数据
         queryDateBegin = getDate();
         queryDateEnd = getDate();
+        if (queryDateBegin != null) {
+            model.getFilterFields().put("formdateBegin", queryDateBegin);
+        }
+        if (queryDateEnd != null) {
+            model.getFilterFields().put("formdateEnd", queryDateEnd);
+        }
         this.model.getFilterFields().put("status", queryState);
         this.model.getFilterFields().put("standardlevel", queryStandardLevel);
         this.model.getSortFields().put("formid", "ASC");
@@ -160,6 +167,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
                 eArDta.setMethod(eS.getMethod());
                 eArDta.setMethodname(eS.getMethodname());
                 eArDta.setDowntime(eS.getDowntime());
+                eArDta.setDownunit(eS.getDownunit());
                 eArDta.setManhour(eS.getManhour());
                 eArDta.setManpower(eS.getManpower());
                 eArDta.setAreaimage(eS.getAreaimage());
@@ -176,30 +184,16 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
 
     @Override
     public void doConfirmDetail() {
-        //从第一个项目开始按顺序进行保全作业
-        if (currentDetail.getSeq() == 1 && currentDetail.getEdate() == null) {
-            currentDetail.setEdate(getDate());
-            currentEntity.setStartdate(getDate());//保养开始日期
-        }
-        if (currentDetail.getSeq() != 1 && detailList.get(currentDetail.getSeq() - 2).getEdate() == null) {
-            showErrorMsg("Error", "请按顺序作业!!!");
-            currentDetail.setAnalysisresult(null);
-            return;
-        }
-        if (currentDetail.getSeq() != 1 && detailList.get(currentDetail.getSeq() - 2).getEdate() != null) {
-            currentDetail.setSdate(detailList.get(currentDetail.getSeq() - 2).getEdate());
-            currentDetail.setEdate(getDate());
-        }
+        currentDetail.setSdate(currentEntity.getCfmdate());
+        currentDetail.setEdate(getDate());
+        currentEntity.setCfmdate(getDate());
         super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String edit(String path) {
-        //给第一个保全时间赋初值
-        if (!detailList.isEmpty()) {
-            if (detailList.get(0).getSdate() == null) {
-                detailList.get(0).setSdate(getDate());
-            }
+        if (currentEntity.getCfmdate() == null) {
+            currentEntity.setCfmdate(getDate());
         }
         return super.edit(path); //To change body of generated methods, choose Tools | Templates.
     }

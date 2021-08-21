@@ -140,7 +140,7 @@
                         <p:inputText id="manhour" value="#{equipmentStandardManagedBean.newEntity.manhour}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
                                 }).call(this)" onblur="this.v();"
-                                     title="manhour" requiredMessage="请输入需要工时(h)"/>
+                                     title="manhour" requiredMessage="请输入需要工时"/>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="需要工时频度" for="manhourunit"/></p:column>
                     <p:column>
@@ -151,12 +151,18 @@
 
                 </p:row>
                 <p:row>
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机时间(h)" for="downtime"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机时间" for="downtime"/></p:column>
                     <p:column >
                         <p:inputText id="downtime" value="#{equipmentStandardManagedBean.newEntity.downtime}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
                                          }).call(this)" onblur="this.v();"
-                                     title="downtime" requiredMessage="请输入设备停机时间(h)"/>
+                                     title="downtime" requiredMessage="请输入设备停机时间"/>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机频度" for="downunit"/></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="downunit" value="#{equipmentStandardManagedBean.newEntity.downunit}" autoWidth="10">
+                            <f:selectItems value="#{equipmentStandardManagedBean.manhourunitList}" var="downunit" itemLabel="#{downunit.cdesc}" itemValue="#{downunit.cvalue}" />
+                        </p:selectOneMenu>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="固定保全时间" for="lasttime"/></p:column>
                     <p:column >
