@@ -44,14 +44,14 @@
                     <p:column >
                         <h:outputText id="deptname" value="#{equipmentPlanResultManagedBean.currentEntity.deptname}" title="deptname" />
                     </p:column>
-                  
+
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="基准等级" for="standardlevel" /></p:column>
                     <p:column>
                         <h:outputText id="standardlevel" value="#{equipmentPlanResultManagedBean.currentEntity.standardlevel}" title="standardlevel" />
                     </p:column>
 
                 </p:row>
-              
+
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="保全项目">
@@ -97,9 +97,9 @@
                         </p:column>
                         <p:column styleClass="Wid10" >
                             <f:facet name="header">
-                                <h:outputText value="设备停机时间(h)"/>
+                                <h:outputText value="设备停机时间"/>
                             </f:facet>
-                            <h:outputText value="#{item.downtime}"/>
+                            <h:outputText value="#{equipmentStandardManagedBean.getDownunitName( item.downunit,item.downtime) }"/>
                         </p:column>
                         <p:column styleClass="Wid10" >
                             <f:facet name="header">

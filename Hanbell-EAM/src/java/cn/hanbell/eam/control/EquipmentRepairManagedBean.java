@@ -41,8 +41,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -88,7 +86,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private DepartmentBean departmentBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
-     @EJB
+    @EJB
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
 
     private String queryEquipmentName;
@@ -110,6 +108,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private EquipmentRepairHelpers currentDetail4;
     private boolean checkSingleSupplement;
     private List<EquipmentSpareRecodeDta> eDtaList;
+    private String userid;
 
     public EquipmentRepairManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -148,6 +147,59 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
         hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
         repairareaList = sysCodeBean.getTroubleNameList("RD", "repairarea");
+    }
+    //转派单据前端验证
+
+    public void openDialogCheck(String view) {
+        if (this.currentEntity == null) {
+            showErrorMsg("Error", "没有选择需要转派的单据");
+            return;
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) > 20) {
+            showErrorMsg("Error", "该单据已维修完成,不能转派");
+            return;
+        }
+        if (currentEntity.getServiceuser().equals(userManagedBean.getUserid())) {
+            super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
+        } else {
+            showErrorMsg("Error", "只有对应的维修人才能转派单据");
+        }
+    }
+
+    //确认单据转派
+    public void confirmTransfer(SelectEvent event) {
+        if (userid == null || userid.equals(currentEntity.getServiceuser())) {
+            showErrorMsg("Error", "不能转派给自己，请重新选择");
+            return;
+        }
+        createDetail3();
+        currentEntity.setRepairmethodtype("01");//自主维修转单后转变为维修课维修，后续流程维修课处理
+        currentDetail3.setCompany(userManagedBean.getCompany());
+        currentDetail3.setUserno(userManagedBean.getUserid());
+        currentDetail3.setCurnode(getStateName(currentEntity.getRstatus()));
+        currentDetail3.setStatus("N");
+        currentDetail3.setNote(note);
+        currentDetail3.setContenct("转派");
+        currentDetail3.setPid(currentEntity.getFormid());
+        currentDetail3.setCredate(getDate());
+        currentDetail3.setOptuser(getUserName(userManagedBean.getUserid()).getUsername());
+        doConfirmDetail3();
+        note = null;
+        userid = null;
+        update();
+        showInfoMsg("Info", " 已成功转派给：" + currentEntity.getServiceusername());
+    }
+    //转派单据
+
+    public void handleTransferDocuments(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            userid = currentEntity.getServiceuser();
+            currentEntity.setServiceuser(u.getUserid());
+            currentEntity.setServiceusername(u.getUsername());
+            currentEntity.setStatus("N");
+
+        }
     }
 
 //保存前作的数据处理
@@ -231,9 +283,12 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
         } else if (checkSingleSupplement == false && currentEntity.getRepairmethodtype().equals("2")) {
             newEntity.setServicearrivetime(getDate());
-            newEntity.setServiceuser(userManagedBean.getUserid());
             newEntity.setRstatus("20");
-            newEntity.setServiceusername(getUserName(userManagedBean.getUserid()).getUsername());
+            if (!newEntity.getAssetno().getDeptname().equals("方型加工课") && !newEntity.getAssetno().getDeptname().equals("圆型加工课")) {
+                newEntity.setServiceuser(userManagedBean.getUserid());
+                newEntity.setServiceusername(getUserName(userManagedBean.getUserid()).getUsername());
+            }
+
         } else if (checkSingleSupplement == false && !currentEntity.getRepairmethodtype().equals("2")) {
             newEntity.setRstatus("10");
         }
@@ -271,6 +326,25 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         }
         paramPosition.add(getUserName(userManagedBean.getUserid()).getDeptno().substring(0, 3));
         openParams.put("deptno", paramPosition);
+        super.openDialog(view, openParams);
+    }
+
+    //获取维修人开窗信息
+    public void openRepairUserDialog(String view) {
+        if (paramPosition == null) {
+            paramPosition = new ArrayList<>();
+        } else {
+            paramPosition.clear();
+        }
+        if (newEntity.getRepairmethodtype() != null && newEntity.getRepairmethodtype().equals("2")) {
+            if (newEntity.getAssetno() != null) {
+                if (newEntity.getAssetno().getDeptname().equals("方型加工课") || newEntity.getAssetno().getDeptname().equals("圆型加工课")) {
+                    paramPosition.add(newEntity.getAssetno().getDeptname());
+                }
+            }
+
+        }
+        openParams.put("deptname", paramPosition);
         super.openDialog(view, openParams);
     }
 
@@ -882,7 +956,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (newEntity.getRepairarea().equals("")) {
             newEntity.setServiceuser("");
             newEntity.setServiceusername("");
-        } else if (newEntity.getRepairarea().equals("枫泾总部")) {
+        } else if (newEntity.getRepairarea().equals("兴塔厂")) {
             newEntity.setServiceuser("C0567");
             newEntity.setServiceusername("张国荣");
         } else {
@@ -1062,6 +1136,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     public void seteDtaList(List<EquipmentSpareRecodeDta> eDtaList) {
         this.eDtaList = eDtaList;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
 }

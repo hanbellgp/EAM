@@ -57,7 +57,7 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
     protected boolean doBeforePersist() throws Exception {
         newEntity.setAccepttype("10");
         detailList.forEach(equipmentSpareRecode -> {
-            equipmentSpareRecode.setSlocation(newEntity.getSlocation());
+            equipmentSpareRecode.setSlocation(newEntity.getSlocation());//将主表位置更新至子表(小程序需求)
         });
         return super.doBeforePersist(); //To change body of generated methods, choose Tools | Templates.
     }

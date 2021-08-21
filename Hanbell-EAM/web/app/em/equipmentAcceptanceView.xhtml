@@ -145,7 +145,7 @@
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
-                 <p:row>
+                <p:row>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="归档"/></p:column>
                     <p:column>
                         <p:selectOneMenu id="repairarchive" value="#{equipmentAcceptanceManagedBean.currentEntity.repairarchive}" disabled="true" >
@@ -168,7 +168,7 @@
                             <f:selectItems  value="#{equipmentAcceptanceManagedBean.abrasehitchList}" var="abrasehitchList" itemLabel="#{abrasehitchList.cdesc}" itemValue="#{abrasehitchList.cvalue}" />
                         </p:selectOneMenu>
                     </p:column>
-                   
+
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><h:outputText value="故障分类"  /></p:column>
                     <p:column>
                         <p:selectOneMenu id="hitchsort1" value="#{equipmentAcceptanceManagedBean.currentEntity.hitchsort1}" title="故障分类" disabled="true">
@@ -292,9 +292,21 @@
                         </p:column>
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
-                                <h:outputText value="总金额"/>
+                                <h:outputText value="单价"/>
                             </f:facet>
                             <h:outputText value="#{item[4]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="领用位置"/>
+                            </f:facet>
+                            <h:outputText value="#{item[6]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="总金额"/>
+                            </f:facet>
+                            <h:outputText value="#{item[5]}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

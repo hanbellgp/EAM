@@ -63,9 +63,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentAnalyResultDta.findByCfmuser", query = "SELECT e FROM EquipmentAnalyResultDta e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentAnalyResultDta.findByPId", query = "SELECT e FROM EquipmentAnalyResultDta e WHERE e.pid = :pid ORDER BY e.seq"),
     @NamedQuery(name = "EquipmentAnalyResultDta.findByCfmdate", query = "SELECT e FROM EquipmentAnalyResultDta e WHERE e.cfmdate = :cfmdate")})
-public class EquipmentAnalyResultDta extends FormDetailEntity  {
+public class EquipmentAnalyResultDta extends FormDetailEntity {
 
- 
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -95,6 +94,9 @@ public class EquipmentAnalyResultDta extends FormDetailEntity  {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "downtime")
     private Float downtime;
+    @Size(max = 2)
+    @Column(name = "downunit")
+    private String downunit;
     @Column(name = "manpower")
     private Float manpower;
     @Column(name = "manhour")
@@ -177,8 +179,6 @@ public class EquipmentAnalyResultDta extends FormDetailEntity  {
         this.status = status;
     }
 
-  
-
     public String getCompany() {
         return company;
     }
@@ -186,7 +186,6 @@ public class EquipmentAnalyResultDta extends FormDetailEntity  {
     public void setCompany(String company) {
         this.company = company;
     }
-
 
     public String getStandardtype() {
         return standardtype;
@@ -250,6 +249,14 @@ public class EquipmentAnalyResultDta extends FormDetailEntity  {
 
     public void setDowntime(Float downtime) {
         this.downtime = downtime;
+    }
+
+    public String getDownunit() {
+        return downunit;
+    }
+
+    public void setDownunit(String downunit) {
+        this.downunit = downunit;
     }
 
     public Float getManpower() {
@@ -435,7 +442,6 @@ public class EquipmentAnalyResultDta extends FormDetailEntity  {
         return hash;
     }
 
-
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -448,9 +454,10 @@ public class EquipmentAnalyResultDta extends FormDetailEntity  {
         }
         return this.seq == other.seq;
     }
+
     @Override
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentAnalyResultDta[ id=" + id + " ]";
     }
-    
+
 }

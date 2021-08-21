@@ -365,9 +365,21 @@
                         </p:column>
                         <p:column styleClass="Wid15" style="text-align: right;">
                             <f:facet name="header">
-                                <h:outputText value="总金额"/>
+                                <h:outputText value="单价"/>
                             </f:facet>
                             <h:outputText value="#{item[4]}"/>
+                        </p:column>
+                           <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="领用位置"/>
+                            </f:facet>
+                            <h:outputText value="#{item[6]}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText value="总金额"/>
+                            </f:facet>
+                            <h:outputText value="#{item[5]}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

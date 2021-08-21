@@ -117,7 +117,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     private String note;
     private boolean checkRepeat;
     private String disabledShow;
-    private String userName;
+    public String userid;
 
     public EquipmentMaintenanceManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairFile.class, EquipmentRepairSpare.class, EquipmentRepairHis.class);
@@ -403,7 +403,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
     public void handleTransferDocuments(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             SystemUser u = (SystemUser) event.getObject();
-            userName = currentEntity.getServiceusername();
+            userid = currentEntity.getServiceuser();
             currentEntity.setServiceuser(u.getUserid());
             currentEntity.setServiceusername(u.getUsername());
             currentEntity.setStatus("N");
@@ -413,7 +413,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     //确认单据转派
     public void confirmTransfer(SelectEvent event) {
-        if (userName == null || userName.equals(currentEntity.getServiceusername())) {
+        if (userid == null || userid.equals(currentEntity.getServiceuser())) {
             showErrorMsg("Error", "不能转派给自己，请重新选择");
             return;
         }
@@ -429,7 +429,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         currentDetail3.setOptuser(getUserName(userManagedBean.getUserid()).getUsername());
         doConfirmDetail3();
         note = null;
-        userName = null;
+        userid = null;
         update();
         showInfoMsg("Info", " 已成功转派给：" + currentEntity.getServiceusername());
     }
@@ -591,7 +591,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (itemList != null) {
             List<Object[]> list = (List<Object[]>) itemList;
             for (Object[] eDta : list) {
-                maintenanceCosts += Double.valueOf(eDta[4].toString());
+                maintenanceCosts += Double.valueOf(eDta[5].toString());
             }
         }
 
@@ -1480,12 +1480,12 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         this.disabledShow = disabledShow;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     public List<EquipmentSpareRecodeDta> geteDtaList() {

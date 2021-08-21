@@ -34,14 +34,14 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件名称" for="sparedesc" /></p:column>
                     <p:column>
-                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.newEntity.sparedesc}" title="sparedesc"
+                        <p:inputText id="sparedesc" value="#{equipmentSpareManagedBean.newEntity.sparedesc}" title="sparedesc" required="true" requiredMessage="请输入备件名称"
                                      />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件大类" for="scategory" /></p:column>
                     <p:column  styleClass="Wid20">
-                        <p:inputText id="scategory" value="#{equipmentSpareManagedBean.newEntity.scategory.sname}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="scategory" value="#{equipmentSpareManagedBean.newEntity.scategory.sname}" title="RequireDeptno" styleClass="inputWithButton"  />
                         <p:commandButton id="btnScategorySelect" actionListener="#{equipmentSpareManagedBean.openDialog('equipmentSpareClassSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleEquipmentSpareClassReturnWhenNew}"
@@ -80,12 +80,12 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="最低储备" for="minstock" /></p:column>
                     <p:column>
-                        <p:inputText id="minstock" value="#{equipmentSpareManagedBean.newEntity.minstock}" title="minstock"
+                        <p:inputText id="minstock" value="#{equipmentSpareManagedBean.newEntity.minstock}" title="minstock" required="true" requiredMessage="请输入最低储备"
                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="最高储备" for="maxstock" /></p:column>
                     <p:column>
-                        <p:inputText id="maxstock" value="#{equipmentSpareManagedBean.newEntity.maxstock}" title="maxstock"
+                        <p:inputText id="maxstock" value="#{equipmentSpareManagedBean.newEntity.maxstock}" title="maxstock" required="true" requiredMessage="请输入最高储备"
                                      />
                     </p:column>
                 </p:row>

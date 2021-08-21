@@ -53,6 +53,19 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
 
     @Override
     protected boolean doBeforePersist() throws Exception {
+        if (newEntity.getScategory() != null) {
+            showWarnMsg("Warn", "请选择备件大类");
+            return false;
+        }
+        if (newEntity.getMcategory()!= null) {
+            showWarnMsg("Warn", "请选择备件中类");
+            return false;
+        }
+         if (newEntity.getUnit()!= null) {
+            showWarnMsg("Warn", "请选择单位");
+            return false;
+        }
+        
         String BJ = "W-" + newEntity.getScategory().getScategory() + "-" + newEntity.getMcategory().getMcategory();
         int size = equipmentSpareBean.findBySparenum(BJ).size() + 1;
         if (size < 10) {
@@ -66,6 +79,12 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
         newEntity.setSparenum(BJ);
         return super.doBeforePersist(); //To change body of generated methods, choose Tools | Templates.
     }
+//作废更改状态为V
+
+    public void invalid() {
+        currentEntity.setStatus("V");
+        super.update();
+    }
 
     @Override
     public void update() {
@@ -78,6 +97,8 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
     public void init() {
         superEJB = equipmentSpareBean;
         model = new EquipmentSpareModel(equipmentSpareBean, userManagedBean);
+        this.model.getSortFields().put("sparenum", "ASC");
+        this.model.getFilterFields().put("status", "N");
         super.init();
         openParams = new HashMap<>();
     }
@@ -169,6 +190,8 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
             if (queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("sparedesc", queryName);
             }
+            this.model.getFilterFields().put("status", "N");
+            this.model.getSortFields().put("sparenum", "ASC");
         }
     }
 

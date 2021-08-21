@@ -121,9 +121,9 @@
                         </p:column>
                         <p:column styleClass="Wid10" >
                             <f:facet name="header">
-                                <h:outputText value="设备停机时间(h)"/>
+                                <h:outputText value="设备停机时间"/>
                             </f:facet>
-                            <h:outputText value="#{item.downtime}"/>
+                            <h:outputText value="#{equipmentStandardManagedBean.getDownunitName( item.downunit,item.downtime) }"/>
                         </p:column>
                         <p:column styleClass="Wid10" >
                             <f:facet name="header">

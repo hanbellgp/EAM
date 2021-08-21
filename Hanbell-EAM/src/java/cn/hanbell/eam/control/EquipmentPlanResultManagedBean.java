@@ -104,6 +104,12 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
         queryState = "N";//初始查询待实施的数据
         queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
         queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
+        if (queryDateBegin != null) {
+            model.getFilterFields().put("formdateBegin", queryDateBegin);
+        }
+        if (queryDateEnd != null) {
+            model.getFilterFields().put("formdateEnd", queryDateEnd);
+        }
         queryStandardLevel = "二级";//初始查询等级二级的数据
         this.model.getFilterFields().put("status", queryState);
         this.model.getFilterFields().put("standardlevel", queryStandardLevel);
@@ -113,20 +119,9 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
 
     @Override
     public void doConfirmDetail() {
-        //从第一个项目开始按顺序进行保全作业
-        if (currentDetail.getSeq() == 1 && currentDetail.getEdate() == null) {
-            currentDetail.setEdate(getDate());
-            currentEntity.setStartdate(getDate());//保养开始日期
-        }
-        if (currentDetail.getSeq() != 1 && detailList.get(currentDetail.getSeq() - 2).getEdate() == null) {
-            showErrorMsg("Error", "请按顺序作业!!!");
-            currentDetail.setAnalysisresult(null);
-            return;
-        }
-        if (currentDetail.getSeq() != 1 && detailList.get(currentDetail.getSeq() - 2).getEdate() != null) {
-            currentDetail.setSdate(detailList.get(currentDetail.getSeq() - 2).getEdate());
-            currentDetail.setEdate(getDate());
-        }
+        currentDetail.setSdate(currentEntity.getCfmdate());
+        currentDetail.setEdate(getDate());
+        currentEntity.setCfmdate(getDate());
         super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
     }
 
@@ -136,11 +131,8 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
 
     @Override
     public String edit(String path) {
-        //给第一个保全时间赋初值
-        if (!detailList.isEmpty()) {
-            if (detailList.get(0).getSdate() == null) {
-                detailList.get(0).setSdate(getDate());
-            }
+        if (currentEntity.getCfmdate() == null) {
+            currentEntity.setCfmdate(getDate());
         }
         return super.edit(path); //To change body of generated methods, choose Tools | Templates.
     }

@@ -50,7 +50,7 @@ public class EquipmentSpareRecodeBean extends SuperEJBForEAM<EquipmentSpareRecod
         }
     }
 
-    public List<EquipmentSpareRecode> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
+        public List<EquipmentSpareRecode> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
         sb.append("SELECT * FROM ");
@@ -81,6 +81,8 @@ public class EquipmentSpareRecodeBean extends SuperEJBForEAM<EquipmentSpareRecod
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                 String formdateEndStr = fmt.format(new Date(value.toString()));
                 sb.append(MessageFormat.format(" AND formdate <= ''{0}''", formdateEndStr));
+            } else if ("ExistForm".equals(key)) {
+                sb.append("  AND status <> 'Z' ");
             } else {
                 strMap.put(key, value);
             }
@@ -99,12 +101,12 @@ public class EquipmentSpareRecodeBean extends SuperEJBForEAM<EquipmentSpareRecod
         }
 
         //生成SQL
-        Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentSpareRecode.class).setMaxResults(50);
-
+        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentSpareRecode.class).setMaxResults(50);
+        
         List<EquipmentSpareRecode> results = query.getResultList();
         return results;
     }
-
+    
     private void setNativeQueryFilter(StringBuilder queryStrBuilder, Map<String, Object> filters) {
         filters.forEach((key, value) -> {
             queryStrBuilder.append(MessageFormat.format(" AND {0} LIKE ''%{1}%''", key, value.toString()));

@@ -24,7 +24,8 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
     public EquipmentAnalyResultBean() {
         super(EquipmentAnalyResult.class);
     }
-        public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
+
+    public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
         sb.append("SELECT * FROM ");
@@ -43,10 +44,9 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                     deptnoTemp = value.toString().substring(0, 3);
                 }
                 sb.append("  AND deptno LIKE '").append(deptnoTemp).append("%'");
-            }
-             else if ("MaintainType".equals(key)) {
+            } else if ("MaintainType".equals(key)) {
                 sb.append(MessageFormat.format(" AND formid LIKE ''{0}%''", value.toString()));
-            }else if ("ExtraFilter".equals(key)) {
+            } else if ("ExtraFilter".equals(key)) {
                 sb.append(MessageFormat.format(" AND (formid LIKE ''%{0}%'' OR assetno LIKE ''%{0}%'' OR assetdesc LIKE ''%{0}%'' OR spareno LIKE ''%{0}%'')", value.toString()));
             } else if ("formdateBegin".equals(key)) {
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
@@ -85,4 +85,38 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
             queryStrBuilder.append(MessageFormat.format(" AND {0} LIKE ''%{1}%''", key, value.toString()));
         });
     }
+
+    /**
+     * 获取本年份基准次数
+     *
+     * @param nexttime 查询的基准年份
+     * @param standardlevel 查询的基准等级
+     * @param deptname 查询的资产所属部门
+     * @param assetno 资产编号
+     * @return
+     */
+    public List getEquipmentStandardList(String nexttime, String standardlevel, String deptname, String assetno) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT E.assetno,E.assetdesc,A.deptname,count(E.assetno),month(nexttime) FROM equipmentstandard E");
+        sb.append(" LEFT JOIN assetcard  A ON E.assetno=A.formid  WHERE");
+        if (nexttime != null && !"".equals(nexttime)) {
+            sb.append(" nexttime LIKE '%'").append(nexttime).append("'%'");
+        }
+        if (standardlevel != null && !"".equals(standardlevel)) {
+            sb.append(" AND standardlevel LIKE '%'").append(standardlevel).append("'%'");
+        }
+        if (deptname != null && !"".equals(deptname)) {
+            sb.append("  AND A.deptname LIKE '%'").append(deptname).append("'%'");
+        }
+        if (assetno != null && !"".equals(assetno)) {
+            sb.append("  AND E.assetno LIKE '%'").append(assetno).append("'%'");
+        }
+        sb.append(" GROUP BY month(nexttime)");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+
+        List results = query.getResultList();
+        return results;
+    }
+
 }

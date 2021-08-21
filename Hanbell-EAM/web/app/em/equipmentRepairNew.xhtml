@@ -33,7 +33,7 @@
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentRepairManagedBean.screeningOpenDialog('equipmentSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnWhenNew}"
-                                    update="formOne" />
+                                    update="formOne,serviceuser" />
                         </p:commandButton>
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备名称" for="itemno" /></p:column>
@@ -99,13 +99,12 @@
 
                     <p:column  styleClass="Wid20">
                         <p:inputText id="serviceuser" value="#{equipmentRepairManagedBean.newEntity.serviceusername}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
-                        <p:commandButton id="queryCategory" actionListener="#{equipmentRepairManagedBean.openDialog('repairUserSelect')}" icon="ui-icon-extlink"
+                        <p:commandButton id="queryCategory" actionListener="#{equipmentRepairManagedBean.openRepairUserDialog('repairUserSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentRepairManagedBean.handleDialogReturnSysuserWhenNew}"
                                     update="serviceuser" />
                         </p:commandButton>
                     </p:column>
-
 
                 </p:row>
                 <p:row>
@@ -134,6 +133,8 @@
                             <f:selectItem itemLabel="维修课维修" itemValue="1"/>
                             <f:selectItem itemLabel="现场自主维修" itemValue="2"/>
                             <f:selectItem itemLabel="委外维修" itemValue="3"/>
+                             <p:ajax event="change" 
+                                    update="serviceuser" />
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>

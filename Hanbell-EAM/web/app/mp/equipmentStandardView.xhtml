@@ -110,12 +110,11 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE" ><p:outputLabel value="需要工时" for="manhour"/></p:column>
                     <p:column >
-                        <h:outputText   id="manhour" value="#{equipmentStandardManagedBean.currentEntity.manhour}" title="manhour"
-                                        />
+                        <h:outputText id="manhour" value="#{equipmentStandardManagedBean.getDownunitName(equipmentStandardManagedBean.currentEntity.manhourunit,equipmentStandardManagedBean.currentEntity.manhour)}"/>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机时间(h)" for="downtime"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="设备停机时间" for="downtime"/></p:column>
                     <p:column >
-                        <h:outputText id="downtime" value="#{equipmentStandardManagedBean.currentEntity.downtime}" title="downtime"/>
+                        <h:outputText id="downtime" value="#{equipmentStandardManagedBean.getDownunitName(equipmentStandardManagedBean.currentEntity.downunit,equipmentStandardManagedBean.currentEntity.downtime)}"/>
                     </p:column>
                 </p:row>
             </p:panelGrid>

@@ -57,8 +57,8 @@
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
-            <p:dataTable var="car" value="#{equipmentTotalEfficiencyManagedBean.equipmentTotalEfficiencyList}"  >
-                <p:column headerText="日期" style="text-align: center" >
+            <p:dataTable var="car" value="#{equipmentTotalEfficiencyManagedBean.equipmentTotalEfficiencyList}"  scrollable="true" scrollHeight="450" >
+                <p:column headerText="日期" style="text-align: center"  groupRow="true">
                     <h:outputText value="#{car[0]}" style="text-align: center" />
                 </p:column>
                 <p:column headerText="生产计划时间(分)" style="text-align: center">
