@@ -52,33 +52,6 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         return results;
     }
 
-    //获取库存数量List
-    public List<EquipmentSpareStockResponse> getEquipmentSpareStockListByNativeQuery(String spareInfo) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT * FROM equipmentsparestock T LEFT JOIN equipmentspare S ON T.sparenum = S.sparenum WHERE 1 = 1 AND qty > 0 ");
-        if (!"".equals(spareInfo) && spareInfo != null) {
-            sb.append(MessageFormat.format(" AND (S.sparedesc LIKE ''%{0}%'' OR T.sparenum LIKE ''%{0}%'') ", spareInfo));
-        }
-        //生成SQL
-        Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentSpareStock.class).setMaxResults(50);
-        List<EquipmentSpareStock> results = query.getResultList();
-
-        //List按照sparenum分组
-        Map<EquipmentSpare, List<EquipmentSpareStock>> groupBySparenumMap = results.stream().collect(Collectors.groupingBy(EquipmentSpareStock::getSparenum));
-
-        List<EquipmentSpareStockResponse> resList = new ArrayList<EquipmentSpareStockResponse>();
-        groupBySparenumMap.forEach((key, value) -> {
-            BigDecimal qtySum = BigDecimal.ZERO;
-            for (int i = 0; i < value.size(); i++) {
-                qtySum = qtySum.add(value.get(i).getQty());
-            }
-            EquipmentSpareStockResponse resTemp = new EquipmentSpareStockResponse(key, value, qtySum);
-            resList.add(resTemp);
-        });
-
-        return resList;
-    }
-
     //获取库存盘点数量List，按厂区及存放位置分类
     public List<EquipmentSpareStock> getEquipmentSpareStockCheckList(String sarea, String company) {
         StringBuilder sb = new StringBuilder();
@@ -108,7 +81,33 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
             return null;
         }
     }
-
+    //获取库存数量List
+    public List<EquipmentSpareStockResponse> getEquipmentSpareStockListByNativeQuery(String spareInfo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT * FROM equipmentsparestock T LEFT JOIN equipmentspare S ON T.sparenum = S.sparenum WHERE 1 = 1 AND qty > 0 ");
+        if (!"".equals(spareInfo) && spareInfo != null) {
+            sb.append(MessageFormat.format(" AND (S.sparedesc LIKE ''%{0}%'' OR T.sparenum LIKE ''%{0}%'' OR S.sparemodel LIKE ''%{0}%'') ", spareInfo));
+        }
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentSpareStock.class).setMaxResults(50);
+        List<EquipmentSpareStock> results = query.getResultList();
+        
+        //List按照sparenum分组
+        Map<EquipmentSpare,List<EquipmentSpareStock>> groupBySparenumMap = results.stream().collect(Collectors.groupingBy(EquipmentSpareStock::getSparenum));
+        
+        List<EquipmentSpareStockResponse> resList = new ArrayList<EquipmentSpareStockResponse>();
+        groupBySparenumMap.forEach((key,value) -> {
+            BigDecimal qtySum = BigDecimal.ZERO;
+            for(int i = 0;i< value.size() ;i++){
+                qtySum = qtySum.add(value.get(i).getQty());
+            }
+            EquipmentSpareStockResponse resTemp = new EquipmentSpareStockResponse(key,value,qtySum);
+            resList.add(resTemp);
+        });
+        
+        return resList;
+    }
+    
     public EquipmentSpareStock findBySparenumAndRemark(String sparenum, String remark, String slocation) {
         Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenumAndRemark");
         query.setParameter("sparenum", sparenum);
