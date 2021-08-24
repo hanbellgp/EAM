@@ -122,6 +122,18 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         }
     }
 
+    public EquipmentSpareStock findBySparenumAndRemark(String sparenum, String remark) {
+        Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenumAndRemark");
+        query.setParameter("sparenum", sparenum);
+        query.setParameter("remark", remark);
+        try {
+            Object o = query.getSingleResult();
+            return (EquipmentSpareStock) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public List<EquipmentSpareStock> findBySparenumAndSarea(String sparenum, String sarea) {
         Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenumAndSarea");
         query.setParameter("sparenum", sparenum);
