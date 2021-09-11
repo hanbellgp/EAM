@@ -570,6 +570,12 @@
                 <to-view-id>/app/mp/equipmentPlanResult.xhtml</to-view-id>
                 <redirect/>
             </navigation-case>
+            <navigation-case>
+                <description>维保计划管理</description>
+                <from-outcome>equipmentPlanRule</from-outcome>
+                <to-view-id>/app/mp/equipmentPlanRule.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
         </navigation-rule>
     </navigation-rule>  
     <navigation-rule>

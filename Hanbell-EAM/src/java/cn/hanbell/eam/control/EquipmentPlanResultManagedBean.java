@@ -112,6 +112,7 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
         }
         queryStandardLevel = "二级";//初始查询等级二级的数据
         this.model.getFilterFields().put("status", queryState);
+        this.model.getFilterFields().put("deptno", userManagedBean.getCurrentUser().getDeptno().substring(0, 3));
         this.model.getFilterFields().put("standardlevel", queryStandardLevel);
         this.model.getSortFields().put("formid", "ASC");
         super.init();
@@ -153,7 +154,7 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
     public void handleDialogReturnSysuserWhenNew(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
             SystemUser u = (SystemUser) event.getObject();
-            currentDetail.setAnalysisuser(u.getUsername());
+            currentDetail.setAnalysisuser(u.getUserid());
         }
     }
 

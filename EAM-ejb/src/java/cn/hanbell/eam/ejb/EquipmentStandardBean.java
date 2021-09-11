@@ -24,19 +24,13 @@ public class EquipmentStandardBean extends SuperEJBForEAM<EquipmentStandard> {
         super(EquipmentStandard.class);
     }
 
-    public List<EquipmentStandard> findByAssetno(String assetno,String standardlevel) {
-        Query query = getEntityManager().createNamedQuery("EquipmentStandard.findByAssetnoAndStandardlevel");
-        query.setParameter("assetno", assetno);
-        query.setParameter("standardlevel", standardlevel);
-        query.setParameter("status", "V");
-        try {
-            List results = query.getResultList();
-            return results;
-        } catch (Exception ex) {
-            return null;
-        }
+    public List<EquipmentStandard> findByAssetnoAndStandardlevel(String assetno, String standardlevel, String nexttime) {
+        StringBuilder sbSql = new StringBuilder();
+        sbSql.append(" SELECT * FROM equipmentstandard WHERE  status='V' AND assetno='").append(assetno).append("' AND standardlevel='").append(standardlevel).append("' AND nexttime>'").append(nexttime).append("' ");
+        sbSql.append(" AND nexttime Like '%").append(nexttime.substring(0, 4)).append("%' ORDER BY  nexttime ASC");
+        Query query = getEntityManager().createNativeQuery(sbSql.toString(), EquipmentStandard.class);
+        List<EquipmentStandard> sList = query.getResultList();
+        return sList;
     }
-
-
 
 }

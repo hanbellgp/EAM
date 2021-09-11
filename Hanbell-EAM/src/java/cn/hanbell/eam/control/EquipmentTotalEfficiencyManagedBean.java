@@ -124,21 +124,75 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 Cell cell0 = row.createCell(0);
                 cell0.setCellStyle(style.get("cell"));
                 cell0.setCellValue(Integer.parseInt(eq[0].toString()));
-                for (int i = 1; i <= 33; i++) {
+                for (int i = 1; i <= 22; i++) {
                     cell0 = row.createCell(i);
                     cell0.setCellStyle(style.get("cell"));
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
                 }
+                if (eq[34] != null) {
+                    cell0 = row.createCell(24);
+                    cell0.setCellStyle(style.get("cell"));
+                    cell0.setCellValue(Double.parseDouble(eq[34].toString()));
+                } else {
+                    cell0 = row.createCell(24);
+                    cell0.setCellStyle(style.get("cell"));
+                }
+                if (eq[35] != null) {
+                    cell0 = row.createCell(23);
+                    cell0.setCellStyle(style.get("cell"));
+                    cell0.setCellValue(Double.parseDouble(eq[35].toString()));
+                } else {
+                    cell0 = row.createCell(23);
+                    cell0.setCellStyle(style.get("cell"));
+                }
+                for (int i = 23; i < 33; i++) {
+                    cell0 = row.createCell(i + 2);
+                    cell0.setCellStyle(style.get("cell"));
+                    if (eq[i] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[i].toString()));
+                    }
+                }
+                cell0 = row.createCell(34);
+                cell0.setCellStyle(style.get("cell"));
+                if (eq[33] != null) {
+                    cell0.setCellValue(Double.parseDouble(eq[33].toString()));
+                }
+
+                if (eq[32] != null) {
+                    cell0 = row.createCell(36);
+                    cell0.setCellStyle(style.get("cell"));
+                    cell0.setCellValue(Double.parseDouble(eq[32].toString()));
+                } else {
+                    cell0 = row.createCell(36);
+                    cell0.setCellStyle(style.get("cell"));
+                }
+//                计算MTTF
+                if (eq[22] != null && !eq[22].equals(0)) {
+                    cell0 = row.createCell(35);
+                    cell0.setCellStyle(style.get("cell"));
+                    cell0.setCellValue((Integer.parseInt(eq[26].toString()) - Integer.parseInt(eq[21].toString())) / Integer.parseInt(eq[22].toString()));
+                } else {
+                    cell0 = row.createCell(35);
+                    cell0.setCellStyle(style.get("cell"));
+                }
+                if (eq[36] != null) {
+                    cell0 = row.createCell(37);
+                    cell0.setCellStyle(style.get("cell"));
+                    cell0.setCellValue(Double.parseDouble(eq[36].toString()));
+                } else {
+                    cell0 = row.createCell(37);
+                    cell0.setCellStyle(style.get("cell"));
+                }
 
             }
             sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
             OutputStream os = null;
             if (EPQID.contains("/")) {
-                EPQID=EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
+                EPQID = EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
             }
-            fileName = stayear + "年" + month + "月---"+EPQID+ "---设备总合效率管理表---" +  BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            fileName = stayear + "年" + month + "月---" + EPQID + "---设备总合效率管理表---" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);

@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentStandard.findAll", query = "SELECT e FROM EquipmentStandard e"),
     @NamedQuery(name = "EquipmentStandard.findById", query = "SELECT e FROM EquipmentStandard e WHERE e.id = :id"),
     @NamedQuery(name = "EquipmentStandard.findByCompany", query = "SELECT e FROM EquipmentStandard e WHERE e.company = :company"),
-    @NamedQuery(name = "EquipmentStandard.findByAssetnoAndStandardlevel", query = "SELECT e FROM EquipmentStandard e WHERE e.assetno = :assetno AND e.standardlevel=:standardlevel And e.status=:status"),
+    @NamedQuery(name = "EquipmentStandard.findByAssetnoAndStandardlevel", query = "SELECT e FROM EquipmentStandard e WHERE e.assetno = :assetno AND e.standardlevel=:standardlevel And e.status=:status AND e.nexttime>:nexttime"),
     @NamedQuery(name = "EquipmentStandard.findByAssetdesc", query = "SELECT e FROM EquipmentStandard e WHERE e.assetdesc = :assetdesc"),
     @NamedQuery(name = "EquipmentStandard.findByItemno", query = "SELECT e FROM EquipmentStandard e WHERE e.itemno = :itemno"),
     @NamedQuery(name = "EquipmentStandard.findByDeptno", query = "SELECT e FROM EquipmentStandard e WHERE e.deptno = :deptno"),

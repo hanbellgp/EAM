@@ -133,8 +133,8 @@
                             <f:selectItem itemLabel="维修课维修" itemValue="1"/>
                             <f:selectItem itemLabel="现场自主维修" itemValue="2"/>
                             <f:selectItem itemLabel="委外维修" itemValue="3"/>
-                             <p:ajax event="change" 
-                                    update="serviceuser" />
+                            <p:ajax event="change" 
+                                    update="formOne,serviceuser" />
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
@@ -151,6 +151,19 @@
                     </p:column>
                     <p:column>
                         <p:calendar   id="completetime" value="#{equipmentRepairManagedBean.newEntity.completetime}" title="completetime" pattern="yyyy-MM-dd HH:mm:ss" maxdate="#{equipmentRepairManagedBean.getDate()}" />
+                    </p:column>
+
+                </p:row>
+                <p:row id="checkisneedspare" rendered="#{equipmentRepairManagedBean.newEntity.repairmethodtype==2?true:false}" >
+                    <p:column style="background-color: #EEEEEE " >
+                        <p:outputLabel value="是否需要备件" for="isneedspare"/>
+                    </p:column>
+                    <p:column>
+                        <p:selectOneMenu id="isneedspare" value="#{equipmentRepairManagedBean.newEntity.isneedspare}" title="是否需要备件" >
+                            <f:selectItem itemLabel="请选择" itemValue=""/>
+                            <f:selectItem itemLabel="是" itemValue="Y"/>
+                            <f:selectItem itemLabel="否" itemValue="N"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
