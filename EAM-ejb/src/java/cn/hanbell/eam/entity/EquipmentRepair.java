@@ -174,6 +174,9 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 2)
     @Column(name = "isdup")
     private String isdup;
+    @Size(max = 2)
+    @Column(name = "isneedspare")
+    private String isneedspare;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
@@ -574,6 +577,14 @@ public class EquipmentRepair extends FormEntity {
 
     public void setIsdup(String isdup) {
         this.isdup = isdup;
+    }
+
+    public String getIsneedspare() {
+        return isneedspare;
+    }
+
+    public void setIsneedspare(String isneedspare) {
+        this.isneedspare = isneedspare;
     }
 
     public String getRemark() {

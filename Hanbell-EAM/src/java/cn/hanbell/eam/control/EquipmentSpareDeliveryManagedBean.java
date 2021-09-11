@@ -67,6 +67,10 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
                 showErrorMsg("Error", "关联的维修单号不存在,请重新输入!");
                 return false;
             }
+            if (equipmentRepairBean.findByFormid(newEntity.getRelano()).get(0).getIsneedspare().equals("N")) {
+                showErrorMsg("Error", "该维修单号对应的维修单不能领用备件!");
+                return false;
+            }
             newEntity.setAccepttype("25");
         } else {
             newEntity.setAccepttype("20");

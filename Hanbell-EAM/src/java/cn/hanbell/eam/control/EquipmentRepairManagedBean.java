@@ -10,6 +10,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
+import cn.hanbell.eam.ejb.EquipmentSpareRecodeBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
@@ -19,6 +20,7 @@ import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import cn.hanbell.eam.entity.EquipmentRepairSpare;
+import cn.hanbell.eam.entity.EquipmentSpareRecode;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentTrouble;
 import cn.hanbell.eam.entity.SysCode;
@@ -88,7 +90,8 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     @EJB
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
-
+    @EJB
+    private EquipmentSpareRecodeBean equipmentSpareRecodeBean;
     private String queryEquipmentName;
     private String imageName;
     private String queryRepairuser;
@@ -222,6 +225,10 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
                 showErrorMsg("Error", "请选择厂区！");
                 return false;
             }
+        }
+        if (newEntity.getRepairmethodtype().equals("2") && newEntity.getIsneedspare() == null) {
+            showErrorMsg("Error", "请选择是否需要备件！");
+            return false;
         }
 
         String formid = this.superEJB.getFormId(newEntity.getFormdate(), "PR", "YYMM", 4);
@@ -363,6 +370,20 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "该单据未维修，或单据已确认维修完成！");
             return;
         }
+        //当报修时选择需要备件且是自主维修时进入
+        if (currentEntity.getRepairmethodtype().equals("2") && currentEntity.getIsneedspare().equals("Y")) {
+            openOptions = new HashMap<>();
+            openOptions.clear();//清除缓存数据
+            openOptions.put("relano", currentEntity.getFormid());
+            //判断该维修单是否已有出库单
+            List<EquipmentSpareRecode> list = equipmentSpareRecodeBean.findByFilters(openOptions);//查询是否存在备件出库单
+            if (list.isEmpty()) {
+                showErrorMsg("Error", "请添加使用的备件，在确认完成！");
+                return;
+            }
+
+        }
+
         createDetail3();
         currentDetail3.setCompany(userManagedBean.getCompany());
         currentDetail3.setUserno(userManagedBean.getUserid());

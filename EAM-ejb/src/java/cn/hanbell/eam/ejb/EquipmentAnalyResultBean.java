@@ -9,7 +9,9 @@ import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.EquipmentAnalyResult;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,26 +99,107 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
      */
     public List getEquipmentStandardList(String nexttime, String standardlevel, String deptname, String assetno) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT E.assetno,E.assetdesc,A.deptname,count(E.assetno),month(nexttime) FROM equipmentstandard E");
+        sb.append(" SELECT E.assetno,E.assetdesc,A.deptname,E.standardlevel,count(E.assetno),month(nexttime) FROM equipmentstandard E");
         sb.append(" LEFT JOIN assetcard  A ON E.assetno=A.formid  WHERE");
         if (nexttime != null && !"".equals(nexttime)) {
-            sb.append(" nexttime LIKE '%'").append(nexttime).append("'%'");
+            sb.append(" nexttime LIKE '%").append(nexttime).append("%'");
         }
         if (standardlevel != null && !"".equals(standardlevel)) {
-            sb.append(" AND standardlevel LIKE '%'").append(standardlevel).append("'%'");
+            sb.append(" AND standardlevel LIKE '%").append(standardlevel).append("%'");
         }
         if (deptname != null && !"".equals(deptname)) {
-            sb.append("  AND A.deptname LIKE '%'").append(deptname).append("'%'");
+            sb.append(" AND A.deptname LIKE '%").append(deptname).append("%'");
         }
         if (assetno != null && !"".equals(assetno)) {
-            sb.append("  AND E.assetno LIKE '%'").append(assetno).append("'%'");
+            sb.append(" AND E.assetno LIKE '%").append(assetno).append("%'");
         }
-        sb.append(" GROUP BY month(nexttime)");
+        sb.append(" GROUP BY  E.assetno,month(nexttime) ORDER BY E.assetno");
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString());
-
-        List results = query.getResultList();
-        return results;
+        List<Object[]> results = query.getResultList();//未生成的计划保全项目
+        StringBuilder sbDta = new StringBuilder();
+        sbDta.append(" SELECT E.assetno,E.assetdesc,E.deptname,E.standardlevel,COUNT(EDTA.pid),month(E.credate)");
+        sbDta.append(" FROM equipmentanalyresult E LEFT JOIN equipmentanalyresultdta EDTA ON E.formid=EDTA.pid WHERE");
+        if (nexttime != null && !"".equals(nexttime)) {
+            sbDta.append(" E.credate LIKE '%").append(nexttime).append("%'");
+        }
+        if (standardlevel != null && !"".equals(standardlevel)) {
+            sbDta.append(" AND E.standardlevel LIKE '%").append(standardlevel).append("%'");
+        }
+        if (deptname != null && !"".equals(deptname)) {
+            sbDta.append(" AND E.deptname LIKE '%").append(deptname).append("%'");
+        }
+        if (assetno != null && !"".equals(assetno)) {
+            sbDta.append(" AND E.assetno LIKE '%").append(assetno).append("%'");
+        }
+        query = getEntityManager().createNativeQuery(sbDta.toString());
+        List<Object[]> results1 = query.getResultList();//已生成的计划保全单
+       results.addAll(results1);//将已生成的计划保全单数据合并到一起处理
+        //数据处理,将相同编号的次数整合在一条数据中
+        Map<String, List<Object[]>> map = new HashMap<>();
+        results.forEach(result -> {
+            if (map.containsKey(result[0].toString())) {//判断是否已存在对应键号
+                map.get(result[0].toString()).add(result);//直接在对应的map中添加数据
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(result);
+                map.put(result[0].toString(), tmpList);//新增一个键号
+            }
+        });
+        List moList = new ArrayList();
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> list = entry.getValue();//取出对应的值
+            Object[] obj1 = new Object[16];
+            for (Object[] obj : list) {
+                obj1[0] = obj[0];
+                obj1[1] = obj[1];
+                obj1[2] = obj[2];
+                obj1[3] = obj[3];
+                switch (Integer.parseInt(obj[5].toString())) {
+                    case 1:
+                        obj1[4] = obj[4];
+                        break;
+                    case 2:
+                        obj1[5] = obj[4];
+                        break;
+                    case 3:
+                        obj1[6] = obj[4];
+                        break;
+                    case 4:
+                        obj1[7] = obj[4];
+                        break;
+                    case 5:
+                        obj1[8] = obj[4];
+                        break;
+                    case 6:
+                        obj1[9] = obj[4];
+                        break;
+                    case 7:
+                        obj1[10] = obj[4];
+                        break;
+                    case 8:
+                        obj1[11] = obj[4];
+                        break;
+                    case 9:
+                        obj1[12] = obj[4];
+                        break;
+                    case 10:
+                        obj1[13] = obj[4];
+                        break;
+                    case 11:
+                        obj1[14] = obj[4];
+                        break;
+                    case 12:
+                        obj1[15] = obj[4];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            moList.add(obj1);
+        }
+        return moList;
     }
 
+    
 }

@@ -74,7 +74,7 @@ public class EquipmentSpareStockQueryBean extends SuperQueryBean<EquipmentSpareS
                 this.model.getFilterFields().put("sparenum.sparedesc", queryName);
             }
             if (querySparemodel != null && !"".equals(this.querySparemodel)) {
-                this.model.getFilterFields().put("sparenum.sparemodel", queryName);
+                this.model.getFilterFields().put("sparenum.sparemodel", querySparemodel);
             }
             
             if (sArea != null) {

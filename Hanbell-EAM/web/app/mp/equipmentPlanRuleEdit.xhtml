@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentPlanRule" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentPlanRuleManagedBean.update()}"  icon="ui-icon-save"  
+                                     process="@this,plgHead"  update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">调整计划</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备编号" for="assetno" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="assetno" value="#{equipmentPlanRuleManagedBean.obj[0]}" title="assetno" styleClass="inputWithButton" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备名称" for="assetdesc" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="assetdesc"  value="#{equipmentPlanRuleManagedBean.obj[1]}"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="所属部门" for="deptname"/></p:column>
+                    <p:column >
+                        <h:outputText id="deptname" value="#{equipmentPlanRuleManagedBean.obj[2]}" title="deptname" />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="基准等级" for="standardlevel" /></p:column>
+                    <p:column>
+                        <h:outputText id="standardlevel" value="#{equipmentPlanRuleManagedBean.obj[3]}" title="standardlevel" />
+                    </p:column>
+                </p:row>
+
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="保全项目">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                       
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{equipmentPlanRuleManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             process="@this,plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail"  styleClass="plgDetail Wid100">
+                        <p:row>
+                            <p:column style="background-color: #EEEEEE"><p:outputLabel value="计划调整日期" for="nexttime" /></p:column>
+                            <p:column>
+                                <p:calendar id="nexttime" value="#{equipmentPlanRuleManagedBean.equipmentStandard.nexttime}" title="开始日期" pattern="yyyy-MM-dd"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{equipmentPlanRuleManagedBean.equipmentStandardsList}" var="item"  styleClass="tableList Mtop10" 
+                                 selectionMode="single" selection="#{equipmentPlanRuleManagedBean.equipmentStandard}" rowKey="#{item.id}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail" oncomplete="PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="保养区域"/>
+                            </f:facet>
+                            <h:outputText value="#{item.checkarea}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20">
+                            <f:facet name="header">
+                                <h:outputText value="保养内容"/>
+                            </f:facet>
+                            <h:outputText value="#{item.checkcontent}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="判定标准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.judgestandard}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15" >
+                            <f:facet name="header">
+                                <h:outputText value="保养方法"/>
+                            </f:facet>
+                            <h:outputText value="#{item.method}"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <f:facet name="header">
+                                <h:outputText value="使用工具"/>
+                            </f:facet>
+                            <h:outputText value="#{item.methodname}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" >
+                            <f:facet name="header">
+                                <h:outputText value="计划保养时间"/>
+                            </f:facet>
+                            <h:outputText value="#{item.nexttime}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:outputText>   
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>    
+        </h:form>
+    </ui:define>
+
+</ui:composition>
