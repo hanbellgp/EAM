@@ -27,13 +27,15 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         super(EquipmentAnalyResult.class);
     }
 
-    public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
+       public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
         sb.append("SELECT * FROM ");
         sb.append(this.className);
         sb.append(" equipmentanalyresult WHERE (1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
+        boolean dateFilterFlag = false;
+        String dateFilterStr = " AND formdate = formdate = CURDATE()";
 
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
@@ -46,23 +48,43 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                     deptnoTemp = value.toString().substring(0, 3);
                 }
                 sb.append("  AND deptno LIKE '").append(deptnoTemp).append("%'");
-            } else if ("MaintainType".equals(key)) {
-                sb.append(MessageFormat.format(" AND formid LIKE ''{0}%''", value.toString()));
-            } else if ("ExtraFilter".equals(key)) {
+            }
+             else if ("MaintainType".equals(key)) {
+                if("BQ".equals(value.toString())){
+                    dateFilterStr = " AND formdate = CURDATE()";
+                    sb.append(" AND standardlevel = '一级'");
+                }
+                else
+                {
+                    dateFilterStr = " AND date_format(formdate,'%Y-%m') = date_format(CURDATE(),'%Y-%m')";
+                    sb.append(" AND standardlevel <> '一级'");
+                }
+            }else if("AnalysisUser".equals(key)){
+                sb.append(MessageFormat.format(" AND formid IN (SELECT DISTINCT pid FROM equipmentanalyresultdta WHERE analysisuser = ''{0}'') ", value.toString()));
+            }else if ("ExtraFilter".equals(key)) {
                 sb.append(MessageFormat.format(" AND (formid LIKE ''%{0}%'' OR assetno LIKE ''%{0}%'' OR assetdesc LIKE ''%{0}%'' OR spareno LIKE ''%{0}%'')", value.toString()));
             } else if ("formdateBegin".equals(key)) {
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                 String formdateBeginStr = fmt.format(new Date(value.toString()));
                 sb.append(MessageFormat.format(" AND formdate >= ''{0}''", formdateBeginStr));
+                dateFilterFlag = true;
             } else if ("formdateEnd".equals(key)) {
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                 String formdateEndStr = fmt.format(new Date(value.toString()));
                 sb.append(MessageFormat.format(" AND formdate <= ''{0}''", formdateEndStr));
+                dateFilterFlag = true;
             } else {
                 strMap.put(key, value);
             }
         }
-        sb.append(")").append(exFilterStr);
+        
+        if(dateFilterFlag){
+            sb.append(")").append(exFilterStr);
+        }
+        else
+            sb.append(dateFilterStr).append(")").append(exFilterStr);
+        
+        
 
         filters = strMap;
         setNativeQueryFilter(sb, filters);
@@ -87,6 +109,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
             queryStrBuilder.append(MessageFormat.format(" AND {0} LIKE ''%{1}%''", key, value.toString()));
         });
     }
+ 
 
     /**
      * 获取本年份基准次数
@@ -155,6 +178,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                 obj1[1] = obj[1];
                 obj1[2] = obj[2];
                 obj1[3] = obj[3];
+                obj1[4] = obj[4];
                 switch (Integer.parseInt(obj[5].toString())) {
                     case 1:
                         obj1[4] = obj[4];

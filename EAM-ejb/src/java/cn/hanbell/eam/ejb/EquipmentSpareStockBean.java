@@ -81,6 +81,7 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
             return null;
         }
     }
+
     //获取库存数量List
     public List<EquipmentSpareStockResponse> getEquipmentSpareStockListByNativeQuery(String spareInfo) {
         StringBuilder sb = new StringBuilder();
@@ -89,25 +90,25 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
             sb.append(MessageFormat.format(" AND (S.sparedesc LIKE ''%{0}%'' OR T.sparenum LIKE ''%{0}%'' OR S.sparemodel LIKE ''%{0}%'') ", spareInfo));
         }
         //生成SQL
-        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentSpareStock.class).setMaxResults(50);
+        Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentSpareStock.class).setMaxResults(50);
         List<EquipmentSpareStock> results = query.getResultList();
-        
+
         //List按照sparenum分组
-        Map<EquipmentSpare,List<EquipmentSpareStock>> groupBySparenumMap = results.stream().collect(Collectors.groupingBy(EquipmentSpareStock::getSparenum));
-        
+        Map<EquipmentSpare, List<EquipmentSpareStock>> groupBySparenumMap = results.stream().collect(Collectors.groupingBy(EquipmentSpareStock::getSparenum));
+
         List<EquipmentSpareStockResponse> resList = new ArrayList<EquipmentSpareStockResponse>();
-        groupBySparenumMap.forEach((key,value) -> {
+        groupBySparenumMap.forEach((key, value) -> {
             BigDecimal qtySum = BigDecimal.ZERO;
-            for(int i = 0;i< value.size() ;i++){
+            for (int i = 0; i < value.size(); i++) {
                 qtySum = qtySum.add(value.get(i).getQty());
             }
-            EquipmentSpareStockResponse resTemp = new EquipmentSpareStockResponse(key,value,qtySum);
+            EquipmentSpareStockResponse resTemp = new EquipmentSpareStockResponse(key, value, qtySum);
             resList.add(resTemp);
         });
-        
+
         return resList;
     }
-    
+
     public EquipmentSpareStock findBySparenumAndRemark(String sparenum, String remark, String slocation) {
         Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenumAndRemark");
         query.setParameter("sparenum", sparenum);
@@ -146,4 +147,43 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
             return null;
         }
     }
+
+    public List<Object[]> getUseSpare(String formid, String strDate, String endDate) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT R.assetno,A.remark,S.sparedesc,date_format(D.credate,'%y-%m-%d')  FROM equipmentsparerecodedta D LEFT JOIN equipmentspare S ON D.sparenum=S.sparenum LEFT JOIN equipmentsparerecode C");
+        sb.append(" ON D.pid=C.formid RIGHT JOIN   equipmentrepair R ON C.relano=R.formid  LEFT JOIN assetcard A");
+        sb.append(" ON A.formid=R.assetno WHERE C.relano IS NOT NULL AND C.status='V'AND R.rstatus='95' AND A.remark='").append(formid).append("'");
+        if (strDate != null && !strDate.equals("")) {
+            sb.append("  AND D.credate>'").append(strDate).append("'");
+        }
+        if (endDate != null && !endDate.equals("")) {
+            sb.append("  AND D.credate<='").append(endDate).append("'");
+        }
+        sb.append(" ORDER BY  D.credate ASC");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+        List<Object[]> results = query.getResultList();
+        
+        return results;
+    }
+    
+     public List<Object[]> getEquipmentRecord(String formid, String strDate, String endDate) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT R.hitchtime,R.hitchreason,R.measure,R.completetime,R.serviceusername FROM equipmentsparerecodedta D LEFT JOIN equipmentsparerecode C");
+        sb.append(" ON D.pid=C.formid RIGHT JOIN   equipmentrepair R ON C.relano=R.formid  LEFT JOIN assetcard A ");
+        sb.append(" ON A.formid=R.assetno WHERE C.relano IS NOT NULL AND C.status='V'AND R.rstatus='95' AND A.remark='").append(formid).append("'");
+        if (strDate != null && !strDate.equals("")) {
+            sb.append("  AND R.credate>'").append(strDate).append("'");
+        }
+        if (endDate != null && !endDate.equals("")) {
+            sb.append("  AND R.credate<='").append(endDate).append("'");
+        }
+        sb.append(" ORDER BY  completetime ASC");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString());
+        List<Object[]> results = query.getResultList();
+        
+        return results;
+    }
+
 }

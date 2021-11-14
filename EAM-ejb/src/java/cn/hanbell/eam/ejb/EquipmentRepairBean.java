@@ -47,9 +47,10 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         }
     }
 
-    public List<EquipmentRepair> getEquipmentRepairList(Map<String, Object> filters, Map<String, String> orderBy) {
+       public List<EquipmentRepair> getEquipmentRepairList(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
-        StringBuilder exFilterStr = new StringBuilder();
+        String exFilterStr = "";
+        String companyFilter = "";
         sb.append("SELECT e FROM ");
         sb.append(this.className);
         sb.append(" e WHERE (1=1 ");
@@ -70,10 +71,25 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     }
                     sb.append("  AND e.repairdeptno LIKE '").append(deptnoTemp).append("%'");
                 } else if ("ManagerCheck".equals(key)) {
-                    exFilterStr.append(" OR e.rstatus = '60'");
+                    exFilterStr = " OR e.rstatus = '60'";
                 } else if ("ExtraFilter".equals(key)) {
                     sb.append(MessageFormat.format(" AND (e.formid LIKE ''%{0}%'' OR e.hitchalarm LIKE ''%{0}%'' OR e.repairusername LIKE ''%{0}%'' OR e.serviceusername LIKE ''%{0}%'')", value.toString()));
-                } else {
+                } else if ("RepairCompanyFilter".equals(key)){
+                    
+                    if("HANBELL".equals(value))
+                    {
+                        companyFilter = "  AND e.company IN ('C','K')";
+                    }
+                    else if("HANSON".equals(value))
+                    {
+                        companyFilter = "  AND e.company IN ('H','E')";
+                    }
+                    else if("HANYOUNG".equals(value))
+                    {
+                        companyFilter = "  AND e.company = 'Y'";
+                    }
+                    
+                }else {
                     strMap.put(key, value);
                 }
             } else {
@@ -84,6 +100,16 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 sb.append(filters.get("repairuser")).append("')");
             }
         }
+        
+        if(companyFilter != null && !companyFilter.equals(""))
+        {
+            sb.append(companyFilter);
+            if(exFilterStr != null && !exFilterStr.equals(""))
+            {
+                exFilterStr = " OR (e.rstatus = '60'" + companyFilter + ") ";
+            }
+        }
+        
         sb.append(")").append(exFilterStr);
 
         filters = strMap;
@@ -110,6 +136,64 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List results = query.getResultList();
         return results;
 
+    }
+
+    @Override
+    public int getRowCount(Map<String, Object> filters) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("SELECT COUNT(e) FROM ");
+        sb.append(this.className);
+        sb.append(" e WHERE 1=1 ");
+        Map<String, Object> strMap = new LinkedHashMap<>();
+        //给Map排序
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (!("repairuser".equals(key) || "repairmanager".equals(key))) {
+                if ("ALL".equals(value)) {
+                    sb.append("  AND e.rstatus<'95'");
+                }
+                else if("RepairCompanyFilter".equals(key)){
+                    if("HANBELL".equals(value))
+                    {
+                        sb.append("  AND e.company IN ('C','K')");
+                    }
+                    else if("HANSON".equals(value))
+                    {
+                        sb.append("  AND e.company IN ('H','E')");
+                    }
+                    else if("HANYOUNG".equals(value))
+                    {
+                        sb.append("  AND e.company = 'Y'");
+                    }
+                }
+                else {
+                    strMap.put(key, value);
+                }
+
+            } else {
+                //strMap.put("repairuser", filters.get("repairuser"));
+                sb.append("  AND (e.repairuser = '");
+                sb.append(filters.get(key)).append("'");
+                sb.append("  OR e.hitchdutyuser = '");
+                sb.append(filters.get(key)).append("'");
+                if ("repairmanager".equals(key)) {
+                    sb.append("  OR e.rstatus = '70'");
+                }
+                sb.append(")");
+            }
+        }
+        filters = strMap;
+
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+
+        final Query query = this.getEntityManager().createQuery(sb.toString());
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+        }
+        return Integer.parseInt(query.getSingleResult().toString());
     }
 
     public List<EquipmentRepair> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
@@ -185,48 +269,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         });
     }
 
-    @Override
-    public int getRowCount(Map<String, Object> filters) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("SELECT COUNT(e) FROM ");
-        sb.append(this.className);
-        sb.append(" e WHERE 1=1 ");
-        Map<String, Object> strMap = new LinkedHashMap<>();
-        //给Map排序
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (!("repairuser".equals(key) || "repairmanager".equals(key))) {
-                if ("ALL".equals(value)) {
-                    sb.append("  AND e.rstatus<'95'");
-                } else {
-                    strMap.put(key, value);
-                }
 
-            } else {
-                //strMap.put("repairuser", filters.get("repairuser"));
-                sb.append("  AND (e.repairuser = '");
-                sb.append(filters.get(key)).append("'");
-                sb.append("  OR e.hitchdutyuser = '");
-                sb.append(filters.get(key)).append("'");
-                if ("repairmanager".equals(key)) {
-                    sb.append("  OR e.rstatus = '70'");
-                }
-                sb.append(")");
-            }
-        }
-        filters = strMap;
-
-        if (filters != null) {
-            this.setQueryFilter(sb, filters);
-        }
-
-        final Query query = this.getEntityManager().createQuery(sb.toString());
-        if (filters != null) {
-            this.setQueryParam(query, filters);
-        }
-        return Integer.parseInt(query.getSingleResult().toString());
-    }
 
     @Override
     public List<EquipmentRepair> findByFilters(Map<String, Object> filters, int first, int pageSize, Map<String, String> orderBy) {
@@ -505,7 +548,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sb.append(" SELECT A.remark,A.formid,A.assetDesc,A.deptname,if(R.time IS NULL ,0,R.time) time FROM");
         sb.append(" (SELECT A.remark,A.formid,A.assetDesc,A.deptname FROM assetcard A WHERE  A.remark IN (").append(EQPID).append(")) A");
         sb.append(" LEFT JOIN (SELECT R.assetno, SUM(TIMESTAMPDIFF(MINUTE, R.servicearrivetime, R.completetime) - R.excepttime) time");
-        sb.append(" from equipmentrepair R WHERE R.hitchtime >= '").append(staDate).append("' AND R.hitchtime <= '").append(endDate).append("' GROUP BY R.assetno) R ON  A.formid=R.assetno");
+        sb.append(" from equipmentrepair R WHERE R.hitchtime >= '").append(staDate).append("' AND R.hitchtime <= '").append(endDate).append("' AND R.rstatus !='98' GROUP BY R.assetno) R ON  A.formid=R.assetno ");
         //生成SQL
         Query query1 = getEntityManager().createNativeQuery(sb.toString());
         List<Object[]> resultsEAM = query1.getResultList();
@@ -810,7 +853,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         StringBuilder sbQty = new StringBuilder();
         sbQty.append(" SELECT month(PROCESSCOMPLETETIME) MONTH ,count(CASE WHEN A.STEPID LIKE '%").append(str).append("清洗%' THEN A.EQPID END )  QTY,sum(round(B.STD_TIME / 60, 1)) MINUTE ");
         sbQty.append(" FROM PROCESS_STEP  A   LEFT JOIN PROCESS_STEP_TIME B ON A.SYSID = B.SYSID  AND A.EQPID = B.EQPID");
-        sbQty.append(" LEFT JOIN  MEQP C ON C.EQPID = B.EQPID WHERE C.PRODUCTTYPE = '").append(type).append("'  AND A.PROCESSCOMPLETETIME LIKE'%").append(year).append("%' GROUP BY  month(PROCESSCOMPLETETIME)");
+        sbQty.append(" LEFT JOIN  MEQP C ON C.EQPID = A.EQPID WHERE C.PRODUCTTYPE = '").append(type).append("'  AND A.PROCESSCOMPLETETIME LIKE'%").append(year).append("%' GROUP BY  month(PROCESSCOMPLETETIME)");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbQty.toString());
         List<Object[]> qtyList = query.getResultList();
 
@@ -969,6 +1012,289 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         obj12[13] = "=全设备故障件数总和(停线60分钟以上,报修开始到维修结束)来源MES异常报表";
 
         for (int i = 1; i <= 12; i++) {
+            for (Object[] mes : resultsMES) {
+                if (i == Integer.parseInt(mes[18].toString())) {
+                    if (mes[1] != null) {
+                        if (reportType.equals("H")) {
+                            obj1[i] = mes[0];
+                        } else {
+                            obj1[i] = mes[1];
+                        }
+                    }
+                    if (mes[2] != null) {
+                        obj2[i] = mes[2];
+                    }
+                    obj3[i] = mes[4];
+                    if (mes[5] != null) {
+                        if (reportType.equals("H")) {
+                            obj4[i] = mes[5];
+                        } else {
+                            obj4[i] = mes[6];
+                        }
+                    }
+
+                    if (mes[7] != null) {
+                        obj12[i] = mes[7];
+                    }
+
+                    obj5[i] = mes[8];
+                    if (mes[10] != null) {
+                        if (reportType.equals("H")) {
+                            obj6[i] = mes[10];
+                        } else {
+                            obj6[i] = mes[9];
+                        }
+                    }
+
+                    if (mes[12] != null) {
+                        if (reportType.equals("H")) {
+                            obj7[i] = mes[12];
+                        } else {
+                            obj7[i] = mes[13];
+                        }
+                    } else {
+                        obj7[i] = 100.00;
+                    }
+
+                    if (mes[14] != null) {
+                        if (reportType.equals("H")) {
+                            obj8[i] = mes[14];
+                        } else {
+                            obj8[i] = mes[15];
+                        }
+                    } else {
+                        obj8[i] = 100.00;
+                    }
+
+                    if (mes[16] != null) {
+                        obj9[i] = mes[16];
+                    } else {
+                        obj9[i] = 100.00;
+                    }
+                    double monthOEE = (Double.parseDouble(obj7[i].toString()) / 100 * Double.parseDouble(obj8[i].toString()) / 100 * Double.parseDouble(obj9[i].toString()) / 100) * 100;
+                    if (String.valueOf(monthOEE).length() >= 5) {
+                        obj10[i] = String.valueOf(monthOEE).substring(0, 5);
+                    } else {
+                        obj10[i] = monthOEE;
+                    }
+
+                    if (mes[3] == null) {
+                        obj11[i] = 0;
+                    } else {
+                        obj11[i] = mes[3];
+                    }
+                    break;
+                }
+            }
+        }
+        list.add(obj1);
+        list.add(obj2);
+        list.add(obj3);
+        list.add(obj4);
+        if (reportType.equals("H")) {
+            list.add(obj12);
+        }
+        list.add(obj5);
+        list.add(obj6);
+        list.add(obj7);
+        list.add(obj8);
+        list.add(obj9);
+        list.add(obj10);
+        list.add(obj11);
+        return list;
+    }
+
+    /**
+     * 获取车间日报数据
+     *
+     * @param year 获取数据的年份
+     * @param type 获取的车间
+     * @param reportType 根据选择的版本调换取值数据及计算方法
+     * @return
+     */
+    public List<Object[]> getDayReport(String year, String type, String reportType) {
+        String str = type.substring(3, type.length());//获取不良数的类型
+        //月度总计划工时及平均计划工时,当月设备数量
+        StringBuilder sbAVA = new StringBuilder();
+        sbAVA.append(" SELECT A.DAY,SUM(A.AVAILABLEMINS) AVAILABLEMINS,SUM(A.AVAILABLEMINS)/COUNT(A.EQPID) AVA,COUNT(A.EQPID) EQPIDCount   FROM ( SELECT E.EQPID,SUM(E.AVAILABLEMINS) AVAILABLEMINS, DAY(E.PLANDATE)  DAY FROM EQP_AVAILABLETIME_SCHEDULE E");
+        sbAVA.append(" LEFT JOIN MEQP M ON E.EQPID=M.EQPID WHERE E.PLANDATE LIKE '").append(year).append("%' AND E.PLANDATE< getdate()  AND E.AVAILABLEMINS!=0 AND M.PRODUCTTYPE='").append(type).append("'");
+        sbAVA.append(" GROUP BY DAY(E.PLANDATE), E.EQPID) A GROUP BY A.DAY");
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        Query query = superEJBForMES.getEntityManager().createNativeQuery(sbAVA.toString());
+        List<Object[]> avaList = query.getResultList();
+        //获取MTBF总合
+        StringBuilder sbMTBF = new StringBuilder();
+        sbMTBF.append(" SELECT A.DAY,SUM(A.MTBF) FROM ( SELECT CASE WHEN   (cast((B.AVAILABLEMINS * 1.0 - A.ALARMTIME_LEN * 1.0) / A.counts * 1.0 AS DECIMAL(10, 2))) IS NULL THEN B.AVAILABLEMINS ELSE cast((B.AVAILABLEMINS * 1.0 - A.ALARMTIME_LEN * 1.0) / A.counts * 1.0 AS DECIMAL(10, 2)) END   MTBF,");
+        sbMTBF.append(" B.DAY  FROM (SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,DAY(ALARMSTARTTIME) DAY");
+        sbMTBF.append(" FROM EQP_RESULT_ALARM WHERE ALARMSTARTTIME LIKE '").append(year).append("%' AND (SPECIALALARMID = 'B0001' OR SPECIALALARMID = 'A0001') AND");
+        sbMTBF.append(" datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME) > 10 GROUP BY DAY(ALARMSTARTTIME), EQPID) A RIGHT JOIN (SELECT A.EQPID,SUM(AVAILABLEMINS) AVAILABLEMINS,DAY(PLANDATE) DAY");
+        sbMTBF.append(" FROM EQP_AVAILABLETIME_SCHEDULE A LEFT JOIN MEQP M ON A.EQPID = M.EQPID");
+        sbMTBF.append(" WHERE PLANDATE LIKE '").append(year).append("%' AND PLANDATE< getdate()  and AVAILABLEMINS!=0  AND  M.PRODUCTTYPE = '").append(type).append("'");
+        sbMTBF.append(" GROUP BY DAY(PLANDATE), A.EQPID) B ON A.EQPID = B.EQPID AND A.DAY = B.DAY )A  GROUP BY  A.DAY");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMTBF.toString());
+        List<Object[]> mtbfList = query.getResultList();
+
+        //-- 大于10分钟的故障次数和60分钟以上的故障次数及故障停机时间和其他总的异常时间
+        StringBuilder sbCount = new StringBuilder();
+        sbCount.append(" SELECT  A.DAY, SUM(A.counts) counts10,sum(A.counts60) counts60,(CASE WHEN SUM(A.ALARMTIME_LEN) IS NULL THEN 0 ELSE SUM(A.ALARMTIME_LEN) END) ALARMTIME_LEN,SUM(A.abnormal) abnormal");
+        sbCount.append(" FROM ( SELECT E.EQPID, COUNT(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 60 AND M.ALARMNAME = '设备故障' THEN E.EQPID END ) counts60, COUNT(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 AND M.ALARMNAME = '设备故障'  THEN E.EQPID END ) counts,");
+        sbCount.append(" sum(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 AND M.ALARMNAME = '设备故障'  THEN  datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME )END) AS ALARMTIME_LEN,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS abnormal,");
+        sbCount.append(" DAY(E.ALARMSTARTTIME) DAY FROM EQP_RESULT_ALARM E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%'  AND M.ALARMTYPE = '").append(type).append("' GROUP BY DAY(E.ALARMSTARTTIME), E.EQPID ) A GROUP BY A.DAY");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbCount.toString());
+        List<Object[]> countList = query.getResultList();
+
+        //每月报工数及标准工时
+        StringBuilder sbQty = new StringBuilder();
+        sbQty.append(" SELECT DAY(PROCESSCOMPLETETIME) DAY ,count(CASE WHEN A.STEPID LIKE '%").append(str).append("清洗%' THEN A.EQPID END )  QTY,sum(round(B.STD_TIME / 60, 1)) MINUTE ");
+        sbQty.append(" FROM PROCESS_STEP  A   LEFT JOIN PROCESS_STEP_TIME B ON A.SYSID = B.SYSID  AND A.EQPID = B.EQPID");
+        sbQty.append(" LEFT JOIN  MEQP C ON C.EQPID = A.EQPID WHERE C.PRODUCTTYPE = '").append(type).append("'  AND A.PROCESSCOMPLETETIME LIKE'%").append(year).append("%' GROUP BY  DAY(PROCESSCOMPLETETIME)");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbQty.toString());
+        List<Object[]> qtyList = query.getResultList();
+
+        //不良数
+        StringBuilder sbQG = new StringBuilder();
+        sbQG.append(" SELECT DAY(B.PROJECTCREATETIME) DAY, SUM(DEFECTNUM) AS QGSUM FROM ANALYSISRESULT_QCD A LEFT JOIN  FLOW_FORM_UQF_S_NOW B ON  A.PROJECTID=B.PROJECTID");
+        sbQG.append(" WHERE  B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND SOURCESTEPIP LIKE '").append(str).append("%' AND B.UQFTYPE ='UQFG0003' GROUP BY DAY(B.PROJECTCREATETIME)");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbQG.toString());
+        List<Object[]> qgList = query.getResultList();
+        //在报修系统中获取故障时间为60分钟以上的次数
+        StringBuilder sb60Count = new StringBuilder();
+        String strTypeString = "";
+        if (type.equals("半成品方型件")) {
+            strTypeString = "方型加工课";
+        } else {
+            strTypeString = "圆型加工课";
+        }
+        year = year.replace("/", "-");//在EAM中时间格式替换
+
+        sb60Count.append(" SELECT DAY(hitchtime),count(CASE WHEN TIMESTAMPDIFF(MINUTE,hitchtime, completetime) > 60 THEN E.assetno END) as count60,count(*) count10 FROM equipmentrepair E LEFT JOIN assetcard A ON E.assetno=A.formid ");
+        sb60Count.append(" WHERE A.remark IS NOT NULL AND TIMESTAMPDIFF(MINUTE, hitchtime,completetime)>10 AND A.deptname='").append(strTypeString).append("' AND hitchtime LIKE '%").append(year).append("%'");
+        sb60Count.append(" AND hitchtime<now() AND hitchurgency='03' GROUP BY DAY(hitchtime)");
+        query = getEntityManager().createNativeQuery(sb60Count.toString());
+        List<Object[]> sb60CountList = query.getResultList();
+        //将所有的数据按所需要的模板整合到一个List中
+        List<Object[]> listMES = new ArrayList<>();
+        for (int i = 1; i <= 31; i++) {
+            Object[] obj = new Object[12];
+            for (Object[] ava : avaList) {
+                if (i == Integer.parseInt(ava[0].toString())) { 
+                    obj[0] = ava[1];
+                    obj[1] = ava[2];
+                    obj[11] = ava[3];
+                }
+            }
+            for (Object[] count : countList) {
+                if (i == Integer.parseInt(count[0].toString())) {
+
+                    obj[4] = count[3];
+                    obj[5] = count[4];
+                }
+            }
+            for (Object[] qty : qtyList) {
+                if (i == Integer.parseInt(qty[0].toString())) {
+                    obj[6] = qty[1];
+                    obj[7] = qty[2];
+                }
+            }
+            for (Object[] qg : qgList) {
+                if (i == Integer.parseInt(qg[0].toString())) {
+                    obj[8] = qg[1];
+                }
+            }
+            for (Object[] mtbf : mtbfList) {
+                if (i == Integer.parseInt(mtbf[0].toString())) {
+                    obj[10] = mtbf[1];
+                }
+            }
+            for (Object[] count60 : sb60CountList) {
+                if (i == Integer.parseInt(count60[0].toString())) {
+                    obj[3] = count60[1];
+                    obj[2] = count60[2];
+                }
+            }
+            obj[9] = i;
+            listMES.add(obj);
+        }
+        //将List中的数据经过模板中的公式进行计算处理在存入新的List中
+        List<Object[]> resultsMES = new ArrayList<>();
+        for (Object[] oMes : listMES) {
+            if (oMes[7] != null) {
+                Object[] obj = new Object[19];
+                obj[0] = oMes[0];
+                obj[1] = oMes[1];
+                obj[2] = oMes[2];
+                obj[3] = oMes[3];
+                obj[4] = oMes[4];
+                BigDecimal HAVA = BigDecimal.valueOf(Double.valueOf(oMes[0].toString()));//月度总生产工时
+                BigDecimal GAVA = BigDecimal.valueOf(Double.valueOf(oMes[1].toString()));//月度平均生产工时
+                BigDecimal ALA = BigDecimal.valueOf(Double.valueOf(oMes[4].toString()));//故障停机时间
+                BigDecimal count10;
+                if (oMes[2] == null) {
+                    count10 = BigDecimal.ONE;
+                } else {
+                    count10 = BigDecimal.valueOf(Double.valueOf(oMes[2].toString()));//10分钟以上的故障次数
+                }
+                BigDecimal abnormal = BigDecimal.valueOf(Double.valueOf(oMes[5].toString()));//总异常时间
+                BigDecimal MINUTE = BigDecimal.valueOf(Double.valueOf(oMes[7].toString()));//产出标准工时
+                BigDecimal QTY = BigDecimal.valueOf(Double.valueOf(oMes[6].toString()));//报工数
+                BigDecimal QGQTY = BigDecimal.valueOf(Double.valueOf(oMes[8].toString()));//不良数
+                BigDecimal MTBF = BigDecimal.valueOf(Double.valueOf(oMes[10].toString()));//各加工机MTBF总合
+                BigDecimal avaCount = BigDecimal.valueOf(Double.valueOf(oMes[11].toString()));//所有加工机数量
+                //汉钟版设备可动率
+                obj[5] = ((HAVA.subtract(ALA)).divide(HAVA, 4, BigDecimal.ROUND_HALF_UP)).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);//月度生产总工时-故障停机时间/月度生产总工时
+                //顾问版设备可动率
+                obj[6] = ((GAVA.subtract(ALA)).divide(GAVA, 4, BigDecimal.ROUND_HALF_UP)).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);//月度平均生产总工时-故障停机时间/月度平均生产总工时
+                //设备故障率(%)   故障停机工时合计/月度生产总工时
+                obj[7] = ALA.divide(HAVA, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                //MTTR   故障停机工时合计/故障件数合计
+                obj[8] = ALA.divide(count10, 4, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP);
+                //顾问版MTBF   月度平均生产总工时/故障件数合计
+                obj[9] = GAVA.divide(count10, 4, BigDecimal.ROUND_HALF_UP).divide(BigDecimal.valueOf(60), 0, BigDecimal.ROUND_HALF_UP);
+                //汉钟版MTBF   月度生产总工时-故障停机时间/故障件数合计
+                obj[10] = (HAVA.subtract(ALA)).divide(count10, 0, BigDecimal.ROUND_HALF_UP).divide(BigDecimal.valueOf(60), 0, BigDecimal.ROUND_HALF_UP);
+
+                obj[11] = oMes[5];
+                //时间稼动率   （月度生产总工时-总异常时间）/月度生产总工时
+                obj[12] = (HAVA.subtract(abnormal)).divide(HAVA, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                obj[13] = (HAVA.subtract(abnormal)).divide(HAVA, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                //性能稼动率   产出标准工时/(月度生产总工时-总异常时间)
+                obj[14] = MINUTE.divide((HAVA.subtract(abnormal)), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                obj[15] = MINUTE.divide((HAVA.subtract(abnormal)), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                //良率  报工数-不良单据)/报工数(不良不论厂内外责任，只要经过加工就计入)
+                obj[16] = (QTY.subtract(QGQTY)).divide(QTY, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                obj[17] = QTY;
+                obj[18] = oMes[9];//月份
+                resultsMES.add(obj);
+            }
+        }
+
+        List<Object[]> list = new ArrayList();
+        Object[] obj1 = new Object[32];
+        Object[] obj2 = new Object[32];
+        Object[] obj3 = new Object[32];
+        Object[] obj4 = new Object[32];
+        Object[] obj5 = new Object[32];
+        Object[] obj6 = new Object[32];
+        Object[] obj7 = new Object[32];
+        Object[] obj8 = new Object[32];
+        Object[] obj9 = new Object[32];
+        Object[] obj10 = new Object[32];
+        Object[] obj11 = new Object[32];
+        Object[] obj12 = new Object[32];
+        obj1[0] = "月度生产总工时(分)";
+        obj2[0] = "故障件数合计(件)";
+        obj3[0] = "故障停机工时合计(分)";
+        obj4[0] = "设备可动率(%)";
+        obj5[0] = "MTTR(分/件)";
+        obj6[0] = "MTBF(小时/件)";
+        obj7[0] = "时间稼动率(%)";
+        obj8[0] = "性能稼动率(%)";
+        obj9[0] = "良率(%)";
+        obj10[0] = "月平均OEE(%)";
+        obj11[0] = "故障60分以上件数";
+        obj12[0] = "设备故障率(%)";
+
+        for (int i = 1; i <= 31; i++) {
             for (Object[] mes : resultsMES) {
                 if (i == Integer.parseInt(mes[18].toString())) {
                     if (mes[1] != null) {
@@ -1444,6 +1770,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List<Object[]> resultsMES = query.getResultList();
         StringBuilder sbEAM = new StringBuilder();
         String yearEAM = year.replace("/", "-").substring(0, 7);
+
         sbEAM.append(" SELECT DAY(E.hitchtime),count(E.formid),SUM(TIMESTAMPDIFF(MINUTE,E.servicearrivetime,E.completetime))  FROM equipmentrepair E LEFT JOIN assetcard A  ON E.assetno=A.formid");
         sbEAM.append(" WHERE E.hitchtime LIKE '%").append(yearEAM).append("%' AND  A.remark='").append(EPQID).append("' GROUP BY DAY(E.hitchtime)");
         query = getEntityManager().createNativeQuery(sbEAM.toString());
@@ -1454,7 +1781,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             for (Object[] objects : resultsMES) {
                 if (objects[0].equals(i)) {
                     obj = objects;
-                    if (objects[22]!=null&&!objects[22].equals(0)) {
+                    if (objects[22] != null && !objects[22].equals(0)) {
 //                      计算MTR
                         obj[37] = Integer.parseInt(objects[24].toString()) / Integer.parseInt(objects[22].toString());
                     }
@@ -1462,7 +1789,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             }
             for (Object[] objects : resultsEAM) {
                 if (objects[0].equals(i)) {
-                    obj[34] =objects[1] ;
+                    obj[34] = objects[1];
                     obj[35] = objects[2];
                     if (objects[2] != null) {
 //                      计算MTR
