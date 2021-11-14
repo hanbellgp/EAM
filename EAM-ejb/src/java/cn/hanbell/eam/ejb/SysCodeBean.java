@@ -23,6 +23,7 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
     public SysCodeBean() {
         super(SysCode.class);
     }
+  
 
     public SysCode findBySyskindAndCode(String syskind, String code) {
         Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCode");
@@ -35,8 +36,21 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
             return null;
         }
     }
+  
+    public SysCode findBySyskindAndCode(String company, String syskind, String code) {
+        Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCodeAndCompany");
+        query.setParameter("company", company);
+        query.setParameter("syskind", syskind);
+        query.setParameter("code", code);
+        try {
+            Object o = query.getSingleResult();
+            return (SysCode) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
     
-     public SysCode getTroubleName(String syskind, String code,String cValue) {
+    public SysCode getTroubleName(String syskind, String code, String cValue) {
         Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCodeAndCVlaue");
         query.setParameter("syskind", syskind);
         query.setParameter("code", code);
@@ -49,7 +63,6 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
         }
     }
     
-
     public List<SysCode> getTroubleNameList(String syskind, String code) {
         Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCode");
         query.setParameter("syskind", syskind);
@@ -61,4 +74,19 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
             return null;
         }
     }
+
+    public List<SysCode> getTroubleNameList(String company, String syskind, String code) {
+        Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCodeAndCompany");
+        query.setParameter("syskind", syskind);
+        query.setParameter("code", code);
+        query.setParameter("company", company);
+        try {
+            List results = query.getResultList();
+            return results;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    
 }

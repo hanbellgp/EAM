@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SysCode.findAll", query = "SELECT s FROM SysCode s"),
     @NamedQuery(name = "SysCode.findById", query = "SELECT s FROM SysCode s WHERE s.id = :id"),
     @NamedQuery(name = "SysCode.findBySyskind", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind"),
+    @NamedQuery(name = "SysCode.findByCompany", query = "SELECT s FROM SysCode s WHERE s.company = :company"),
     @NamedQuery(name = "SysCode.findByCode", query = "SELECT s FROM SysCode s WHERE s.code = :code"),
     @NamedQuery(name = "SysCode.findByCvalue", query = "SELECT s FROM SysCode s WHERE s.cvalue = :cvalue"),
     @NamedQuery(name = "SysCode.findByCdesc", query = "SELECT s FROM SysCode s WHERE s.cdesc = :cdesc"),
@@ -37,17 +38,23 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SysCode.findByOptdate", query = "SELECT s FROM SysCode s WHERE s.optdate = :optdate"),
     @NamedQuery(name = "SysCode.findByCfmuser", query = "SELECT s FROM SysCode s WHERE s.cfmuser = :cfmuser"),
     @NamedQuery(name = "SysCode.findBySyskindAndCode", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code"),
+    @NamedQuery(name = "SysCode.findBySyskindAndCodeAndCompany", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code AND s.company = :company "),
     @NamedQuery(name = "SysCode.findBySyskindAndCodeAndCVlaue", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code And s.cvalue=:cvalue"),
     @NamedQuery(name = "SysCode.findByCfmdate", query = "SELECT s FROM SysCode s WHERE s.cfmdate = :cfmdate")})
 public class SysCode extends SuperEntity {
 
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
+    @Size(min = 1, max = 2)
+    @Column(name = "company")
+    private String company;
+    @Basic(optional = false)
+    @NotNull()
     @Size(min = 1, max = 3)
     @Column(name = "syskind")
     private String syskind;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 20)
     @Column(name = "code")
     private String code;
@@ -70,6 +77,37 @@ public class SysCode extends SuperEntity {
         this.syskind = syskind;
         this.code = code;
         this.status = status;
+    }
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SysCode)) {
+            return false;
+        }
+        SysCode other = (SysCode) object;
+        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+    }
+    @Override
+    public String toString() {
+        return "cn.hanbell.eam.entity.SysCode[ id=" + id + " ]";
+    }
+
+   
+
+
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public String getSyskind() {
@@ -104,26 +142,7 @@ public class SysCode extends SuperEntity {
         this.cdesc = cdesc;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SysCode)) {
-            return false;
-        }
-        SysCode other = (SysCode) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
-    }
-
-    @Override
-    public String toString() {
-        return "cn.hanbell.eam.entity.SysCode[ id=" + id + " ]";
-    }
+  
 
 }
