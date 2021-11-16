@@ -79,7 +79,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         superEJB = equipmentRepairBean;
         detailEJB = equipmentRepairHelpersBean;
         queryState = "ALL";
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairDeptno").getCvalue();
         systemUser = systemUserBean.findByLikeDeptno("%" + deptno + "%");
         usernameList = new ArrayList<>();
         for (int i = 0; i < systemUser.size(); i++) {
@@ -119,7 +119,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         //表格一
         String[] title1 = getInventoryTitle();
         row = sheet1.createRow(0);
-        row.setHeight((short) 900);
+        row.setHeight((short) 900); 
         row1 = sheet1.createRow(1);
         row1.setHeight((short) 800);
         row2 = sheet1.createRow(2);

@@ -85,7 +85,7 @@ public class RepairManHourSummaryManagedBean extends FormMultiBean<EquipmentRepa
         superEJB = equipmentRepairBean;
         detailEJB = equipmentRepairHelpersBean;
         queryState = "ALL";
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairDeptno").getCvalue();
         systemUser = systemUserBean.findByLikeDeptno("%" + deptno + "%");
         usernameList = new ArrayList<>();
         for (int i = 0; i < systemUser.size(); i++) {

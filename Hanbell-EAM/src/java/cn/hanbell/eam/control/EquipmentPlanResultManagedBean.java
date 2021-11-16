@@ -95,12 +95,12 @@ public class EquipmentPlanResultManagedBean extends FormMultiBean<EquipmentAnaly
         superEJB = equipmentAnalyResultBean;
         model = new EquipmentAnalyResultModel(equipmentAnalyResultBean, userManagedBean);
         detailEJB = equipmentAnalyResultDtaBean;
-        standardtypeList = sysCodeBean.getTroubleNameList("RD", "standardtype");
-        standardlevelList = sysCodeBean.getTroubleNameList("RD", "standardlevel");
+        standardtypeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardtype");
+        standardlevelList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardlevel");
         standardlevelList.remove(0);//计划保全不能筛选一级基准
-        respondeptList = sysCodeBean.getTroubleNameList("RD", "respondept");
-        frequencyunitList = sysCodeBean.getTroubleNameList("RD", "frequencyunit");
-        manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
+        respondeptList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "respondept");
+        frequencyunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "frequencyunit");
+        manhourunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "manhourunit");
         queryState = "N";//初始查询待实施的数据
         queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
         queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天

@@ -378,8 +378,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             showErrorMsg("Error", "该单据已维修完成,不能转派");
             return;
         }
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        String userId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        String userId =sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
         if (currentEntity.getServiceuser().equals(userManagedBean.getUserid()) || userManagedBean.getUserid().equals(userId)) {
             super.openDialog(view); //To change body of generated methods, choose Tools | Templates.
         } else {
@@ -483,12 +482,12 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         }
 
         //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByUserId(deptno).getUsername();
         //获取故障类型
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         
 
         createDetail3();
@@ -541,7 +540,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             for (EquipmentRepairHelpers equipmentrepairHelpers : detailList4) {
                 min += Double.parseDouble(equipmentrepairHelpers.getUserno());
             }
-            currentEntity.setLaborcost(sysCodeBean.findBySyskindAndCode("RD", "laborcost").getCvalue());
+            currentEntity.setLaborcost(sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "laborcost").getCvalue());
             BigDecimal b1 = new BigDecimal(Double.toString(Double.parseDouble(currentEntity.getLaborcost())));
             BigDecimal b2 = new BigDecimal(Double.toString(Double.parseDouble(String.valueOf(min))));
             currentEntity.setLaborcosts(b1.multiply(b2));
@@ -562,11 +561,11 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByUserId(deptno).getUsername();
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -1160,7 +1159,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         if (day > 0) {
             hour += 24 * day;
         }
-        return hour + "小时" + min + "分";
+        return hour *60+ min + "分";
     }
 
     public String getButtonName() {

@@ -128,7 +128,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
             }
         }
         super.verify(); //To change body of generated methods, choose Tools | Templates.
-    }
+    } 
 //获取零件费用
 
     public BigDecimal getPartsCost() {

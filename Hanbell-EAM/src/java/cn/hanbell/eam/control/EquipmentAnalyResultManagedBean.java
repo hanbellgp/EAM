@@ -108,11 +108,11 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         superEJB = equipmentAnalyResultBean;
         model = new EquipmentAnalyResultModel(equipmentAnalyResultBean, userManagedBean);
         detailEJB = equipmentAnalyResultDtaBean;
-        standardtypeList = sysCodeBean.getTroubleNameList("RD", "standardtype");
-        standardlevelList = sysCodeBean.getTroubleNameList("RD", "standardlevel");
-        respondeptList = sysCodeBean.getTroubleNameList("RD", "respondept");
-        frequencyunitList = sysCodeBean.getTroubleNameList("RD", "frequencyunit");
-        manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
+        standardtypeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardtype");
+        standardlevelList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardlevel");
+        respondeptList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "respondept");
+        frequencyunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "frequencyunit");
+        manhourunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "manhourunit");
         queryState = "N";//初始查询待实施的数据
         queryStandardLevel = "一级";//初始查询等级一级的数据
         queryDateBegin = getDate();
@@ -175,6 +175,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
                 eArDta.setPlandate(eS.getNexttime());
                 eArDta.setCreator(userManagedBean.getUserid());
                 eArDta.setCredate(getDate());
+                
                 eArDta.setStatus("N");
                 seq++;
                 detailList.add(eArDta);
@@ -219,7 +220,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
                 model.getFilterFields().put("formdateEnd", queryDateEnd);
             }
             if (queryFormId != null && !"".equals(queryFormId)) {
-                this.model.getFilterFields().put("formid", queryFormId);
+                this.model.getFilterFields().put("assetno", queryFormId);
             }
             if (queryStandardLevel != null && !"".equals(this.queryStandardLevel)) {
                 this.model.getFilterFields().put("standardlevel", queryStandardLevel);

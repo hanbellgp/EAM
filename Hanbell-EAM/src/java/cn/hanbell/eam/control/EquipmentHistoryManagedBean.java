@@ -144,13 +144,13 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByUserId(deptno).getUsername();
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -348,7 +348,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         if (day > 0) {
             hour += 24 * day;
         }
-        return hour + "小时" + min + "分";
+        return hour *60+ min + "分";
     }
 //导出界面的EXCEL数据处理
 

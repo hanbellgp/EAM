@@ -471,6 +471,12 @@
             <to-view-id>/app/em/workshopEquipment.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+         <navigation-case>
+            <description>车间设备日报</description>
+            <from-outcome>workshopEquipmentDay</from-outcome>
+            <to-view-id>/app/em/workshopEquipmentDay.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
         <navigation-case>
             <description>BD119月设备故障件数统计表</description>
             <from-outcome>monthFailuresNumberStatistical</from-outcome>
@@ -549,6 +555,12 @@
             <to-view-id>/app/bj/equipmentSpareConsume.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <description>备件使用间隔表</description>
+            <from-outcome>equipmentSpareInterval</from-outcome>
+            <to-view-id>/app/bj/equipmentSpareInterval.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
         <navigation-rule>
             <description>维护保全模块</description>
             <from-view-id>/*</from-view-id>
@@ -574,6 +586,18 @@
                 <description>维保计划管理</description>
                 <from-outcome>equipmentPlanRule</from-outcome>
                 <to-view-id>/app/mp/equipmentPlanRule.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+             <navigation-case>
+                <description>自主保全月台账</description>
+                <from-outcome>equipmentAnalyMonth</from-outcome>
+                <to-view-id>/app/mp/equipmentAnalyMonth.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+            <navigation-case>
+                <description>计划保全年台账</description>
+                <from-outcome>equipmentPlanYear</from-outcome>
+                <to-view-id>/app/mp/equipmentPlanYear.xhtml</to-view-id>
                 <redirect/>
             </navigation-case>
         </navigation-rule>

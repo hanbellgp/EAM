@@ -7,19 +7,16 @@ package cn.hanbell.eam.control;
  */
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
-import cn.hanbell.eam.ejb.SysCodeBean;
+import cn.hanbell.eam.ejb.EquipmentSpareStockBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
-import cn.hanbell.eam.entity.SysCode;
+import cn.hanbell.eam.web.FormMultiBean;
+import com.lightshell.comm.BaseLib;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import cn.hanbell.eam.web.FormMultiBean;
-import cn.hanbell.eap.ejb.CompanyBean;
-import cn.hanbell.eap.entity.Company;
-import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +27,10 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -42,23 +39,21 @@ import org.apache.poi.ss.util.CellRangeAddress;
  *
  * @author C2079
  */
-@ManagedBean(name = "repairMTBFAndMTTRManagedBean")
+@ManagedBean(name = "equipmentSpareIntervalManagedBean")
 @SessionScoped
-public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHelpers> {
+public class EquipmentSpareIntervalManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHelpers> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     @EJB
-    private SysCodeBean sysCodeBean;
-    @EJB
-    private CompanyBean companyBean;
-    private List<Object[]> equipmentRepairsList;
-    private List<Company> companyList;
-    private String[] company;
+    private EquipmentSpareStockBean equipmentSpareStockBean;
 
-    public RepairMTBFAndMTTRManagedBean() {
+    private String EPQID;
+    private List<Object> EPQIDList;
+
+    public EquipmentSpareIntervalManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHelpers.class);
     }
 
@@ -67,112 +62,106 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
     public void init() {
         superEJB = equipmentRepairBean;
         detailEJB = equipmentRepairHelpersBean;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        List<String> list = equipmentRepairBean.getEPQID();
+        EPQIDList = new ArrayList<>();
         queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
         queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
-        if (equipmentRepairsList != null) {
-            equipmentRepairsList.clear();
+        for (int i = 0; i < list.size(); i++) {
+            EPQIDList.add(list.get(i));
         }
-        companyList = companyBean.findBySystemName("EAM");
-
-        String[] str = new String[]{userManagedBean.getCompany()};
-        company = str;
-        String comSql = " R.company= '" + company[0] + "'";
-        //获取当前月份的数据
-        equipmentRepairsList = equipmentRepairBean.getMTBFAndMTTR(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), "", "", "", comSql);
     }
 
-//导出界面的EXCEL数据处理
     @Override
-    public void print() throws ParseException {
-
-        fileName = "设备MTBF和MTTR表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+    public void print() throws Exception {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd");
+        List<Object[]> list = equipmentSpareStockBean.getUseSpare(EPQID, sf.format(queryDateBegin), sf.format(queryDateEnd));
+        List<Object[]> recordList = equipmentSpareStockBean.getEquipmentRecord(EPQID, sf.format(queryDateBegin), sf.format(queryDateEnd));
+        if (list.isEmpty()) {
+            showErrorMsg("Error", "当前无数据！请重新输入条件查询！");
+            return;
+        }
+        Map<String, List<Object[]>> map = new LinkedHashMap<>();
+        for (Object[] obj : list) {
+            if (map.containsKey(obj[0].toString())) {//map中存在此备件编号，将数据存放当前key的map中
+                map.get(obj[2].toString()).add(obj);
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(obj);
+                map.put(obj[2].toString(), tmpList);
+            }
+        }
+        fileName = "设备故障履历表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式
         Map<String, CellStyle> style = createStyles(workbook);
+
         // 生成一个表格
         HSSFSheet sheet1 = workbook.createSheet("Sheet1");
-        // 设置表格宽度
-        int[] wt1 = getInventoryWidth();
-        for (int i = 0; i < wt1.length; i++) {
-            sheet1.setColumnWidth(i, wt1[i] * 256);
-        }
-        //创建标题行
-        //创建标题行
+        String[] title1 = getInventoryTitle();
+        String[] title2 = getInventoryTitle2();
         Row row;
         Row row1;
         Row row2;
-        //表格一
-        String[] title1 = getInventoryTitle();
+        row1 = sheet1.createRow(2);
+        row1.setHeight((short) 800);
         row = sheet1.createRow(0);
         row.setHeight((short) 900);
-        row1 = sheet1.createRow(1);
-        row1.setHeight((short) 800);
-        row2 = sheet1.createRow(2);
-        row2.setHeight((short) 800);
+        sheet1.addMergedRegion(new CellRangeAddress(0, 1, 0, 9));
+        Cell cellTitle = row.createCell(0);
+        cellTitle.setCellStyle(style.get("title"));
+        cellTitle.setCellValue(EPQID + "---设备故障履历表");
+        int j = 3;
+        int seq = 1;
+
         for (int i = 0; i < title1.length; i++) {
-            Cell cell = row2.createCell(i);
+            Cell cell = row1.createCell(i);
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> val = entry.getValue();
+            row1 = sheet1.createRow(j);
 
-        if (equipmentRepairsList == null || equipmentRepairsList.isEmpty()) {
-            showErrorMsg("Error", "当前无数据！请先查询");
-            return;
-        }
-
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 8));
-        Cell cellTitle = row.createCell(0);
-        cellTitle.setCellStyle(style.get("title"));
-        cellTitle.setCellValue("设备MTBF和MTTR表");
-        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 8));
-        Cell cellTime = row1.createCell(0);
-        cellTime.setCellStyle(style.get("date"));
-        SimpleDateFormat date = new SimpleDateFormat("yyyy年MM月dd日");
-        cellTime.setCellValue(date.format(queryDateBegin) + "-----" + date.format(queryDateEnd));
-        int j = 3;
-        List<?> itemList = equipmentRepairsList;
-
-        List<Object[]> list = (List<Object[]>) itemList;
-        for (Object[] eq : list) {
-            row = sheet1.createRow(j);
-            j++;
-            row.setHeight((short) 400);
-            Cell cell0 = row.createCell(0);
+            Cell cell0 = row1.createCell(0);
             cell0.setCellStyle(style.get("cell"));
-            if (eq[0] != null) {
-                cell0.setCellValue(eq[0].toString());
-            }
-            Cell cell1 = row.createCell(1);
-            cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(eq[1].toString());
-            Cell cell2 = row.createCell(2);
-            cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(eq[2].toString());
-            Cell cell3 = row.createCell(3);
-            cell3.setCellStyle(style.get("cell"));
-            if (eq[3] != null) {
-                cell3.setCellValue(Double.parseDouble(eq[3].toString()));
-            }
+            cell0.setCellValue(seq);
+            cell0 = row1.createCell(1);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(entry.getKey());
 
-            Cell cell4 = row.createCell(4);
-            cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(Double.parseDouble(eq[4].toString()));
-            Cell cell5 = row.createCell(5);
-            cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(Double.parseDouble(eq[5].toString()));
-            Cell cell6 = row.createCell(6);
-            cell6.setCellStyle(style.get("cell"));
-            cell6.setCellValue(Double.parseDouble(eq[6].toString()));
-            Cell cell7 = row.createCell(7);
-            cell7.setCellStyle(style.get("cell"));
-            if (eq[7] != null) {
-                cell7.setCellValue(Double.parseDouble(eq[7].toString()));
+            for (int i = 0; i < 8; i++) {
+                cell0 = row1.createCell(i + 2);
+                cell0.setCellStyle(style.get("cell"));
+                if (i < val.size()) {
+                    cell0.setCellValue(val.get(j - 3)[3].toString());
+                }
+
             }
-            Cell cell8 = row.createCell(8);
-            cell8.setCellStyle(style.get("cell"));
-            cell8.setCellValue(Double.parseDouble(eq[8].toString()));
+            j++;
+            seq++;
+        }
+        sheet1.addMergedRegion(new CellRangeAddress(j + 3, j + 3, 0, 5));
+        row = sheet1.createRow(j + 3);
+        cellTitle = row.createCell(0);
+        cellTitle.setCellStyle(style.get("title"));
+        cellTitle.setCellValue("异常分析说明");
+        row2 = sheet1.createRow(4 + j);
+        for (int i = 0; i < title2.length; i++) {
+            Cell cell = row2.createCell(i);
+            cell.setCellStyle(style.get("head"));
+            cell.setCellValue(title2[i]);
+        }
+        for (int i = 0; i < recordList.size(); i++) {
+            row2 = sheet1.createRow(j + 5);
+            Cell cell0 = row2.createCell(0);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(i + 1);
+            for (int k = 0; k < recordList.get(i).length; k++) {
+                cell0 = row2.createCell(k + 1);
+                cell0.setCellStyle(style.get("cell"));
+                cell0.setCellValue(recordList.get(i)[k].toString());
+            }
         }
         OutputStream os = null;
         try {
@@ -198,14 +187,14 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "设备名称", "所属部门", "计划工作时间(分)", "故障停机时间(分)", "故障次数", "维修时间(分)", "MTBF  (分/件)", "MTTR  (分/件)"};
+        return new String[]{"项目", "更换零件名称", "第1回", "第2回", "第3回", "第4回", "第5回", "第6回", "第7回", "第8回"};
     }
 
     /**
-     * 设置单元格宽度
+     * 设置表头名称字段
      */
-    private int[] getInventoryWidth() {
-        return new int[]{20, 20, 20, 11, 11, 6, 10, 10, 10};
+    private String[] getInventoryTitle2() {
+        return new String[]{"项目", "发生日", "原因", "再发防止对策内容", "完成日", "实施者"};
     }
 
     /**
@@ -290,67 +279,20 @@ public class RepairMTBFAndMTTRManagedBean extends FormMultiBean<EquipmentRepair,
         return styles;
     }
 
-    /**
-     * 查询数据条件
-     */
-    @Override
-    public void query() {
-        if (queryDateBegin == null) {
-            showErrorMsg("Error", "请输入开始时间");
-            return;
-        }
-        if (queryDateEnd == null) {
-            showErrorMsg("Error", "请输入结束时间");
-            return;
-        }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        String strdate = "";
-        String enddate = "";
-        List<SysCode> codeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "itemno");//获取需要查询的加工机
-        String sql = "";
-        String companySql = "";
-        if (company.length > 0) {
-            for (String sqlCompanyID : company) {
-                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
-            }
-            companySql = companySql.substring(2, companySql.length());
-        }
-        if (codeList.size() > 0) {
-            sql = codeList.stream().map(sqlCode -> "'" + sqlCode.getCvalue() + "',").reduce(sql, String::concat);
-        }
-        if (sql != null && !"".equals(sql)) {
-            sql = sql.substring(0, sql.length() - 1);
-        }
-
-        strdate = simpleDateFormat.format(queryDateBegin);
-
-        enddate = simpleDateFormat.format(queryDateEnd);
-
-        equipmentRepairsList = equipmentRepairBean.getMTBFAndMTTR(strdate, enddate, queryFormId, queryName, sql, companySql);
+    public String getEPQID() {
+        return EPQID;
     }
 
-    public List<Object[]> getEquipmentRepairsList() {
-        return equipmentRepairsList;
+    public void setEPQID(String EPQID) {
+        this.EPQID = EPQID;
     }
 
-    public void setEquipmentRepairsList(List<Object[]> equipmentRepairsList) {
-        this.equipmentRepairsList = equipmentRepairsList;
+    public List<Object> getEPQIDList() {
+        return EPQIDList;
     }
 
-    public List<Company> getCompanyList() {
-        return companyList;
-    }
-
-    public void setCompanyList(List<Company> companyList) {
-        this.companyList = companyList;
-    }
-
-    public String[] getCompany() {
-        return company;
-    }
-
-    public void setCompany(String[] company) {
-        this.company = company;
+    public void setEPQIDList(List<Object> EPQIDList) {
+        this.EPQIDList = EPQIDList;
     }
 
 }

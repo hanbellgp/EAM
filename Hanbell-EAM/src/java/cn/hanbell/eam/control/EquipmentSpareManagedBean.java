@@ -48,24 +48,25 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
         newEntity.setCredate(getDate());
         newEntity.setStatus("N");
         newEntity.setCreator(userManagedBean.getUserid());
-        repairareaList = sysCodeBean.getTroubleNameList("RD", "repairarea");
+      
+        repairareaList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "repairarea");
     }
 
     @Override
     protected boolean doBeforePersist() throws Exception {
-        if (newEntity.getScategory() != null) {
+        if (newEntity.getScategory() == null) {
             showWarnMsg("Warn", "请选择备件大类");
             return false;
         }
-        if (newEntity.getMcategory()!= null) {
+        if (newEntity.getMcategory() == null) {
             showWarnMsg("Warn", "请选择备件中类");
             return false;
         }
-         if (newEntity.getUnit()!= null) {
+        if (newEntity.getUnit() == null) {
             showWarnMsg("Warn", "请选择单位");
             return false;
         }
-        
+
         String BJ = "W-" + newEntity.getScategory().getScategory() + "-" + newEntity.getMcategory().getMcategory();
         int size = equipmentSpareBean.findBySparenum(BJ).size() + 1;
         if (size < 10) {
