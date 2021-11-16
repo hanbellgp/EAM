@@ -142,14 +142,14 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
-        newEntity.setHitchtime(getDate());
+        newEntity.setHitchtime(getDate()); 
         newEntity.setRepairuser(userManagedBean.getUserid());
         newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()).getUsername());
         newEntity.setRepairdeptno(this.getDepartment(userManagedBean.getUserid()).getDeptno());
         newEntity.setRepairdeptname(this.getDepartment(userManagedBean.getUserid()).getDept());
-        troubleFromList = sysCodeBean.getTroubleNameList("RD", "faultType");
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
-        repairareaList = sysCodeBean.getTroubleNameList("RD", "repairarea");
+        troubleFromList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "faultType");
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
+        repairareaList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "repairarea");
     }
     //转派单据前端验证
 
@@ -429,12 +429,12 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             showErrorMsg("Error", "只有对应的责任人才能填写责任回复！");
             return "";
         }
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        maintenanceSupervisor = systemUserBean.findByUserId(deptno).getUsername();
         //获取联络时间
         if (currentEntity.getServicearrivetime() != null) {
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
@@ -520,7 +520,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (day > 0) {
             hour += 24 * day;
         }
-        return hour + "小时" + min + "分";
+        return hour *60 + min + "分";
     }
 
     private String getMin(String str) {

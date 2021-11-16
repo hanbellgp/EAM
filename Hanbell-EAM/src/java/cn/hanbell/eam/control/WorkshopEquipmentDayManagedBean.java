@@ -27,7 +27,6 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -44,21 +43,23 @@ import org.apache.poi.ss.util.CellRangeAddress;
  *
  * @author C2079
  */
-@ManagedBean(name = "workshopEquipmentManagedBean")
+@ManagedBean(name = "workshopEquipmentDayManagedBean")
 @SessionScoped
-public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHis> {
+public class WorkshopEquipmentDayManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHis> {
 
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
-    List<Number> yearsList;
+    private List<Number> yearsList;
+    private List<Number> monthList;
     private String stayear;
+    private String staMonth;
     private String type;
     private List<Object[]> workshopEquipmentList;
     private String reportType;
 
-    public WorkshopEquipmentManagedBean() {
+    public WorkshopEquipmentDayManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
     }
 
@@ -68,10 +69,19 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
         superEJB = equipmentRepairBean;
         Calendar date = Calendar.getInstance();
         int year = Integer.parseInt(String.valueOf(date.get(Calendar.YEAR)));
+        int month = Integer.parseInt(String.valueOf(date.get(Calendar.MONTH) + 1));
         yearsList = new ArrayList<>();
+        monthList = new ArrayList<>();
         for (int i = 2020; i <= year; i++) {
             yearsList.add(i);
         }
+        for (int i = 1; i < 13; i++) {
+            monthList.add(i);
+        }
+      
+         staMonth = String.valueOf(month);//获取当天月份
+       
+
         stayear = String.valueOf(year);//初始化数据年份为当前年份
         type = "半成品方型件";//默认查询半成品方型件的数据
         reportType = "H";
@@ -90,7 +100,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             if (reportType.equals("G")) {
                 edition = "顾问版车间设备月报模板";
             } else {
-                edition = "汉钟版车间设备月报模板";
+                edition = "汉钟版车间设备日报模板";
             }
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/" + edition + ".xls");
             Workbook workbook = WorkbookFactory.create(is);
@@ -114,7 +124,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 12));
             Cell cellTitle = row.createCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(stayear + "年车间设备月报-----" + type);
+            cellTitle.setCellValue(stayear + "年车间设备日报-----" + type);
             Cell cellTime = row1.createCell(13);
             cellTime.setCellStyle(style.get("right"));
             String version = reportType.equals("G") ? "顾问版" : "汉钟版";
@@ -124,13 +134,13 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             List<Object[]> list = (List<Object[]>) itemList;
             for (Object[] eq : list) {
                 row = sheet.getRow(j);
-                j++; 
+                j++;
                 row.setHeight((short) 400);
                 Cell cell0 = row.getCell(0);
                 cell0.setCellValue(eq[0].toString());
-                for (int i = 1; i < 13; i++) {
+                for (int i = 1; i <= 31; i++) {
                     cell0 = row.getCell(i);
-                    if (eq[i] != null) { 
+                    if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
                 }
@@ -166,7 +176,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
                 }
             }
             OutputStream os = null;
-            fileName = stayear + "年车间设备月报-" + type + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            fileName = stayear + "年车间设备日报-" + type + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);
@@ -276,7 +286,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
      */
     @Override
     public void query() {
-        workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, type, reportType);
+        workshopEquipmentList = equipmentRepairBean.getDayReport(stayear + "/0" + staMonth, type, reportType);
     }
 
     public List<Number> getYearsList() {
@@ -285,6 +295,22 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
 
     public void setYearsList(List<Number> yearsList) {
         this.yearsList = yearsList;
+    }
+
+    public List<Number> getMonthList() {
+        return monthList;
+    }
+
+    public void setMonthList(List<Number> monthList) {
+        this.monthList = monthList;
+    }
+
+    public String getStaMonth() {
+        return staMonth;
+    }
+
+    public void setStaMonth(String staMonth) {
+        this.staMonth = staMonth;
     }
 
     public String getStayear() {

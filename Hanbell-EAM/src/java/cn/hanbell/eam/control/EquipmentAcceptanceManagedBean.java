@@ -199,8 +199,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
+        String userid=sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        maintenanceSupervisor =systemUserBean.findByUserId(userid).getUsername();
 
         getPartsCost();
 
@@ -222,11 +222,12 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (currentEntity.getExcepttime() != null && currentEntity.getCompletetime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        //获取维修课长
+        String userid=sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        maintenanceSupervisor =systemUserBean.findByUserId(userid).getUsername();
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
         calculateTotalCost();
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
@@ -270,11 +271,11 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         }
 
         //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        String repairleadersId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
-        maintenanceSupervisor = systemUserBean.findByDeptno(deptno).get(0).getUsername();;
+        String repairleadersId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairleaders").getCvalue();
+     
+        maintenanceSupervisor =systemUserBean.findByUserId(repairleadersId).getUsername();
         //维修经理
-        String repairmanagerId = sysCodeBean.findBySyskindAndCode("RD", "repairmanager").getCvalue();
+        String repairmanagerId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairmanager").getCvalue();
         if (!userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
             showErrorMsg("Error", "只有维修课长和维修经理才能进行审批操作");
             return "";
@@ -284,9 +285,9 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  维修课长不能审批");
             return "";
         }
-        hitchurgencyList = sysCodeBean.getTroubleNameList("RD", "hitchurgency");
+        hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList("RD", "dutycause");
+        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         if (currentEntity.getServicearrivetime() != null) {
             //获取联络时间
             currentEntity.setContactTime(this.getTimeDifference(currentEntity.getServicearrivetime(), currentEntity.getHitchtime(), 0));
@@ -383,12 +384,11 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         currentDetail3.setContenct(contenct);
         currentDetail3.setNote(note);
         //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairleaders").getCvalue();
-        String repairleadersId = systemUserBean.findByDeptno(deptno).get(0).getUserid();
+        String repairleadersId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
         //维修经理
-        String repairmanagerId = sysCodeBean.findBySyskindAndCode("RD", "repairmanager").getCvalue();
+        String repairmanagerId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairmanager").getCvalue();
         //维修经理签核的金额
-        String repairApprovals = sysCodeBean.findBySyskindAndCode("RD", "repairApprovals").getCvalue();
+        String repairApprovals = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairApprovals").getCvalue();
 
         //备件费用
         maintenanceCosts = 0;
@@ -631,7 +631,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         if (day > 0) {
             hour += 24 * day;
         }
-        return hour + "小时" + min + "分";
+        return hour*60 + min + "分";
     }
     //获取人工费用
 

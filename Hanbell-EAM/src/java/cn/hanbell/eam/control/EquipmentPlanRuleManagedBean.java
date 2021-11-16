@@ -77,11 +77,12 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
         superEJB = equipmentAnalyResultBean;
         model = new EquipmentAnalyResultModel(equipmentAnalyResultBean, userManagedBean);
         detailEJB = equipmentAnalyResultDtaBean;
-        standardtypeList = sysCodeBean.getTroubleNameList("RD", "standardtype");
-        standardlevelList = sysCodeBean.getTroubleNameList("RD", "standardlevel");
-        respondeptList = sysCodeBean.getTroubleNameList("RD", "respondept");
-        frequencyunitList = sysCodeBean.getTroubleNameList("RD", "frequencyunit");
-        manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
+     
+        standardtypeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardtype");
+        standardlevelList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardlevel");
+        respondeptList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "respondept");
+        frequencyunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "frequencyunit");
+        manhourunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "manhourunit");
         standardlevelList.remove(0);//计划保全不能筛选一级基准
         queryStandardLevel = "二级";
         equipmentStandardsList = new ArrayList<>();

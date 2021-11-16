@@ -73,11 +73,11 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
         superEJB = equipmentStandardBean;
         model = new EquipmentStandardModel(equipmentStandardBean, userManagedBean);
         model.getFilterFields().put("status", "V");//只查询未作废的基准
-        standardtypeList = sysCodeBean.getTroubleNameList("RD", "standardtype");
-        standardlevelList = sysCodeBean.getTroubleNameList("RD", "standardlevel");
-        respondeptList = sysCodeBean.getTroubleNameList("RD", "respondept");
-        frequencyunitList = sysCodeBean.getTroubleNameList("RD", "frequencyunit");
-        manhourunitList = sysCodeBean.getTroubleNameList("RD", "manhourunit");
+        standardtypeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardtype");
+        standardlevelList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "standardlevel");
+        respondeptList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "respondept");
+        frequencyunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "frequencyunit");
+        manhourunitList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "manhourunit");
         super.init();
         openParams = new HashMap<>();
     }

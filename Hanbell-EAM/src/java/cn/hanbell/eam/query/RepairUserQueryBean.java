@@ -41,7 +41,7 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
         if (params.containsKey("deptname")) {
             this.model.getFilterFields().put("deptname", params.get("deptname")[0]);
         }
-        String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairDeptno").getCvalue();
         this.model.getFilterFields().put("status", "N");
         this.model.getFilterFields().put("deptno", deptno);
 
@@ -60,7 +60,7 @@ public class RepairUserQueryBean extends SuperQueryBean<SystemUser> {
                 this.model.getFilterFields().put("username", this.queryName);
             }
             this.model.getFilterFields().put("status", "N");
-            String deptno = sysCodeBean.findBySyskindAndCode("RD", "repairDeptno").getCvalue();
+            String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairDeptno").getCvalue();
             this.model.getFilterFields().put("deptno", deptno);
         }
     }

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6"> 查询条件</p:column>
+                    </p:row>
+                </f:facet>
+
+                <p:row>
+                    <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateBegin" value="#{equipmentSpareIntervalManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                    <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateEnd" value="#{equipmentSpareIntervalManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="数据分类" for="type" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="selectedUserName" value="#{equipmentSpareIntervalManagedBean.EPQID}" effect="fade" 
+                                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{equipmentSpareIntervalManagedBean.EPQIDList}" />
+                        </p:selectOneMenu>
+                    </p:column>
+
+                </p:row>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentSpareIntervalManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                </f:facet>
+
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出设备故障履历表" actionListener="#{equipmentSpareIntervalManagedBean.print()}" icon="ui-icon-print"
+                                     />
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentSpareIntervalManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+
+     
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnPrint">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

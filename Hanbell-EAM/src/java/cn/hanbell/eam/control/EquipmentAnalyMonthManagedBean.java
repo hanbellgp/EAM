@@ -1,26 +1,25 @@
-package cn.hanbell.eam.control;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import cn.hanbell.eam.ejb.EquipmentRepairBean;
-import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
-import cn.hanbell.eam.ejb.SysCodeBean;
-import cn.hanbell.eam.entity.EquipmentRepair;
-import cn.hanbell.eam.entity.EquipmentRepairHis;
-import cn.hanbell.eam.entity.SysCode;
-import cn.hanbell.eam.lazy.EquipmentRepairModel;
+package cn.hanbell.eam.control;
+
+import cn.hanbell.eam.ejb.EquipmentAnalyResultBean;
+import cn.hanbell.eam.ejb.EquipmentAnalyResultDtaBean;
+import cn.hanbell.eam.entity.EquipmentAnalyResult;
+import cn.hanbell.eam.entity.EquipmentAnalyResultDta;
+import cn.hanbell.eam.lazy.EquipmentAnalyResultModel;
+import cn.hanbell.eam.web.FormMultiBean;
+import com.lightshell.comm.BaseLib;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import cn.hanbell.eam.web.FormMultiBean;
-import cn.hanbell.eap.ejb.CompanyBean;
-import cn.hanbell.eap.entity.Company;
-import com.lightshell.comm.BaseLib;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,56 +39,65 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
- *
  * @author C2079
  */
-@ManagedBean(name = "repairCostStatisticsManagedBean")
+@ManagedBean(name = "equipmentAnalyMonthManagedBean")
 @SessionScoped
-public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepair, EquipmentRepairHis> {
+public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnalyResult, EquipmentAnalyResultDta> {
 
     @EJB
-    protected EquipmentRepairBean equipmentRepairBean;
+    private EquipmentAnalyResultBean equipmentAnalyResultBean;
     @EJB
-    private CompanyBean companyBean;
-    @EJB
-    protected EquipmentRepairHisBean equipmentRepairHisBean;
+    private EquipmentAnalyResultDtaBean equipmentAnalyResultDtaBean;
+    private List<Number> yearsList;
+    private List<Number> monthList;
+    private String stayear;
+    private String staMonth;
+    private List<Object[]> equipmentAnalyMonthList;
 
-    @EJB
-    private SysCodeBean sysCodeBean;
-    private List<EquipmentRepair> equipmentRepairList;
-    private List<SysCode> abrasehitchList;
-    private List<Company> companyList;
-    private String[] company;
-
-    public RepairCostStatisticsManagedBean() {
-        super(EquipmentRepair.class, EquipmentRepairHis.class);
+    public EquipmentAnalyMonthManagedBean() {
+        super(EquipmentAnalyResult.class, EquipmentAnalyResultDta.class);
     }
 
-    //初始化数据筛选
     @Override
     public void init() {
-        superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
-        //获取故障责任原因
-        abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
-        companyList = companyBean.findBySystemName("EAM");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天
-        queryDateEnd = equipmentRepairBean.getMonthDay(0);//获取当前月最后一天
-        String[] str = new String[]{userManagedBean.getCompany()};
-        company = str;
-        String comSql = " R.company= '" + company[0] + "'";
-        queryName = "";
-        queryFormId = null;
-        equipmentRepairList = equipmentRepairBean.getRepairCostStatisticsList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryFormId, queryName, comSql);
+        superEJB = equipmentAnalyResultBean;
+        model = new EquipmentAnalyResultModel(equipmentAnalyResultBean, userManagedBean);
+        detailEJB = equipmentAnalyResultDtaBean;
+        Calendar date = Calendar.getInstance();
+        int year = Integer.parseInt(String.valueOf(date.get(Calendar.YEAR)));
+        int month = Integer.parseInt(String.valueOf(date.get(Calendar.MONTH) + 1));
+        yearsList = new ArrayList<>();
+        monthList = new ArrayList<>();
+        for (int i = 2020; i <= year; i++) {
+            yearsList.add(i);
+        }
+        for (int i = 1; i < 13; i++) {
+            monthList.add(i);
+        }
+
+        staMonth = String.valueOf(month);//获取当天月份
+        stayear = String.valueOf(year);//初始化数据年份为当前年份
         super.init();
     }
 
+    @Override
+    public void query() {
+        String yearMonth;
+        if (Integer.parseInt(staMonth) < 10) {
+            yearMonth = stayear + "-0" + staMonth;
+        } else {
+            yearMonth = stayear + "-" + staMonth;
+        }
+        equipmentAnalyMonthList = equipmentAnalyResultDtaBean.getEquipmentAnalyResultDtaList(queryFormId, yearMonth);
+
+    }
 //导出界面的EXCEL数据处理
+
     @Override
     public void print() throws ParseException {
 
-        fileName = "维修费用统计表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        fileName = "自主保全月台账" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;
         HSSFWorkbook workbook = new HSSFWorkbook();
         //获得表格样式
@@ -119,80 +127,36 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
             cell.setCellValue(title1[i]);
         }
 
-        if (equipmentRepairList == null || equipmentRepairList.isEmpty()) {
+        if (equipmentAnalyMonthList == null || equipmentAnalyMonthList.isEmpty()) {
             showErrorMsg("Error", "当前无数据！请先查询");
             return;
         }
 
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 11));
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 34));
         Cell cellTitle = row.createCell(0);
         cellTitle.setCellStyle(style.get("title"));
-        cellTitle.setCellValue("维修费用统计表");
-        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 11));
+        cellTitle.setCellValue("自主保全台账");
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 34));
         Cell cellTime = row1.createCell(0);
         cellTime.setCellStyle(style.get("date"));
-        SimpleDateFormat date = new SimpleDateFormat("yyyy年MM月dd日");
-        cellTime.setCellValue(date.format(queryDateBegin) + "-----" + date.format(queryDateEnd));
+        cellTime.setCellValue(stayear + "-" + staMonth);
         int j = 3;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        List<?> itemList = equipmentRepairList;
+        List<?> itemList = equipmentAnalyMonthList;
 
         List<Object[]> list = (List<Object[]>) itemList;
         for (Object[] eq : list) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);
-            Cell cell0 = row.createCell(0);
-            cell0.setCellStyle(style.get("cell"));
-            cell0.setCellValue(eq[0].toString());
-            Cell cell1 = row.createCell(1);
-            cell1.setCellStyle(style.get("cell"));
-            if (eq[1] != null) {
-                cell1.setCellValue(eq[1].toString());
+            for (int i = 0; i < eq.length ; i++) {
+                Cell cell0 = row.createCell(i);
+                cell0.setCellStyle(style.get("cell"));
+                if (eq[i] != null) {
+                    cell0.setCellValue(eq[i].toString());
+                }
+
             }
-            Cell cell2 = row.createCell(2);
-            cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(eq[2].toString());
-            Cell cell3 = row.createCell(3);
-            cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(eq[3].toString());
-            String hitchtime = sdf.format(sdf.parse(eq[4].toString()));
-            Cell cell4 = row.createCell(4);
-            cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(hitchtime);
-            Cell cell5 = row.createCell(5);
-            cell5.setCellStyle(style.get("cell"));
-            if (eq[5] != null) {
-                cell5.setCellValue(getAbrasehitchName(eq[5].toString()));
-            }
-            Cell cell6 = row.createCell(6);
-            cell6.setCellStyle(style.get("left"));
-            if (eq[6] != null) {
-                cell6.setCellValue(eq[6].toString());
-            }
-            Cell cell7 = row.createCell(7);
-            cell7.setCellStyle(style.get("cell"));
-            if (eq[7] != null) {
-                cell7.setCellValue(Double.parseDouble(eq[7].toString()));
-            }
-            Cell cell8 = row.createCell(8);
-            cell8.setCellStyle(style.get("cell"));
-            if (eq[8] != null) {
-                cell8.setCellValue(Double.parseDouble(eq[8].toString()));
-            }
-            Cell cell9 = row.createCell(9);
-            cell9.setCellStyle(style.get("cell"));
-            if (eq[9] != null) {
-                cell9.setCellValue(Double.parseDouble(eq[9].toString()));
-            }
-            Cell cell10 = row.createCell(10);
-            cell10.setCellStyle(style.get("cell"));
-            if (eq[10] != null) {
-                cell10.setCellValue(Double.parseDouble(eq[10].toString()));
-            }
-            Cell cell11 = row.createCell(11);
-            cell11.setCellStyle(style.get("cell"));
-            cell11.setCellValue(eq[11].toString());
+
         }
         OutputStream os = null;
         try {
@@ -218,20 +182,20 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"报修单号", "资产编号", "设备名称", "报修部门", "故障发生日期", "故障责任原因", "维修作业方式", "其他费用(元)", "人工费用(元)", "备件费用(元)", "费用总计(元)", "维修人"};
+        return new String[]{"资产编号", "保养区域", "保养内容", "周期", "1", "2", "3", "4)", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth() {
-        return new int[]{15, 20, 15, 20, 20, 15, 30, 10, 10, 10, 10, 10};
+        return new int[]{15, 20, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     }
 
     /**
      * 设置导出EXCEL表格样式
      */
-     private Map<String, CellStyle> createStyles(Workbook wb) {
+    private Map<String, CellStyle> createStyles(Workbook wb) {
         Map<String, CellStyle> styles = new LinkedHashMap<>();
         // 文件头样式
         CellStyle headStyle = wb.createCellStyle();
@@ -310,83 +274,44 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
         return styles;
     }
 
-    /**
-     * 查询数据条件
-     */
-    @Override
-    public void query() {
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        String strdate = "";
-        String enddate = "";
-        String companySql = "";
-        if (company.length > 0) {
-            for (String sqlCompanyID : company) {
-                companySql += "or  R.company= " + " '" + sqlCompanyID + "' ";
-            }
-            companySql = companySql.substring(2, companySql.length());
-        }
-        if (queryDateBegin != null) {
-
-            strdate = simpleDateFormat.format(queryDateBegin);
-        }
-        if (queryDateEnd != null) {
-            enddate = simpleDateFormat.format(queryDateEnd);
-        }
-
-        equipmentRepairList = equipmentRepairBean.getRepairCostStatisticsList(strdate, enddate, queryFormId, queryName, companySql);
+    public List<Number> getYearsList() {
+        return yearsList;
     }
 
-    public String getAbrasehitchName(String str) {
-        if (null != str) {
-            switch (str) {
-                case "01":
-                    return "使用不当";
-                case "02":
-                    return "保养不当";
-                case "03":
-                    return "维修不当";
-                case "04":
-                    return "劣质配件";
-                case "05":
-                    return "正常使用寿命";
-                default:
-                    break;
-            }
-        }
-        return "";
+    public void setYearsList(List<Number> yearsList) {
+        this.yearsList = yearsList;
     }
 
-    public List<EquipmentRepair> getEquipmentRepairList() {
-        return equipmentRepairList;
+    public List<Number> getMonthList() {
+        return monthList;
     }
 
-    public void setEquipmentRepairList(List<EquipmentRepair> equipmentRepairList) {
-        this.equipmentRepairList = equipmentRepairList;
+    public void setMonthList(List<Number> monthList) {
+        this.monthList = monthList;
     }
 
-    public List<SysCode> getAbrasehitchList() {
-        return abrasehitchList;
+    public String getStayear() {
+        return stayear;
     }
 
-    public void setAbrasehitchList(List<SysCode> abrasehitchList) {
-        this.abrasehitchList = abrasehitchList;
+    public void setStayear(String stayear) {
+        this.stayear = stayear;
     }
 
-    public List<Company> getCompanyList() {
-        return companyList;
+    public String getStaMonth() {
+        return staMonth;
     }
 
-    public void setCompanyList(List<Company> companyList) {
-        this.companyList = companyList;
+    public void setStaMonth(String staMonth) {
+        this.staMonth = staMonth;
     }
 
-    public String[] getCompany() {
-        return company;
+    public List<Object[]> getEquipmentAnalyMonthList() {
+        return equipmentAnalyMonthList;
     }
 
-    public void setCompany(String[] company) {
-        this.company = company;
+    public void setEquipmentAnalyMonthList(List<Object[]> equipmentAnalyMonthList) {
+        this.equipmentAnalyMonthList = equipmentAnalyMonthList;
     }
 
 }
