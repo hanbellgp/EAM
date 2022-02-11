@@ -102,6 +102,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private String queryHitchalarm;
     private String queryFaultTime;
     private String queryArchive;
+    private String queryRepairMethodType;
     private List<SysCode> hitchurgencyList;
     private List<SysCode> abrasehitchList;
     private List<EquipmentTrouble> equipmentTroubleList;
@@ -144,7 +145,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         if (currentEntity.getExcepttime() != null) {
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
-        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByUserId(deptno).getUsername();
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         getPartsCost();
@@ -204,6 +205,9 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             if (queryDeptname != null && !"".equals(queryDeptname)) {
                 model.getFilterFields().put("repairdeptname", queryDeptname);
             }
+            if (queryRepairMethodType != null && !"NULL".equals(queryRepairMethodType)) {
+                model.getFilterFields().put("repairmethodtype", queryRepairMethodType);
+            }
             if (queryServiceuser != null && !"".equals(queryServiceuser)) {
                 model.getFilterFields().put("serviceusername", queryServiceuser);
             }
@@ -256,7 +260,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     //获取故障来源
     public String getTroubleName(String cValue) {
-        SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
+        SysCode sysCode = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "faultType", cValue);
         String troubleName = "";
         if (sysCode == null) {
             return troubleName;
@@ -299,7 +303,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     //获取故障紧急度
 
     public String getHitchurgency(String cValue) {
-        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        SysCode sysCode = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "hitchurgency", cValue);
         String troubleName = "";
         if (sysCode == null) {
             return troubleName;
@@ -348,7 +352,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         if (day > 0) {
             hour += 24 * day;
         }
-        return hour *60+ min + "分";
+        return hour * 60 + min + "分";
     }
 //导出界面的EXCEL数据处理
 
@@ -516,7 +520,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             Cell cell16 = row.createCell(16);
             cell16.setCellStyle(style.get("cell"));
             if (equipmentrepair.getHitchurgency() != null && !equipmentrepair.getHitchurgency().equals("NULL")) {
-                String hitchtype = sysCodeBean.getTroubleName("RD", "hitchurgency", equipmentrepair.getHitchurgency()).getCdesc();
+                String hitchtype = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "hitchurgency", equipmentrepair.getHitchurgency()).getCdesc();
                 cell16.setCellValue(hitchtype);
             }
 
@@ -1061,6 +1065,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
 
     public void seteDtaList(List<EquipmentSpareRecodeDta> eDtaList) {
         this.eDtaList = eDtaList;
+    }
+
+    public String getQueryRepairMethodType() {
+        return queryRepairMethodType;
+    }
+
+    public void setQueryRepairMethodType(String queryRepairMethodType) {
+        this.queryRepairMethodType = queryRepairMethodType;
     }
 
 }

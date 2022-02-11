@@ -249,4 +249,4 @@ public class EquipmentAnalyResultDtaBean extends SuperEJBForEAM<EquipmentAnalyRe
         return moList;
     }
 
-}
+            }

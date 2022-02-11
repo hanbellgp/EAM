@@ -96,94 +96,44 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
         try {
             finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = finalFilePath.indexOf("WEB-INF");
-
-            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/设备总合效率管理表模板.xls");
+            String str = "";
+            String title="";
+            if (type.equals("H")) {
+                str = "rpt/设备总合效率管理表H模板.xls";
+                title="工程设备总合效率管理表(汉钟设备管理版)";
+            } else {
+                str = "rpt/设备总合效率管理表G模板.xls";
+                title="工程设备总合效率管理表(顾问MES连线版)";
+            }
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
             Workbook workbook = WorkbookFactory.create(is);
             //获得表格样式
             Map<String, CellStyle> style = createStyles(workbook);
             Sheet sheet;
             sheet = workbook.getSheetAt(0);
             Row row;
-            row = sheet.createRow(0);
-            row.setHeight((short) 900);
+            row = sheet.getRow(0);
             if (equipmentTotalEfficiencyList == null || equipmentTotalEfficiencyList.isEmpty()) {
                 showErrorMsg("Error", "当前无数据！请先查询");
                 return;
             }
-            sheet.addMergedRegion(new CellRangeAddress(0, 2, 0, 28));
-            Cell cellTitle = row.createCell(0);
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 28));
+            Cell cellTitle = row.getCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(stayear + "年" + month + "月---" + EPQID + "---工程设备总合效率管理表");
+            cellTitle.setCellValue(stayear + "年" + month + "月---" + EPQID + "---"+title);
             List<?> itemList = equipmentTotalEfficiencyList;
-            int j = 7;
+            int j = 6;
             List<Object[]> list = (List<Object[]>) itemList;
             for (Object[] eq : list) {
-                row = sheet.createRow(j);
+                row = sheet.getRow(j);
                 j++;
-                row.setHeight((short) 400);
-                Cell cell0 = row.createCell(0);
-                cell0.setCellStyle(style.get("cell"));
-                cell0.setCellValue(Integer.parseInt(eq[0].toString()));
-                for (int i = 1; i <= 22; i++) {
-                    cell0 = row.createCell(i);
+                for (int i = 0; i <= 27; i++) {
+                    Cell cell0 = row.getCell(i);
+                    cell0 = row.getCell(i);
                     cell0.setCellStyle(style.get("cell"));
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
-                }
-                if (eq[34] != null) {
-                    cell0 = row.createCell(24);
-                    cell0.setCellStyle(style.get("cell"));
-                    cell0.setCellValue(Double.parseDouble(eq[34].toString()));
-                } else {
-                    cell0 = row.createCell(24);
-                    cell0.setCellStyle(style.get("cell"));
-                }
-                if (eq[35] != null) {
-                    cell0 = row.createCell(23);
-                    cell0.setCellStyle(style.get("cell"));
-                    cell0.setCellValue(Double.parseDouble(eq[35].toString()));
-                } else {
-                    cell0 = row.createCell(23);
-                    cell0.setCellStyle(style.get("cell"));
-                }
-                for (int i = 23; i < 33; i++) {
-                    cell0 = row.createCell(i + 2);
-                    cell0.setCellStyle(style.get("cell"));
-                    if (eq[i] != null) {
-                        cell0.setCellValue(Double.parseDouble(eq[i].toString()));
-                    }
-                }
-                cell0 = row.createCell(34);
-                cell0.setCellStyle(style.get("cell"));
-                if (eq[33] != null) {
-                    cell0.setCellValue(Double.parseDouble(eq[33].toString()));
-                }
-
-                if (eq[32] != null) {
-                    cell0 = row.createCell(36);
-                    cell0.setCellStyle(style.get("cell"));
-                    cell0.setCellValue(Double.parseDouble(eq[32].toString()));
-                } else {
-                    cell0 = row.createCell(36);
-                    cell0.setCellStyle(style.get("cell"));
-                }
-//                计算MTTF
-                if (eq[22] != null && !eq[22].equals(0)) {
-                    cell0 = row.createCell(35);
-                    cell0.setCellStyle(style.get("cell"));
-                    cell0.setCellValue((Integer.parseInt(eq[26].toString()) - Integer.parseInt(eq[21].toString())) / Integer.parseInt(eq[22].toString()));
-                } else {
-                    cell0 = row.createCell(35);
-                    cell0.setCellStyle(style.get("cell"));
-                }
-                if (eq[36] != null) {
-                    cell0 = row.createCell(37);
-                    cell0.setCellStyle(style.get("cell"));
-                    cell0.setCellValue(Double.parseDouble(eq[36].toString()));
-                } else {
-                    cell0 = row.createCell(37);
-                    cell0.setCellStyle(style.get("cell"));
                 }
 
             }
