@@ -50,11 +50,12 @@ public class SysCodeBean extends SuperEJBForEAM<SysCode> {
         }
     }
     
-    public SysCode getTroubleName(String syskind, String code, String cValue) {
+    public SysCode getTroubleName(String company, String syskind, String code, String cValue) {
         Query query = getEntityManager().createNamedQuery("SysCode.findBySyskindAndCodeAndCVlaue");
         query.setParameter("syskind", syskind);
         query.setParameter("code", code);
         query.setParameter("cvalue", cValue);
+        query.setParameter("company", company);
         try {
             Object o = query.getSingleResult();
             return (SysCode) o;

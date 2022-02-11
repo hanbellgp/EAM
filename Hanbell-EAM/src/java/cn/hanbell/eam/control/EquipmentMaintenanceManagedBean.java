@@ -500,13 +500,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             equipmentRepairHelpers.setCurnode(currentEntity.getServiceuser());
             equipmentRepairHelpers.setCurnode2(currentEntity.getServiceusername());
             if (currentEntity.getMaintenanceTime() != null) {
-                String[] maintenanceTimes = currentEntity.getMaintenanceTime().split("小时");
-                String hours = maintenanceTimes[0];
-                maintenanceTimes = maintenanceTimes[1].split("分");
+                String[] maintenanceTimes = currentEntity.getMaintenanceTime().split("分");
                 int min = Integer.parseInt(maintenanceTimes[0]);
-                if (Integer.parseInt(hours) != 0) {
-                    min += Integer.parseInt(hours) * 60;
-                }
                 equipmentRepairHelpers.setUserno(String.valueOf(min));
             } else {
                 equipmentRepairHelpers.setUserno(String.valueOf(0));
@@ -821,7 +816,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             cell2.setCellValue(equipmentrepair.getItemno());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(equipmentrepair.getAssetno() == null ? "其他" : equipmentrepair.getAssetno().getDeptname());
+            cell3.setCellValue(equipmentrepair.getAssetno() == null ? "其他" : equipmentrepair.getAssetno().getAssetDesc());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
             cell4.setCellValue(equipmentrepair.getAssetno() == null ? equipmentrepair.getRepairusername() : equipmentrepair.getAssetno().getUsername());
@@ -1015,7 +1010,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     //获取故障来源
     public String getTroubleName(String cValue) {
-        SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
+        SysCode sysCode = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "faultType", cValue);
         String troubleName = "";
         if (sysCode == null) {
             return troubleName;
@@ -1040,7 +1035,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     //获取故障紧急度
     public String getHitchurgency(String cValue) {
-        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        SysCode sysCode = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "hitchurgency", cValue);
         String troubleName = "";
         if (sysCode == null) {
             return troubleName;

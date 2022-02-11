@@ -78,9 +78,8 @@ public class WorkshopEquipmentDayManagedBean extends FormMultiBean<EquipmentRepa
         for (int i = 1; i < 13; i++) {
             monthList.add(i);
         }
-      
-         staMonth = String.valueOf(month);//获取当天月份
-       
+
+        staMonth = String.valueOf(month);//获取当天月份
 
         stayear = String.valueOf(year);//初始化数据年份为当前年份
         type = "半成品方型件";//默认查询半成品方型件的数据
@@ -286,7 +285,13 @@ public class WorkshopEquipmentDayManagedBean extends FormMultiBean<EquipmentRepa
      */
     @Override
     public void query() {
-        workshopEquipmentList = equipmentRepairBean.getDayReport(stayear + "/0" + staMonth, type, reportType);
+        String strDay ="";
+        if (Integer.parseInt(staMonth) < 10) {
+            strDay = "/0" + staMonth;
+        } else {
+            strDay = "/" + staMonth;
+        }
+        workshopEquipmentList = equipmentRepairBean.getDayReport(stayear + strDay, type, reportType);
     }
 
     public List<Number> getYearsList() {

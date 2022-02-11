@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SysCode.findByCfmuser", query = "SELECT s FROM SysCode s WHERE s.cfmuser = :cfmuser"),
     @NamedQuery(name = "SysCode.findBySyskindAndCode", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code"),
     @NamedQuery(name = "SysCode.findBySyskindAndCodeAndCompany", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code AND s.company = :company "),
-    @NamedQuery(name = "SysCode.findBySyskindAndCodeAndCVlaue", query = "SELECT s FROM SysCode s WHERE s.syskind = :syskind And s.code = :code And s.cvalue=:cvalue"),
+    @NamedQuery(name = "SysCode.findBySyskindAndCodeAndCVlaue", query = "SELECT s FROM  SysCode s WHERE  s.syskind = :syskind  And s.code = :code And s.cvalue=:cvalue AND s.company = :company "),
     @NamedQuery(name = "SysCode.findByCfmdate", query = "SELECT s FROM SysCode s WHERE s.cfmdate = :cfmdate")})
 public class SysCode extends SuperEntity {
 

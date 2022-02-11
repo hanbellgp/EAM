@@ -32,7 +32,7 @@ import org.primefaces.event.SelectEvent;
 @ManagedBean(name = "equipmentPlanRuleManagedBean")
 @SessionScoped
 public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyResult, EquipmentAnalyResultDta> {
-
+    
     @EJB
     private EquipmentAnalyResultBean equipmentAnalyResultBean;
     @EJB
@@ -56,11 +56,11 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
     private Object[] obj;
     private List<EquipmentStandard> equipmentStandardsList;
     private EquipmentStandard equipmentStandard;
-
+    
     public EquipmentPlanRuleManagedBean() {
         super(EquipmentAnalyResult.class, EquipmentAnalyResultDta.class);
     }
-
+    
     @Override
     public void create() {
         super.create();
@@ -71,7 +71,7 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCreator(userManagedBean.getUserid());
     }
-
+    
     @Override
     public void init() {
         superEJB = equipmentAnalyResultBean;
@@ -91,7 +91,7 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
         entityList = equipmentAnalyResultBean.getEquipmentStandardList(sd.format(getDate()), queryStandardLevel, queryDept, queryFormId);
         super.init();
     }
-
+    
     @Override
     public void handleDialogReturnWhenNew(SelectEvent event) {
         detailList.clear();//清除前面选择的设备基准
@@ -128,7 +128,7 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
                 eArDta.setCheckarea(eS.getCheckarea());
                 eArDta.setCheckcontent(eS.getCheckcontent());
                 eArDta.setJudgestandard(eS.getJudgestandard());
-                eArDta.setMethod(eS.getMethod()); 
+                eArDta.setMethod(eS.getMethod());                
                 eArDta.setMethodname(eS.getMethodname());
                 eArDta.setDowntime(eS.getDowntime());
                 eArDta.setDownunit(eS.getDownunit());
@@ -150,17 +150,16 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
             }
         }
     }
-
+    
     @Override
     public void doConfirmDetail() {
         super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public void update() {
         equipmentStandardBean.update(equipmentStandardsList);
     }
-    
     
     @Override
     public String edit(String path) {
@@ -168,7 +167,7 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
         equipmentStandardsList = equipmentStandardBean.findByAssetnoAndStandardlevel(obj[0].toString(), obj[3].toString(), sd.format(getDate()));
         return super.edit(path); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public void createDetail() {
         super.createDetail(); //To change body of generated methods, choose Tools | Templates.
@@ -176,115 +175,115 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
         currentDetail.setCredate(getDate());
         currentDetail.setCreator(userManagedBean.getUserid());
     }
-
+    
     @Override
     public void query() {
         SimpleDateFormat sd = new SimpleDateFormat("yyyy");
         entityList = equipmentAnalyResultBean.getEquipmentStandardList(sd.format(getDate()), queryStandardLevel, queryDept, queryFormId);
     }
-
+    
     public String getQueryUserno() {
         return queryUserno;
     }
-
+    
     public void setQueryUserno(String queryUserno) {
         this.queryUserno = queryUserno;
     }
-
+    
     public String getQueryEquipmentName() {
         return queryEquipmentName;
     }
-
+    
     public void setQueryEquipmentName(String queryEquipmentName) {
         this.queryEquipmentName = queryEquipmentName;
     }
-
+    
     public String getQueryDept() {
         return queryDept;
     }
-
+    
     public void setQueryDept(String queryDept) {
         this.queryDept = queryDept;
     }
-
+    
     public String getQueryStandardType() {
         return queryStandardType;
     }
-
+    
     public void setQueryStandardType(String queryStandardType) {
         this.queryStandardType = queryStandardType;
     }
-
+    
     public String getQueryStandardLevel() {
         return queryStandardLevel;
     }
-
+    
     public void setQueryStandardLevel(String queryStandardLevel) {
         this.queryStandardLevel = queryStandardLevel;
     }
-
+    
     public List<SysCode> getStandardlevelList() {
         return standardlevelList;
     }
-
+    
     public void setStandardlevelList(List<SysCode> standardlevelList) {
         this.standardlevelList = standardlevelList;
     }
-
+    
     public Object[] getObj() {
         return obj;
     }
-
+    
     public void setObj(Object[] obj) {
         this.obj = obj;
     }
-
+    
     public List<SysCode> getStandardtypeList() {
         return standardtypeList;
     }
-
+    
     public void setStandardtypeList(List<SysCode> standardtypeList) {
         this.standardtypeList = standardtypeList;
     }
-
+    
     public List<SysCode> getRespondeptList() {
         return respondeptList;
     }
-
+    
     public void setRespondeptList(List<SysCode> respondeptList) {
         this.respondeptList = respondeptList;
     }
-
+    
     public List<SysCode> getFrequencyunitList() {
         return frequencyunitList;
     }
-
+    
     public void setFrequencyunitList(List<SysCode> frequencyunitList) {
         this.frequencyunitList = frequencyunitList;
     }
-
+    
     public List<SysCode> getManhourunitList() {
         return manhourunitList;
     }
-
+    
     public void setManhourunitList(List<SysCode> manhourunitList) {
         this.manhourunitList = manhourunitList;
     }
-
+    
     public List<EquipmentStandard> getEquipmentStandardsList() {
         return equipmentStandardsList;
     }
-
+    
     public void setEquipmentStandardsList(List<EquipmentStandard> equipmentStandardsList) {
         this.equipmentStandardsList = equipmentStandardsList;
     }
-
+    
     public EquipmentStandard getEquipmentStandard() {
         return equipmentStandard;
     }
-
+    
     public void setEquipmentStandard(EquipmentStandard equipmentStandard) {
         this.equipmentStandard = equipmentStandard;
     }
-
+    
 }

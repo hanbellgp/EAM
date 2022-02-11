@@ -775,11 +775,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             Cell cell14 = row.createCell(14);
             cell14.setCellStyle(style.get("cell"));
             String hitchtype = "";
-            if ("0".equals(equipmentrepair.getHitchtype())) {
-                hitchtype = "一般故障";
-            } else if ("1".equals(equipmentrepair.getHitchtype())) {
-                hitchtype = "严重故障";
-            }
+            hitchtype=sysCodeBean.getTroubleName(userManagedBean.getCompany(),"RD","hitchurgency",equipmentrepair.getHitchurgency()).getCdesc();
             cell14.setCellValue(hitchtype);
             Cell cell15 = row.createCell(15);
             cell15.setCellStyle(style.get("cell"));
@@ -910,7 +906,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 //获取故障来源的名字
 
     public String getTroubleName(String cValue) {
-        SysCode sysCode = sysCodeBean.getTroubleName("RD", "faultType", cValue);
+        SysCode sysCode = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "faultType", cValue);
         String troubleName = "";
         if (sysCode == null) {
             return troubleName;
@@ -1006,7 +1002,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
 
     //获取故障紧急度
     public String getHitchurgency(String cValue) {
-        SysCode sysCode = sysCodeBean.getTroubleName("RD", "hitchurgency", cValue);
+        SysCode sysCode = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "hitchurgency", cValue);
         String troubleName = "";
         if (sysCode == null) {
             return troubleName;
