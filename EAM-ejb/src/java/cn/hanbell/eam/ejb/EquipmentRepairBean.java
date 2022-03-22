@@ -1825,7 +1825,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         StringBuilder sbEAM = new StringBuilder();
         String yearEAM = year.replace("/", "-").substring(0, 7);
         sbEAM.append(" SELECT DAY(E.hitchtime),count(E.formid),SUM(TIMESTAMPDIFF(MINUTE, E.hitchtime, E.completetime)),SUM(TIMESTAMPDIFF(MINUTE,E.servicearrivetime,E.completetime)),  SUM(TIMESTAMPDIFF(MINUTE, E.hitchtime, DATE_SUB(DATE_FORMAT(E.hitchtime,'%Y-%m-%d'),INTERVAL -1 DAY)))  FROM equipmentrepair E LEFT JOIN assetcard A  ON E.assetno=A.formid");
-        sbEAM.append(" WHERE E.hitchtime LIKE '%").append(yearEAM).append("%' AND  A.remark='").append(EPQID).append("' AND E.rstatus>=30  GROUP BY DAY(E.hitchtime)");
+        sbEAM.append(" WHERE E.hitchtime LIKE '%").append(yearEAM).append("%' AND  A.remark='").append(EPQID).append("' AND E.rstatus>=30 AND E.rstatus!=98  GROUP BY DAY(E.hitchtime)");
         query = getEntityManager().createNativeQuery(sbEAM.toString());
         List<Object[]> resultsEAM = query.getResultList();
         List<Object[]> list = new ArrayList<>();

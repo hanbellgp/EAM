@@ -49,7 +49,7 @@
                         </p:menuitem>
                         <p:menuitem id="btnCreate" value="新增" action="#{stationeryAcceptanceManagedBean.create('stationeryacceptNew')}" icon="ui-icon-plus"
                                     rendered="#{stationeryAcceptanceManagedBean.doAdd}" process="@this" />
-                        <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{stationeryAcceptanceManagedBean.print()}" icon="ui-icon-print"
+                        <p:menuitem id="btnPrint" value="导出EXCEL" actionListener="#{stationeryAcceptanceManagedBean.printEXE()}" icon="ui-icon-print"
                                     />
                     </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{stationeryAcceptanceManagedBean.reset()}" icon="ui-icon-refresh"

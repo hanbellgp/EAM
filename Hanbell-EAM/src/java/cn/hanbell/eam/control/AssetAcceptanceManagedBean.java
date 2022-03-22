@@ -260,8 +260,8 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
         }
     }
 
-    @Override
-    public void print() {
+   
+    public void printEXE() {
 
         fileName = "办公用品入库表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
         String fileFullName = reportOutputPath + fileName;

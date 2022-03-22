@@ -30,12 +30,12 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
        public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
-        sb.append("SELECT * FROM ");
+        sb.append("SELECT A.id,A.formid,A.company,A.assetno,A.assetdesc,A.spareno,A.deptno,A.deptname,A.standardlevel,A.startdate,A.enddate,A.analysisresult,B.remark,A.status,A.creator,A.credate,A.optuser,A.optdate,A.cfmuser,A.cfmdate FROM ");
         sb.append(this.className);
-        sb.append(" equipmentanalyresult WHERE (1=1 ");
+        sb.append(" A LEFT JOIN assetcard B ON A.assetno=B.formid  WHERE (1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();
         boolean dateFilterFlag = false;
-        String dateFilterStr = " AND formdate = formdate = CURDATE()";
+        String dateFilterStr = " AND A.formdate = A.formdate = CURDATE()";
 
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             String key = entry.getKey();
@@ -47,31 +47,31 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                 } else {
                     deptnoTemp = value.toString().substring(0, 3);
                 }
-                sb.append("  AND deptno LIKE '").append(deptnoTemp).append("%'");
+                sb.append("  AND A.deptno LIKE '").append(deptnoTemp).append("%'");
             }
              else if ("MaintainType".equals(key)) {
                 if("BQ".equals(value.toString())){
-                    dateFilterStr = " AND formdate = CURDATE()";
-                    sb.append(" AND standardlevel = '一级'");
+                    dateFilterStr = " AND A.formdate = CURDATE()";
+                    sb.append(" AND A.standardlevel = '一级'");
                 }
                 else
                 {
-                    dateFilterStr = " AND date_format(formdate,'%Y-%m') = date_format(CURDATE(),'%Y-%m')";
-                    sb.append(" AND standardlevel <> '一级'");
+                    dateFilterStr = " AND date_format(A.formdate,'%Y-%m') = date_format(CURDATE(),'%Y-%m')";
+                    sb.append(" AND A.standardlevel <> '一级'");
                 }
             }else if("AnalysisUser".equals(key)){
-                sb.append(MessageFormat.format(" AND formid IN (SELECT DISTINCT pid FROM equipmentanalyresultdta WHERE analysisuser = ''{0}'') ", value.toString()));
+                sb.append(MessageFormat.format(" AND A.formid IN (SELECT DISTINCT pid FROM equipmentanalyresultdta WHERE analysisuser = ''{0}'') ", value.toString()));
             }else if ("ExtraFilter".equals(key)) {
-                sb.append(MessageFormat.format(" AND (formid LIKE ''%{0}%'' OR assetno LIKE ''%{0}%'' OR assetdesc LIKE ''%{0}%'' OR spareno LIKE ''%{0}%'')", value.toString()));
+                sb.append(MessageFormat.format(" AND (A.formid LIKE ''%{0}%'' OR A.assetno LIKE ''%{0}%'' OR A.assetdesc LIKE ''%{0}%'' OR A.spareno LIKE ''%{0}%'')", value.toString()));
             } else if ("formdateBegin".equals(key)) {
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                 String formdateBeginStr = fmt.format(new Date(value.toString()));
-                sb.append(MessageFormat.format(" AND formdate >= ''{0}''", formdateBeginStr));
+                sb.append(MessageFormat.format(" AND A.formdate >= ''{0}''", formdateBeginStr));
                 dateFilterFlag = true;
             } else if ("formdateEnd".equals(key)) {
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                 String formdateEndStr = fmt.format(new Date(value.toString()));
-                sb.append(MessageFormat.format(" AND formdate <= ''{0}''", formdateEndStr));
+                sb.append(MessageFormat.format(" AND A.formdate <= ''{0}''", formdateEndStr));
                 dateFilterFlag = true;
             } else {
                 strMap.put(key, value);
