@@ -34,8 +34,14 @@
                         </p:row>
                         <p:row>
                             <p:column><h:outputLabel value="使用部门" for="queryDeptno" /></p:column>
-                            <p:column>
-                                <p:inputText id="queryDeptno" value="#{assetCardManagedBean.queryDeptno}" title="使用部门" />
+                            <p:column styleClass="Wid30">
+                                <p:inputText id="queryDeptno" value="#{assetCardManagedBean.queryDeptno}"  title="RequireDeptno" styleClass="inputWithButton"
+                                             />
+                                <p:commandButton id="btnDepartmentSelect" actionListener="#{assetCardManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnDeptWhenSelect}"
+                                            update="queryDeptno,queryDeptname" />
+                                </p:commandButton>
                             </p:column>
                             <p:column><h:outputLabel value="部门名称" for="queryDeptname" /></p:column>
                             <p:column>
@@ -44,8 +50,15 @@
                         </p:row>
                         <p:row>
                             <p:column><h:outputLabel value="工号" for="queryUserno" /></p:column>
+
                             <p:column>
-                                <p:inputText id="queryUserno" value="#{assetCardManagedBean.queryUserno}" title="使用人" />
+                                <p:inputText id="queryUserno" value="#{assetCardManagedBean.queryUserno}"  title="queryUserno" styleClass="inputWithButton"
+                                             />
+                                <p:commandButton id="btnSystemUserSelect" actionListener="#{assetCardManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                                 process="@this" >
+                                    <p:ajax event="dialogReturn" listener="#{assetCardManagedBean.handleDialogReturnUserWhenSelect}"
+                                            update="queryUserno,queryUsername" />
+                                </p:commandButton>
                             </p:column>
                             <p:column><h:outputLabel value="姓名" for="queryUsername" /></p:column>
                             <p:column>
@@ -107,7 +120,7 @@
                                 <p:selectBooleanCheckbox id="noPosition4" value="#{assetCardManagedBean.noPosition4}" title="位置4为空" />
                             </p:column>
                         </p:row> 
-                        <p:row>
+                        <p:row rendered="#{assetCardManagedBean.checkCategory}">
                             <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
                             <p:column>
                                 <p:inputText id="queryCategory" value="#{assetCardManagedBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>

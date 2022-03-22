@@ -13,7 +13,9 @@ import cn.hanbell.eam.entity.AssetPosition;
 import cn.hanbell.eam.entity.Warehouse;
 import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.FormSingleBean;
+import cn.hanbell.eap.ejb.SystemRoleDetailBean;
 import cn.hanbell.eap.entity.Department;
+import cn.hanbell.eap.entity.SystemRoleDetail;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
 import java.util.ArrayList;
@@ -34,7 +36,10 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
 
     @EJB
     private AssetCardBean assetCardBean;
-
+    
+    @EJB
+    private SystemRoleDetailBean systemRoleDtaBean;
+    private List<SystemRoleDetail> sRoleList;
     private AssetCategory queryCategory;
     private String queryItemno;
     private String queryItemdesc;
@@ -51,6 +56,7 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     private boolean noPosition2;
     private boolean noPosition3;
     private boolean noPosition4;
+    private boolean checkCategory;
 
     private List<String> paramPosition = null;
 
@@ -156,6 +162,23 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
         }
     }
 
+    public void handleDialogReturnDeptWhenSelect(SelectEvent event) {
+        if (event.getObject() != null) {
+            Department d = (Department) event.getObject();
+            queryDeptname = d.getDept();
+            queryDeptno = d.getDeptno();
+        }
+    }
+
+    public void handleDialogReturnUserWhenSelect(SelectEvent event) {
+        if (event.getObject() != null) {
+            SystemUser u = (SystemUser) event.getObject();
+            queryUsername = u.getUsername();
+            queryUserno = u.getUserid();
+
+        }
+    }
+
     public void handleDialogReturnPosition1WhenEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             AssetPosition e = (AssetPosition) event.getObject();
@@ -212,9 +235,20 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
         noPosition2 = false;
         noPosition3 = false;
         noPosition4 = false;
+        checkCategory=true;
         openParams = new HashMap<>();
         superEJB = assetCardBean;
+        sRoleList=new ArrayList<>();
+        sRoleList=systemRoleDtaBean.findByPId(37);//获取采购权限组成员
         model = new AssetCardModel(assetCardBean, userManagedBean);
+        for (SystemRoleDetail sRoleDta : sRoleList) {
+            if(sRoleDta.getSystemUser().getUserid().equals(userManagedBean.getUserid())){
+               queryCategory=new AssetCategory();
+               queryCategory.setId(11);
+               model.getFilterFields().put("assetItem.category.id", this.queryCategory.getId());
+               checkCategory =false;
+            }
+        }
         model.getFilterFields().put("qty <>", 0);
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
@@ -405,6 +439,10 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
     public void reset() {
         super.reset();
         model.getFilterFields().put("qty <>", 0);
+        queryDeptno = null;
+        queryDeptname = null;
+        queryUserno = null;
+        queryUsername = null;
         queryCategory = null;
     }
 
@@ -616,6 +654,14 @@ public class AssetCardManagedBean extends FormSingleBean<AssetCard> {
      */
     public void setNoPosition4(boolean noPosition4) {
         this.noPosition4 = noPosition4;
+    }
+
+    public boolean isCheckCategory() {
+        return checkCategory;
+    }
+
+    public void setCheckCategory(boolean checkCategory) {
+        this.checkCategory = checkCategory;
     }
 
 }

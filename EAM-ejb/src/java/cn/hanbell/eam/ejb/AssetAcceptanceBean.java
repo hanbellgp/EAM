@@ -15,9 +15,11 @@ import cn.hanbell.eam.entity.TransactionType;
 import cn.hanbell.eap.ejb.CompanyBean;
 import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.ejb.SystemProgramBean;
+import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Company;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemProgram;
+import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.SuperEJB;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -46,7 +48,8 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
 
     @EJB
     private AssetCardBean assetCardBean;
-
+    @EJB
+    private SystemUserBean systemUserBean;
     @EJB
     private AssetAcceptanceDetailBean assetAcceptanceDetailBean;
 
@@ -230,6 +233,12 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
             throw new RuntimeException(ex);
         }
     }
+//根据用户ID获取用户姓名
+
+    public SystemUser getUserName(String userId) {
+        SystemUser s = systemUserBean.findByUserId(userId);
+        return s;
+    }
 
     /**
      * @return the detailList
@@ -243,6 +252,11 @@ public class AssetAcceptanceBean extends SuperEJBForEAM<AssetAcceptance> {
      */
     public void setDetailList(List<AssetAcceptanceDetail> detailList) {
         this.detailList = detailList;
+    }
+
+    @Override
+    public void setDetail(Object value) {
+        detailList = assetAcceptanceDetailBean.findByPId(value);
     }
 
 }
