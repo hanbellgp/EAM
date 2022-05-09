@@ -17,8 +17,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -97,13 +101,13 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = finalFilePath.indexOf("WEB-INF");
             String str = "";
-            String title="";
+            String title = "";
             if (type.equals("H")) {
                 str = "rpt/设备总合效率管理表H模板.xls";
-                title="工程设备总合效率管理表(汉钟设备管理版)";
+                title = "工程设备总合效率管理表(汉钟设备管理版)";
             } else {
                 str = "rpt/设备总合效率管理表G模板.xls";
-                title="工程设备总合效率管理表(顾问MES连线版)";
+                title = "工程设备总合效率管理表(顾问MES连线版)";
             }
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
             Workbook workbook = WorkbookFactory.create(is);
@@ -120,7 +124,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 28));
             Cell cellTitle = row.getCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(stayear + "年" + month + "月---" + EPQID + "---"+title);
+            cellTitle.setCellValue(stayear + "年" + month + "月---" + EPQID + "---" + title);
             List<?> itemList = equipmentTotalEfficiencyList;
             int j = 6;
             List<Object[]> list = (List<Object[]>) itemList;
@@ -143,6 +147,206 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 EPQID = EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
             }
             fileName = stayear + "年" + month + "月---" + EPQID + "---设备总合效率管理表---" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            String fileFullName = reportOutputPath + fileName;
+            try {
+                os = new FileOutputStream(fileFullName);
+                workbook.write(os);
+                this.reportViewPath = reportViewContext + fileName;
+                this.preview();
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            } finally {
+                try {
+                    if (null != os) {
+                        os.flush();
+                        os.close();
+                    }
+                } catch (IOException ex) {
+                    showErrorMsg("Error", ex.getMessage());
+                }
+            }
+        } catch (IOException | InvalidFormatException e) {
+            showErrorMsg("Error", e.toString());
+        }
+    }
+
+    /**
+     * 设置表头名称字段
+     */
+    private String[] getInventoryTitle() {
+        return new String[]{"设备代号", "开始时间", "结束时间", "持续时间(分)", "异常信息", "备注原因"};
+    }
+
+    //导出界面的EXCEL数据处理
+    public void printlen() {
+
+        fileName = "设备异常" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        String fileFullName = reportOutputPath + fileName;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        //获得表格样式
+        Map<String, CellStyle> style = createStyles(workbook);
+        // 生成一个表格
+        HSSFSheet sheet1 = workbook.createSheet("异常数据总计表");
+        // 生成一个表格
+        HSSFSheet sheet2 = workbook.createSheet("异常数据明细表");
+        //创建标题行
+        Row row;
+        row = sheet1.createRow(0);
+        Row row2;
+        row2 = sheet2.createRow(0);
+        row.setHeight((short) 800);
+        Cell cell = row.createCell(0);
+        cell.setCellStyle(style.get("head"));
+        cell.setCellValue("设备代号");
+        cell = row.createCell(1);
+        cell.setCellStyle(style.get("head"));
+        cell.setCellValue("异常时间总和");
+        String[] title1 = getInventoryTitle();
+        for (int i = 0; i < title1.length; i++) {
+            Cell cell1 = row2.createCell(i);
+            cell1.setCellStyle(style.get("head"));
+            cell1.setCellValue(title1[i]);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        if (queryDateBegin == null || queryDateEnd == null) {
+            showErrorMsg("Error", "清先选择开始和结束时间");
+            return;
+        }
+        List<Object[]> letList = equipmentRepairBean.getLEN(EPQID, sdf.format(queryDateBegin), sdf.format(queryDateEnd));
+        int j = 1;
+        String sEQp = "";
+        for (Object[] obj : letList) {
+            sEQp = sEQp + "'" + obj[0].toString() + "',";
+            row = sheet1.createRow(j);
+            j++;
+            row.setHeight((short) 400);
+            Cell cell0 = row.createCell(0);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(obj[0].toString());
+            cell0 = row.createCell(1);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(obj[1].toString());
+
+        }
+        sEQp = sEQp.substring(0, sEQp.length() - 1);
+        int z = 1;
+        List<Object[]> letDtaList = equipmentRepairBean.getLENDta(sEQp, sdf.format(queryDateBegin), sdf.format(queryDateEnd));
+        for (Object[] obj : letDtaList) {
+            row = sheet2.createRow(z);
+            z++;
+            row.setHeight((short) 400);
+            Cell cell0 = row.createCell(0);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(obj[0].toString());
+            cell0 = row.createCell(1);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(obj[1].toString());
+            cell0 = row.createCell(2);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(obj[2].toString());
+            cell0 = row.createCell(3);
+            cell0.setCellStyle(style.get("cell"));
+            cell0.setCellValue(obj[3].toString());
+            cell0 = row.createCell(4);
+            cell0.setCellStyle(style.get("cell"));
+            if (obj[4] != null) {
+                cell0.setCellValue(obj[4].toString());
+            }
+            cell0 = row.createCell(5);
+            cell0.setCellStyle(style.get("cell"));
+            if (obj[5] != null) {
+                cell0.setCellValue(obj[5].toString());
+            }
+
+        }
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(fileFullName);
+            workbook.write(os);
+            this.reportViewPath = reportViewContext + fileName;
+            this.preview();
+        } catch (Exception ex) {
+            showErrorMsg("Error", ex.getMessage());
+        } finally {
+            try {
+                if (null != os) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
+    }
+
+    //导出OEE数据
+    public void printOEE() throws ParseException {
+        String finalFilePath = "";
+        try {
+            finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+            int index = finalFilePath.indexOf("WEB-INF");
+            String str = "";
+            String title = "";
+            if (type.equals("H")) {
+                str = "rpt/设备总合效率OEE.xls";
+                title = "OEE表(汉钟设备管理版)";
+            } else {
+                str = "rpt/设备总合效率OEE.xls";
+                title = "OEE(顾问MES连线版)";
+            }
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
+            Workbook workbook = WorkbookFactory.create(is);
+            //获得表格样式
+            Map<String, CellStyle> style = createStyles(workbook);
+            Sheet sheet;
+            sheet = workbook.getSheetAt(0);
+            Row row;
+            row = sheet.getRow(0);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat zdf = new SimpleDateFormat("yyyy/MM/dd");
+            if (queryDateBegin == null) {
+                showErrorMsg("Error", "请在开始时间选择导出的日期！！！");
+                return;
+            }
+            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID);
+            List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);
+           // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
+            if (oeeList == null || oeeList.isEmpty()) {
+                showErrorMsg("Error", "当前无数据！请先查询");
+                return;
+            }
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 28));
+            Cell cellTitle = row.getCell(0);
+            cellTitle.setCellStyle(style.get("title"));
+            cellTitle.setCellValue(sdf.format(queryDateBegin) + "---" + deptName.get(0) + "---" + title);
+            List<?> itemList = oeeList;
+            int j = 6;
+            List<Object[]> list = (List<Object[]>) itemList;
+            for (Object[] eq : list) {
+                row = sheet.getRow(j);
+                j++;
+                for (int i = 0; i <= 27; i++) {
+                    Cell cell0 = row.getCell(i);
+                    cell0 = row.getCell(i);
+                    cell0.setCellStyle(style.get("cell"));
+                    if (eq[i] != null) {
+                        if (i == 0) {
+                            cell0.setCellValue(eq[i].toString());
+                        } else {
+                            cell0.setCellValue(Double.parseDouble(eq[i].toString()));
+                        }
+
+                    }
+                }
+
+            }
+            sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            OutputStream os = null;
+            if (EPQID.contains("/")) {
+                EPQID = EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
+            }
+            fileName = sdf.format(queryDateBegin) + "---" + deptName.get(0) + "---设备总合效率OEE表---" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);

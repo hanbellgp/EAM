@@ -12,15 +12,29 @@ import cn.hanbell.eap.entity.Company;
 import cn.hanbell.eap.entity.SystemGrantPrg;
 import cn.hanbell.eap.entity.SystemUser;
 import com.lightshell.comm.BaseLib;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.el.MethodExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.json.JSONObject;
 
 /**
  *
@@ -50,7 +64,7 @@ public class UserManagedBean implements Serializable {
     private String newpwd;
     private String secpwd;
     private boolean status;
-
+    private String token;
     private List<SystemGrantPrg> systemGrantPrgList;
     private List<Company> companyList;
 
@@ -61,6 +75,24 @@ public class UserManagedBean implements Serializable {
     @PostConstruct
     public void construct() {
         companyList = companyBean.findBySystemName("EAM");
+//        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+//        token = request.getQueryString();
+//        if (token != null && !"".equals(token)) {
+//            try {
+//                company = "C";
+//                String checkLogin = sendPostLogin("http://edw.hanbell.com.cn/platfm.webapi/v1/user/get-info", token);
+//                if (checkLogin.equals("home")) {
+//                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+//                } else {
+//                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权免密登入,请联系管理员"));
+//                }
+//
+//            } catch (IOException ex) {
+//                Logger.getLogger(UserManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//
+//        }
+
     }
 
     public boolean checkUser() {
@@ -69,6 +101,112 @@ public class UserManagedBean implements Serializable {
 
     public SystemUser findById(int id) {
         return systemUserBean.findById(id);
+    }
+
+    /**
+     * 获取当前访问URL （含协议、域名、端口号[忽略80端口]、项目名）
+     *
+     * @param url
+     * @param param
+     * @return: String
+     */
+//新增一个接口
+    public String sendPostLogin(String url, String param) throws IOException {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        token = request.getQueryString();
+        if (token==null || token.equals("")) {
+            return "";
+        }
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+            conn.setRequestProperty("charset", "utf-8");
+            conn.setRequestProperty("accept", "*/*");
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            // 发送请求参数
+            out.print(token);
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream(), "utf-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送 POST 请求出现异常！" + e);
+            e.printStackTrace();
+        } //使用finally块来关闭输出流、输入流
+        finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        String userNo = "";
+
+        JSONObject jsonObject = new JSONObject(result);
+        int resultTemp = jsonObject.getInt("result");//获取成功状态
+        if (resultTemp == 1) {//成功则获取员工id
+            JSONObject data = jsonObject.getJSONObject("data");
+            userid = data.getString("userNo");
+            SystemUser u = null;
+            u = systemUserBean.findByUserId(userid);
+            company = "C";
+            if (u != null) {
+                if ("Admin".equals(u.getUserid())) {
+                    currentCompany = companyBean.findByCompany(company);
+                    if (currentCompany == null) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                    }
+                } else {
+                    //此处加入公司授权检查
+                    CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
+                    if (cg == null) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别,请联系管理员"));
+                        status = false;
+                        return "";
+                    }
+                    currentCompany = companyBean.findByCompany(company);
+                    if (currentCompany == null) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                        status = false;
+                        return "";
+                    }
+                }
+                currentUser = u;
+                status = true;
+                mobile = u.getUserid();
+                updateLoginTime();
+
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权免密登入,请联系管理员"));
+            status = false;
+            return "login";
+        }
+        token = "";
+         FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+        return "home";
     }
 
     public String login() {
@@ -305,6 +443,14 @@ public class UserManagedBean implements Serializable {
      */
     public List<Company> getCompanyList() {
         return companyList;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }
