@@ -1933,6 +1933,236 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         return list;
     }
 
+    public List<Object[]> getLEN(String type, String strDate, String endDate) {
+        List<String> deptName = this.getEPQIDDeptname(type);
+        if (!deptName.isEmpty()) {
+            type = deptName.get(0);//获取加工机所在部门信息
+        }
+        StringBuilder sbMES = new StringBuilder();
+        sbMES.append(" SELECT A.* FROM ( SELECT  EQPID, SUM(convert(INT, ALARMTIME_LEN))/60 LEN FROM EQP_RESULT_ALARM_D LEFT JOIN MALARM B ON SPECIALALARMID = B.ALARMID");
+        sbMES.append(" WHERE ALARMSTARTTIME>= '").append(strDate).append("' AND ALARMSTARTTIME<='").append(endDate).append("'  AND B.ALARMTYPE='").append(type).append("'");
+        sbMES.append(" GROUP BY EQPID) A  WHERE  A.LEN>120 ");
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        Query query = superEJBForMES.getEntityManager().createNativeQuery(sbMES.toString());
+        List<Object[]> lenList = query.getResultList();
+        return lenList;
+
+    }
+
+    //获取当前班次明细数据
+    public List<Object[]> getLENDta(String EPQID, String strDate, String endDate) {
+
+        StringBuilder sbMES = new StringBuilder();
+        sbMES.append(" SELECT EQPID,ALARMSTARTTIME,ALARMENDTIME,convert(INT, ALARMTIME_LEN)/60,B.ALARMNAME ,REMARK FROM EQP_RESULT_ALARM_D LEFT JOIN MALARM B ON SPECIALALARMID = B.ALARMID WHERE");
+        sbMES.append("  ALARMSTARTTIME>= '").append(strDate).append("' AND ALARMSTARTTIME<='").append(endDate).append("' AND convert(INT, ALARMTIME_LEN)/60>5   AND EQPID IN (" + EPQID + ") ORDER BY EQPID");
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        Query query = superEJBForMES.getEntityManager().createNativeQuery(sbMES.toString());
+        List<Object[]> lenList = query.getResultList();
+        return lenList;
+
+    }
+
+    public List getEquipmentTotalEfficiencyDayOEE(String year, String EPQID) {
+//        StringBuilder sbMES = new StringBuilder();
+//        sbMES.append(" SELECT A.day, 1440,CASE WHEN D.estimateNUM IS NULL THEN 0 ELSE D.estimateNUM END,C.QTY,C.MINUTE,CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END,1440-A.AVAILABLEMINS,B.停机待测,B.生技试模,B.欠料等待,B.刀具调试更换,B.停机换模,B.物料返修,B.上下料干涉等待,B.单模拆装,B.共用刀具模具等待,B.带教新人讲解,B.绿灯暖机,B.其他,B.未填,B.计划停机,B.设备故障,CASE WHEN A.counts IS NULL THEN 0 ELSE A.counts END counts,(A.AVAILABLEMINS-(1440-A.AVAILABLEMINS))/A.AVAILABLEMINS*100,1440-B.计划停机");
+//        sbMES.append(" ,A.AVAILABLEMINS-B.SUMLEN JiadongTime,C.QTY- (CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END) productQTY,convert(decimal(10,2),(C.QTY*1.0- (CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END))/C.QTY*100,2) productRate,convert(decimal(10,2),round((A.AVAILABLEMINS-B.设备故障*1.0)/A.AVAILABLEMINS*100,2))  equipmentRate,");
+//        sbMES.append(" convert(decimal(10,2),round(C.MINUTE/(A.AVAILABLEMINS-B.SUMLEN)*100,2)) xingNengRate,convert(decimal(10,2),round((A.AVAILABLEMINS-B.SUMLEN*1.0)/A.AVAILABLEMINS*100,2))  timeRate,convert(decimal(10,2),round(((C.QTY*1.0- (CASE WHEN E.DEFECTSUM IS NULL THEN 0 ELSE E.DEFECTSUM END))/C.QTY)*(C.MINUTE/(A.AVAILABLEMINS-B.SUMLEN))*((A.AVAILABLEMINS-B.SUMLEN*1.0)/A.AVAILABLEMINS*100),2)) OEE,B.设备故障/A.counts MTTR,CASE WHEN (A.AVAILABLEMINS-B.设备故障)/A.counts IS NULL THEN A.AVAILABLEMINS ELSE (A.AVAILABLEMINS-B.设备故障)/A.counts END MTBF");
+//        sbMES.append(" ,0,0,0,0  FROM ( SELECT B.EQPID,B.AVAILABLEMINS,A.counts,A.ALARMTIME_LEN,B.day  FROM ( SELECT E.EQPID, COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN, day(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM_D E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
+//        sbMES.append(" WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%' AND M.ALARMNAME = '设备故障' GROUP BY day(E.ALARMSTARTTIME), E.EQPID) A RIGHT JOIN ( SELECT E.EQPID,sum(AVAILABLEMINS) AVAILABLEMINS ,day(PLANDATE) day FROM MEQP M  LEFT JOIN EQP_AVAILABLETIME_SCHEDULE E  ON E.EQPID=M.EQPID WHERE PLANDATE LIKE '").append(year).append("%' AND E.EQPID='").append(EPQID).append("' AND AVAILABLEMINS!=0");
+//        sbMES.append(" GROUP BY day(PLANDATE),E.EQPID) B ON A.day=B.day AND A.EQPID=B.EQPID) A LEFT JOIN (SELECT  A.DAY,MAX( case A.ALARMNAME when '设备故障' then A.ALARMTIME_LEN else 0 end) 设备故障,MAX( case A.ALARMNAME when '停机待测' then A.ALARMTIME_LEN else 0 end) 停机待测,MAX( case A.ALARMNAME when '生技试模' then A.ALARMTIME_LEN else 0 end) 生技试模,MAX( case A.ALARMNAME when '欠料等待' then A.ALARMTIME_LEN else 0 end) 欠料等待,MAX( case A.ALARMNAME when '刀具调试更换' then A.ALARMTIME_LEN else 0 end) 刀具调试更换,");
+//        sbMES.append(" MAX( case A.ALARMNAME when '停机换模' then A.ALARMTIME_LEN else 0 end) 停机换模,MAX( case A.ALARMNAME when '物料返修' then A.ALARMTIME_LEN else 0 end) 物料返修,MAX( case A.ALARMNAME when '计划停机' then A.ALARMTIME_LEN else 0 end) 计划停机,MAX( case A.ALARMNAME when '绿灯暖机' then A.ALARMTIME_LEN else 0 end) 绿灯暖机,MAX( case A.ALARMNAME when NULL then A.ALARMTIME_LEN else 0 end) 未填,MAX( case A.ALARMNAME when '上下料干涉等待' then A.ALARMTIME_LEN else 0 end) 上下料干涉等待,MAX( case A.ALARMNAME when '单模拆装' then A.ALARMTIME_LEN else 0 end) 单模拆装,");
+//        sbMES.append(" MAX( case A.ALARMNAME when '其他' then A.ALARMTIME_LEN else 0 end) 其他,MAX( case A.ALARMNAME when '共用刀具模具等待' then A.ALARMTIME_LEN else 0 end) 共用刀具模具等待,MAX( case A.ALARMNAME when '带教新人讲解' then A.ALARMTIME_LEN else 0 end) 带教新人讲解,SUM(A.ALARMTIME_LEN) SUMLEN FROM (");
+//        sbMES.append(" SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN))/60 ALARMTIME_LEN,DAY(A.DATE) DAY FROM (SELECT EQPID, B.ALARMNAME,convert(VARCHAR(10), ALARMSTARTTIME, 111) AS DATE, ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE EQPID='").append(EPQID).append("' AND A.ALARMSTARTTIME LIKE '").append(year).append("%') A GROUP BY A.ALARMNAME,DAY(A.DATE)) A GROUP BY A.DAY) B ON A.day=B.DAY");
+//        sbMES.append(" LEFT JOIN (SELECT COUNT(A.EQPID) AS QTY, round(SUM(STD_TIME) / 60, 1) AS MINUTE,day FROM(SELECT A.EQPID, B.STD_TIME,day(PROCESSCOMPLETETIME) AS day FROM MEQP C LEFT JOIN PROCESS_STEP A ON A.EQPID = C.EQPID LEFT JOIN PROCESS_STEP_TIME B ON A.PRODUCTCOMPID = B.PRODUCTCOMPID AND A.EQPID = B.EQPID AND A.PRODUCTORDERID = B.PRODUCTORDERID AND A.SYSID = B.SYSID AND A.STEPID = B.STEPID WHERE");
+//        sbMES.append("  A.PROCESSCOMPLETETIME LIKE '").append(year).append("%' AND A.EQPID='").append(EPQID).append("' AND A.PROCESSCOMPLETETIME IS NOT NULL) A GROUP BY  day) C ON C.day=A.day LEFT JOIN (SELECT SUM(convert(INT, NUM)) estimateNUM,day(PLANDATE) day FROM PLAN_SEMI_SQUARE WHERE EQPID ='").append(EPQID).append("'  AND PLANDATE LIKE '").append(year).append("%'  GROUP BY DAY(PLANDATE)) D ON D.day=A.day");
+//        sbMES.append(" LEFT JOIN ( SELECT SUM ( convert(INT, DEFECTNUM)) AS DEFECTSUM,day(B.PROJECTCREATETIME) day FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID");
+//        sbMES.append(" WHERE  B.PROJECTID LIKE 'QC%' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003' AND S.EQPID ='").append(EPQID).append("' GROUP BY day(B.PROJECTCREATETIME)) E ON E.day=A.day");
+//        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+//        Query query = superEJBForMES.getEntityManager().createNativeQuery(sbMES.toString());
+//        List<Object[]> resultsMES = query.getResultList();
+
+//       生管计划工时，连线故障次数及故障工时
+        List<String> deptName = this.getEPQIDDeptname(EPQID);
+        String dept = "";
+        if (!deptName.isEmpty()) {
+            dept = deptName.get(0);//获取加工机所在部门信息
+        }
+        StringBuilder sbMESAVA = new StringBuilder();
+        sbMESAVA.append(" SELECT  B.EQPID,B.AVAILABLEMINS,A.counts, A.ALARMTIME_LEN");
+        sbMESAVA.append(" FROM (SELECT E.EQPID,COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN");
+        sbMESAVA.append("  FROM EQP_RESULT_ALARM_D E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
+        sbMESAVA.append(" WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%' AND M.ALARMNAME = '设备故障' and M.ALARMTYPE='" + dept + "'");
+        sbMESAVA.append(" GROUP BY  E.EQPID) A RIGHT JOIN (SELECT E.EQPID,sum(AVAILABLEMINS) AVAILABLEMINS");
+        sbMESAVA.append(" FROM MEQP M LEFT JOIN EQP_AVAILABLETIME_SCHEDULE E ON E.EQPID = M.EQPID  WHERE PLANDATE LIKE '").append(year).append("%' AND M.PRODUCTTYPE = '").append(dept).append("'");
+        sbMESAVA.append("  AND M.EQPTYPEID='实体设备' GROUP BY E.EQPID) B ON  A.EQPID = B.EQPID");
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        Query query = superEJBForMES.getEntityManager().createNativeQuery(sbMESAVA.toString());
+        List<Object[]> resultsAVA = query.getResultList();
+//       连线故障时间及总和
+        StringBuilder sbMESLEN = new StringBuilder();
+        sbMESLEN.append(" SELECT A.EQPID,MAX(CASE A.ALARMNAME WHEN '设备故障' THEN A.ALARMTIME_LEN ELSE 0 END) 设备故障,");
+        sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '停机待测' THEN A.ALARMTIME_LEN ELSE 0 END) 停机待测, MAX(CASE A.ALARMNAME WHEN '生技试模' THEN A.ALARMTIME_LEN ELSE 0 END) 生技试模,");
+        sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '欠料等待' THEN A.ALARMTIME_LEN ELSE 0 END) 欠料等待, MAX(CASE A.ALARMNAME WHEN '刀具调试更换' THEN A.ALARMTIME_LEN  ELSE 0 END) 刀具调试更换,");
+        sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '停机换模' THEN A.ALARMTIME_LEN ELSE 0 END) 停机换模, MAX(CASE A.ALARMNAME WHEN '物料返修' THEN A.ALARMTIME_LEN  ELSE 0 END) 物料返修, MAX(CASE A.ALARMNAME WHEN '上下料干涉等待' THEN A.ALARMTIME_LEN  ELSE 0 END)    上下料干涉等待,");
+        sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '单模拆装' THEN A.ALARMTIME_LEN ELSE 0 END) 单模拆装,MAX(CASE A.ALARMNAME WHEN '共用刀具模具等待' THEN A.ALARMTIME_LEN ELSE 0 END)   共用刀具模具等待,MAX(CASE A.ALARMNAME WHEN '带教新人讲解' THEN A.ALARMTIME_LEN  ELSE 0 END)  带教新人讲解, MAX(CASE A.ALARMNAME WHEN '绿灯暖机' THEN A.ALARMTIME_LEN ELSE 0 END)  绿灯暖机,");
+        sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '其他' THEN A.ALARMTIME_LEN ELSE 0 END)      其他, MAX(CASE A.ALARMNAME WHEN NULL THEN A.ALARMTIME_LEN ELSE 0 END)      未填,");
+        sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '计划停机' THEN A.ALARMTIME_LEN ELSE 0 END) 计划停机,");
+        sbMESLEN.append(" SUM(A.ALARMTIME_LEN) SUMLEN FROM (SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN)) /60 ALARMTIME_LEN, EQPID FROM (SELECT EQPID,B.ALARMNAME,convert(VARCHAR(10), ALARMSTARTTIME,111) AS DATE,");
+        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE A.ALARMSTARTTIME LIKE '").append(year).append("%') A GROUP BY A.EQPID, A.ALARMNAME) A GROUP BY EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESLEN.toString());
+        List<Object[]> resultsLEN = query.getResultList();
+
+        //      报工数量及产出标准工时
+        StringBuilder sbMESQTY = new StringBuilder();
+        sbMESQTY.append(" SELECT A.EQPID,COUNT(A.EQPID) AS QTY, round(SUM(STD_TIME) / 60, 1) AS MINUTE FROM(SELECT A.EQPID, B.STD_TIME,day(PROCESSCOMPLETETIME) AS day FROM MEQP C");
+        sbMESQTY.append(" LEFT JOIN PROCESS_STEP A ON A.EQPID = C.EQPID LEFT JOIN PROCESS_STEP_TIME B ON A.PRODUCTCOMPID = B.PRODUCTCOMPID AND A.EQPID = B.EQPID AND A.PRODUCTORDERID = B.PRODUCTORDERID AND A.SYSID = B.SYSID AND A.STEPID = B.STEPID");
+        sbMESQTY.append(" WHERE  A.PROCESSCOMPLETETIME LIKE '").append(year).append("%' and C.EQPTYPEID='实体设备' AND C.PRODUCTTYPE='").append(dept).append("' AND A.PROCESSCOMPLETETIME IS NOT NULL) A GROUP BY  EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQTY.toString());
+        List<Object[]> resultsQTY = query.getResultList();
+        String tName = "";//获取查询计划件数的表名
+        String avaTime = "";//周计划工时
+        //      计划产出件数
+        StringBuilder sbMESPlan = new StringBuilder();
+        if (dept.equals("半成品方型件")) {
+            tName = "PLAN_SEMI_SQUARE";
+            avaTime = ",sum(convert(DECIMAL, WORKHOUR)*convert(INT, NUM))";
+        } else {
+            tName = "PLAN_SEMI_CIRCLE";
+        }
+        sbMESPlan.append(" SELECT  EQPID,  SUM(convert(INT, NUM)) estimateNUM ").append(avaTime).append("FROM ").append(tName).append(" WHERE PLANDATE LIKE '").append(year).append("%'  GROUP BY EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESPlan.toString());
+        List<Object[]> resultsPlan = query.getResultList();
+        //      不合格单数量
+        StringBuilder sbMESQCQTY = new StringBuilder();
+        sbMESQCQTY.append(" SELECT SUM ( convert(INT, DEFECTNUM)) AS DEFECTSUM,A.EQPID FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID WHERE  B.PROJECTID LIKE 'QC%' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003'  GROUP BY A.EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQCQTY.toString());
+        List<Object[]> resultsQCQTY = query.getResultList();
+        //      特采数量
+        StringBuilder sbMESQCQTYSpecial = new StringBuilder();
+        sbMESQCQTYSpecial.append(" SELECT A.EQPID,SUM(convert(INT, A.DEFECTNUM)) AS DEFECTSUM FROM FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD A ON A.PROJECTID = B.PROJECTID AND B.ANALYSISJUDGEMENTRESULT ='特采'");
+        sbMESQCQTYSpecial.append(" LEFT JOIN PROCESS_STEP S ON A.PRODUCTORDERID = S.PRODUCTORDERID AND A.COMPIDSEQ = S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP = S.STEPID ");
+        sbMESQCQTYSpecial.append(" WHERE B.PROJECTID LIKE 'QC%' AND B.ISPROCESSED = 'Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE = 'UQFG0003'   GROUP BY A.EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQCQTYSpecial.toString());
+        List<Object[]> resultsQCQTYSpecial = query.getResultList();
+        //        EAM
+        StringBuilder sbEAM = new StringBuilder();
+        String yearEAM = year.replace("/", "-");
+        sbEAM.append(" SELECT A.remark,count(E.formid),SUM(TIMESTAMPDIFF(MINUTE, E.hitchtime, E.completetime)),SUM(TIMESTAMPDIFF(MINUTE,E.servicearrivetime,E.completetime)),  SUM(TIMESTAMPDIFF(MINUTE, E.hitchtime, DATE_SUB(DATE_FORMAT(E.hitchtime,'%Y-%m-%d'),INTERVAL -1 DAY)))  FROM equipmentrepair E LEFT JOIN assetcard A  ON E.assetno=A.formid");
+        sbEAM.append(" WHERE E.hitchtime LIKE '%").append(yearEAM).append("%' AND E.rstatus>=30 AND E.rstatus!=98 AND A.remark IS NOT NULL   GROUP BY A.remark");
+        query = getEntityManager().createNativeQuery(sbEAM.toString());
+        List<Object[]> resultsEAM = query.getResultList();
+        List<Object[]> list = new ArrayList<>();
+        int strMin = 0;
+        int endMin = 0;
+        for (Object[] i : resultsAVA) {
+            Object[] obj = new Object[40];
+
+            for (Object[] objects : resultsAVA) {
+                if (objects[0].equals(i[0].toString())) {
+                    //      将有生管计划的所有值赋0
+                    for (int j = 0; j < 39; j++) {
+                        obj[j] = 0;
+                    }
+                    obj[1] = Integer.parseInt(objects[1].toString());
+                    obj[7] = 1440 - Integer.parseInt(objects[1].toString());
+//                    故障次数为0时将数值赋0
+                    if (objects[3] != null) {
+                        obj[22] = objects[3];
+                        obj[24] = objects[2];
+                    }
+                }
+            }
+
+//          实际产出件数及标准工时
+            for (Object[] object : resultsQTY) {
+                if (object[0].equals(i[0].toString())) {
+                    obj[3] = object[1];
+                    obj[4] = object[2];
+                }
+            }
+//            计划产出件数
+            for (Object[] object : resultsPlan) {
+                if (object[0].equals(i[0].toString())) {
+                    obj[2] = object[1];
+                    if (dept.equals("半成品方型件")) {
+                        obj[1] = object[2];
+                        if (Integer.parseInt(object[2].toString()) == 0) {
+                            obj[7] = 1440;
+                        } else if (Integer.parseInt(object[2].toString()) > 720) {
+                            obj[7] = 0;
+                        } else {
+                            obj[7] = 720;
+                        }
+                    }
+                }
+            }
+//            不合格单数量
+            for (Object[] object : resultsQCQTY) {
+                if (object[1] != null) {
+                    if (object[1].equals(i[0].toString())) {
+                        obj[5] = object[0];
+                    }
+                }
+
+            }
+//            特采数量
+            for (Object[] object : resultsQCQTYSpecial) {
+                if (object[0] != null) {
+                    if (object[0].equals(i[0].toString())) {
+                        obj[6] = object[1];
+                    }
+                }
+
+            }
+            if (strMin != 0) {
+                obj[23] = strMin;
+                obj[26] = endMin;
+                strMin = 0;
+                endMin = 0;
+            } else {
+                obj[23] = 0;
+                obj[26] = 0;
+            }
+//            EAM故障时间及故障次数
+            for (Object[] objects : resultsEAM) {
+                if (objects[0].equals(i[0].toString())) {
+                    obj[23] = Integer.parseInt(objects[2].toString()) + Integer.parseInt(obj[23].toString());
+                    obj[25] = objects[1];
+                    obj[26] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(obj[26].toString());
+                    obj[27] = objects[1];
+                    if (Integer.parseInt(objects[2].toString()) > 1440) {//当维修时间超出当天时间，将超出部分归类到第二天
+                        obj[23] = Integer.parseInt(objects[4].toString());
+                        strMin = Integer.parseInt(objects[2].toString()) - Integer.parseInt(objects[4].toString());
+                        endMin = Integer.parseInt(objects[3].toString()) - Integer.parseInt(objects[4].toString());
+                        obj[26] = Integer.parseInt(objects[4].toString()) - (Integer.parseInt(objects[2].toString()) - Integer.parseInt(objects[3].toString()));
+                    } else {
+                        strMin = 0;
+                        endMin = 0;
+                    }
+                }
+            }
+            for (Object[] objects : resultsLEN) {
+                if (objects[0].equals(i[0].toString())) {
+                    for (int j = 2; j <= 15; j++) {
+                        obj[6 + j] = objects[j];
+                    }
+//                    obj[21]=objects[15];
+////                  获取计划停机时间-实际停机时间的差异
+//                    if (obj[7] != null && Integer.parseInt(obj[7].toString()) != 0) {
+//                        int seq = (int) ((1440 - Integer.parseInt(objects[16].toString())) - Double.parseDouble(obj[4].toString()));
+//                        obj[21] = seq;
+//                    } else {
+//                        obj[21] = 0;
+//                    }
+                }
+            }
+            obj[0] = i[0].toString();
+            list.add(obj);
+        }
+
+        return list;
+    }
+
     /**
      * 获取加工机的EOQID
      *

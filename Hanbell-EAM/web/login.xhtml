@@ -17,9 +17,9 @@
         <h:outputScript name="js/layout.js" library="ultima-layout" />
     </h:head>
 
-    <h:body styleClass="login-body">
+    <h:body styleClass="login-body" onload="#{userManagedBean.sendPostLogin('http://edw.hanbell.com.cn/platfm.webapi/v1/user/get-info',userManagedBean.token)}">
         <h:form>
-            <p:growl id="growl" showSummary="false" showDetail="true"  autoUpdate="true"/>
+            <p:growl id="growl" showSummary="false" showDetail="true"  autoUpdate="true" />
             <div class="card login-panel ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
