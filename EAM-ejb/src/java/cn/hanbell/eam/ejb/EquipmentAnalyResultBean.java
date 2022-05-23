@@ -6,6 +6,7 @@
 package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
+import cn.hanbell.eam.comm.SuperEJBForMES;
 import cn.hanbell.eam.entity.EquipmentAnalyResult;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -23,11 +25,14 @@ import javax.persistence.Query;
 @LocalBean
 public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResult> {
 
+    @EJB
+    private SuperEJBForMES mesEJB;
+
     public EquipmentAnalyResultBean() {
         super(EquipmentAnalyResult.class);
     }
 
-       public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
+    public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
         sb.append("SELECT A.id,A.formid,A.company,A.assetno,A.assetdesc,A.spareno,A.deptno,A.deptname,A.standardlevel,A.startdate,A.enddate,A.analysisresult,B.remark,A.status,A.creator,A.credate,A.optuser,A.optdate,A.cfmuser,A.cfmdate FROM ");
@@ -48,20 +53,17 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                     deptnoTemp = value.toString().substring(0, 3);
                 }
                 sb.append("  AND A.deptno LIKE '").append(deptnoTemp).append("%'");
-            }
-             else if ("MaintainType".equals(key)) {
-                if("BQ".equals(value.toString())){
+            } else if ("MaintainType".equals(key)) {
+                if ("BQ".equals(value.toString())) {
                     dateFilterStr = " AND A.formdate = CURDATE()";
                     sb.append(" AND A.standardlevel = '一级'");
-                }
-                else
-                {
+                } else {
                     dateFilterStr = " AND date_format(A.formdate,'%Y-%m') = date_format(CURDATE(),'%Y-%m')";
                     sb.append(" AND A.standardlevel <> '一级'");
                 }
-            }else if("AnalysisUser".equals(key)){
+            } else if ("AnalysisUser".equals(key)) {
                 sb.append(MessageFormat.format(" AND A.formid IN (SELECT DISTINCT pid FROM equipmentanalyresultdta WHERE analysisuser = ''{0}'') ", value.toString()));
-            }else if ("ExtraFilter".equals(key)) {
+            } else if ("ExtraFilter".equals(key)) {
                 sb.append(MessageFormat.format(" AND (A.formid LIKE ''%{0}%'' OR A.assetno LIKE ''%{0}%'' OR A.assetdesc LIKE ''%{0}%'' OR A.spareno LIKE ''%{0}%'')", value.toString()));
             } else if ("formdateBegin".equals(key)) {
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
@@ -77,14 +79,12 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                 strMap.put(key, value);
             }
         }
-        
-        if(dateFilterFlag){
+
+        if (dateFilterFlag) {
             sb.append(")").append(exFilterStr);
-        }
-        else
+        } else {
             sb.append(dateFilterStr).append(")").append(exFilterStr);
-        
-        
+        }
 
         filters = strMap;
         setNativeQueryFilter(sb, filters);
@@ -99,8 +99,25 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
 
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentAnalyResult.class).setMaxResults(50);
-
         List<EquipmentAnalyResult> results = query.getResultList();
+        List<String> fMESList = new ArrayList<>();
+        List<String> yMESList = new ArrayList<>();
+        String stopSql = "";
+        stopSql = " SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(INT, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = convert(char,getdate(),111) GROUP BY EQPID )A  WHERE A.ALN=0";
+
+        query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
+        fMESList = query.getResultList();
+        stopSql = " SELECT E.EQPID FROM EQP_AVAILABLETIME_SCHEDULE E LEFT JOIN MEQP M ON E.EQPID=M.EQPID WHERE M.PRODUCTTYPE='半成品圆型件' and PLANDATE=convert(char,getdate(),111) AND AVAILABLEMINS=0";
+        query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
+        yMESList = query.getResultList();
+        fMESList.addAll(yMESList);
+        for (String epqId : fMESList) {
+            for (EquipmentAnalyResult rString : results) {
+                if (epqId.equals(rString.getRemark())) {
+                    rString.setCreator("停机");
+                }
+            }
+        }
         return results;
     }
 
@@ -109,7 +126,6 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
             queryStrBuilder.append(MessageFormat.format(" AND {0} LIKE ''%{1}%''", key, value.toString()));
         });
     }
- 
 
     /**
      * 获取本年份基准次数
@@ -157,7 +173,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         }
         query = getEntityManager().createNativeQuery(sbDta.toString());
         List<Object[]> results1 = query.getResultList();//已生成的计划保全单
-       results.addAll(results1);//将已生成的计划保全单数据合并到一起处理
+        results.addAll(results1);//将已生成的计划保全单数据合并到一起处理
         //数据处理,将相同编号的次数整合在一条数据中
         Map<String, List<Object[]>> map = new HashMap<>();
         results.forEach(result -> {
@@ -225,5 +241,4 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         return moList;
     }
 
-    
 }

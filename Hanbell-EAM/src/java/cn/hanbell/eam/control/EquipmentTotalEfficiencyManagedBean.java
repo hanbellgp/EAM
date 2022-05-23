@@ -313,7 +313,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);
            // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
             if (oeeList == null || oeeList.isEmpty()) {
-                showErrorMsg("Error", "当前无数据！请先查询");
+                showErrorMsg("Error", "当前日前无生产数据！请知悉");
                 return;
             }
             sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 28));

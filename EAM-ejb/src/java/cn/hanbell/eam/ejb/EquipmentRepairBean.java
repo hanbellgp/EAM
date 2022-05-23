@@ -2008,7 +2008,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '其他' THEN A.ALARMTIME_LEN ELSE 0 END)      其他, MAX(CASE A.ALARMNAME WHEN NULL THEN A.ALARMTIME_LEN ELSE 0 END)      未填,");
         sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '计划停机' THEN A.ALARMTIME_LEN ELSE 0 END) 计划停机,");
         sbMESLEN.append(" SUM(A.ALARMTIME_LEN) SUMLEN FROM (SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN)) /60 ALARMTIME_LEN, EQPID FROM (SELECT EQPID,B.ALARMNAME,convert(VARCHAR(10), ALARMSTARTTIME,111) AS DATE,");
-        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE A.ALARMSTARTTIME LIKE '").append(year).append("%') A GROUP BY A.EQPID, A.ALARMNAME) A GROUP BY EQPID");
+        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE A.ALARMSTARTTIME LIKE '").append(year).append("%'  AND B.ALARMTYPE = '半成品圆型件') A GROUP BY A.EQPID, A.ALARMNAME) A GROUP BY EQPID");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESLEN.toString());
         List<Object[]> resultsLEN = query.getResultList();
 
@@ -2023,11 +2023,14 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         String avaTime = "";//周计划工时
         //      计划产出件数
         StringBuilder sbMESPlan = new StringBuilder();
+        String eamDept = "";
         if (dept.equals("半成品方型件")) {
+            eamDept = "方型加工课";
             tName = "PLAN_SEMI_SQUARE";
             avaTime = ",sum(convert(DECIMAL, WORKHOUR)*convert(INT, NUM))";
         } else {
             tName = "PLAN_SEMI_CIRCLE";
+            eamDept = "圆型加工课";
         }
         sbMESPlan.append(" SELECT  EQPID,  SUM(convert(INT, NUM)) estimateNUM ").append(avaTime).append("FROM ").append(tName).append(" WHERE PLANDATE LIKE '").append(year).append("%'  GROUP BY EQPID");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESPlan.toString());
@@ -2051,19 +2054,24 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sbEAM.append(" WHERE E.hitchtime LIKE '%").append(yearEAM).append("%' AND E.rstatus>=30 AND E.rstatus!=98 AND A.remark IS NOT NULL   GROUP BY A.remark");
         query = getEntityManager().createNativeQuery(sbEAM.toString());
         List<Object[]> resultsEAM = query.getResultList();
+        StringBuilder sbEAMEPQID = new StringBuilder();
+        sbEAMEPQID.append(" SELECT A.remark,deptname FROM assetcard A LEFT JOIN  assetitem I ON A.itemno=I.itemno");
+        sbEAMEPQID.append(" WHERE  A.remark IS NOT NULL  and I.categoryid=3 AND A. company='C'  AND qty!=0 ORDER BY remark");
+        query = getEntityManager().createNativeQuery(sbEAMEPQID.toString());
+        List<Object[]> resultsEAMEPQID = query.getResultList();
         List<Object[]> list = new ArrayList<>();
         int strMin = 0;
         int endMin = 0;
-        for (Object[] i : resultsAVA) {
+        for (Object[] i : resultsEAMEPQID) {
             Object[] obj = new Object[40];
-
             for (Object[] objects : resultsAVA) {
+
                 if (objects[0].equals(i[0].toString())) {
                     //      将有生管计划的所有值赋0
                     for (int j = 0; j < 39; j++) {
                         obj[j] = 0;
                     }
-                    obj[1] = Integer.parseInt(objects[1].toString());
+                    obj[1] = 1440;
                     obj[7] = 1440 - Integer.parseInt(objects[1].toString());
 //                    故障次数为0时将数值赋0
                     if (objects[3] != null) {
@@ -2157,7 +2165,9 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 }
             }
             obj[0] = i[0].toString();
-            list.add(obj);
+            if (obj[1] != null) {
+                list.add(obj);
+            }
         }
 
         return list;
