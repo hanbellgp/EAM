@@ -103,7 +103,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         List<String> fMESList = new ArrayList<>();
         List<String> yMESList = new ArrayList<>();
         String stopSql = "";
-        stopSql = " SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(INT, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = convert(char,getdate(),111) GROUP BY EQPID )A  WHERE A.ALN=0";
+        stopSql = " SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(DECIMAL, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = convert(char,getdate(),111) GROUP BY EQPID )A  WHERE A.ALN=0";
 
         query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
         fMESList = query.getResultList();
