@@ -39,7 +39,9 @@
                 <f:facet name="right">
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentPlanYearManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
-                     <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{equipmentPlanYearManagedBean.print()}" icon="ui-icon-search"
+                    <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{equipmentPlanYearManagedBean.print()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                    <p:commandButton id="btnPrint1" value="导出计划保全实施表" actionListener="#{equipmentPlanYearManagedBean.printImplementation()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>

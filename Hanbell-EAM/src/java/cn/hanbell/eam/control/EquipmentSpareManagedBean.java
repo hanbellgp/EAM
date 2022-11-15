@@ -14,6 +14,8 @@ import cn.hanbell.eam.entity.SysCode;
 import cn.hanbell.eam.entity.Unit;
 import cn.hanbell.eam.lazy.EquipmentSpareModel;
 import cn.hanbell.eam.web.SuperSingleBean;
+import cn.hanbell.eap.ejb.SystemUserBean;
+import cn.hanbell.eap.entity.SystemUser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +36,13 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
 
     @EJB
     private SysCodeBean sysCodeBean;
+    @EJB
+    private SystemUserBean systemUserBean;
     private List<SysCode> repairareaList;
     protected List<String> paramPosition = null;
+    private String[] selectedUserName;
+    private List<String> usernameList;
+    private List<SystemUser> systemUser;
 
     public EquipmentSpareManagedBean() {
         super(EquipmentSpare.class);
@@ -48,7 +55,7 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
         newEntity.setCredate(getDate());
         newEntity.setStatus("N");
         newEntity.setCreator(userManagedBean.getUserid());
-      
+        selectedUserName = null;
         repairareaList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "repairarea");
     }
 
@@ -66,7 +73,17 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
             showWarnMsg("Warn", "请选择单位");
             return false;
         }
-
+        if (selectedUserName.length != 0) {
+            String userName = "";
+            for (int i = 0; i < selectedUserName.length; i++) {
+                userName += selectedUserName[i] + ";";
+            }
+            if (userName != "") {
+                userName = userName.substring(0, userName.length() - 1);
+            }
+            newEntity.setServiceusername(userName);
+            selectedUserName = null;
+        }
         String BJ = "W-" + newEntity.getScategory().getScategory() + "-" + newEntity.getMcategory().getMcategory();
         int size = equipmentSpareBean.findBySparenum(BJ).size() + 1;
         if (size < 10) {
@@ -91,6 +108,17 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
     public void update() {
         currentEntity.setOptdate(getDate());
         currentEntity.setOptuser(userManagedBean.getUserid());
+        if (selectedUserName.length != 0) {
+            String userName = "";
+            for (int i = 0; i < selectedUserName.length; i++) {
+                userName += selectedUserName[i] + ";";
+            }
+            if (userName != "") {
+                userName = userName.substring(0, userName.length() - 1);
+            }
+            currentEntity.setServiceusername(userName);
+        }
+
         super.update(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -100,6 +128,12 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
         model = new EquipmentSpareModel(equipmentSpareBean, userManagedBean);
         this.model.getSortFields().put("sparenum", "ASC");
         this.model.getFilterFields().put("status", "N");
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairDeptno").getCvalue();
+        systemUser = systemUserBean.findByLikeDeptno("%" + deptno + "%");
+        usernameList = new ArrayList<>();
+        for (int i = 0; i < systemUser.size(); i++) {
+            usernameList.add(systemUser.get(i).getUsername());
+        }
         super.init();
         openParams = new HashMap<>();
     }
@@ -109,6 +143,16 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
             Unit e = (Unit) event.getObject();
             currentEntity.setUnit(e);
         }
+    }
+
+    @Override
+    public String edit(String path) {
+        if (currentEntity.getServiceusername() != "" && currentEntity.getServiceusername() != null) {
+            selectedUserName = currentEntity.getServiceusername().split(";");
+        } else {
+            selectedUserName = null;
+        }
+        return super.edit(path); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void handleDialogReturnUnitWhenNew(SelectEvent event) {
@@ -210,6 +254,22 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
 
     public void setParamPosition(List<String> paramPosition) {
         this.paramPosition = paramPosition;
+    }
+
+    public String[] getSelectedUserName() {
+        return selectedUserName;
+    }
+
+    public void setSelectedUserName(String[] selectedUserName) {
+        this.selectedUserName = selectedUserName;
+    }
+
+    public List<String> getUsernameList() {
+        return usernameList;
+    }
+
+    public void setUsernameList(List<String> usernameList) {
+        this.usernameList = usernameList;
     }
 
 }

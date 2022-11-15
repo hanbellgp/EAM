@@ -73,8 +73,9 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
         superEJB = equipmentRepairBean;
         Calendar date = Calendar.getInstance();
         int year = Integer.parseInt(String.valueOf(date.get(Calendar.YEAR)));
+    
         yearsList = new ArrayList<>();
-        for (int i = 2020; i <= year; i++) {
+        for (int i = year; i >= 2020; i--) {
             yearsList.add(i);
         }
         monthList = new ArrayList<>();
@@ -131,10 +132,9 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             for (Object[] eq : list) {
                 row = sheet.getRow(j);
                 j++;
-                for (int i = 0; i <= 27; i++) {
+                for (int i = 0; i <= 31; i++) {
                     Cell cell0 = row.getCell(i);
                     cell0 = row.getCell(i);
-                    cell0.setCellStyle(style.get("cell"));
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
@@ -316,7 +316,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 showErrorMsg("Error", "当前日前无生产数据！请知悉");
                 return;
             }
-            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 28));
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 31));
             Cell cellTitle = row.getCell(0);
             cellTitle.setCellStyle(style.get("title"));
             cellTitle.setCellValue(sdf.format(queryDateBegin) + "---" + deptName.get(0) + "---" + title);
@@ -326,10 +326,9 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             for (Object[] eq : list) {
                 row = sheet.getRow(j);
                 j++;
-                for (int i = 0; i <= 27; i++) {
+                for (int i = 0; i <= 30; i++) {
                     Cell cell0 = row.getCell(i);
                     cell0 = row.getCell(i);
-                    cell0.setCellStyle(style.get("cell"));
                     if (eq[i] != null) {
                         if (i == 0) {
                             cell0.setCellValue(eq[i].toString());

@@ -94,7 +94,7 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
         currentDetail.setCurrency("CNY");
         currentDetail.setExchange(BigDecimal.ONE);
         currentDetail.setTaxtype("0");
-        currentDetail.setTaxrate(BigDecimal.valueOf(0.17));
+        currentDetail.setTaxrate(BigDecimal.valueOf(0.13));//财务朱菊红调整为0.13原0.17
         currentDetail.setTaxkind("VAT17");
         currentDetail.setAmts(BigDecimal.ZERO);
         currentDetail.setExtax(BigDecimal.ZERO);

@@ -69,6 +69,17 @@
                     </p:column>
                    
                 </p:row>
+                <p:row>
+                    <p:column><h:outputText value="制程" /></p:column>
+                    <p:column>
+                        <p:inputText id="process" value="#{assetParametersManagedBean.currentEntity.process}" title="process"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="MES编号/备注" for="remark"/></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{assetParametersManagedBean.currentEntity.remark}" title="remark" />
+                    </p:column>
+
+                </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">
                 <p:tab title="基础信息">

@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <h:outputLabel value="公司别" for="company" />
+                <p:inputText id="company" value="#{equipmentAnalyStageManagedBean.queryCompany}" title="公司别" />
+                <h:outputLabel value="设备编号" for="queryFormId" />
+                <p:inputText id="queryFormId" value="#{equipmentAnalyStageManagedBean.queryFormId}" title="设备编号" />
+                <h:outputLabel value="设备名称" for="queryName" />
+                <p:inputText id="queryName" value="#{equipmentAnalyStageManagedBean.queryName}" title="设备名称" />
+                <h:outputLabel value="设备所属部门" for="queryDept" />
+                <p:column styleClass="Wid30">
+                    <p:inputText id="queryDept" value="#{equipmentAnalyStageManagedBean.queryDept}" title="queryDept" styleClass="inputWithButton"
+                                 required="true" readonly="true"/>
+                    <p:commandButton id="btnDepartmentSelect" actionListener="#{equipmentAnalyStageManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                     process="@this" >
+                        <p:ajax event="dialogReturn" listener="#{equipmentAnalyStageManagedBean.handleDialogReturnDeptWhenNew}"
+                                update="queryDept" />
+                    </p:commandButton>
+                </p:column>
+                <h:outputLabel value="厂区" for="queryFactory" />
+                <p:inputText id="queryFactory" value="#{equipmentAnalyStageManagedBean.queryFactory}" title="厂别"/>
+                <h:outputLabel value="设备等级" for="queryState" />
+                <p:selectOneMenu id="queryState" value="#{equipmentAnalyStageManagedBean.queryState}" title="设备等级">\
+                    <f:selectItem itemLabel="请选择" itemValue="" />
+                    <f:selectItem itemLabel="A级" itemValue="A级" />
+                    <f:selectItem itemLabel="B级" itemValue="B级" />
+                    <f:selectItem itemLabel="C级" itemValue="C级" />
+                </p:selectOneMenu>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentAnalyStageManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+
+                    <p:commandButton id="btnView" value="查看" action="#{equipmentAnalyStageManagedBean.view('equipmentAnalyStageView')}" icon="ui-icon-document"/>
+
+                </f:facet>
+
+                <f:facet name="right">
+
+
+                    <p:commandButton id="btnImpTarget" value="EXCEL导入" icon="ui-icon-plus"
+                                     process="@this" update="formList" oncomplete="PF('importTarget').show();"/>
+                    <p:commandButton id="btnAddDetail" value="填写保全阶段" action="#{equipmentAnalyStageManagedBean.edit('equipmentAnalyStageNew')}" icon="ui-icon-pencil"
+                                     update=":formList"/>
+                    <p:commandButton id="btnPrint" value="导出" action="#{equipmentAnalyStageManagedBean.print()}" icon="ui-icon-print"
+                                     update=":formList"/>
+
+
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentAnalyStageManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{equipmentAnalyStageManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"   
+                         lazy="true"  selectionMode="single" selection="#{equipmentAnalyStageManagedBean.currentEntity}" rowKey="#{item.id}" >
+                <p:column styleClass="Wid15" headerText="资产编号" >
+                    <h:outputText value="#{item.formid.formid}"/>
+                </p:column>
+                <p:column styleClass="Wid15" headerText="设备名称" >
+                    <h:outputText value="#{item.formid.assetDesc}"/>
+                </p:column>
+                 <p:column styleClass="Wid15" headerText="MES编号" >
+                    <h:outputText value="#{item.formid.remark}"/>
+                </p:column>
+                <p:column styleClass="Wid15" headerText="厂区" >
+                    <h:outputText value="#{item.formid.position2.name}"/>
+                </p:column>
+                <p:column styleClass="Wid20" headerText="厂房" >
+                    <h:outputText value="#{item.formid.position3.name}"/>
+                </p:column>
+
+                <p:column styleClass="Wid15" headerText="制程" >
+                    <h:outputText value="#{item.formid.process}"/>
+                </p:column>
+                <p:column styleClass="Wid10" headerText="设备等级" >
+                    <h:outputText value="#{item.equipmentLevelId.paramvalue}"/>
+                </p:column>
+                <p:column styleClass="Wid10" headerText="保全现状" >
+                    <h:outputText value="#{equipmentAnalyStageManagedBean.getStatusName(item.stage)}"/>
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnQuery">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+        <h:form id="formImport">
+            <p:dialog id="importTargetDlg" widgetVar="importTarget" width="60%" style="border-color: #666666">
+                <p:panelGrid id="importTargetGrid" styleClass="plgDetail Wid100">
+                    <p:row>
+                        <p:fileUpload id="fileUpload" fileUploadListener="#{equipmentAnalyStageManagedBean.handleFileUploadWhenNew}"   styleClass="fileUpload"
+                                      allowTypes="/(\.|\/)(xlsx|xls)$/" sizeLimit="5000000" label="选择" uploadLabel="上传" cancelLabel="还原" valueChangeListener="#{equipmentAnalyStageManagedBean.updateData()}"  value="批量添加" 
+                                      process="@this" update="formDta,assetnoText"/>
+                        <p:commandButton id="btnQuery" value="保存" actionListener="#{equipmentAnalyStageManagedBean.updateData()}" icon="ui-icon-save"
+                                         update=":formList,"/>
+                        <p:commandButton id="btnPrint2" value="下载模板" actionListener="#{equipmentAnalyStageManagedBean.downloadTemplate()}" icon="ui-icon-print"
+                                         update=":formList"/>
+                    </p:row>
+                </p:panelGrid>
+                <h:outputLabel value="异常信息:" />
+                <h:outputText id="assetnoText" value="#{equipmentAnalyStageManagedBean.textCNC}"/>
+                <p:dataTable id="formDta" value="#{equipmentAnalyStageManagedBean.tagetDtaList}"  var="item"    tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="5"
+                             rowsPerPageTemplate="5,10,15" >
+                    <p:column styleClass="Wid15" headerText="资产编号" >
+                        <h:outputText value="#{item[0]}"/>
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step1" >
+                        <h:outputText value="#{item[1]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step2" >
+                        <h:outputText value="#{item[2]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step3" >
+                        <h:outputText value="#{item[3]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step4" >
+                        <h:outputText value="#{item[4]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step5" >
+                        <h:outputText value="#{item[5]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step6" >
+                        <h:outputText value="#{item[6]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                    <p:column styleClass="Wid10" headerText="step7" >
+                        <h:outputText value="#{item[7]}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

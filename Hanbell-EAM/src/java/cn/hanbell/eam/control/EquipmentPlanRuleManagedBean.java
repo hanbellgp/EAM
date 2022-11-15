@@ -88,7 +88,6 @@ public class EquipmentPlanRuleManagedBean extends FormMultiBean<EquipmentAnalyRe
         equipmentStandardsList = new ArrayList<>();
         equipmentStandard = new EquipmentStandard();
         SimpleDateFormat sd = new SimpleDateFormat("yyyy");
-        entityList = equipmentAnalyResultBean.getEquipmentStandardList(sd.format(getDate()), queryStandardLevel, queryDept, queryFormId);
         super.init();
     }
     

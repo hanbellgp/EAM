@@ -104,7 +104,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 45)
     @Column(name = "troublefrom")
     private String troublefrom;
-    @Size(max = 2)
+    @Size(max = 2)  
     @Column(name = "repairmethodtype")
     private String repairmethodtype;
     @Size(max = 20)

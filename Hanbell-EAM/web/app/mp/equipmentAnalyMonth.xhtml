@@ -49,6 +49,8 @@
                                      update=":formList"/>
                      <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{equipmentAnalyMonthManagedBean.print()}" icon="ui-icon-search"
                                      update=":formList"/>
+                       <p:commandButton id="btnPrint1" value="导出自主保全实施表" actionListener="#{equipmentAnalyMonthManagedBean.printImplementation()}" icon="ui-icon-search"
+                                     update=":formList"/>
                 </f:facet>
             </p:toolbar>
             <p:dataTable value="#{equipmentAnalyMonthManagedBean.equipmentAnalyMonthList}"  var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom"

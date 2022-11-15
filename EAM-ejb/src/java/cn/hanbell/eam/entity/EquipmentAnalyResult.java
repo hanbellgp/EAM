@@ -15,6 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -51,7 +52,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentAnalyResult.findByCfmdate", query = "SELECT e FROM EquipmentAnalyResult e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentAnalyResult extends FormEntity {
 
-   
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
@@ -116,6 +116,10 @@ public class EquipmentAnalyResult extends FormEntity {
     @Column(name = "cfmdate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
+    @Transient
+    private String mesid;
+    @Transient
+    private String downtime;
 
     public EquipmentAnalyResult() {
     }
@@ -129,7 +133,6 @@ public class EquipmentAnalyResult extends FormEntity {
         this.formid = formid;
         this.status = status;
     }
-
 
     public String getCompany() {
         return company;
@@ -219,6 +222,21 @@ public class EquipmentAnalyResult extends FormEntity {
         this.remark = remark;
     }
 
+    public String getMesid() {
+        return mesid;
+    }
+
+    public void setMesid(String mesid) {
+        this.mesid = mesid;
+    }
+
+    public String getDowntime() {
+        return downtime;
+    }
+
+    public void setDowntime(String downtime) {
+        this.downtime = downtime;
+    }
 
     @Override
     public int hashCode() {
@@ -241,5 +259,5 @@ public class EquipmentAnalyResult extends FormEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentAnalyResult[ id=" + id + " ]";
     }
-    
+
 }
