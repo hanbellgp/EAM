@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentAnalyStage" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentAnalyStageManagedBean.update()}"  icon="ui-icon-save"  
+                                     process="@this,plgHead"  update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="8">填写保全阶段</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="当前保全阶段" for="stage" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="stage" value="#{equipmentAnalyStageManagedBean.currentEntity.stage}" title="stage" styleClass="inputWithButton" />
+                    </p:column>
+                </p:row>
+                  <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="资产编号" for="formid" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="formid" value="#{equipmentAnalyStageManagedBean.currentEntity.formid.formid}" title="remark" styleClass="inputWithButton" />
+                    </p:column>
+                </p:row>
+                 <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="品名" for="assetDesc" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="assetDesc" value="#{equipmentAnalyStageManagedBean.currentEntity.formid.assetDesc}" title="remark" styleClass="inputWithButton" />
+                    </p:column>
+                </p:row>
+                  <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="MES编号" for="remark" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="remark" value="#{equipmentAnalyStageManagedBean.currentEntity.formid.remark}" title="remark" styleClass="inputWithButton" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="计划保全日期" for="plandate" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <h:outputText id="plandate" value="#{equipmentAnalyStageManagedBean.currentEntity.plandate}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>  
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="实际保全日期" for="actdate" /></p:column>
+                    <p:column styleClass="Wid15">
+                        <p:calendar id="actdate"  value="#{equipmentAnalyStageManagedBean.currentEntity.actdate}"  title="improveplandate" pattern="yyyy-MM-dd"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                   <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="预计改善完成时间" for="improveplandate" /></p:column>
+                    <p:column>
+                        <p:calendar id="improveplandate"  value="#{equipmentAnalyStageManagedBean.currentEntity.improveplandate}"  title="improveplandate" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+                  <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="实际改善完成时间" for="improveactdate" /></p:column>
+                    <p:column>
+                        <p:calendar id="improveactdate" value="#{equipmentAnalyStageManagedBean.currentEntity.improveactdate}" title="结束日期" pattern="yyyy/MM/dd"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="进度落后原因分析" for="backreason"/></p:column>
+                    <p:column >
+                        <p:inputTextarea id="backreason"  value="#{equipmentAnalyStageManagedBean.currentEntity.backreason}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" />
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="执行改善对策" for="improve" /></p:column>
+                    <p:column>
+                        <p:inputTextarea id="improve"  value="#{equipmentAnalyStageManagedBean.currentEntity.improve}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" />
+                    </p:column>
+
+                </p:row>
+                <p:row>
+
+
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="担当" for="assume"/></p:column>
+                    <p:column >
+                        <p:inputTextarea id="assume"  value="#{equipmentAnalyStageManagedBean.currentEntity.assume}" rows="5" cols="70" 
+                                         style=" border: darkgray solid 1px" />
+                    </p:column>
+                </p:row>
+
+
+
+            </p:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

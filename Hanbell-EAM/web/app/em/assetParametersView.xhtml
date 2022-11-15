@@ -38,7 +38,7 @@
                     <p:column>
                         <h:outputText id="assetDesc" value="#{assetParametersManagedBean.currentEntity.assetDesc}" title="assetDesc" />
                     </p:column>
-                   <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
                     <p:column>
                         <h:outputText id="unit" value="#{assetParametersManagedBean.currentEntity.unit}" title="Unit"
                                       />
@@ -56,14 +56,25 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                   <p:column><h:outputText value="品牌" /></p:column>
+                    <p:column><h:outputText value="品牌" /></p:column>
                     <p:column>
                         <h:outputText id="brand" value="#{assetParametersManagedBean.currentEntity.brand}" title="brand"/>
                     </p:column>
-                      <p:column><p:outputLabel value="规格" for="assetSpec"/></p:column>
+                    <p:column><p:outputLabel value="规格" for="assetSpec"/></p:column>
                     <p:column colspan="3">
                         <h:outputText id="assetSpec" value="#{assetParametersManagedBean.currentEntity.assetSpec}" title="assetSpec" />
                     </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="制程" /></p:column>
+                    <p:column>
+                        <h:outputText id="process" value="#{assetParametersManagedBean.currentEntity.process}" title="process"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="MES编号/备注" for="remark"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="remark" value="#{assetParametersManagedBean.currentEntity.remark}" title="remark" />
+                    </p:column>
+
                 </p:row>
             </p:panelGrid>
             <p:tabView id="tabView" styleClass="tabView">

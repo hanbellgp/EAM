@@ -281,7 +281,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             return "";
         }
 
-        if (Integer.parseInt(currentEntity.getRstatus()) == 70 && !userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals("C2079")) {
+        if (Integer.parseInt(currentEntity.getRstatus()) == 70 && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
             showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  维修课长不能审批");
             return "";
         }

@@ -71,6 +71,7 @@ public class AssetParametersManagedBean extends FormMulti3Bean<AssetCard, AssetM
         detailEJB3 = assetFileBean;
         model = new AssetCardModel(assetCardBean, userManagedBean);
         this.model.getFilterFields().put("assetItem.category.id =", 3);
+        model.getFilterFields().put("qty <>", 0);
         model.getSortFields().put("assetItem.itemno", "ASC");
         model.getSortFields().put("formid", "ASC");
         super.init();

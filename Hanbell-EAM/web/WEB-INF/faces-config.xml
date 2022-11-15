@@ -471,7 +471,7 @@
             <to-view-id>/app/em/workshopEquipment.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-         <navigation-case>
+        <navigation-case>
             <description>车间设备日报</description>
             <from-outcome>workshopEquipmentDay</from-outcome>
             <to-view-id>/app/em/workshopEquipmentDay.xhtml</to-view-id>
@@ -588,7 +588,7 @@
                 <to-view-id>/app/mp/equipmentPlanRule.xhtml</to-view-id>
                 <redirect/>
             </navigation-case>
-             <navigation-case>
+            <navigation-case>
                 <description>自主保全月台账</description>
                 <from-outcome>equipmentAnalyMonth</from-outcome>
                 <to-view-id>/app/mp/equipmentAnalyMonth.xhtml</to-view-id>
@@ -598,6 +598,24 @@
                 <description>计划保全年台账</description>
                 <from-outcome>equipmentPlanYear</from-outcome>
                 <to-view-id>/app/mp/equipmentPlanYear.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+            <navigation-case>
+                <description>自主保全阶段</description>
+                <from-outcome>equipmentAnalyStage</from-outcome>
+                <to-view-id>/app/mp/equipmentAnalyStage.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+            <navigation-case>
+                <description>保全阶段台账</description>
+                <from-outcome>equipmentAnalyHistory</from-outcome>
+                <to-view-id>/app/mp/equipmentAnalyHistory.xhtml</to-view-id>
+                <redirect/>
+            </navigation-case>
+             <navigation-case>
+                <description>设备保全阶段统计</description>
+                <from-outcome>equipmentAnalyInformation</from-outcome>
+                <to-view-id>/app/mp/equipmentAnalyInformation.xhtml</to-view-id>
                 <redirect/>
             </navigation-case>
         </navigation-rule>

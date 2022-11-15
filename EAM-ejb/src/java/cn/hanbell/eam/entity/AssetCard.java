@@ -180,6 +180,9 @@ public class AssetCard extends FormEntity {
     @Size(max = 20)
     @Column(name = "srcformid")
     private String srcformid;
+    @Size(max = 10)
+    @Column(name = "process")
+    private String process;
     @Column(name = "srcseq")
     private Integer srcseq;
     @Size(max = 100)
@@ -483,6 +486,14 @@ public class AssetCard extends FormEntity {
 
     public Date getScrapDate() {
         return scrapDate;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
     }
 
     public void setScrapDate(Date scrapDate) {

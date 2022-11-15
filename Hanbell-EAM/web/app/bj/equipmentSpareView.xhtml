@@ -26,19 +26,19 @@
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件编号" for="sparenum" /></p:column>
                     <p:column>
                         <h:outputText id="sparenum" value="#{equipmentSpareManagedBean.currentEntity.sparenum}" title="sparenum"
-                                     />
+                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件名称" for="sparedesc" /></p:column>
                     <p:column>
                         <h:outputText id="sparedesc" value="#{equipmentSpareManagedBean.currentEntity.sparedesc}" title="sparedesc"
-                                     />
+                                      />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件大类" for="scategory" /></p:column>
                     <p:column  styleClass="Wid20">
                         <h:outputText id="scategory" value="#{equipmentSpareManagedBean.currentEntity.scategory.sname}" title="RequireDeptno" styleClass="inputWithButton" />
-                     
+
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件中类" for="mcategory" /></p:column>
                     <p:column  styleClass="Wid20">
@@ -51,36 +51,36 @@
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="单位" for="unit" /></p:column>
                     <p:column>
                         <h:outputText id="unit" value="#{equipmentSpareManagedBean.currentEntity.unit.unit}" title="Unit" styleClass="inputWithButton"
-                                     />
+                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="规格" for="sparemodel" /></p:column>
                     <p:column>
                         <h:outputText id="sparemodel" value="#{equipmentSpareManagedBean.currentEntity.sparemodel}" title="sparemodel"
-                                     />
+                                      />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="最低储备" for="minstock" /></p:column>
                     <p:column>
                         <h:outputText id="minstock" value="#{equipmentSpareManagedBean.currentEntity.minstock}" title="minstock"
-                                     />
+                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="最高储备" for="maxstock" /></p:column>
                     <p:column>
                         <h:outputText id="maxstock" value="#{equipmentSpareManagedBean.currentEntity.maxstock}" title="maxstock"
-                                     />
+                                      />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="采购周期" for="leadtime" /></p:column>
                     <p:column>
                         <h:outputText id="leadtime" value="#{equipmentSpareManagedBean.currentEntity.leadtime}" title="leadtime"
-                                     />
+                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="品牌" for="brand" /></p:column>
                     <p:column>
                         <h:outputText id="brand" value="#{equipmentSpareManagedBean.currentEntity.brand}" title="brand"
-                                     />
+                                      />
                     </p:column>
                 </p:row>
                 <p:row>
@@ -88,16 +88,33 @@
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件用途" for="suse" /></p:column>
                     <p:column>
                         <h:outputText id="suse" value="#{equipmentSpareManagedBean.currentEntity.suse}" title="suse"
-                                     />
+                                      />
                     </p:column>
 
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="请购件号" for="spareno" /></p:column>
                     <p:column>
                         <h:outputText id="spareno" value="#{equipmentSpareManagedBean.currentEntity.spareno}" title="spareno"
-                                     />
+                                      />
                     </p:column>
                 </p:row>
-
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputLabel value="有能力维修人" for="serviceusername" />  </p:column>
+                    <p:column>
+                        <h:outputText id="serviceusername" value="#{equipmentSpareManagedBean.currentEntity.serviceusername}" title="serviceusername"
+                                      />
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="保存方法" for="savemethod" /></p:column>
+                    <p:column>
+                        <h:outputText id="savemethod" value="#{equipmentSpareManagedBean.currentEntity.savemethod}" title="savemethod"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="品质保证验证周期" for="qualitycycle" /></p:column>
+                    <p:column>
+                        <h:outputText id="qualitycycle" value="#{equipmentSpareManagedBean.currentEntity.qualitycycle}" title="qualitycycle"
+                                   />
+                    </p:column>
+                </p:row>
             </p:panelGrid>
 
         </h:form>

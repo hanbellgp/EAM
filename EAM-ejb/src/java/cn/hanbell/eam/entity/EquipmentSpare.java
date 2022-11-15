@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findByLeadtime", query = "SELECT e FROM EquipmentSpare e WHERE e.leadtime = :leadtime"),
     @NamedQuery(name = "EquipmentSpare.findByUnit", query = "SELECT e FROM EquipmentSpare e WHERE e.unit = :unit"),
     @NamedQuery(name = "EquipmentSpare.findByBrand", query = "SELECT e FROM EquipmentSpare e WHERE e.brand = :brand"),
+    @NamedQuery(name = "EquipmentSpare.findBySavemethod", query = "SELECT e FROM EquipmentSpare e WHERE e.savemethod = :savemethod"),
+    @NamedQuery(name = "EquipmentSpare.findByQualitycycle", query = "SELECT e FROM EquipmentSpare e WHERE e.qualitycycle = :qualitycycle"),
+    @NamedQuery(name = "EquipmentSpare.findByServiceusername", query = "SELECT e FROM EquipmentSpare e WHERE e.serviceusername = :serviceusername"),
     @NamedQuery(name = "EquipmentSpare.findByMinstock", query = "SELECT e FROM EquipmentSpare e WHERE e.minstock = :minstock"),
     @NamedQuery(name = "EquipmentSpare.findByMaxstock", query = "SELECT e FROM EquipmentSpare e WHERE e.maxstock = :maxstock"),
     @NamedQuery(name = "EquipmentSpare.findByRemark", query = "SELECT e FROM EquipmentSpare e WHERE e.remark = :remark"),
@@ -86,6 +89,14 @@ public class EquipmentSpare extends SuperEntity {
     @Size(max = 45)
     @Column(name = "sparemodel")
     private String sparemodel;
+   @Size(max = 50)
+    @Column(name = "savemethod")
+    private String savemethod;
+    @Column(name = "qualitycycle")
+    private Integer qualitycycle;
+    @Size(max = 50)
+    @Column(name = "serviceusername")
+    private String serviceusername;
     @Column(name = "leadtime")
     private Integer leadtime;
     @JoinColumn(name = "unit", referencedColumnName = "id")
@@ -196,6 +207,30 @@ public class EquipmentSpare extends SuperEntity {
 
     public void setMaxstock(Integer maxstock) {
         this.maxstock = maxstock;
+    }
+
+    public String getSavemethod() {
+        return savemethod;
+    }
+
+    public void setSavemethod(String savemethod) {
+        this.savemethod = savemethod;
+    }
+
+    public Integer getQualitycycle() {
+        return qualitycycle;
+    }
+
+    public void setQualitycycle(Integer qualitycycle) {
+        this.qualitycycle = qualitycycle;
+    }
+
+    public String getServiceusername() {
+        return serviceusername;
+    }
+
+    public void setServiceusername(String serviceusername) {
+        this.serviceusername = serviceusername;
     }
 
     public String getRemark() {

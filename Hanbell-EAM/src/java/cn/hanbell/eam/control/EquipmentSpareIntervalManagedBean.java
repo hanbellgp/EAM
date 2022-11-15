@@ -82,7 +82,7 @@ public class EquipmentSpareIntervalManagedBean extends FormMultiBean<EquipmentRe
         }
         Map<String, List<Object[]>> map = new LinkedHashMap<>();
         for (Object[] obj : list) {
-            if (map.containsKey(obj[0].toString())) {//map中存在此备件编号，将数据存放当前key的map中
+            if (map.containsKey(obj[2].toString())) {//map中存在此备件编号，将数据存放当前key的map中
                 map.get(obj[2].toString()).add(obj);
             } else {//map中不存在，新建key，用来存放数据
                 List<Object[]> tmpList = new ArrayList<>();
@@ -133,10 +133,11 @@ public class EquipmentSpareIntervalManagedBean extends FormMultiBean<EquipmentRe
             for (int i = 0; i < 8; i++) {
                 cell0 = row1.createCell(i + 2);
                 cell0.setCellStyle(style.get("cell"));
-                if (i < val.size()) {
-                    cell0.setCellValue(val.get(j - 3)[3].toString());
-                }
-
+            }
+            for (int i = 0; i < val.size(); i++) {
+                cell0 = row1.createCell(i + 2);
+                cell0.setCellStyle(style.get("cell"));
+                cell0.setCellValue(val.get(i)[3].toString());
             }
             j++;
             seq++;
@@ -160,8 +161,12 @@ public class EquipmentSpareIntervalManagedBean extends FormMultiBean<EquipmentRe
             for (int k = 0; k < recordList.get(i).length; k++) {
                 cell0 = row2.createCell(k + 1);
                 cell0.setCellStyle(style.get("cell"));
-                cell0.setCellValue(recordList.get(i)[k].toString());
+                if (recordList.get(i)[k] != null) {
+                    cell0.setCellValue(recordList.get(i)[k].toString());
+                }
+
             }
+            j++;
         }
         OutputStream os = null;
         try {

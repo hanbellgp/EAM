@@ -80,19 +80,19 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="最低储备" for="minstock" /></p:column>
                     <p:column>
-                        <p:inputText id="minstock" value="#{equipmentSpareManagedBean.currentEntity.minstock}" title="minstock"
+                        <p:spinner id="minstock" value="#{equipmentSpareManagedBean.currentEntity.minstock}" title="minstock" min="0"
                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="最高储备" for="maxstock" /></p:column>
                     <p:column>
-                        <p:inputText id="maxstock" value="#{equipmentSpareManagedBean.currentEntity.maxstock}" title="maxstock"
+                        <p:spinner id="maxstock" value="#{equipmentSpareManagedBean.currentEntity.maxstock}" title="maxstock" min="0"
                                      />
                     </p:column>
                 </p:row>
                 <p:row>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="采购周期" for="leadtime" /></p:column>
                     <p:column>
-                        <p:inputText id="leadtime" value="#{equipmentSpareManagedBean.currentEntity.leadtime}" title="leadtime"
+                        <p:spinner id="leadtime" value="#{equipmentSpareManagedBean.currentEntity.leadtime}" title="leadtime" min="0"
                                      />
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><p:outputLabel value="品牌" for="brand" /></p:column>
@@ -115,7 +115,26 @@
                                      />
                     </p:column>
                 </p:row>
-
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><h:outputLabel value="有能力维修人" for="selectedUserName" />  </p:column>
+                    <p:column>
+                        <p:selectCheckboxMenu id="selectedUserName" value="#{equipmentSpareManagedBean.selectedUserName}"  multiple="true"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                            <f:selectItems value="#{equipmentSpareManagedBean.usernameList}" />
+                        </p:selectCheckboxMenu>
+                    </p:column>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="保存方法" for="savemethod" /></p:column>
+                    <p:column>
+                        <p:inputText id="savemethod" value="#{equipmentSpareManagedBean.currentEntity.savemethod}" title="savemethod"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="background-color: #EEEEEE"><p:outputLabel value="品质保证验证周期" for="qualitycycle" /></p:column>
+                    <p:column>
+                        <p:spinner id="qualitycycle" value="#{equipmentSpareManagedBean.currentEntity.qualitycycle}" title="qualitycycle" min="0"
+                                   required="true"  requiredMessage="请输入品质保证验证周期"/>
+                    </p:column>
+                </p:row>
             </p:panelGrid>
 
         </h:form>

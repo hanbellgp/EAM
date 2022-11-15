@@ -103,11 +103,11 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         List<String> fMESList = new ArrayList<>();
         List<String> yMESList = new ArrayList<>();
         String stopSql = "";
-        stopSql = " SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(DECIMAL, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = convert(char,getdate(),111) GROUP BY EQPID )A  WHERE A.ALN=0";
+        stopSql = " SELECT EQPID FROM  PLAN_SEMI_SQUARE WHERE  PLANDATE = convert(char,getdate(),111) AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
 
         query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
         fMESList = query.getResultList();
-        stopSql = " SELECT E.EQPID FROM EQP_AVAILABLETIME_SCHEDULE E LEFT JOIN MEQP M ON E.EQPID=M.EQPID WHERE M.PRODUCTTYPE='半成品圆型件' and PLANDATE=convert(char,getdate(),111) AND AVAILABLEMINS=0";
+        stopSql = "   SELECT * FROM  PLAN_SEMI_CIRCLE WHERE  PLANDATE = convert(char,getdate(),111) AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
         query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
         yMESList = query.getResultList();
         fMESList.addAll(yMESList);
@@ -121,10 +121,155 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         return results;
     }
 
+    public List<String> getEPQIDDowntime() {
+        List<String> fMESList = new ArrayList<>();
+        List<String> yMESList = new ArrayList<>();
+        String stopSql = "";
+        stopSql = " SELECT EQPID FROM  PLAN_SEMI_SQUARE WHERE  PLANDATE = convert(char,getdate(),111)  AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
+
+        Query query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
+        fMESList = query.getResultList();
+        stopSql = "   SELECT EQPID FROM  PLAN_SEMI_CIRCLE WHERE  PLANDATE = convert(char,getdate(),111) AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
+        query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
+        yMESList = query.getResultList();
+        fMESList.addAll(yMESList);
+        return fMESList;
+    }
+
     private void setNativeQueryFilter(StringBuilder queryStrBuilder, Map<String, Object> filters) {
         filters.forEach((key, value) -> {
             queryStrBuilder.append(MessageFormat.format(" AND {0} LIKE ''%{1}%''", key, value.toString()));
         });
+    }
+
+    @Override
+    public List<EquipmentAnalyResult> findByFilters(Map<String, Object> filters, int first, int pageSize, Map<String, String> orderBy) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT e FROM ");
+        sb.append(this.className);
+        sb.append(" e WHERE 1=1 ");
+        Map<String, Object> strMap = new LinkedHashMap<>();
+        //给Map排序
+
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            strMap.put(key, value);
+        }
+        filters = strMap;
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+        if (orderBy != null && orderBy.size() > 0) {
+            sb.append(" ORDER BY ");
+            for (final Map.Entry<String, String> o : orderBy.entrySet()) {
+                sb.append(" e.").append(o.getKey()).append(" ").append(o.getValue()).append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+        }
+
+        //生成SQL
+        Query query = getEntityManager().createQuery(sb.toString()).setFirstResult(first).setMaxResults(pageSize);
+        //参数赋值
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+        }
+        List<EquipmentAnalyResult> results = query.getResultList();
+        String assetno = "";
+        for (EquipmentAnalyResult result : results) {
+            assetno += "'" + result.getAssetno() + "',";
+        }
+        if (assetno != "") {
+            assetno = assetno.substring(0, assetno.length() - 1);
+            String stopSql = "";
+            stopSql = " SELECT formid, remark FROM assetcard WHERE formid IN(" + assetno + ")";
+            query = this.getEntityManager().createNativeQuery(stopSql.toString());
+            List<Object[]> mesid = query.getResultList();
+            for (Object[] objects : mesid) {
+                for (EquipmentAnalyResult result : results) {
+                    if (objects[0].equals(result.getAssetno())) {
+                        if (objects[1] != null) {
+                            result.setMesid(objects[1].toString());
+                        }
+                    }
+                }
+            }
+        }
+        List<String> sEPQID = getEPQIDDowntime();
+        for (String epqId : sEPQID) {
+            for (EquipmentAnalyResult rString : results) {
+                if (epqId.equals(rString.getMesid())) {
+                    rString.setDowntime("停机");
+                }
+            }
+        }
+
+        return results;
+    }
+
+    @Override
+    public List<EquipmentAnalyResult> findByFilters(Map<String, Object> filters, Map<String, String> orderBy) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT e FROM ");
+        sb.append(this.className);
+        sb.append(" e WHERE 1=1 ");
+        Map<String, Object> strMap = new LinkedHashMap<>();
+        //给Map排序
+
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            strMap.put(key, value);
+        }
+        filters = strMap;
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+        if (orderBy != null && orderBy.size() > 0) {
+            sb.append(" ORDER BY ");
+            for (final Map.Entry<String, String> o : orderBy.entrySet()) {
+                sb.append(" e.").append(o.getKey()).append(" ").append(o.getValue()).append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+        }
+
+        //生成SQL
+        Query query = getEntityManager().createQuery(sb.toString());
+        //参数赋值
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+        }
+        List<EquipmentAnalyResult> results = query.getResultList();
+        String assetno = "";
+        for (EquipmentAnalyResult result : results) {
+            assetno += "'" + result.getAssetno() + "',";
+        }
+        if (assetno != "") {
+            assetno = assetno.substring(0, assetno.length() - 1);
+            String stopSql = "";
+            stopSql = " SELECT formid, remark FROM assetcard WHERE formid IN(" + assetno + ")";
+            query = this.getEntityManager().createNativeQuery(stopSql.toString());
+            List<Object[]> mesid = query.getResultList();
+            for (Object[] objects : mesid) {
+                for (EquipmentAnalyResult result : results) {
+                    if (objects[0].equals(result.getAssetno())) {
+                        if (objects[1] != null) {
+                            result.setMesid(objects[1].toString());
+                        }
+                    }
+                }
+            }
+        }
+        List<String> sEPQID = getEPQIDDowntime();
+        for (String epqId : sEPQID) {
+            for (EquipmentAnalyResult rString : results) {
+                if (epqId.equals(rString.getMesid())) {
+                    rString.setDowntime("停机");
+                }
+            }
+        }
+
+        return results;
     }
 
     /**
@@ -239,6 +384,86 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
             moList.add(obj1);
         }
         return moList;
+    }
+
+    /**
+     * 自主保全实施表
+     *
+     * @param formdate
+     * @return
+     */
+    public List getImplementation(String formdate) {
+        String resultSql = "SELECT A.deptname,A.assetno,a.assetdesc, B.totCount,b.sCount,DAY FROM (SELECT formid,assetno,assetdesc,deptname,DAY(formdate) DAY  FROM equipmentanalyresult WHERE formdate LIKE '%" + formdate + "%' AND company='C'AND standardlevel='一级' ) A LEFT JOIN (SELECT pid,COUNT(PID) totCount,CASE pid WHEN edate IS     NULL THEN count(pid) ELSE 0 END sCount FROM equipmentanalyresultdta GROUP BY pid) B ON A.formid=B.pid ORDER BY A.deptname";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();//已生成的计划保全单
+        Map<String, List<Object[]>> map = new HashMap<>();
+        results.forEach(result -> {
+            if (map.containsKey(result[1].toString())) {//判断是否已存在对应键号
+                map.get(result[1].toString()).add(result);//直接在对应的map中添加数据
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(result);
+                map.put(result[1].toString(), tmpList);//新增一个键号
+            }
+        });
+        List moList1 = new ArrayList();
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> list = entry.getValue();//取出对应的值
+            Object[] obj1 = new Object[69];
+            for (Object[] obj : list) {
+                obj1[0] = obj[0];
+                obj1[1] = obj[1];
+                obj1[2] = obj[2];
+                for (int i = 1; i <= 31; i++) {
+                    if (Integer.parseInt(obj[5].toString()) == i) {
+                        obj1[i * 2 + 1] = obj[3];
+                        obj1[i * 2 + 2] = obj[4];
+                    }
+                }
+            }
+            moList1.add(obj1);
+        }
+        return moList1;
+    }
+
+    /**
+     * 计划保全实施表
+     *
+     * @param formdate
+     * @return
+     */
+    public List getImplementationYear(String formdate) {
+        String resultSql = "SELECT A.deptname,A.assetno,a.assetdesc, B.totCount,b.sCount,DAY FROM (SELECT formid,assetno,assetdesc,deptname,MONTH(formdate) DAY  FROM equipmentanalyresult WHERE formdate LIKE '%" + formdate + "%' AND company='C' and standardlevel!='一级' ) A LEFT JOIN (SELECT pid,COUNT(PID) totCount,CASE pid WHEN edate IS     NULL THEN count(pid) ELSE 0 END sCount FROM equipmentanalyresultdta GROUP BY pid) B ON A.formid=B.pid ORDER BY A.deptname";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();//已生成的计划保全单
+        Map<String, List<Object[]>> map = new HashMap<>();
+        results.forEach(result -> {
+            if (map.containsKey(result[1].toString())) {//判断是否已存在对应键号
+                map.get(result[1].toString()).add(result);//直接在对应的map中添加数据
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(result);
+                map.put(result[1].toString(), tmpList);//新增一个键号
+            }
+        });
+        List moList1 = new ArrayList();
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> list = entry.getValue();//取出对应的值
+            Object[] obj1 = new Object[29];
+            for (Object[] obj : list) {
+                obj1[0] = obj[0];
+                obj1[1] = obj[1];
+                obj1[2] = obj[2];
+                for (int i = 1; i <= 12; i++) {
+                    if (Integer.parseInt(obj[5].toString()) == i) {
+                        obj1[i * 2 + 1] = obj[3];
+                        obj1[i * 2 + 2] = obj[4];
+                    }
+                }
+            }
+            moList1.add(obj1);
+        }
+        return moList1;
     }
 
 }

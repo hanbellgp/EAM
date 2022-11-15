@@ -148,7 +148,7 @@ public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnaly
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);
-            for (int i = 0; i < eq.length ; i++) {
+            for (int i = 0; i < eq.length; i++) {
                 Cell cell0 = row.createCell(i);
                 cell0.setCellStyle(style.get("cell"));
                 if (eq[i] != null) {
@@ -272,6 +272,173 @@ public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnaly
         dateStyle.setFont(headFont);
         styles.put("date", dateStyle);
         return styles;
+    }
+
+    /**
+     * 设置表头名称字段
+     */
+    private String[] getInventoryTitle2() {
+        return new String[]{"所属部门", "设备编号", "设备名称", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+    }
+
+    /**
+     * 设置单元格宽度
+     */
+    private int[] getInventoryWidth2() {
+        return new int[]{15, 20, 20, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
+    }
+
+    /**
+     * 导出自主保全实施表
+     */
+    public void printImplementation() {
+        fileName = "自主保全实施表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+        String fileFullName = reportOutputPath + fileName;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        //获得表格样式
+        Map<String, CellStyle> style = createStyles(workbook);
+        // 生成一个表格
+        HSSFSheet sheet1 = workbook.createSheet("Sheet1");
+        // 设置表格宽度
+        int[] wt1 = getInventoryWidth2();
+        for (int i = 0; i < wt1.length; i++) {
+            sheet1.setColumnWidth(i, wt1[i] * 256);
+        }
+        String yearMonth;
+        if (Integer.parseInt(staMonth) < 10) {
+            yearMonth = stayear + "-0" + staMonth;
+        } else {
+            yearMonth = stayear + "-" + staMonth;
+        }
+        //创建标题行
+        Row row;
+        Row row1;
+        Row row2;
+        //表格一
+        String[] title1 = getInventoryTitle2();
+        row = sheet1.createRow(0);
+        row.setHeight((short) 900);
+        row1 = sheet1.createRow(1);
+        row1.setHeight((short) 800);
+        row2 = sheet1.createRow(2);
+        row2.setHeight((short) 800);
+        for (int i = 0; i < title1.length; i++) {
+            Cell cell = row2.createCell(i);
+            cell.setCellStyle(style.get("head"));
+            cell.setCellValue(title1[i]);
+        }
+        List<?> itemList = equipmentAnalyResultBean.getImplementation(yearMonth);
+        List<Object[]> list = (List<Object[]>) itemList;
+        Map<String, List<Object[]>> map = new HashMap<>();
+        list.forEach(result -> {
+            if (map.containsKey(result[0].toString())) {//判断是否已存在对应键号
+                map.get(result[0].toString()).add(result);//直接在对应的map中添加数据
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(result);
+                map.put(result[0].toString(), tmpList);//新增一个键号
+            }
+        });
+        if (list == null || list.isEmpty()) {
+            showErrorMsg("Error", "当前无数据！请先查询");
+            return;
+        }
+
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 33));
+        Cell cellTitle = row.createCell(0);
+        cellTitle.setCellStyle(style.get("title"));
+        cellTitle.setCellValue("自主保全实施表");
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 33));
+        Cell cellTime = row1.createCell(0);
+        cellTime.setCellStyle(style.get("date"));
+        cellTime.setCellValue(stayear + "-" + staMonth);
+        int j = 3;
+        int item = 0;
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> list2 = entry.getValue();//取出对应的值
+            if (item == 0) {
+                sheet1.addMergedRegion(new CellRangeAddress(j, j + (list2.size() * 2) - 1, 0, 0));
+            } else {
+                sheet1.addMergedRegion(new CellRangeAddress(item, item + (list2.size() * 2) - 1, 0, 0));
+            }
+            item = j + (list2.size() * 2);
+            for (Object[] eq : list2) {
+                sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 1, 1));
+                sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 2, 2));
+                row = sheet1.createRow(j);
+                Cell cell0 = row.createCell(0);
+                cell0.setCellStyle(style.get("cell"));
+                cell0.setCellValue(entry.getKey());//将部门赋值
+                j = j + 2;
+                for (int i = 1; i <= 31; i++) {
+                    cell0 = row.createCell(i + 2);
+                    cell0.setCellStyle(style.get("cell"));
+                    if (eq[i * 2 + 1] != null) {
+                        cell0.setCellValue(Integer.parseInt(eq[i * 2 + 1].toString()));
+                    }
+                }
+                for (int i = 1; i <= 2; i++) {
+                    cell0 = row.createCell(i);
+                    cell0.setCellStyle(style.get("cell"));
+                    if (eq[i] != null) {
+                        cell0.setCellValue(eq[i].toString());
+                    }
+                }
+                row = sheet1.createRow(j - 1);
+
+                for (int i = 1; i <= 31; i++) {
+                    Cell cell1 = row.createCell(i + 2);
+                    cell1.setCellStyle(style.get("cell"));
+                    if (eq[i * 2 + 2] != null) {
+                        cell1.setCellValue(Integer.parseInt(eq[i * 2 + 2].toString()));
+                    }
+                }
+                for (int i = 0; i <= 2; i++) {
+                   Cell cell1 = row.createCell(i);
+                    cell1.setCellStyle(style.get("cell"));
+                }
+//                for (int i = 1; i <= 31; i++) {
+//                    row = sheet1.createRow(10);
+//                    cell0 = row.createCell(i+3);
+//                    cell0.setCellStyle(style.get("cell"));
+//                    if (eq[i+3] != null) {
+//                        cell0.setCellValue(eq[i + 3].toString());
+//                    }
+//                }
+            }
+        }
+//        for (Object[] eq : list) {
+//            row = sheet1.createRow(j);
+//            j++;
+//            row.setHeight((short) 400);
+//            for (int i = 0; i < eq.length; i++) {
+//                Cell cell0 = row.createCell(i);
+//                cell0.setCellStyle(style.get("cell"));
+//                if (eq[i] != null) {
+//                    cell0.setCellValue(eq[i].toString());
+//                }
+//
+//            }
+//
+//        }
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(fileFullName);
+            workbook.write(os);
+            this.reportViewPath = reportViewContext + fileName;
+            this.preview();
+        } catch (Exception ex) {
+            showErrorMsg("Error", ex.getMessage());
+        } finally {
+            try {
+                if (null != os) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
     }
 
     public List<Number> getYearsList() {

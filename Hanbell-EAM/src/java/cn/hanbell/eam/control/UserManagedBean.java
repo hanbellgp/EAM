@@ -19,21 +19,17 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUtils;
 import org.json.JSONObject;
 
 /**
@@ -114,18 +110,19 @@ public class UserManagedBean implements Serializable {
     public String sendPostLogin(String url, String param) throws IOException {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         token = request.getQueryString();
+  
         if (token==null || token.equals("")) {
             return "";
         }
         PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
+        url =url+"?"+token;
         try {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
             // 设置通用的请求属性
-
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
             conn.setRequestProperty("charset", "utf-8");
@@ -135,8 +132,6 @@ public class UserManagedBean implements Serializable {
             conn.setDoInput(true);
             // 获取URLConnection对象对应的输出流
             out = new PrintWriter(conn.getOutputStream());
-            // 发送请求参数
-            out.print(token);
             // flush输出流的缓冲
             out.flush();
             // 定义BufferedReader输入流来读取URL的响应
@@ -165,10 +160,10 @@ public class UserManagedBean implements Serializable {
         String userNo = "";
 
         JSONObject jsonObject = new JSONObject(result);
-        int resultTemp = jsonObject.getInt("result");//获取成功状态
+        int resultTemp = jsonObject.getInt("code");//获取成功状态
         if (resultTemp == 1) {//成功则获取员工id
             JSONObject data = jsonObject.getJSONObject("data");
-            userid = data.getString("userNo");
+            userid = data.getString("UserNo");
             SystemUser u = null;
             u = systemUserBean.findByUserId(userid);
             company = "C";
