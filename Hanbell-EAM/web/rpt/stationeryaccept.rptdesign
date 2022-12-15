@@ -898,6 +898,18 @@ return false;]]></method>
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">totalAmt</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["position1"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="336">
                 <property name="width">0.010416666666666666in</property>
@@ -1164,6 +1176,14 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
+                        <data id="449">
+                            <structure name="numberFormat">
+                                <property name="category">Fixed</property>
+                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">totalAmt</property>
+                        </data>
                     </cell>
                     <cell id="286">
                         <property name="borderBottomStyle">solid</property>
@@ -1199,38 +1219,14 @@ return false;]]></method>
             <row id="389">
                 <cell id="390"/>
                 <cell id="391"/>
-                <cell id="392">
-                    <label id="396">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">入库人</text-property>
-                    </label>
-                </cell>
-                <cell id="393">
-                    <data id="448">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">dataDetail</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">optusername</property>
-                                <text-property name="displayName">optusername</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["optusername"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">optusername</property>
-                    </data>
-                </cell>
-                <cell id="394">
-                    <label id="443">
-                        <property name="textAlign">right</property>
-                        <text-property name="text">审核人</text-property>
-                    </label>
-                </cell>
+                <cell id="392"/>
+                <cell id="393"/>
+                <cell id="394"/>
                 <cell id="395">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
                 </cell>
             </row>
         </grid>

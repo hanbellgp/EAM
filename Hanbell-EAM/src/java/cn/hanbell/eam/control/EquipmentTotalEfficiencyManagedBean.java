@@ -73,7 +73,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
         superEJB = equipmentRepairBean;
         Calendar date = Calendar.getInstance();
         int year = Integer.parseInt(String.valueOf(date.get(Calendar.YEAR)));
-    
+
         yearsList = new ArrayList<>();
         for (int i = year; i >= 2020; i--) {
             yearsList.add(i);
@@ -102,13 +102,13 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = finalFilePath.indexOf("WEB-INF");
             String str = "";
-            String title = "";
-            if (type.equals("H")) {
-                str = "rpt/设备总合效率管理表H模板.xls";
-                title = "工程设备总合效率管理表(汉钟设备管理版)";
+            String title = "工程设备总合效率管理表(汉钟设备管理版)";
+            List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);//获取设备部门信息
+            if (deptName.get(0).equals("半成品方型件")) {
+                str = "rpt/设备总合效率管理表方型模板.xls";
             } else {
-                str = "rpt/设备总合效率管理表G模板.xls";
-                title = "工程设备总合效率管理表(顾问MES连线版)";
+                str = "rpt/设备总合效率管理表圆型模板.xls";
+
             }
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
             Workbook workbook = WorkbookFactory.create(is);
@@ -284,16 +284,15 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
     public void printOEE() throws ParseException {
         String finalFilePath = "";
         try {
+            List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);//获取设备部门信息
             finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = finalFilePath.indexOf("WEB-INF");
             String str = "";
-            String title = "";
-            if (type.equals("H")) {
+            String title = "OEE表(汉钟设备管理版)";
+            if (deptName.get(0).equals("半成品方型件")) {
                 str = "rpt/设备总合效率OEE.xls";
-                title = "OEE表(汉钟设备管理版)";
             } else {
-                str = "rpt/设备总合效率OEE.xls";
-                title = "OEE(顾问MES连线版)";
+                str = "rpt/设备总合效率OEE圆型.xls";
             }
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
             Workbook workbook = WorkbookFactory.create(is);
@@ -310,8 +309,8 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 return;
             }
             List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID);
-            List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);
-           // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
+
+            // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
             if (oeeList == null || oeeList.isEmpty()) {
                 showErrorMsg("Error", "当前日前无生产数据！请知悉");
                 return;
