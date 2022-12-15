@@ -107,7 +107,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
 
         query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
         fMESList = query.getResultList();
-        stopSql = "   SELECT * FROM  PLAN_SEMI_CIRCLE WHERE  PLANDATE = convert(char,getdate(),111) AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
+        stopSql = "   SELECT EQPID FROM  PLAN_SEMI_CIRCLE WHERE  PLANDATE = convert(char,getdate(),111) AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
         query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
         yMESList = query.getResultList();
         fMESList.addAll(yMESList);
@@ -396,6 +396,9 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         String resultSql = "SELECT A.deptname,A.assetno,a.assetdesc, B.totCount,b.sCount,DAY FROM (SELECT formid,assetno,assetdesc,deptname,DAY(formdate) DAY  FROM equipmentanalyresult WHERE formdate LIKE '%" + formdate + "%' AND company='C'AND standardlevel='一级' ) A LEFT JOIN (SELECT pid,COUNT(PID) totCount,CASE pid WHEN edate IS     NULL THEN count(pid) ELSE 0 END sCount FROM equipmentanalyresultdta GROUP BY pid) B ON A.formid=B.pid ORDER BY A.deptname";
         Query query = getEntityManager().createNativeQuery(resultSql);
         List<Object[]> results = query.getResultList();//已生成的计划保全单
+        String assetCardSql = "SELECT A.formid, A.remark,deptname FROM assetcard A LEFT JOIN  assetitem I ON A.itemno=I.itemno WHERE  A.remark IS NOT NULL  and I.categoryid=3 AND A. company='C'  AND qty!=0 ORDER BY remark";
+        query = getEntityManager().createNativeQuery(assetCardSql);
+        List<Object[]> cList = query.getResultList();//已生成的计划保全单
         Map<String, List<Object[]>> map = new HashMap<>();
         results.forEach(result -> {
             if (map.containsKey(result[1].toString())) {//判断是否已存在对应键号
@@ -414,10 +417,15 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                 obj1[0] = obj[0];
                 obj1[1] = obj[1];
                 obj1[2] = obj[2];
+                for (Object[] c : cList) {
+                    if (c[0].equals(obj[1])) {
+                         obj1[3] = c[1];
+                    }
+                }
                 for (int i = 1; i <= 31; i++) {
                     if (Integer.parseInt(obj[5].toString()) == i) {
-                        obj1[i * 2 + 1] = obj[3];
-                        obj1[i * 2 + 2] = obj[4];
+                        obj1[i * 2 + 2] = obj[3];
+                        obj1[i * 2 + 3] = obj[4];
                     }
                 }
             }
@@ -436,6 +444,9 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         String resultSql = "SELECT A.deptname,A.assetno,a.assetdesc, B.totCount,b.sCount,DAY FROM (SELECT formid,assetno,assetdesc,deptname,MONTH(formdate) DAY  FROM equipmentanalyresult WHERE formdate LIKE '%" + formdate + "%' AND company='C' and standardlevel!='一级' ) A LEFT JOIN (SELECT pid,COUNT(PID) totCount,CASE pid WHEN edate IS     NULL THEN count(pid) ELSE 0 END sCount FROM equipmentanalyresultdta GROUP BY pid) B ON A.formid=B.pid ORDER BY A.deptname";
         Query query = getEntityManager().createNativeQuery(resultSql);
         List<Object[]> results = query.getResultList();//已生成的计划保全单
+          String assetCardSql = "SELECT A.formid, A.remark,deptname FROM assetcard A LEFT JOIN  assetitem I ON A.itemno=I.itemno WHERE  A.remark IS NOT NULL  and I.categoryid=3 AND A. company='C'  AND qty!=0 ORDER BY remark";
+        query = getEntityManager().createNativeQuery(assetCardSql);
+        List<Object[]> cList = query.getResultList();//已生成的计划保全单
         Map<String, List<Object[]>> map = new HashMap<>();
         results.forEach(result -> {
             if (map.containsKey(result[1].toString())) {//判断是否已存在对应键号
@@ -454,10 +465,15 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
                 obj1[0] = obj[0];
                 obj1[1] = obj[1];
                 obj1[2] = obj[2];
+                   for (Object[] c : cList) {
+                    if (c[0].equals(obj[1])) {
+                         obj1[3] = c[1];
+                    }
+                }
                 for (int i = 1; i <= 12; i++) {
                     if (Integer.parseInt(obj[5].toString()) == i) {
-                        obj1[i * 2 + 1] = obj[3];
-                        obj1[i * 2 + 2] = obj[4];
+                        obj1[i * 2 + 2] = obj[3];
+                        obj1[i * 2 + 3] = obj[4];
                     }
                 }
             }

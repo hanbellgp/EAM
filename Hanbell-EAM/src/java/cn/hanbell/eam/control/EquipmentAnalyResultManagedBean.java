@@ -402,12 +402,19 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
 
     @Override
     public void doConfirmDetail() {
+        if (currentDetail.getCheckcontent().equals("输入当前区域条码")) {
+            if (!currentDetail.getException().equals(currentDetail.getJudgestandard())) {//输入的区域条码不匹配则不管前端选择的异常，直接赋值异常
+                currentDetail.setAnalysisresult("异常");
+            }
+        }
         currentDetail.setSdate(currentEntity.getCfmdate());
         currentDetail.setEdate(getDate());
         currentEntity.setCfmdate(getDate());
         super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
     }
 
+     
+    
     @Override
     public String edit(String path) {
         if (currentEntity.getStartdate() == null) {

@@ -85,6 +85,7 @@ public class EquipmentAnalyStageManagedBean extends SuperSingleBean<EquipmentAna
             if (!eStageList.isEmpty()) {
                 eStage = eStageList.get(0);
                 eStage.setStatus("X");
+                currentEntity.setStatus("Y");
                 equipmentAnalyStageBean.update(eStage);
             }
         } else {
@@ -139,31 +140,36 @@ public class EquipmentAnalyStageManagedBean extends SuperSingleBean<EquipmentAna
                             Object[] objDta = new Object[9];
                             objDta[0] = c.toString();
                             size++;
-
+                            List<EquipmentAnalyStage> eList = new ArrayList<>();
                             for (int j = 1; j <= 7; j++) {
                                 if (c != null) {//每个step都是一条数据
                                     c = r.getCell(j);
-                                    objDta[j] = c.getDateCellValue();
-                                    columnSize = j + 1;
-                                    EquipmentAnalyStage stage = new EquipmentAnalyStage();
-                                    stage.setCompany(aCard.getCompany());
-                                    stage.setFormid(aCard);
-                                    stage.setFormdate(getDate());
-                                    stage.setPlandate(c.getDateCellValue());
-                                    stage.setStage("step" + j);
-                                    if (j == 1) {
-                                        stage.setStatus("X");
-                                    } else {
-                                        stage.setStatus("N");
+                                    if (c.getDateCellValue() != null) {//确保每条数据都有计划日期
+                                        objDta[j] = c.getDateCellValue();
+                                        columnSize = j + 1;
+                                        EquipmentAnalyStage stage = new EquipmentAnalyStage();
+                                        stage.setCompany(aCard.getCompany());
+                                        stage.setFormid(aCard);
+                                        stage.setFormdate(getDate());
+                                        stage.setPlandate(c.getDateCellValue());
+                                        stage.setStage("step" + j);
+                                        if (j == 1) {
+                                            stage.setStatus("X");
+                                        } else {
+                                            stage.setStatus("N");
+                                        }
+                                        stage.setCfmdate(getDate());
+                                        stage.setCfmuser(userManagedBean.getUserid());
+                                        eList.add(stage);
                                     }
-                                    stage.setCfmdate(getDate());
-                                    stage.setCfmuser(userManagedBean.getUserid());
-                                    entityList.add(stage);
                                 } else {
                                     break;//当没有数据时跳出本次循环
                                 }
                             }
-                            tagetDtaList.add(objDta);
+                            if (eList.size() == 7) {
+                                entityList.addAll(eList);
+                                tagetDtaList.add(objDta);
+                            }
                         } else {
                             if (count != 0) {
                                 assetnoThere += c.toString() + ",";
@@ -188,7 +194,6 @@ public class EquipmentAnalyStageManagedBean extends SuperSingleBean<EquipmentAna
         }
     }
 
-    
     public void updateData() {
         if (!tagetDtaList.isEmpty()) {
             equipmentAnalyStageBean.update(entityList);

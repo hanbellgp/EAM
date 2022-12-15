@@ -278,14 +278,14 @@ public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnaly
      * 设置表头名称字段
      */
     private String[] getInventoryTitle2() {
-        return new String[]{"所属部门", "设备编号", "设备名称", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+        return new String[]{"所属部门", "设备编号", "设备名称", "MES编号","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth2() {
-        return new int[]{15, 20, 20, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
+        return new int[]{15, 20, 20, 20,5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     }
 
     /**
@@ -344,11 +344,11 @@ public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnaly
             return;
         }
 
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 33));
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 34));
         Cell cellTitle = row.createCell(0);
         cellTitle.setCellStyle(style.get("title"));
         cellTitle.setCellValue("自主保全实施表");
-        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 33));
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 34));
         Cell cellTime = row1.createCell(0);
         cellTime.setCellStyle(style.get("date"));
         cellTime.setCellValue(stayear + "-" + staMonth);
@@ -365,19 +365,20 @@ public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnaly
             for (Object[] eq : list2) {
                 sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 1, 1));
                 sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 2, 2));
+                sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 3, 3));
                 row = sheet1.createRow(j);
                 Cell cell0 = row.createCell(0);
                 cell0.setCellStyle(style.get("cell"));
                 cell0.setCellValue(entry.getKey());//将部门赋值
                 j = j + 2;
                 for (int i = 1; i <= 31; i++) {
-                    cell0 = row.createCell(i + 2);
+                    cell0 = row.createCell(i + 3);
                     cell0.setCellStyle(style.get("cell"));
-                    if (eq[i * 2 + 1] != null) {
-                        cell0.setCellValue(Integer.parseInt(eq[i * 2 + 1].toString()));
+                    if (eq[i * 2 + 2] != null) {
+                        cell0.setCellValue(Integer.parseInt(eq[i * 2 + 2].toString()));
                     }
                 }
-                for (int i = 1; i <= 2; i++) {
+                for (int i = 1; i <= 3; i++) {
                     cell0 = row.createCell(i);
                     cell0.setCellStyle(style.get("cell"));
                     if (eq[i] != null) {
@@ -387,40 +388,18 @@ public class EquipmentAnalyMonthManagedBean extends FormMultiBean<EquipmentAnaly
                 row = sheet1.createRow(j - 1);
 
                 for (int i = 1; i <= 31; i++) {
-                    Cell cell1 = row.createCell(i + 2);
+                    Cell cell1 = row.createCell(i + 3);
                     cell1.setCellStyle(style.get("cell"));
                     if (eq[i * 2 + 2] != null) {
-                        cell1.setCellValue(Integer.parseInt(eq[i * 2 + 2].toString()));
+                        cell1.setCellValue(Integer.parseInt(eq[i * 2 + 3].toString()));
                     }
                 }
-                for (int i = 0; i <= 2; i++) {
+                for (int i = 0; i <= 3; i++) {
                    Cell cell1 = row.createCell(i);
                     cell1.setCellStyle(style.get("cell"));
                 }
-//                for (int i = 1; i <= 31; i++) {
-//                    row = sheet1.createRow(10);
-//                    cell0 = row.createCell(i+3);
-//                    cell0.setCellStyle(style.get("cell"));
-//                    if (eq[i+3] != null) {
-//                        cell0.setCellValue(eq[i + 3].toString());
-//                    }
-//                }
             }
         }
-//        for (Object[] eq : list) {
-//            row = sheet1.createRow(j);
-//            j++;
-//            row.setHeight((short) 400);
-//            for (int i = 0; i < eq.length; i++) {
-//                Cell cell0 = row.createCell(i);
-//                cell0.setCellStyle(style.get("cell"));
-//                if (eq[i] != null) {
-//                    cell0.setCellValue(eq[i].toString());
-//                }
-//
-//            }
-//
-//        }
         OutputStream os = null;
         try {
             os = new FileOutputStream(fileFullName);

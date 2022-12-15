@@ -164,8 +164,7 @@ public class EquipmentPlanYearManagedBean extends FormMultiBean<EquipmentAnalyRe
         }
     }
 
-    
-        /**
+    /**
      * 导出计划保全实施表
      */
     public void printImplementation() {
@@ -215,11 +214,11 @@ public class EquipmentPlanYearManagedBean extends FormMultiBean<EquipmentAnalyRe
             return;
         }
 
-        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 14));
+        sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 15));
         Cell cellTitle = row.createCell(0);
         cellTitle.setCellStyle(style.get("title"));
         cellTitle.setCellValue("计划保全实施表");
-        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 14));
+        sheet1.addMergedRegion(new CellRangeAddress(1, 1, 0, 15));
         Cell cellTime = row1.createCell(0);
         cellTime.setCellStyle(style.get("date"));
         cellTime.setCellValue(staYear);
@@ -236,19 +235,20 @@ public class EquipmentPlanYearManagedBean extends FormMultiBean<EquipmentAnalyRe
             for (Object[] eq : list2) {
                 sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 1, 1));
                 sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 2, 2));
+                sheet1.addMergedRegion(new CellRangeAddress(j, j + 1, 3, 3));
                 row = sheet1.createRow(j);
                 Cell cell0 = row.createCell(0);
                 cell0.setCellStyle(style.get("cell"));
                 cell0.setCellValue(entry.getKey());//将部门赋值
                 j = j + 2;
                 for (int i = 1; i <= 12; i++) {
-                    cell0 = row.createCell(i + 2);
+                    cell0 = row.createCell(i + 3);
                     cell0.setCellStyle(style.get("cell"));
-                    if (eq[i * 2 + 1] != null) {
-                        cell0.setCellValue(Integer.parseInt(eq[i * 2 + 1].toString()));
+                    if (eq[i * 2 + 2] != null) {
+                        cell0.setCellValue(Integer.parseInt(eq[i * 2 + 2].toString()));
                     }
                 }
-                for (int i = 1; i <= 2; i++) {
+                for (int i = 1; i <= 3; i++) {
                     cell0 = row.createCell(i);
                     cell0.setCellStyle(style.get("cell"));
                     if (eq[i] != null) {
@@ -258,24 +258,16 @@ public class EquipmentPlanYearManagedBean extends FormMultiBean<EquipmentAnalyRe
                 row = sheet1.createRow(j - 1);
 
                 for (int i = 1; i <= 12; i++) {
-                    Cell cell1 = row.createCell(i + 2);
+                    Cell cell1 = row.createCell(i + 3);
                     cell1.setCellStyle(style.get("cell"));
                     if (eq[i * 2 + 2] != null) {
-                        cell1.setCellValue(Integer.parseInt(eq[i * 2 + 2].toString()));
+                        cell1.setCellValue(Integer.parseInt(eq[i * 2 + 3].toString()));
                     }
                 }
-                for (int i = 0; i <= 2; i++) {
-                   Cell cell1 = row.createCell(i);
+                for (int i = 0; i <= 3; i++) {
+                    Cell cell1 = row.createCell(i);
                     cell1.setCellStyle(style.get("cell"));
                 }
-//                for (int i = 1; i <= 31; i++) {
-//                    row = sheet1.createRow(10);
-//                    cell0 = row.createCell(i+3);
-//                    cell0.setCellStyle(style.get("cell"));
-//                    if (eq[i+3] != null) {
-//                        cell0.setCellValue(eq[i + 3].toString());
-//                    }
-//                }
             }
         }
 //        for (Object[] eq : list) {
@@ -311,15 +303,12 @@ public class EquipmentPlanYearManagedBean extends FormMultiBean<EquipmentAnalyRe
             }
         }
     }
-    
-    
-    
-    
+
     /**
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"资产编号", "保养区域", "保养内容","工时","人力","停机时间","责任单位","保养等级", "周期", "1", "2", "3", "4)", "5", "6", "7", "8", "9", "10", "11", "12"};
+        return new String[]{"资产编号", "保养区域", "保养内容", "工时", "人力", "停机时间", "责任单位", "保养等级", "周期", "1", "2", "3", "4)", "5", "6", "7", "8", "9", "10", "11", "12"};
     }
 
     /**
@@ -328,19 +317,21 @@ public class EquipmentPlanYearManagedBean extends FormMultiBean<EquipmentAnalyRe
     private int[] getInventoryWidth() {
         return new int[]{15, 20, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     }
- /**
+
+    /**
      * 设置表头名称字段
      */
     private String[] getInventoryTitle2() {
-        return new String[]{"所属部门", "设备编号", "设备名称", "1", "2", "3", "4)", "5", "6", "7", "8", "9", "10", "11", "12"};
+        return new String[]{"所属部门", "设备编号", "设备名称", "MES编号", "1", "2", "3", "4)", "5", "6", "7", "8", "9", "10", "11", "12"};
     }
 
     /**
      * 设置单元格宽度
      */
     private int[] getInventoryWidth2() {
-        return new int[]{15, 20, 20,  5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
+        return new int[]{15, 20, 20, 20, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     }
+
     /**
      * 设置导出EXCEL表格样式
      */
