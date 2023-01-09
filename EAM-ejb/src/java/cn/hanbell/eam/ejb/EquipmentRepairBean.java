@@ -1918,9 +1918,9 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     } else {
                         obj[8] = objects[2].toString();
                     }
-                    obj[26]=objects[1];
+                    obj[26] = objects[1];
                     if (!obj[26].equals(0)) {
-                        obj[28]=1;
+                        obj[28] = 1;
                     }
 //                    obj[21]=objects[15];
 ////                  获取计划停机时间-实际停机时间的差异
@@ -1968,7 +1968,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
     }
 
-    public List getEquipmentTotalEfficiencyDayOEE(String year, String EPQID) throws ParseException {
+    public List getEquipmentTotalEfficiencyDayOEE(String year, String EPQID, String type) throws ParseException {
 
 //       生管计划工时，连线故障次数及故障工时
         List<String> deptName = this.getEPQIDDeptname(EPQID);
@@ -1976,6 +1976,9 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         if (!deptName.isEmpty()) {
             dept = deptName.get(0);//获取加工机所在部门信息
         }
+
+        List<Object[]> rList = new ArrayList<>();
+
         StringBuilder sbMESAVA = new StringBuilder();
         sbMESAVA.append(" SELECT  B.EQPID,B.AVAILABLEMINS,A.counts, A.ALARMTIME_LEN");
         sbMESAVA.append(" FROM (SELECT E.EQPID,COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN");
@@ -1987,6 +1990,16 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
         Query query = superEJBForMES.getEntityManager().createNativeQuery(sbMESAVA.toString());
         List<Object[]> resultsAVA = query.getResultList();
+        if (type.equals("G")) {//当选择顾问版时数据选取为产能加工报表
+            String str = "";
+            if (dept.equals("半成品方型件")) {
+                str = " SELECT  EQPID,sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)),SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME = '" + year + "' GROUP BY EQPID";
+            } else {
+                str = " SELECT  EQPID,  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME = '" + year + "' GROUP BY EQPID";
+            }
+            query = superEJBForMES.getEntityManager().createNativeQuery(str);
+            rList = query.getResultList();
+        }
 //       连线故障时间及总和
         StringBuilder sbMESLEN = new StringBuilder();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
@@ -2069,7 +2082,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             Object[] obj = new Object[43];
             for (Object[] objects : resultsAVA) {
                 if (objects[0].equals(i[0].toString())) {
-                    
+
                     //      将有生管计划的所有值赋0
                     for (int j = 0; j < 42; j++) {
                         obj[j] = 0;
@@ -2148,7 +2161,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             }
 //            EAM故障时间及故障次数
             for (Object[] objects : resultsEAM) {
-                if (objects[0].equals(i[0].toString())) {
+                if (objects[0].equals(i[0].toString())&&obj[26]!=null) {
                     obj[27] = Integer.parseInt(objects[2].toString()) + Integer.parseInt(obj[26].toString());
                     obj[29] = objects[1];
                     obj[30] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(obj[29].toString());
@@ -2172,9 +2185,9 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     } else {
                         obj[8] = objects[2].toString();
                     }
-                    obj[26]=objects[1];
+                    obj[26] = objects[1];
                     if (!obj[26].equals(0)) {
-                        obj[28]=1;
+                        obj[28] = 1;
                     }
 //                    obj[21]=objects[15];
 ////                  获取计划停机时间-实际停机时间的差异
@@ -2186,6 +2199,16 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 //                    }
                 }
             }
+            if (type.equals("G")) {
+                for (Object[] objects : rList) {
+                    if (objects[0].equals(i[0].toString())) {
+                        obj[2] = objects[1];
+                        obj[3] = objects[2];
+                        obj[4] = objects[3];
+                    }
+                }
+            }
+
             obj[0] = i[0].toString();
             if (obj[1] != null) {
                 list.add(obj);

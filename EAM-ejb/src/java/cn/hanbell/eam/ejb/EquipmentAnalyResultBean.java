@@ -35,7 +35,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
     public List<EquipmentAnalyResult> getEquipmentAnalyResultListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
         StringBuilder sb = new StringBuilder();
         StringBuilder exFilterStr = new StringBuilder();
-        sb.append("SELECT A.id,A.formid,A.company,A.assetno,A.assetdesc,A.spareno,A.deptno,A.deptname,A.standardlevel,A.startdate,A.enddate,A.analysisresult,B.remark,A.status,A.creator,A.credate,A.optuser,A.optdate,A.cfmuser,A.cfmdate FROM ");
+        sb.append("SELECT A.id,A.formid,A.company,A.assetno,A.assetdesc,A.spareno,A.deptno,A.deptname,A.standardlevel,A.startdate,A.enddate,A.analysisresult,B.remark,A.status,A.creator,A.credate,A.optuser,A.optdate,A.cfmuser,A.cfmdate,A.isspotcheck FROM ");
         sb.append(this.className);
         sb.append(" A LEFT JOIN assetcard B ON A.assetno=B.formid  WHERE (1=1 ");
         Map<String, Object> strMap = new LinkedHashMap<>();

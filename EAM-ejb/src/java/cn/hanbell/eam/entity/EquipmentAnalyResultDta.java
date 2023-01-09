@@ -137,6 +137,13 @@ public class EquipmentAnalyResultDta extends FormDetailEntity {
     @Size(max = 100)
     @Column(name = "adjustreason")
     private String adjustreason;
+  @Size(max = 45)
+    @Column(name = "filename")
+    private String filename;
+    @Size(max = 100)
+    @Column(name = "filepath")
+    private String filepath;
+ 
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
@@ -369,6 +376,22 @@ public class EquipmentAnalyResultDta extends FormDetailEntity {
 
     public void setAdjustreason(String adjustreason) {
         this.adjustreason = adjustreason;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
     public String getRemark() {

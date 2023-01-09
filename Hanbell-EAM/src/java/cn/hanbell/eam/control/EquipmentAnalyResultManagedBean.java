@@ -13,23 +13,30 @@ import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentAnalyResult;
 import cn.hanbell.eam.entity.EquipmentAnalyResultDta;
+import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentStandard;
 import cn.hanbell.eam.entity.SysCode;
 import cn.hanbell.eam.lazy.EquipmentAnalyResultModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import com.lightshell.comm.BaseLib;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -41,6 +48,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -65,6 +73,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
     private String queryStandardType;
     private String queryStandardLevel;
     private String queryUserno;
+    private String imageName;
     private List<SysCode> standardtypeList;
     private List<SysCode> standardlevelList;
     private List<SysCode> respondeptList;
@@ -84,9 +93,57 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         newEntity.setStandardlevel("一级");//自主保全只能生成一级的保全单
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCreator(userManagedBean.getUserid());
-    }
-//导出界面的EXCEL数据处理
 
+    }
+
+    //处理上传图片数据
+    public void handleFileUploadWhenDetailNew(FileUploadEvent event) throws IOException {
+        super.handleFileUploadWhenNew(event);
+        if (this.fileName != null) {
+            currentDetail.setFilepath("../../resources/app/res/" + imageName);
+            currentDetail.setFilename(fileName);
+        }
+    }
+
+    @Override
+    protected void upload() throws IOException {
+        try {
+            final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            request.setCharacterEncoding("UTF-8");
+            Date date = new Date();
+            SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
+            imageName = String.valueOf(date.getTime());
+            final InputStream in = this.file.getInputstream();
+            final File dir = new File(this.getAppResPath());
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            imageName = imageName + this.getFileName();
+            final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
+            int read = 0;
+            final byte[] bytes = new byte[1024];
+            while (true) {
+                read = in.read(bytes);
+                if (read < 0) {
+                    break;
+                }
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Fatal", e.toString());
+            FacesContext.getCurrentInstance().addMessage((String) null, msg);
+        }
+    }
+
+    public void persistCJ() {
+        newEntity.setIsspotcheck("Y");
+        super.persist(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+//导出界面的EXCEL数据处理
     @Override
     public void print() throws ParseException {
 
@@ -163,7 +220,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
             cell0 = row.createCell(8);
             cell0.setCellStyle(style.get("cell"));
             cell0.setCellValue(eq.getDowntime());
-           
+
         }
         OutputStream os = null;
         try {
@@ -189,7 +246,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
      * 设置表头名称字段
      */
     private String[] getInventoryTitle() {
-        return new String[]{"保养计划日期", "资产编号", "MES编号", "设备名称", "所属部门", "基准等级", "开始时间", "结束时间",  "是否停机"};
+        return new String[]{"保养计划日期", "资产编号", "MES编号", "设备名称", "所属部门", "基准等级", "开始时间", "结束时间", "是否停机"};
     }
 
     /**
@@ -413,10 +470,13 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
         super.doConfirmDetail();//To change body of generated methods, choose Tools | Templates.
     }
 
-     
-    
     @Override
     public String edit(String path) {
+        if (currentEntity.getIsspotcheck()!=null && !currentEntity.getCreator().equals(userManagedBean.getUserid())) {
+            showErrorMsg("Error", "抽检单只有创建人才能点检！！！");
+            return "";
+        }
+
         if (currentEntity.getStartdate() == null) {
             currentEntity.setStartdate(getDate());
         }
@@ -552,6 +612,14 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
 
     public void setManhourunitList(List<SysCode> manhourunitList) {
         this.manhourunitList = manhourunitList;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
 }

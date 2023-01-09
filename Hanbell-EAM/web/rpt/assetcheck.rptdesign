@@ -939,7 +939,7 @@ return false;]]></method>
             </column>
             <column id="433">
                 <property name="repeat">1</property>
-                <property name="width">1.2in</property>
+                <property name="width">1.6in</property>
             </column>
             <column id="450">
                 <property name="repeat">1</property>
@@ -1520,7 +1520,12 @@ return false;]]></method>
                 <cell id="404"/>
             </row>
             <row id="389">
-                <cell id="390"/>
+                <cell id="390">
+                    <label id="562">
+                        <property name="textAlign">right</property>
+                        <text-property name="text">审核人</text-property>
+                    </label>
+                </cell>
                 <cell id="391">
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
