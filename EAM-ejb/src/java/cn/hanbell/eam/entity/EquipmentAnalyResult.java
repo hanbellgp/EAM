@@ -93,6 +93,9 @@ public class EquipmentAnalyResult extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+    @Size(max = 10)
+    @Column(name = "isspotcheck")
+    private String isspotcheck;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -212,6 +215,14 @@ public class EquipmentAnalyResult extends FormEntity {
 
     public void setAnalysisresult(String analysisresult) {
         this.analysisresult = analysisresult;
+    }
+
+    public String getIsspotcheck() {
+        return isspotcheck;
+    }
+
+    public void setIsspotcheck(String isspotcheck) {
+        this.isspotcheck = isspotcheck;
     }
 
     public String getRemark() {

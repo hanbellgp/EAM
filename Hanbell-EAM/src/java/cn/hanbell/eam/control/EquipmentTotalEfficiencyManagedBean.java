@@ -308,7 +308,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 showErrorMsg("Error", "请在开始时间选择导出的日期！！！");
                 return;
             }
-            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID);
+            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID,type);
 
             // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
             if (oeeList == null || oeeList.isEmpty()) {
