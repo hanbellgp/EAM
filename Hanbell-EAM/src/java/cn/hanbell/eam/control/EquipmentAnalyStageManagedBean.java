@@ -74,6 +74,10 @@ public class EquipmentAnalyStageManagedBean extends SuperSingleBean<EquipmentAna
     public void update() {
         currentEntity.setOptdate(getDate());
         currentEntity.setOptuser(userManagedBean.getUserid());
+        if (currentEntity.getActdate() == null) {
+              super.update();
+              return;
+        }
         if (!currentEntity.getStage().equals("step7") && currentEntity.getActdate() != null) {//当不是step7时抓取下一条数据更新&&有实际填写时间
             List<EquipmentAnalyStage> eStageList = new ArrayList<>();
             EquipmentAnalyStage eStage = new EquipmentAnalyStage();

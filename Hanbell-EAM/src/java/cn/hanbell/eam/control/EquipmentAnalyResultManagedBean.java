@@ -106,6 +106,19 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
     }
 
     @Override
+    protected boolean doBeforePersist() throws Exception {
+        if (newEntity.getAssetno()==null||"".equals(newEntity.getAssetno())) {
+             showErrorMsg("Error", "请先选择设备编号");
+            return false;
+        }
+        
+        return super.doBeforePersist(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    
+    
+    @Override
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
