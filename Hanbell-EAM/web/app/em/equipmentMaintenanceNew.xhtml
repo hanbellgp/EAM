@@ -157,7 +157,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"><h:outputText value="停工时间(分)"/></p:column>
                     <p:column>
-                        <p:inputText id="stopworktime" value="#{equipmentMaintenanceManagedBean.currentEntity.stopworktime}" onkeyup="(this.v = function () {
+                        <p:inputText id="stopworktime" readonly="true" value="#{equipmentMaintenanceManagedBean.currentEntity.stopworktime}" onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
                                 }).call(this)" onblur="this.v();"
                                      title="stopworktime" >
@@ -167,9 +167,9 @@
                                     />
                         </p:inputText>
                     </p:column>
-                    <p:column style="background-color: #EEEEEE"><h:outputText value="非工作时间(分)"/></p:column>
+                    <p:column style="background-color: #EEEEEE"><h:outputText value="维修暂停时间(分)"/></p:column>
                     <p:column>
-                        <p:inputText id="excepttime" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}"  onkeyup="(this.v = function () {
+                        <p:inputText id="excepttime"  readonly="true" value="#{equipmentMaintenanceManagedBean.currentEntity.excepttime}"  onkeyup="(this.v = function () {
                                     this.value = this.value.replace(/\D|^/g, '');
                                 }).call(this)" onblur="this.v();"
                                      title="excepttime" >

@@ -16,7 +16,7 @@
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnSave" value="保存"  actionListener="#{equipmentAnalyResultManagedBean.persist()}"  icon="ui-icon-save"  
-                                     process="@this,plgHead"  update="formOne"/>
+                                     process="@this,plgHead"  update="plgHead"/>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
@@ -28,9 +28,9 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="设备编号" for="assetno" /></p:column>
                     <p:column styleClass="Wid15">
-                        <p:inputText id="assetno" value="#{equipmentAnalyResultManagedBean.newEntity.assetno}" title="assetno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="assetno" value="#{equipmentAnalyResultManagedBean.newEntity.assetno}" title="assetno" required="true" requiredMessage="请选择资产编号" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentAnalyResultManagedBean.openDialog('equipmentSelect')}" icon="ui-icon-extlink"
-                                         process="@this" >
+                                         process="@this"  >
                             <p:ajax event="dialogReturn" listener="#{equipmentAnalyResultManagedBean.handleDialogReturnWhenNew}"
                                     update="assetno,assetdesc,spareno,deptname,:formOne:tabView:tableList" />
                         </p:commandButton>
