@@ -34,6 +34,7 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
         model = new EquipmentSpareRecodeDtaModel(equipmentSpareRecodeDtaBean, userManagedBean);
         this.model.getFilterFields().put("status", "V");
         this.model.getSortFields().put("pid", "ASC");
+        this.model.getFilterFields().put("sparenum.company", userManagedBean.getCompany());
         queryState="LK";
         super.init();
     }

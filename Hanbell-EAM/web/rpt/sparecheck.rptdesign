@@ -422,12 +422,14 @@ if(master!=null){
 	dataSetRow["seq"] = detail.get(currentRow).getSeq();
 	dataSetRow["assetdesc"] = detail.get(currentRow).getBatch();
 	dataSetRow["assetno"] = detail.get(currentRow).getAssetno();
-	dataSetRow["assetspec"] = detail.get(currentRow).getBrand();
+	dataSetRow["assetspec"] = detail.get(currentRow).getSrcapi(); 
+          dataSetRow["userno"] = detail.get(currentRow).getBrand();
 	dataSetRow["deptno"] = detail.get(currentRow).getDeptno();
 	dataSetRow["deptname"] = detail.get(currentRow).getDeptname();
 	dataSetRow["qty"] = detail.get(currentRow).getQty();
 	dataSetRow["actqty"] = detail.get(currentRow).getActqty();
 	dataSetRow["diffqty"] = detail.get(currentRow).getDiffqty();
+	dataSetRow["srcapi"] = detail.get(currentRow).getSrcapi();
 	currentRow++;
 	return true;
 }
@@ -724,7 +726,7 @@ return false;]]></method>
         </grid>
         <table id="189">
             <property name="fontFamily">"微软雅黑"</property>
-            <property name="width">10.9in</property>
+            <property name="width">10.895833333333334in</property>
             <property name="dataSet">dataDetail</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -919,7 +921,7 @@ return false;]]></method>
             </column>
             <column id="433">
                 <property name="repeat">1</property>
-                <property name="width">1.4in</property>
+                <property name="width">1.6in</property>
             </column>
             <column id="450">
                 <property name="repeat">1</property>
@@ -927,6 +929,10 @@ return false;]]></method>
             </column>
             <column id="589">
                 <property name="repeat">1</property>
+                <property name="width">1.6666666666666667in</property>
+            </column>
+            <column id="539">
+                <property name="width">1.3333333333333333in</property>
             </column>
             <column id="303">
                 <property name="width">0.5in</property>
@@ -940,7 +946,9 @@ return false;]]></method>
             <column id="524">
                 <property name="width">0.5in</property>
             </column>
-            <column id="574"/>
+            <column id="574">
+                <property name="width">2.40625in</property>
+            </column>
             <header>
                 <row id="190">
                     <cell id="332">
@@ -992,7 +1000,20 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <label id="604">
-                            <text-property name="text">位置</text-property>
+                            <text-property name="text">规格</text-property>
+                        </label>
+                    </cell>
+                    <cell id="535">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="540">
+                            <text-property name="text">位置信息</text-property>
                         </label>
                     </cell>
                     <cell id="221">
@@ -1115,6 +1136,19 @@ return false;]]></method>
                         <property name="borderTopWidth">thin</property>
                         <data id="605">
                             <property name="resultSetColumn">assetspec</property>
+                        </data>
+                    </cell>
+                    <cell id="536">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="541">
+                            <property name="resultSetColumn">userno</property>
                         </data>
                     </cell>
                     <cell id="260">
@@ -1246,8 +1280,19 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
+                        <property name="whiteSpace">nowrap</property>
                     </cell>
                     <cell id="594">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="595">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>

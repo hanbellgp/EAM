@@ -30,12 +30,13 @@ public class EquipmentSpareClassManagedBean extends SuperSingleBean<EquipmentSpa
     @Override 
     public void create() {
         super.create();
-        int size = equipmentSpareClassBean.findAll().size() + 1;
+        int size = equipmentSpareClassBean.findByCompany(userManagedBean.getCompany()).size() + 1;
         if (size <= 9) {
             newEntity.setScategory("0" + size);
         } else {
             newEntity.setScategory(String.valueOf(size));
         }
+         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setCredate(getDate());
         newEntity.setStatus("V");
         newEntity.setCreator(userManagedBean.getUserid());

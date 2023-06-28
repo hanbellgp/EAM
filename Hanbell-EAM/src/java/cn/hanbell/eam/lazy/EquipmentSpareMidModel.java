@@ -28,6 +28,7 @@ public class EquipmentSpareMidModel extends BaseLazyModel<EquipmentSpareMid> {
 
     @Override
     public List<EquipmentSpareMid> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+        filterFields.put("company =", userManagedBean.getCompany());
         setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
         setRowCount(superEJB.getRowCount(filterFields));
         return dataList;

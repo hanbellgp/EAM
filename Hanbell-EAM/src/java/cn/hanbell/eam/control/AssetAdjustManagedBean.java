@@ -57,6 +57,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     private List<String> paramUsed = null;
     private List<String> paramPause = null;
     private List<String> paramHascost = null;
+    private String queryAssetno;
 
     public AssetAdjustManagedBean() {
         super(AssetAdjust.class, AssetAdjustDetail.class);
@@ -592,6 +593,10 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
     public void query() {
         if (this.model != null && this.model.getFilterFields() != null) {
             this.model.getFilterFields().clear();
+            if (queryAssetno != null && !"".equals(queryAssetno)) {
+                String assetno =assetAdjustDetailBean.getAdjustForimd(queryAssetno);
+                this.model.getFilterFields().put("formid", assetno);
+            }
             if (queryFormId != null && !"".equals(queryFormId)) {
                 this.model.getFilterFields().put("formid", queryFormId);
             }
@@ -619,6 +624,14 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             this.addedDetailList.clear();
         }
         super.setCurrentEntity(currentEntity);
+    }
+
+    public String getQueryAssetno() {
+        return queryAssetno;
+    }
+
+    public void setQueryAssetno(String queryAssetno) {
+        this.queryAssetno = queryAssetno;
     }
 
 }

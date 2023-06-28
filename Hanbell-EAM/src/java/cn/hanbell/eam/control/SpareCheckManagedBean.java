@@ -191,13 +191,19 @@ public class SpareCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
             aDta.setPid(e.getFormid());
             aDta.setSeq(seq);
             aDta.setAssetno(obj[0].toString());
-            aDta.setBatch(obj[1].toString());
-            aDta.setBrand(obj[7].toString());
-
+            if (obj[1] != null) {
+                aDta.setBatch(obj[1].toString());
+            }
+            if (obj[7] != null) {
+                aDta.setBrand(obj[7].toString());
+            }
             aDta.setActqty(BigDecimal.valueOf(Double.valueOf(obj[5].toString())));
             aDta.setQty(BigDecimal.valueOf(Double.valueOf(obj[5].toString())));
             aDta.setDiffqty(BigDecimal.ZERO);
             aDta.setAssetItem(item);
+            if (obj[2] != null) {
+                aDta.setSrcapi(obj[2].toString());
+            }
             assetCheckDetails.add(aDta);
         }
         detailAdded.put(assetCheckDetailBean, assetCheckDetails);

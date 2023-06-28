@@ -7,8 +7,10 @@ package cn.hanbell.eam.ejb;
 
 import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.AssetAdjustDetail;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -22,4 +24,16 @@ public class AssetAdjustDetailBean extends SuperEJBForEAM<AssetAdjustDetail> {
         super(AssetAdjustDetail.class);
     }
 
+    public String getAdjustForimd(String assetno) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT * FROM assetadjustdetail  WHERE  assetno='").append(assetno).append("'");
+        //生成SQL
+        Query query = getEntityManager().createNativeQuery(sb.toString(), AssetAdjustDetail.class);
+
+        List<AssetAdjustDetail> results = query.getResultList();
+        if (results!=null&&results.size()>0) {
+          return results.get(0).getPid();
+        }
+        return "";
+    }
 }
