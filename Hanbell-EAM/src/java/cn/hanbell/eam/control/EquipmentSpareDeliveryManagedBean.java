@@ -128,7 +128,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
             }
         }
         super.verify(); //To change body of generated methods, choose Tools | Templates.
-    } 
+    }
 //获取零件费用
 
     public BigDecimal getPartsCost() {
@@ -252,6 +252,12 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
             }
             if (queryUserno != null && !"".equals(this.queryUserno)) {
                 this.model.getFilterFields().put("creator", queryUserno);
+            }
+            if (queryDateBegin != null) {
+                this.model.getFilterFields().put("formdateBegin", queryDateBegin);
+            }
+            if (queryDateEnd != null) {
+                this.model.getFilterFields().put("formdateEnd", queryDateEnd);
             }
             if (queryName != null && !"".equals(this.queryName)) {
                 this.model.getFilterFields().put("relano", queryName);

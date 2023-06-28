@@ -23,9 +23,10 @@ public class EquipmentSpareMidBean extends SuperEJBForEAM<EquipmentSpareMid> {
     public EquipmentSpareMidBean() {
         super(EquipmentSpareMid.class);
     }
-   public List<EquipmentSpareMid> findByScategory(String srcformid) {
+   public List<EquipmentSpareMid> findByScategory(String srcformid,String company) {
         Query query = getEntityManager().createNamedQuery("EquipmentSpareMid.findByScategory");
         query.setParameter("scategory", srcformid);
+        query.setParameter("company", company);
         try {
             return query.getResultList();
         } catch (Exception ex) {

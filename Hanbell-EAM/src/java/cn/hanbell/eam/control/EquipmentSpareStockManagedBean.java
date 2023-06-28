@@ -33,12 +33,12 @@ public class EquipmentSpareStockManagedBean extends SuperSingleBean<EquipmentSpa
     @Override
     public void init() {
         superEJB = equipmentSpareStockBean;
-        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId,querySparemodel);
+        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId,querySparemodel,userManagedBean.getCompany());
     }
 
     @Override
     public void query() {
-        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId,querySparemodel);
+        listStock = equipmentSpareStockBean.getEquipmentSpareStockList(queryName, queryFormId,querySparemodel,userManagedBean.getCompany());
     }
 
     @Override

@@ -1819,7 +1819,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             for (int j = 0; j < 35; j++) {
                 obj[j] = 0;
             }
-            obj[1] = 1440;
+          
             for (Object[] objects : resultsAVA) {
                 if (objects[0].equals(i)) {
                     //      将有生管计划的所有值赋0
@@ -1834,7 +1834,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     }
                 }
             }
-
+            obj[1] = 1440;
 //          实际产出件数及标准工时
             for (Object[] object : resultsQTY) {
                 if (object[0].equals(i)) {

@@ -8,7 +8,6 @@ package cn.hanbell.eam.ejb;
 import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.AssetParameterDta;
-import cn.hanbell.eam.entity.AssetParameterDta_;
 import cn.hanbell.eam.entity.EquipmentAnalyStage;
 import java.util.ArrayList;
 import java.util.HashMap;

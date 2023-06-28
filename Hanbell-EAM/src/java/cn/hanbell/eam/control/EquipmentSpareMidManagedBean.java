@@ -33,10 +33,12 @@ public class EquipmentSpareMidManagedBean extends SuperSingleBean<EquipmentSpare
 
     @Override
     public void create() {
+        
         super.create();
         newEntity.setCredate(getDate());
         newEntity.setStatus("V");
         newEntity.setCreator(userManagedBean.getUserid());
+        newEntity.setCompany(userManagedBean.getCompany());
     }
 
     @Override
@@ -92,7 +94,7 @@ public class EquipmentSpareMidManagedBean extends SuperSingleBean<EquipmentSpare
         if (event.getObject() != null && newEntity != null) {
             EquipmentSpareClass e = (EquipmentSpareClass) event.getObject();
             newEntity.setScategory(e);
-            int size = equipmentSpareMidBean.findByScategory(e.getScategory()).size() + 1;
+            int size = equipmentSpareMidBean.findByScategory(e.getScategory(),userManagedBean.getCompany()).size() + 1;
             if (size <= 9) {
                 newEntity.setMcategory("0" + size);
             } else {

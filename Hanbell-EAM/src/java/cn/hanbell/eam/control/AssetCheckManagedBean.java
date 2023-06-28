@@ -162,6 +162,7 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
         superEJB = assetCheckBean;
         detailEJB = assetCheckDetailBean;
         model = new AssetCheckModel(assetCheckBean, userManagedBean);
+        model.getFilterFields().put("formid", "AJ");
         model.getSortFields().put("status", "ASC");
         model.getSortFields().put("formid", "DESC");
         super.init();
@@ -287,6 +288,8 @@ public class AssetCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
         if (model != null) {
             if (queryFormId != null && !"".equals(queryFormId)) {
                 model.getFilterFields().put("formid", queryFormId);
+            }else{
+                model.getFilterFields().put("formid", "AJ");
             }
             if (queryDateBegin != null) {
                 model.getFilterFields().put("formdateBegin", queryDateBegin);

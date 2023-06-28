@@ -17,6 +17,10 @@
                 <p:inputText id="queryFormId" value="#{equipmentSpareDeliveryManagedBean.queryFormId}" title="入库单号" />
                 <h:outputLabel value="关联维修单号" for="queryName" />
                 <p:inputText id="queryName" value="#{equipmentSpareDeliveryManagedBean.queryName}" title="关联维修单号" />
+                <h:outputLabel value="出库日期" for="queryDateBegin" />
+                <p:calendar id="queryDateBegin" value="#{equipmentSpareDeliveryManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                <h:outputLabel value="截止日期" for="queryDateEnd" />
+                <p:calendar id="queryDateEnd" value="#{equipmentSpareDeliveryManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="出库人" for="queryUserno" />
                 <p:inputText id="queryUserno" value="#{equipmentSpareDeliveryManagedBean.queryUserno}" title="出库人" />
                 <h:outputLabel value="状态" for="queryState" />

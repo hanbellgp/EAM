@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "EquipmentSpareClass.findAll", query = "SELECT e FROM EquipmentSpareClass e"),
     @NamedQuery(name = "EquipmentSpareClass.findById", query = "SELECT e FROM EquipmentSpareClass e WHERE e.id = :id"),
+    @NamedQuery(name = "EquipmentSpareClass.findByCompany", query = "SELECT e FROM SysCode e WHERE e.company = :company"),
     @NamedQuery(name = "EquipmentSpareClass.findByScategory", query = "SELECT e FROM EquipmentSpareClass e WHERE e.scategory = :scategory"),
     @NamedQuery(name = "EquipmentSpareClass.findBySname", query = "SELECT e FROM EquipmentSpareClass e WHERE e.sname = :sname"),
     @NamedQuery(name = "EquipmentSpareClass.findByRemark", query = "SELECT e FROM EquipmentSpareClass e WHERE e.remark = :remark"),
@@ -40,11 +41,17 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpareClass.findByCfmuser", query = "SELECT e FROM EquipmentSpareClass e WHERE e.cfmuser = :cfmuser"),
     @NamedQuery(name = "EquipmentSpareClass.findByCfmdate", query = "SELECT e FROM EquipmentSpareClass e WHERE e.cfmdate = :cfmdate")})
 public class EquipmentSpareClass extends SuperEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Basic(optional = false)
+    @NotNull()
+    @Size(min = 1, max = 2)
+    @Column(name = "company")
+    private String company;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 4)
@@ -56,6 +63,7 @@ public class EquipmentSpareClass extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+
     public EquipmentSpareClass() {
     }
 
@@ -69,7 +77,13 @@ public class EquipmentSpareClass extends SuperEntity {
         this.status = status;
     }
 
-  
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 
     public String getScategory() {
         return scategory;
@@ -95,8 +109,6 @@ public class EquipmentSpareClass extends SuperEntity {
         this.remark = remark;
     }
 
-   
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -118,5 +130,5 @@ public class EquipmentSpareClass extends SuperEntity {
     public String toString() {
         return "cn.hanbell.eam.entity.EquipmentSpareClass[ id=" + id + " ]";
     }
-    
+
 }

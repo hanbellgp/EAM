@@ -28,6 +28,7 @@ public class EquipmentSpareRecodeModel extends BaseLazyModel<EquipmentSpareRecod
 
     @Override
     public List<EquipmentSpareRecode> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+          filterFields.put("company =", userManagedBean.getCompany());
         setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
         setRowCount(superEJB.getRowCount(filterFields));
         return dataList;

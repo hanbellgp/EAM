@@ -32,10 +32,10 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
     }
 
     //获取库存数量List
-    public List<EquipmentSpareStock> getEquipmentSpareStockList(String sparenum, String sparedesc, String sparemodel) {
+    public List<EquipmentSpareStock> getEquipmentSpareStockList(String sparenum, String sparedesc, String sparemodel,String  company) {
         StringBuilder sb = new StringBuilder();
         sb.append(" Select T.sparenum,S.sparedesc,S.sparemodel, C.sname,M.mname,sum(T.qty) FROM  equipmentsparestock T  LEFT JOIN equipmentspare S on T.sparenum=S.sparenum");
-        sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.id Where 1=1");
+        sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.id Where 1=1  AND T.company='"+company+"'");
         if (!"".equals(sparenum) && sparenum != null) {
             sb.append(" AND S.sparedesc LIKE ").append("'%").append(sparenum).append("%'");
         }
@@ -83,9 +83,9 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
     }
 
     //获取库存数量List
-    public List<EquipmentSpareStockResponse> getEquipmentSpareStockListByNativeQuery(String spareInfo) {
+    public List<EquipmentSpareStockResponse> getEquipmentSpareStockListByNativeQuery(String spareInfo,String company) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT * FROM equipmentsparestock T LEFT JOIN equipmentspare S ON T.sparenum = S.sparenum WHERE 1 = 1 AND qty > 0 ");
+        sb.append(" SELECT * FROM equipmentsparestock T LEFT JOIN equipmentspare S ON T.sparenum = S.sparenum WHERE 1 = 1 AND qty > 0  AND T.company='").append(company).append("' ");
         if (!"".equals(spareInfo) && spareInfo != null) {
             sb.append(MessageFormat.format(" AND (S.sparedesc LIKE ''%{0}%'' OR T.sparenum LIKE ''%{0}%'' OR S.sparemodel LIKE ''%{0}%'') ", spareInfo));
         }
@@ -196,6 +196,10 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         List<Object[]> results = query.getResultList();
         
         return results;
+    }
+
+    public List<EquipmentSpareStock> findBySparenum(String toString, String company) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "EquipmentSpareMid.findAll", query = "SELECT e FROM EquipmentSpareMid e"),
     @NamedQuery(name = "EquipmentSpareMid.findById", query = "SELECT e FROM EquipmentSpareMid e WHERE e.id = :id"),
-    @NamedQuery(name = "EquipmentSpareMid.findByScategory", query = "SELECT e FROM EquipmentSpareMid e WHERE e.scategory.scategory = :scategory"),
+    @NamedQuery(name = "EquipmentSpareMid.findByCompany", query = "SELECT e FROM SysCode e WHERE e.company = :company"),
+    @NamedQuery(name = "EquipmentSpareMid.findByScategory", query = "SELECT e FROM EquipmentSpareMid e WHERE e.scategory.scategory = :scategory AND e.company=:company"),
     @NamedQuery(name = "EquipmentSpareMid.findByMcategory", query = "SELECT e FROM EquipmentSpareMid e WHERE e.mcategory = :mcategory"),
     @NamedQuery(name = "EquipmentSpareMid.findByMname", query = "SELECT e FROM EquipmentSpareMid e WHERE e.mname = :mname"),
     @NamedQuery(name = "EquipmentSpareMid.findByRemark", query = "SELECT e FROM EquipmentSpareMid e WHERE e.remark = :remark"),
@@ -48,6 +50,20 @@ public class EquipmentSpareMid extends SuperEntity {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+    
+       @Basic(optional = false)
+    @NotNull()
+    @Size(min = 1, max = 2)
+    @Column(name = "company")
+    private String company;
     @JoinColumn(name = "scategory", referencedColumnName = "scategory")
     @ManyToOne
     private EquipmentSpareClass scategory;
