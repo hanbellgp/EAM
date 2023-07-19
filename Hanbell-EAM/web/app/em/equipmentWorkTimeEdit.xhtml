@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="equipmentWorkTime" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{equipmentWorkTimeManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">加班时数－编辑</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="部门名称" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="deptname" value="#{equipmentWorkTimeManagedBean.currentEntity.deptname}" />
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="部门代号" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="dept" value="#{equipmentWorkTimeManagedBean.currentEntity.dept}" title="dept" />
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="工作时间"/></p:column>
+                    <p:column>
+                        <h:outputText id="worktime" value="#{equipmentWorkTimeManagedBean.currentEntity.worktime}" title="worktime" />
+                    </p:column>
+                    <p:column><p:outputLabel value="加班时间" for="overtime" /></p:column>
+                    <p:column>
+                           <p:inputText id="overtime" value="#{equipmentWorkTimeManagedBean.currentEntity.overtime}" onkeyup="(this.v = function () {
+                                    this.value = this.value.replace(/\D|^/g, '');
+                                }).call(this)" onblur="this.v();"
+                                     title="Minstock"/> 
+                    </p:column>
+                </p:row>
+          
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

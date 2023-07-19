@@ -9,6 +9,7 @@ import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.lazy.EquipmentSpareRecodeDtaModel;
 import cn.hanbell.eam.web.SuperQueryBean;
+import java.text.SimpleDateFormat;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -23,6 +24,7 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
     @EJB
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
     private String queryUserno;
+    private String queryFormName;
 
     public EquipmentSpareUseManagedBean() {
         super(EquipmentSpareRecodeDta.class);
@@ -34,24 +36,33 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
         model = new EquipmentSpareRecodeDtaModel(equipmentSpareRecodeDtaBean, userManagedBean);
         this.model.getFilterFields().put("status", "V");
         this.model.getSortFields().put("pid", "ASC");
-        this.model.getFilterFields().put("sparenum.company", userManagedBean.getCompany());
-        queryState="LK";
+        queryState = "LK";
         super.init();
     }
 
     @Override
     public void query() {
+           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         if (this.model != null) {
             this.model.getFilterFields().clear();
             this.model.getSortFields().clear();
+            if (queryFormName != null && !"".equals(queryFormName)) {
+                this.model.getFilterFields().put("sparenum.sparedesc", queryFormName);
+            }
             if (queryFormId != null && !"".equals(queryFormId)) {
-                this.model.getFilterFields().put("sparenum.sparedesc", queryFormId);
+                this.model.getFilterFields().put("sparenum.sparenum", queryFormId);
             }
             if (queryUserno != null && !"".equals(this.queryUserno)) {
                 this.model.getFilterFields().put("creator", queryUserno);
             }
             if (queryState != null && !"".equals(this.queryState)) {
                 this.model.getFilterFields().put("pid", queryState);
+            }
+            if (queryDateBegin != null) {
+                this.model.getFilterFields().put("credate", simpleDateFormat.format(queryDateBegin));
+            }
+            if (queryDateEnd != null) {
+                this.model.getFilterFields().put("credateend",  simpleDateFormat.format(queryDateEnd));
             }
             this.model.getFilterFields().put("status", "V");
         }
@@ -63,6 +74,14 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
 
     public void setQueryUserno(String queryUserno) {
         this.queryUserno = queryUserno;
+    }
+
+    public String getQueryFormName() {
+        return queryFormName;
+    }
+
+    public void setQueryFormName(String queryFormName) {
+        this.queryFormName = queryFormName;
     }
 
 }

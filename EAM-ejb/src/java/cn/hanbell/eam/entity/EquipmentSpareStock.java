@@ -54,7 +54,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpareStock.findByOptuser", query = "SELECT e FROM EquipmentSpareStock e WHERE e.optuser = :optuser"),
     @NamedQuery(name = "EquipmentSpareStock.findByOptdate", query = "SELECT e FROM EquipmentSpareStock e WHERE e.optdate = :optdate"),
     @NamedQuery(name = "EquipmentSpareStock.findByCfmuser", query = "SELECT e FROM EquipmentSpareStock e WHERE e.cfmuser = :cfmuser"),
+    @NamedQuery(name = "EquipmentSpareStock.findBySparenumAndCompany", query = "SELECT e FROM EquipmentSpareStock e WHERE e.sparenum.sparenum = :sparenum and e.company = :company"),
     @NamedQuery(name = "EquipmentSpareStock.findByCfmdate", query = "SELECT e FROM EquipmentSpareStock e WHERE e.cfmdate = :cfmdate")})
+
 public class EquipmentSpareStock extends SuperEntity {
 
     @Id

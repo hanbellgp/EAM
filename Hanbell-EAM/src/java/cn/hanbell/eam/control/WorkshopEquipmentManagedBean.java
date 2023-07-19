@@ -7,11 +7,13 @@ package cn.hanbell.eam.control;
  */
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
+import cn.hanbell.eam.ejb.EquipmentWorkTimeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.DepartmentBean;
 import com.lightshell.comm.BaseLib;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -52,11 +54,18 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
+    @EJB
+    protected EquipmentWorkTimeBean equipmentWorkTimeBean;
+        @EJB
+    protected DepartmentBean departmentBean;
+    
+
     List<Number> yearsList;
     private String stayear;
     private String type;
     private List<Object[]> workshopEquipmentList;
-    private String reportType;
+    private String deptno;
+    private List<Object> deptList;
 
     public WorkshopEquipmentManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
@@ -73,10 +82,9 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             yearsList.add(i);
         }
         stayear = String.valueOf(year);//初始化数据年份为当前年份
-        type = "半成品方型件";//默认查询半成品方型件的数据
-        reportType = "H";
+        deptList = new ArrayList<>();
         // workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, type, reportType);
-
+        deptList = equipmentWorkTimeBean.getDept(userManagedBean.getCompany());
     }
 
 //导出界面的EXCEL数据处理
@@ -87,11 +95,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
             finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = finalFilePath.indexOf("WEB-INF");
             String edition = "";
-            if (reportType.equals("G")) {
-                edition = "顾问版车间设备月报模板";
-            } else {
-                edition = "汉钟版车间设备月报模板";
-            }
+            edition = "课设备管理月报20237模版";
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "rpt/" + edition + ".xls");
             Workbook workbook = WorkbookFactory.create(is);
             //获得表格样式
@@ -111,62 +115,62 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
                 showErrorMsg("Error", "当前无数据！请先查询");
                 return;
             }
+            String deptName =departmentBean.findByDeptno(deptno).getDept();
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 12));
             Cell cellTitle = row.createCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(stayear + "年车间设备月报-----" + type);
+            cellTitle.setCellValue(stayear + "课设备管理月报-----" + type+"------"+deptName);
             Cell cellTime = row1.createCell(13);
             cellTime.setCellStyle(style.get("right"));
-            String version = reportType.equals("G") ? "顾问版" : "汉钟版";
+            String version = deptno.equals("G") ? "" : "";
             cellTime.setCellValue(version);
             List<?> itemList = workshopEquipmentList;
             int j = 2;
             List<Object[]> list = (List<Object[]>) itemList;
             for (Object[] eq : list) {
                 row = sheet.getRow(j);
-                j++; 
+                j++;
                 row.setHeight((short) 400);
-                Cell cell0 = row.getCell(0);
-                cell0.setCellValue(eq[0].toString());
                 for (int i = 1; i < 13; i++) {
-                    cell0 = row.getCell(i);
-                    if (eq[i] != null) { 
+                    Cell cell0 = row.getCell(i+1);
+                    if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
                 }
             }
+            sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
             //获取超过60分钟的故障明细
-            List<?> itemList2 = equipmentRepairBean.getFaultDetail(type);
-            List<Object[]> faultList = (List<Object[]>) itemList2;
-            int faultCount = 87;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            for (Object[] faDet : faultList) {
-                row3 = sheet1.createRow(faultCount);
-                row3.setHeight((short) 400);
-                faultCount++;
-                Cell cell;
-                for (int i = 0; i < 8; i++) {
-                    cell = row3.createCell(i);
-                    if (faDet[i] != null) {
-                        switch (i) {
-                            case 0:
-                                cell.setCellValue(sdf.format(faDet[i]));
-                                break;
-                            case 4:
-                                cell.setCellValue(Integer.parseInt(faDet[i].toString()));
-                                break;
-                            default:
-                                cell.setCellValue(faDet[i].toString());
-                                break;
-                        }
-                    } else {
-                        cell.setCellValue("");
-                    }
-                    cell.setCellStyle(style.get("cell"));
-                }
-            }
+//            List<?> itemList2 = equipmentRepairBean.getFaultDetail(type);
+//            List<Object[]> faultList = (List<Object[]>) itemList2;
+//            int faultCount = 87;
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//            for (Object[] faDet : faultList) {
+//                row3 = sheet1.createRow(faultCount);
+//                row3.setHeight((short) 400);
+//                faultCount++;
+//                Cell cell;
+//                for (int i = 0; i < 8; i++) {
+//                    cell = row3.createCell(i);
+//                    if (faDet[i] != null) {
+//                        switch (i) {
+//                            case 0:
+//                                cell.setCellValue(sdf.format(faDet[i]));
+//                                break;
+//                            case 4:
+//                                cell.setCellValue(Integer.parseInt(faDet[i].toString()));
+//                                break;
+//                            default:
+//                                cell.setCellValue(faDet[i].toString());
+//                                break;
+//                        }
+//                    } else {
+//                        cell.setCellValue("");
+//                    }
+//                    cell.setCellStyle(style.get("cell"));
+//                }
+//            }
             OutputStream os = null;
-            fileName = stayear + "年车间设备月报-" + type + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            fileName = stayear + "课设备管理月报-" + type + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);
@@ -276,7 +280,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
      */
     @Override
     public void query() {
-        workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, type, reportType);
+        workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, deptno, userManagedBean.getCompany(), type);
     }
 
     public List<Number> getYearsList() {
@@ -311,12 +315,16 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
         this.type = type;
     }
 
-    public String getReportType() {
-        return reportType;
+    public String getDeptno() {
+        return deptno;
     }
 
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
+    public void setDeptno(String deptno) {
+        this.deptno = deptno;
+    }
+
+    public List<Object> getDeptList() {
+        return deptList;
     }
 
 }
