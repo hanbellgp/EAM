@@ -34,34 +34,31 @@
                             </c:forEach>
                         </p:selectOneMenu>
                     </p:column>
-                   
+
                 </p:row>
                 <p:row>
-                     <p:column><h:outputLabel value="数据分类" for="type" /></p:column>
+                    <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateBegin" value="#{equipmentTotalEfficiencyManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd HH"/>
+                    </p:column>
+                    <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                    <p:column>
+                        <p:calendar id="queryDateEnd" value="#{equipmentTotalEfficiencyManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd HH"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputLabel value="数据分类" for="type" /></p:column>
                     <p:column>
                         <p:selectOneMenu id="selectedUserName" value="#{equipmentTotalEfficiencyManagedBean.EPQID}" effect="fade" 
                                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
                             <f:selectItems value="#{equipmentTotalEfficiencyManagedBean.EPQIDList}" />
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column><h:outputLabel value="版本" for="reportType" /></p:column>
-                    <p:column >
-                        <p:selectOneMenu id="reportType" value="#{equipmentTotalEfficiencyManagedBean.type}" title="reportType" >
-                            <f:selectItem itemLabel="汉钟版" itemValue="H"/>
-                            <f:selectItem itemLabel="顾问版" itemValue="G"/>
-                        </p:selectOneMenu>
+                    <p:column></p:column>
+                    <p:column>
                     </p:column>
                 </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
-                <p:column>
-                    <p:calendar id="queryDateBegin" value="#{equipmentTotalEfficiencyManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd HH"/>
-                </p:column>
-                <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
-                <p:column>
-                    <p:calendar id="queryDateEnd" value="#{equipmentTotalEfficiencyManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd HH"/>
-                </p:column>
-                </p:row>
+
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
@@ -72,7 +69,7 @@
                 <f:facet name="right">
                     <p:commandButton id="btnPrint" value="导出设备总合效率表" actionListener="#{equipmentTotalEfficiencyManagedBean.print()}" icon="ui-icon-print"
                                      />
-                    
+
                     <p:commandButton id="btnPrint2" value="导出设备异常信息表" actionListener="#{equipmentTotalEfficiencyManagedBean.printlen()}" icon="ui-icon-print"
                                      />
                     <p:commandButton id="btnPrint3" value="导出OEE报表" actionListener="#{equipmentTotalEfficiencyManagedBean.printOEE()}" icon="ui-icon-print"
@@ -148,10 +145,10 @@
                 <p:column headerText="带教/人员不足(分)" style="text-align: center">
                     <h:outputText value="#{car[21]}" />
                 </p:column>
-                 <p:column headerText="其他(分)" style="text-align: center">
+                <p:column headerText="其他(分)" style="text-align: center">
                     <h:outputText value="#{car[22]}" />
                 </p:column>
-                 <p:column headerText="未填(分)" style="text-align: center">
+                <p:column headerText="未填(分)" style="text-align: center">
                     <h:outputText value="#{car[23]}" />
                 </p:column>
             </p:dataTable>

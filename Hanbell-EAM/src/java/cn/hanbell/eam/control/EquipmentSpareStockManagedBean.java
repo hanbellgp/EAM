@@ -44,7 +44,7 @@ public class EquipmentSpareStockManagedBean extends SuperSingleBean<EquipmentSpa
     @Override
     public String view(String path) {
         Object[] item = (Object[]) obj;
-        entityList = equipmentSpareStockBean.findBySparenum(item[0].toString());
+        entityList = equipmentSpareStockBean.findBySparenum(item[0].toString(),userManagedBean.getCompany());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 

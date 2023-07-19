@@ -34,8 +34,8 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
     //获取库存数量List
     public List<EquipmentSpareStock> getEquipmentSpareStockList(String sparenum, String sparedesc, String sparemodel,String  company) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" Select T.sparenum,S.sparedesc,S.sparemodel, C.sname,M.mname,sum(T.qty) FROM  equipmentsparestock T  LEFT JOIN equipmentspare S on T.sparenum=S.sparenum");
-        sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.id Where 1=1  AND T.company='"+company+"'");
+        sb.append(" Select T.sparenum,S.sparedesc,S.sparemodel, C.sname,M.mname,sum(T.qty) FROM  equipmentsparestock T  LEFT JOIN equipmentspare S on T.sparenum=S.sparenum AND S.company='"+company+"'");
+        sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory  AND C.company='"+company+"' LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.id Where 1=1  AND T.company='"+company+"'");
         if (!"".equals(sparenum) && sparenum != null) {
             sb.append(" AND S.sparedesc LIKE ").append("'%").append(sparenum).append("%'");
         }
@@ -56,7 +56,7 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
     public List<EquipmentSpareStock> getEquipmentSpareStockCheckList(String sarea, String company) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT T.sparenum,S.sparedesc,S.sparemodel, C.sname,M.mname,sum(T.qty),T.sarea,T.slocation FROM  equipmentsparestock T");
-        sb.append(" LEFT JOIN equipmentspare S ON T.sparenum=S.sparenum LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.mcategory");
+        sb.append(" LEFT JOIN equipmentspare S ON T.sparenum=S.sparenum AND S.company = '"+company+"' LEFT JOIN equipmentspareclass C ON   S.scategory=C.scategory  AND C.company = '"+company+"' LEFT JOIN  equipmentsparemid M ON  S.scategory=M.scategory AND M.company = '"+company+"' AND S.mcategory=M.mcategory");
         sb.append(" Where  qty!=0");
         if (!"".equals(sarea) && sarea != null) {
             sb.append(" AND T.sarea='").append(sarea).append("'");
@@ -71,9 +71,10 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         return results;
     }
 
-    public List<EquipmentSpareStock> findBySparenum(String sparenum) {
-        Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenum");
+    public List<EquipmentSpareStock> findBySparenum(String sparenum,String company) {
+        Query query = getEntityManager().createNamedQuery("EquipmentSpareStock.findBySparenumAndCompany");
         query.setParameter("sparenum", sparenum);
+         query.setParameter("company", company);
         try {
             List results = query.getResultList();
             return results;
@@ -198,8 +199,6 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
         return results;
     }
 
-    public List<EquipmentSpareStock> findBySparenum(String toString, String company) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+ 
 
 }

@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                <p:column>
+                    <p:calendar id="queryDateBegin" value="#{equipmentWorkTimeManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
+                </p:column>
+                <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                <p:column>
+                    <p:calendar id="queryDateEnd" value="#{equipmentWorkTimeManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+                </p:column>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{equipmentWorkTimeManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+
+
+                </f:facet>
+
+                <f:facet name="right">
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentWorkTimeManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                    <p:commandButton id="btnEdit" value="编辑"  action="#{equipmentWorkTimeManagedBean.edit('equipmentWorkTimeEdit')}" icon="ui-icon-pencil"
+                                     />
+                </f:facet>
+
+            </p:toolbar>
+            <p:dataTable value="#{equipmentWorkTimeManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         rowsPerPageTemplate="15,30,45"   
+                         lazy="true"  selectionMode="single" selection="#{equipmentWorkTimeManagedBean.currentEntity}" rowKey="#{item.id}" >
+
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid20" headerText="日期"  style="text-align: center">
+                    <h:outputText value="#{item.formdate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:outputText>   
+                </p:column>
+                <p:column styleClass="Wid15" >
+                    <f:facet name="header">
+                        <h:outputText value="部门名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.deptname}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="部门代号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.dept}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="工作制"/>
+                    </f:facet>
+                    <h:outputText value="#{item.workingsystem}"/>
+                </p:column>
+                <p:column styleClass="Wid15"  style="text-align: right">
+                    <f:facet name="header">
+                        <h:outputText value="工作时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.worktime}" />
+                </p:column>
+                <p:column styleClass="Wid15" style="text-align: right">
+                    <f:facet name="header">
+                        <h:outputText value="加班时间" />
+                    </f:facet>
+                    <h:outputText value="#{item.overtime}"/>
+                </p:column>
+
+
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="blockUI">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

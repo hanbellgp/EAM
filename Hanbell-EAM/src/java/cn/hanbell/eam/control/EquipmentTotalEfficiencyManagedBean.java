@@ -88,6 +88,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
         for (int i = 0; i < list.size(); i++) {
             EPQIDList.add(list.get(i));
         }
+        type = "G";
 //        month = "1";
 //        month = Integer.parseInt(month) < 10 ? "0" + month : month;//月份为10以前的格式调整
 //        String time = stayear + "/" + month;//拼接年月
@@ -308,7 +309,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 showErrorMsg("Error", "请在开始时间选择导出的日期！！！");
                 return;
             }
-            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID,type);
+            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID, type);
 
             // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
             if (oeeList == null || oeeList.isEmpty()) {

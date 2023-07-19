@@ -9,7 +9,9 @@ import cn.hanbell.eam.comm.SuperEJBForEAM;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.Query;
@@ -38,15 +40,17 @@ public class EquipmentSpareRecodeDtaBean extends SuperEJBForEAM<EquipmentSpareRe
         List results = query.getResultList();
         return results;
     }
-    public List<EquipmentSpareRecodeDta> getEquipmentSpareRecodeDtaListByRepairFormId(String formid){
+
+    public List<EquipmentSpareRecodeDta> getEquipmentSpareRecodeDtaListByRepairFormId(String formid) {
         StringBuilder sb = new StringBuilder();
         //sb.append(" SELECT * FROM equipmentsparerecodedta WHERE pid IN(SELECT formid FROM equipmentsparerecode WHERE relano IN (SELECT formid FROM equipmentsparerecode WHERE relano = '").append(formid).append("') OR relano = '").append(formid).append("') ");
         sb.append(" SELECT id,pid,seq,sparenum, CASE WHEN pid LIKE 'TK%' THEN cqty * -1 ELSE cqty END cqty,uprice,slocation,remark,status,creator,credate,optuser,optdate,cfmuser,cfmdate FROM equipmentsparerecodedta WHERE pid IN(SELECT formid FROM equipmentsparerecode WHERE ( relano IN (SELECT formid FROM equipmentsparerecode WHERE relano = '").append(formid).append("') OR relano = '").append(formid).append("') AND status = 'V' ) ");
         //生成SQL
-        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentSpareRecodeDta.class);
+        Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentSpareRecodeDta.class);
         List<EquipmentSpareRecodeDta> results = query.getResultList();
         return results;
     }
+
     //    获取每月备件消耗数量
     public List<Object[]> getSpareConsumeQty(String queryDateBegin, String queryDateEnd, String sarea, String type, String deptSql) {
         StringBuilder sbCK = new StringBuilder();
@@ -78,7 +82,7 @@ public class EquipmentSpareRecodeDtaBean extends SuperEJBForEAM<EquipmentSpareRe
         }
         return ckList;
     }
- 
+
     //根据报修单查询可退料的备件列表
     public List<EquipmentSpareRecodeDta> getRetreatSpareListByNativeQuery(String relano, String spareInfo) {
         StringBuilder sb = new StringBuilder();
@@ -87,16 +91,17 @@ public class EquipmentSpareRecodeDtaBean extends SuperEJBForEAM<EquipmentSpareRe
             sb.append(MessageFormat.format(" AND (S.sparedesc LIKE ''%{0}%'' OR D.sparenum LIKE ''%{0}%'') ", spareInfo));
         }
         //生成SQL
-        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentSpareRecodeDta.class);
+        Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentSpareRecodeDta.class);
         List<EquipmentSpareRecodeDta> results = query.getResultList();
-        for(EquipmentSpareRecodeDta item: results){
-            if(item.getPid().contains("TK")){
+        for (EquipmentSpareRecodeDta item : results) {
+            if (item.getPid().contains("TK")) {
                 return new ArrayList<EquipmentSpareRecodeDta>();
             }
         }
         return results;
     }
-        //根据报修单查询可退料的备件列表
+    //根据报修单查询可退料的备件列表
+
     public List<EquipmentSpareRecodeDta> getRetreatSpareListByRepairFormId(String relano, String spareInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT * FROM equipmentsparerecodedta D LEFT JOIN equipmentspare S ON D.sparenum = S.sparenum WHERE pid IN(SELECT formid FROM equipmentsparerecode WHERE (relano IN (SELECT formid FROM equipmentsparerecode WHERE relano = '").append(relano).append("') OR relano = '").append(relano).append("') AND status <>'Z' ) AND (D.status = 'V' OR D.pid LIKE 'TK%') ");
@@ -104,15 +109,97 @@ public class EquipmentSpareRecodeDtaBean extends SuperEJBForEAM<EquipmentSpareRe
             sb.append(MessageFormat.format(" AND (S.sparedesc LIKE ''%{0}%'' OR D.sparenum LIKE ''%{0}%'') ", spareInfo));
         }
         //生成SQL
-        Query query = getEntityManager().createNativeQuery(sb.toString(),EquipmentSpareRecodeDta.class);
+        Query query = getEntityManager().createNativeQuery(sb.toString(), EquipmentSpareRecodeDta.class);
         List<EquipmentSpareRecodeDta> results = query.getResultList();
-        for(EquipmentSpareRecodeDta item: results){
-            if(item.getPid().contains("TK")){
+        for (EquipmentSpareRecodeDta item : results) {
+            if (item.getPid().contains("TK")) {
                 return new ArrayList<EquipmentSpareRecodeDta>();
             }
         }
         return results;
     }
+
+    @Override
+    public int getRowCount(Map<String, Object> filters) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("SELECT COUNT(e) FROM ");
+        sb.append(this.className);
+        sb.append(" e WHERE 1=1 ");
+        Map<String, Object> strMap = new LinkedHashMap<>();
+        //给Map排序
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ("credate".equals(key)) {
+                sb.append("  AND e.credate>'" + value + "'");
+            }
+            if ("credateend".equals(key)) {
+                sb.append("  AND e.credate<'" + value + "'");
+            }
+            if (!"credate".equals(key) && !"credateend".equals(key)) {
+                strMap.put(key, value);
+            }
+        }
+        filters = strMap;
+
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+
+        final Query query = this.getEntityManager().createQuery(sb.toString());
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+        }
+        return Integer.parseInt(query.getSingleResult().toString());
+    }
+
+    @Override
+    public List<EquipmentSpareRecodeDta> findByFilters(Map<String, Object> filters, int first, int pageSize, Map<String, String> orderBy) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT e FROM ");
+        sb.append(this.className);
+        sb.append(" e WHERE 1=1 ");
+        Map<String, Object> strMap = new LinkedHashMap<>();
+        //给Map排序
+
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ("credate".equals(key)) {
+                sb.append("  AND e.credate>'" + value + "'");
+            }
+            if ("credateend".equals(key)) {
+                sb.append("  AND e.credate<'" + value + "'");
+            }
+            if (!"credate".equals(key) && !"credateend".equals(key)) {
+                strMap.put(key, value);
+            }
+        }
+        filters = strMap;
+        if (filters != null) {
+            this.setQueryFilter(sb, filters);
+        }
+
+        if (orderBy != null && orderBy.size() > 0) {
+            sb.append(" ORDER BY ");
+            for (final Map.Entry<String, String> o : orderBy.entrySet()) {
+                sb.append(" e.").append(o.getKey()).append(" ").append(o.getValue()).append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+        }
+
+        //生成SQL
+        Query query = getEntityManager().createQuery(sb.toString()).setFirstResult(first).setMaxResults(pageSize);
+
+        //参数赋值
+        if (filters != null) {
+            this.setQueryParam(query, filters);
+
+        }
+        List results = query.getResultList();
+        return results;
+    }
+
     public List<EquipmentSpareRecodeDta> findByRemark(String remark) {
         Query query = getEntityManager().createNamedQuery("EquipmentSpareRecodeDta.findByRemark");
         query.setParameter("remark", remark);

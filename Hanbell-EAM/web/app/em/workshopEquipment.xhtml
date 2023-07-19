@@ -26,20 +26,23 @@
                             </c:forEach>
                         </p:selectOneMenu>
                     </p:column>
+
                     <p:column><h:outputLabel value="数据分类" for="type" /></p:column>
                     <p:column >
                         <p:selectOneMenu id="type" value="#{workshopEquipmentManagedBean.type}" title="type" >
-                            <f:selectItem itemLabel="半成品方型件" itemValue="半成品方型件"/>
-                            <f:selectItem itemLabel="半成品圆型件" itemValue="半成品圆型件"/>
+                            <f:selectItem itemLabel="加工机" itemValue="加工机"/>
+                            <f:selectItem itemLabel="非加工机" itemValue="非加工机"/>
+                            <f:selectItem itemLabel="所有设备" itemValue="所有设备"/>
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column><h:outputLabel value="版本" for="reportType" /></p:column>
-                    <p:column >
-                        <p:selectOneMenu id="reportType" value="#{workshopEquipmentManagedBean.reportType}" title="reportType" >
-                            <f:selectItem itemLabel="汉钟版" itemValue="H"/>
-                            <f:selectItem itemLabel="顾问版" itemValue="G"/>
+                    <p:column><h:outputLabel value="课别" for="deptno" /></p:column>
+                    <p:column>
+                        <p:selectOneMenu id="deptno" value="#{workshopEquipmentManagedBean.deptno}" title="课别"  >
+                            <c:forEach items="#{workshopEquipmentManagedBean.deptList}" var ="li" varStatus="status">
+                                <f:selectItem  itemLabel="${li[1]}" itemValue="${li[0]}"/>
+                            </c:forEach>
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
@@ -53,7 +56,7 @@
                 <f:facet name="right">
                     <p:commandButton id="btnPrint" value="导出车间设备月报" actionListener="#{workshopEquipmentManagedBean.print()}" icon="ui-icon-print"
                                      />
-                      <p:commandButton id="btnQuery" value="查询" actionListener="#{workshopEquipmentManagedBean.query()}" icon="ui-icon-search"
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{workshopEquipmentManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
                 </f:facet>
             </p:toolbar>
