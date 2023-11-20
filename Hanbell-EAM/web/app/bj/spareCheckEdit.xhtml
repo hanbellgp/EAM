@@ -84,7 +84,7 @@
                             </p:column>
                             <p:column><p:outputLabel value="实盘数量" for="actqty" /></p:column>
                             <p:column>
-                                <p:spinner id="actqty" value="#{spareCheckManagedBean.currentDetail.actqty}" title="actqty"
+                                <p:spinner id="actqty" min="0" value="#{spareCheckManagedBean.currentDetail.actqty}" title="actqty"
                                            required="true" requiredMessage="请输入数量">
                                     <f:validateDoubleRange minimum="0"/>
                                 </p:spinner>

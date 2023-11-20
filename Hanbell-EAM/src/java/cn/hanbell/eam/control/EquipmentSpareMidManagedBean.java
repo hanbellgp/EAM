@@ -33,7 +33,7 @@ public class EquipmentSpareMidManagedBean extends SuperSingleBean<EquipmentSpare
 
     @Override
     public void create() {
-        
+
         super.create();
         newEntity.setCredate(getDate());
         newEntity.setStatus("V");
@@ -70,10 +70,10 @@ public class EquipmentSpareMidManagedBean extends SuperSingleBean<EquipmentSpare
         if (this.model != null) {
             this.model.getFilterFields().clear();
             if (queryFormId != null && !"".equals(queryFormId)) {
-                this.model.getFilterFields().put("scategory.scategory", queryFormId);
+                this.model.getFilterFields().put("scategory", queryFormId);
             }
             if (queryName != null && !"".equals(this.queryName)) {
-                this.model.getFilterFields().put("scategory.sname", queryName);
+                this.model.getFilterFields().put("sname", queryName);
             }
             if (mcategory != null && !"".equals(mcategory)) {
                 this.model.getFilterFields().put("mcategory", mcategory);
@@ -93,8 +93,9 @@ public class EquipmentSpareMidManagedBean extends SuperSingleBean<EquipmentSpare
     public void handleDialogReturnWhenNew(SelectEvent event) {
         if (event.getObject() != null && newEntity != null) {
             EquipmentSpareClass e = (EquipmentSpareClass) event.getObject();
-            newEntity.setScategory(e);
-            int size = equipmentSpareMidBean.findByScategory(e.getScategory(),userManagedBean.getCompany()).size() + 1;
+            newEntity.setScategory(e.getScategory());
+            newEntity.setSname(e.getSname());
+            int size = equipmentSpareMidBean.findByScategory(e.getScategory(), userManagedBean.getCompany()).size() + 1;
             if (size <= 9) {
                 newEntity.setMcategory("0" + size);
             } else {

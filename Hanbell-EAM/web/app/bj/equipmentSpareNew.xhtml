@@ -41,7 +41,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件大类" for="scategory" /></p:column>
                     <p:column  styleClass="Wid20">
-                        <p:inputText id="scategory" value="#{equipmentSpareManagedBean.newEntity.scategory.sname}" title="RequireDeptno" styleClass="inputWithButton"  />
+                        <p:inputText id="scategory" value="#{equipmentSpareManagedBean.newEntity.sname}" title="RequireDeptno" styleClass="inputWithButton"  />
                         <p:commandButton id="btnScategorySelect" actionListener="#{equipmentSpareManagedBean.openDialog('equipmentSpareClassSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleEquipmentSpareClassReturnWhenNew}"
@@ -50,7 +50,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件中类" for="mcategory" /></p:column>
                     <p:column  styleClass="Wid20">
-                        <p:inputText id="mcategory" value="#{equipmentSpareManagedBean.newEntity.mcategory.mname}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="mcategory" value="#{equipmentSpareManagedBean.newEntity.mname}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnMcategorySelect" actionListener="#{equipmentSpareManagedBean.openDialog('equipmentSpareMidSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentSpareManagedBean.handleDialogReturnWhenNew}"
@@ -134,6 +134,11 @@
                     <p:column>
                         <p:spinner id="qualitycycle" value="#{equipmentSpareManagedBean.newEntity.qualitycycle}" title="qualitycycle" min="0"
                                    required="true"  requiredMessage="请输入品质保证验证周期"/>
+                    </p:column>
+                      <p:column style="background-color: #EEEEEE"><p:outputLabel value="备件使用期限" for="servicelife" /></p:column>
+                    <p:column>
+                          <p:calendar id="servicelife" value="#{equipmentSpareManagedBean.newEntity.servicelife}"  pattern="yyyy/MM/dd"/>
+                     
                     </p:column>
                 </p:row>
 

@@ -79,6 +79,7 @@ public class MonthFailuresNumberStatisticalManagedBean extends FormMultiBean<Equ
         }
         month = "1";
         month = Integer.parseInt(month) < 10 ? "0" + month : month;//月份为10以前的格式调整
+        stayear=yearsList.get(yearsList.size()-1).toString();
         String time = stayear + "/" + month;//拼接年月
         type = "半成品方型件";//默认查询半成品方型件的数据
         failuresNumberList = equipmentRepairBean.getMonthFailuresNumberTable(time, type);

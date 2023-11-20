@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -288,6 +289,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 return "维修验收";
             case "50":
                 return "责任回复";
+            case "55":
+                return "组长审核";
             case "60":
                 return "课长审核";
             case "70":
@@ -420,6 +423,9 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         for (int i = 0; i < wt1.length; i++) {
             sheet1.setColumnWidth(i, wt1[i] * 256);
         }
+
+        BigDecimal WXcost = new BigDecimal(Double.parseDouble(sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "laborcost").getCvalue()));
+
         //设置第二行行高
         row2.setHeight((short) (18 * 40));
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
@@ -542,20 +548,16 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             Cell cell20 = row.createCell(20);
             cell20.setCellStyle(style.get("left"));
             cell20.setCellValue(equipmentrepair.getRepairprocess());
-            detailList2 = equipmentRepairSpareBean.findByPId(equipmentrepair.getFormid());
             maintenanceCosts = 0;
-            detailList2.forEach(equipmentrepair1 -> {
-                BigDecimal price = equipmentrepair1.getUprice();
-                maintenanceCosts += equipmentrepair1.getQty().doubleValue() * price.doubleValue();
-            });
             Cell cell21 = row.createCell(21);
             cell21.setCellStyle(style.get("cell"));
-            cell21.setCellValue(maintenanceCosts);
-
+            if (equipmentrepair.getSparecost() != null) {
+                maintenanceCosts = equipmentrepair.getSparecost().doubleValue();
+                cell21.setCellValue(equipmentrepair.getSparecost().doubleValue());
+            }
             Cell cell22 = row.createCell(22);
             cell22.setCellStyle(style.get("cell"));
             double laborcost = 0;
-
             if (equipmentrepair.getLaborcosts() != null) {
                 laborcost = equipmentrepair.getLaborcosts().doubleValue();
             }

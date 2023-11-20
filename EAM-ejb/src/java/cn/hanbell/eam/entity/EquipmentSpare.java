@@ -7,6 +7,7 @@ package cn.hanbell.eam.entity;
 
 import com.lightshell.comm.SuperEntity;
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpare.findById", query = "SELECT e FROM EquipmentSpare e WHERE e.id = :id"),
     @NamedQuery(name = "EquipmentSpare.findByCompany", query = "SELECT e FROM EquipmentSpare e WHERE e.company = :company"),
     @NamedQuery(name = "EquipmentSpare.findBySpareno", query = "SELECT e FROM EquipmentSpare e WHERE e.spareno = :spareno"),
-    @NamedQuery(name = "EquipmentSpare.findBySparenum", query = "SELECT e FROM EquipmentSpare e WHERE e.sparenum LIKE :sparenum"),
+    @NamedQuery(name = "EquipmentSpare.findBySparenum", query = "SELECT e FROM EquipmentSpare e WHERE e.sparenum LIKE :sparenum and e.company = :company"),
     @NamedQuery(name = "EquipmentSpare.findBySparedesc", query = "SELECT e FROM EquipmentSpare e WHERE e.sparedesc = :sparedesc"),
     @NamedQuery(name = "EquipmentSpare.findBySparemodel", query = "SELECT e FROM EquipmentSpare e WHERE e.sparemodel = :sparemodel"),
     @NamedQuery(name = "EquipmentSpare.findByLeadtime", query = "SELECT e FROM EquipmentSpare e WHERE e.leadtime = :leadtime"),
@@ -66,13 +69,18 @@ public class EquipmentSpare extends SuperEntity {
     @Size(min = 1, max = 45)
     @Column(name = "sparenum")
     private String sparenum;
-
-    @JoinColumn(name = "scategory", referencedColumnName = "scategory")
-    @ManyToOne
-    private EquipmentSpareClass scategory;
-    @JoinColumn(name = "mcategory", referencedColumnName = "id")
-    @ManyToOne
-    private EquipmentSpareMid mcategory;
+    @Size(max = 45)
+    @Column(name = "sname")
+    private String sname;
+      @Size(max = 4)
+    @Column(name = "scategory")
+    private String scategory;
+        @Size(max = 45)
+    @Column(name = "mname")
+    private String mname;
+    @Size(max = 4)
+    @Column(name = "mcategory")
+    private String mcategory;
     @Size(max = 50)
     @Column(name = "brand")
     private String brand;
@@ -106,7 +114,9 @@ public class EquipmentSpare extends SuperEntity {
     private Integer minstock;
     @Column(name = "maxstock")
     private Integer maxstock;
-
+     @Column(name = "servicelife")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date servicelife;
     public EquipmentSpare() {
     }
 
@@ -241,22 +251,45 @@ public class EquipmentSpare extends SuperEntity {
         this.remark = remark;
     }
 
-    public EquipmentSpareClass getScategory() {
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    public String getScategory() {
         return scategory;
     }
 
-    public void setScategory(EquipmentSpareClass scategory) {
+    public void setScategory(String scategory) {
         this.scategory = scategory;
     }
 
-    public EquipmentSpareMid getMcategory() {
+    public String getMname() {
+        return mname;
+    }
+
+    public void setMname(String mname) {
+        this.mname = mname;
+    }
+
+    public String getMcategory() {
         return mcategory;
     }
 
-    public void setMcategory(EquipmentSpareMid mcategory) {
+    public void setMcategory(String mcategory) {
         this.mcategory = mcategory;
     }
 
+    public Date getServicelife() {
+        return servicelife;
+    }
+
+    public void setServicelife(Date servicelife) {
+        this.servicelife = servicelife;
+    }
 
     @Override
     public int hashCode() {
