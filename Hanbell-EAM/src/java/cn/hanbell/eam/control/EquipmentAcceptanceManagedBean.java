@@ -261,7 +261,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             showErrorMsg("Error", "请选择单据！");
             return "";
         }
-        if (Integer.parseInt(currentEntity.getRstatus()) < 60) {
+        if (Integer.parseInt(currentEntity.getRstatus()) < 55) {
             showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",不能审批");
             return "";
         }
@@ -272,17 +272,25 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
 
         //获取维修课长
         String repairleadersId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairleaders").getCvalue();
-
+        //获取维修组长
+        String repairHeadmanId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairHeadmanId").getCvalue();
         maintenanceSupervisor = systemUserBean.findByUserId(repairleadersId).getUsername();
         //维修经理
         String repairmanagerId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairmanager").getCvalue();
-        if (!userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
-            showErrorMsg("Error", "只有维修课长和维修经理才能进行审批操作");
+        if (!userManagedBean.getUserid().equals(repairHeadmanId) && !userManagedBean.getUserid().equals(repairleadersId) && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
+            showErrorMsg("Error", "只有维修课长,维修组长和维修经理才能进行审批操作");
             return "";
         }
-
-        if (Integer.parseInt(currentEntity.getRstatus()) == 70 && !userManagedBean.getUserid().equals(repairmanagerId) && !userManagedBean.getUserid().equals("C2079")) {
-            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  维修课长不能审批");
+        if (Integer.parseInt(currentEntity.getRstatus()) == 60 && !userManagedBean.getUserid().equals(repairleadersId) ) {
+            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  只有维修课长才能审批");
+            return "";
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) == 70 && !userManagedBean.getUserid().equals(repairmanagerId) ) {
+            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  只有维修经理才能审批");
+            return "";
+        }
+        if (Integer.parseInt(currentEntity.getRstatus()) == 55 && !userManagedBean.getUserid().equals(repairHeadmanId) ) {
+            showErrorMsg("Error", "当前进度为:" + getStateName(currentEntity.getRstatus()) + ",  只有维修组长才能审批");
             return "";
         }
         hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
@@ -379,6 +387,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     }
 
     //确认审批
+    
     public void confirmApproval() {
         createDetail3();
         currentDetail3.setUserno(userManagedBean.getUserid());
@@ -390,6 +399,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         currentDetail3.setNote(note);
         //获取维修课长
         String repairleadersId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairleaders").getCvalue();
+        //维修组长
+        String headmanId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairHeadmanId").getCvalue();
         //维修经理
         String repairmanagerId = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairmanager").getCvalue();
         //维修经理签核的金额
@@ -410,18 +421,31 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 } else {
                     currentEntity.setRstatus("95");
                 }
+                
             } else if (contenct.equals("不合格")) {
                 currentEntity.setRstatus("40");
             }
 
-        } else if (currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals(repairmanagerId) || currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
+        } else if (currentEntity.getRstatus().equals("55") && userManagedBean.getUserid().equals(headmanId) ) {
+               if (contenct.equals("合格")) {
+
+                if (totalCost > 1000 || currentEntity.getRepairarchive().equals("Y")) {
+                    currentEntity.setRstatus("60");
+                } else {
+                    currentEntity.setRstatus("95");
+                }
+                
+            } else if (contenct.equals("不合格")) {
+                currentEntity.setRstatus("40");
+            }
+        } else if (currentEntity.getRstatus().equals("55") && userManagedBean.getUserid().equals(repairmanagerId) || currentEntity.getRstatus().equals("70") && userManagedBean.getUserid().equals("C2079")) {
             if (contenct.equals("合格")) {
                 currentDetail3.setRemark(repairApprovals);
                 currentEntity.setRstatus("95");
             } else if (contenct.equals("不合格")) {
                 currentEntity.setRstatus("60");
             }
-        } else {
+        }  else {
             showErrorMsg("Error", "已完成本次审核,单据状态已变更,请返回主页面查看");
             return;
         }
@@ -583,6 +607,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 return "维修验收";
             case "50":
                 return "责任回复";
+            case "55":
+                return "组长审核";
             case "60":
                 return "课长审核";
             case "70":

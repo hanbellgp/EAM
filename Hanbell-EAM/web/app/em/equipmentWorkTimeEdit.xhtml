@@ -36,14 +36,14 @@
 
                 </p:row>
                 <p:row>
-                    <p:column><h:outputText value="工作时间"/></p:column>
+                    <p:column><h:outputText value="工作时间（分钟）"/></p:column>
                     <p:column>
                         <h:outputText id="worktime" value="#{equipmentWorkTimeManagedBean.currentEntity.worktime}" title="worktime" />
                     </p:column>
-                    <p:column><p:outputLabel value="加班时间" for="overtime" /></p:column>
+                    <p:column><p:outputLabel value="加班时间（小时）" for="overtime" /></p:column>
                     <p:column>
                            <p:inputText id="overtime" value="#{equipmentWorkTimeManagedBean.currentEntity.overtime}" onkeyup="(this.v = function () {
-                                    this.value = this.value.replace(/\D|^/g, '');
+                                    this.value = this.value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '');
                                 }).call(this)" onblur="this.v();"
                                      title="Minstock"/> 
                     </p:column>

@@ -34,7 +34,7 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT e.id,e.curnode2,e.pid,r.assetno,if(r.assetno IS NULL ,'其他',c.assetDesc) assetDesc, r.hitchtime,r.repairmethod,r.repairdeptname,r.servicearrivetime,r.completetime,e.rtype,e.userno");
         sb.append(" FROM   EquipmentRepairHelpers e LEFT JOIN equipmentrepair r ON e.pid = r.formid LEFT JOIN assetcard c ON c.formid = r.assetno");
-        sb.append(" WHERE r.rstatus='95' ");
+        sb.append(" WHERE r.rstatus>'30' ");
         if (!"".equals(companySql)) {
             sb.append(" AND (").append(companySql).append(" )");
         }
@@ -97,7 +97,7 @@ public class EquipmentRepairHelpersBean extends SuperEJBForEAM<EquipmentRepairHe
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT  A.curnode2,COUNT(curnode2),sum( if(rtype=0,userno,'0' ))AS Maintenancehours,sum( if(rtype=1,userno,'0' )) AS auxiliary ,SUM(userno)");
         sb.append(" FROM equipmentrepairhelpers A LEFT JOIN equipmentrepair B ON A.pid = B.formid");
-        sb.append(" WHERE  B.rstatus='95'");
+        sb.append(" WHERE  B.rstatus>'30'");
         if (!"".equals(companySql)) {
             sb.append(" AND (").append(companySql).append(" )");
         }

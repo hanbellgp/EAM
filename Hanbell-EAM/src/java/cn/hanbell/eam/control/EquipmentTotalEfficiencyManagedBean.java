@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -139,6 +141,11 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
+                }
+                Cell cell0 = row.getCell(46);
+                cell0 = row.getCell(46);
+                if (eq[40] != null) {
+                    cell0.setCellValue(eq[40].toString());
                 }
 
             }
@@ -335,7 +342,103 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                         } else {
                             cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                         }
+                    }
+                }
+                Cell cell0 = row.getCell(46);
+                cell0 = row.getCell(46);
+                if (eq[40] != null) {
+                    cell0.setCellValue(eq[40].toString());
+                }
+            }
+            sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            OutputStream os = null;
+            if (EPQID.contains("/")) {
+                EPQID = EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
+            }
+            fileName = sdf.format(queryDateBegin) + "---" + deptName.get(0) + "---设备总合效率OEE表---" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            String fileFullName = reportOutputPath + fileName;
+            try {
+                os = new FileOutputStream(fileFullName);
+                workbook.write(os);
+                this.reportViewPath = reportViewContext + fileName;
+                this.preview();
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            } finally {
+                try {
+                    if (null != os) {
+                        os.flush();
+                        os.close();
+                    }
+                } catch (IOException ex) {
+                    showErrorMsg("Error", ex.getMessage());
+                }
+            }
+        } catch (IOException | InvalidFormatException e) {
+            showErrorMsg("Error", e.toString());
+        }
+    }
 
+    //导出OEE数据
+    public void printYearOEE() throws ParseException {
+        String finalFilePath = "";
+        try {
+            List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);//获取设备部门信息
+            finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+            int index = finalFilePath.indexOf("WEB-INF");
+            String str = "rpt/车间设备OEE年报模版.xlsx";
+
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
+            Workbook workbook = WorkbookFactory.create(is);
+            //获得表格样式
+            Map<String, CellStyle> style = createStyles(workbook);
+            Sheet sheet;
+            sheet = workbook.getSheetAt(0);
+            Row row;
+            row = sheet.getRow(0);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat zdf = new SimpleDateFormat("yyyy/MM/dd");
+            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyYearOEE(stayear, EPQID, type);
+
+            // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
+            if (oeeList == null || oeeList.isEmpty()) {
+                showErrorMsg("Error", "当前日前无生产数据！请知悉");
+                return;
+            }
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 31));
+            Cell cellTitle = row.getCell(0);
+            cellTitle.setCellStyle(style.get("title"));
+            cellTitle.setCellValue("2023年车间设备OEE年报--------"+deptName.get(0));
+            List<?> itemList = oeeList;
+            int j = 3;
+            List<Object[]> list = (List<Object[]>) itemList;
+            for (Object[] eq : list) {
+                row = sheet.getRow(j);
+                j++;
+                System.out.println(j);
+                Cell cell0 = row.getCell(1);
+                cell0.setCellValue(eq[0].toString());
+                for (int i = 0; i <= 12; i++) {
+
+                    cell0 = row.getCell(2 + i * 9);
+                    if (eq[1 + i * 9] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[1 + i * 9].toString()));
+                    }
+                    cell0 = row.getCell(3 + i * 9);
+                    if (eq[2 + i * 9] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[2 + i * 9].toString()));
+                    }
+                    cell0 = row.getCell(4 + i * 9);
+                    if (eq[3 + i * 9] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[3 + i * 9].toString()));
+                    }
+                    cell0 = row.getCell(5 + i * 9);
+                    if (eq[4 + i * 9] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[4 + i * 9].toString()));
+                    }
+                    cell0 = row.getCell(6 + i * 9);
+                    if (eq[5 + i * 9] != null) {
+                        cell0.setCellValue(Double.parseDouble(eq[5 + i * 9].toString()));
                     }
                 }
 
@@ -345,7 +448,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             if (EPQID.contains("/")) {
                 EPQID = EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
             }
-            fileName = sdf.format(queryDateBegin) + "---" + deptName.get(0) + "---设备总合效率OEE表---" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            fileName =  "车间设备OEE年报表---" +deptName.get(0) + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xlsx";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);
@@ -458,7 +561,11 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
     public void query() {
         String month1 = Integer.parseInt(month) < 10 ? "0" + month : month;
         String time = stayear + "/" + month1;
-        equipmentTotalEfficiencyList = equipmentRepairBean.getEquipmentTotalEfficiency(time, EPQID);
+        try {
+            equipmentTotalEfficiencyList = equipmentRepairBean.getEquipmentTotalEfficiency(time, EPQID);
+        } catch (ParseException ex) {
+            Logger.getLogger(EquipmentTotalEfficiencyManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public List<Number> getYearsList() {

@@ -50,7 +50,7 @@ public class EquipmentSpareMidQueryBean extends SuperQueryBean<EquipmentSpareMid
             }
         }
         if (sCategory != null) {
-            model.getFilterFields().put("scategory.scategory", sCategory);
+            model.getFilterFields().put("scategory", sCategory);
         }
         this.model.getFilterFields().put("status", "V");
         super.init();

@@ -84,8 +84,8 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
             newEntity.setServiceusername(userName);
             selectedUserName = null;
         }
-        String BJ = "W-" + newEntity.getScategory().getScategory() + "-" + newEntity.getMcategory().getMcategory();
-        int size = equipmentSpareBean.findBySparenum(BJ).size() + 1;
+        String BJ = "W-" + newEntity.getScategory() + "-" + newEntity.getMcategory();
+        int size = equipmentSpareBean.findBySparenum(BJ,userManagedBean.getCompany()).size() + 1;
         if (size < 10) {
             BJ = BJ + "-00" + size;
         } else if (size < 100) {
@@ -165,14 +165,17 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
     public void handleEquipmentSpareClassReturnWhenEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             EquipmentSpareClass e = (EquipmentSpareClass) event.getObject();
-            currentEntity.setScategory(e);
+            currentEntity.setScategory(e.getScategory());
+            currentEntity.setSname(e.getSname());
         }
     }
 
     public void handleEquipmentSpareClassReturnWhenNew(SelectEvent event) {
         if (event.getObject() != null && newEntity != null) {
             EquipmentSpareClass e = (EquipmentSpareClass) event.getObject();
-            newEntity.setScategory(e);
+           
+              newEntity.setScategory(e.getScategory());
+            newEntity.setSname(e.getSname());
         }
     }
 
@@ -180,7 +183,8 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
     public void handleDialogReturnWhenNew(SelectEvent event) {
         if (event.getObject() != null && newEntity != null) {
             EquipmentSpareMid e = (EquipmentSpareMid) event.getObject();
-            newEntity.setMcategory(e);
+            newEntity.setMcategory(e.getMcategory());
+             newEntity.setMname(e.getMname());
         }
     }
 
@@ -188,7 +192,9 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
     public void handleDialogReturnWhenEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             EquipmentSpareMid e = (EquipmentSpareMid) event.getObject();
-            currentEntity.setMcategory(e);
+    
+              currentEntity.setMcategory(e.getMcategory());
+             currentEntity.setMname(e.getMname());
         }
     }
 
@@ -210,9 +216,9 @@ public class EquipmentSpareManagedBean extends SuperSingleBean<EquipmentSpare> {
                     paramPosition.clear();
                 }
                 if (newEntity.getScategory() != null) {
-                    paramPosition.add(newEntity.getScategory().getScategory());
+                    paramPosition.add(newEntity.getScategory());
                 } else {
-                    paramPosition.add(currentEntity.getScategory().getScategory());
+                    paramPosition.add(currentEntity.getScategory());
                 }
                 openParams.put("sCategory", paramPosition);
                 super.openDialog(view, openParams);

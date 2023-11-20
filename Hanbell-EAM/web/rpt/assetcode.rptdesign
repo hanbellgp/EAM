@@ -100,7 +100,7 @@ return false;
             <property name="topMargin">0.25cm</property>
             <property name="leftMargin">0.25cm</property>
             <property name="bottomMargin">0.25cm</property>
-            <property name="rightMargin">0.25cm</property>
+            <property name="rightMargin">0in</property>
             <property name="height">3cm</property>
             <property name="width">6cm</property>
             <property name="headerHeight">0cm</property>

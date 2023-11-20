@@ -29,7 +29,7 @@
                 <p:row>
                     <p:column style="background-color: #EEEEEE" styleClass="Wid15"><p:outputLabel value="备件大类" for="scategory" /></p:column>
                     <p:column  styleClass="Wid20">
-                        <p:inputText id="scategory" value="#{equipmentSpareMidManagedBean.newEntity.scategory.scategory}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
+                        <p:inputText id="scategory" value="#{equipmentSpareMidManagedBean.newEntity.scategory}" title="RequireDeptno" styleClass="inputWithButton" readonly="true"/>
                         <p:commandButton id="btnSystemUserSelect" actionListener="#{equipmentSpareMidManagedBean.openDialog('equipmentSpareClassSelect')}" icon="ui-icon-extlink"
                                          process="@this" >
                             <p:ajax event="dialogReturn" listener="#{equipmentSpareMidManagedBean.handleDialogReturnWhenNew}"
@@ -38,7 +38,7 @@
                     </p:column>
                     <p:column style="background-color: #EEEEEE"  styleClass="Wid15"><p:outputLabel value="备件大类名称" for="sname" /></p:column>
                     <p:column styleClass="Wid15">
-                        <h:outputText id="sname" value="#{equipmentSpareMidManagedBean.newEntity.scategory.sname}" title="sname" />
+                        <h:outputText id="sname" value="#{equipmentSpareMidManagedBean.newEntity.sname}" title="sname" />
                     </p:column>
                 </p:row>
                 <p:row>

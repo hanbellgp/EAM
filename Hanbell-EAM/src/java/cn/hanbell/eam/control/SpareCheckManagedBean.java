@@ -19,6 +19,7 @@ import cn.hanbell.eam.lazy.AssetCheckModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import com.lightshell.comm.SuperEJB;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -237,32 +238,59 @@ public class SpareCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
         List<EquipmentSpareStock> list = new ArrayList<>();//需要更新的库存List
         List<EquipmentSpareRecodeDta> eRecodeDtaslist = new ArrayList<>();
         for (AssetCheckDetail deList : detailList) {
-            if (deList.getDiffqty().compareTo(BigDecimal.ZERO) != 0) {
-                EquipmentSpareStock eStock = equipmentSpareStockBean.findBySparenumAndLocation(deList.getAssetno(), deList.getBrand()).get(0);//查出需要更新的库存数据
-                eStock.setQty(eStock.getQty().add(deList.getDiffqty()));//修改数量
-                list.add(eStock);//添加到库存List一起更新
-                //储存盘点时更新库存的记录
-                EquipmentSpareRecodeDta eDta = new EquipmentSpareRecodeDta();
-                //判断盘点的数量是盘亏还是盘盈
-                if (deList.getDiffqty().compareTo(BigDecimal.ZERO) > 0) {
-                    eDta.setPid(assetCheckBean.getFormId(getDate(), "PY", "YYMM", 4));
-                } else {
-                    eDta.setPid(assetCheckBean.getFormId(getDate(), "PK", "YYMM", 4));
+            if (deList.getDiffqty().compareTo(BigDecimal.ZERO) != 0) {//只有实盘修改过的数据需要更新
+                List<EquipmentSpareStock> eStock = equipmentSpareStockBean.findBySparenumAndLocation(deList.getAssetno(), deList.getBrand());//查出需要更新的库存数据
+                BigDecimal itemBig = new BigDecimal(BigInteger.ZERO);
+                int i=0;
+                for (EquipmentSpareStock eSt : eStock) {
+                    if ((itemBig.compareTo(BigDecimal.ZERO) == 0&&i==0)||itemBig.compareTo(BigDecimal.ZERO)<0) {
+                       
+                        if (deList.getDiffqty().compareTo(BigDecimal.ZERO) > 0) {
+                            itemBig = eSt.getQty().add(deList.getDiffqty());
+                            eSt.setQty(itemBig);
+                        } else {
+                            if (itemBig.compareTo(BigDecimal.ZERO) == 0) {
+                                itemBig = eSt.getQty().subtract(deList.getDiffqty().abs());
+                                if (itemBig.compareTo(BigDecimal.ZERO) < 0) {
+                                    eSt.setQty(BigDecimal.ZERO);
+                                } else {
+                                    eSt.setQty(itemBig);
+                                }
+                            } else {
+                                itemBig = eSt.getQty().subtract(itemBig.abs());
+                                eSt.setQty(itemBig);
+                            }
+                        }
+                        i++;
+                        eSt.setOptdate(getDate());
+                        eSt.setOptuser(userManagedBean.getUserid());
+                        list.add(eSt);//添加到库存List一起更新
+                        //储存盘点时更新库存的记录
+                        EquipmentSpareRecodeDta eDta = new EquipmentSpareRecodeDta();
+                        //判断盘点的数量是盘亏还是盘盈
+                        if (deList.getDiffqty().compareTo(BigDecimal.ZERO) > 0) {
+                            eDta.setPid(assetCheckBean.getFormId(getDate(), "PY", "YYMM", 4));
+                        } else {
+                            eDta.setPid(assetCheckBean.getFormId(getDate(), "PK", "YYMM", 4));
+                        }
+                        eDta.setSparenum(eSt.getSparenum());
+                        eDta.setSeq(eRecodeDtaslist.size() + 1);
+                        eDta.setCqty(deList.getDiffqty());
+                        eDta.setUprice(eSt.getUprice());
+                        eDta.setSlocation(eSt.getSlocation());
+                        eDta.setStatus("V");
+                        eDta.setCredate(getDate());
+                        eDta.setCreator(userManagedBean.getUserid());
+                        eDta.setRemark(currentEntity.getFormid());
+                        eRecodeDtaslist.add(eDta);
+                    }
                 }
-                eDta.setSparenum(eStock.getSparenum());
-                eDta.setSeq(eRecodeDtaslist.size() + 1);
-                eDta.setCqty(deList.getDiffqty());
-                eDta.setUprice(eStock.getUprice());
-                eDta.setSlocation(eStock.getSlocation());
-                eDta.setStatus("V");
-                eDta.setCredate(getDate());
-                eDta.setCreator(userManagedBean.getUserid());
-                eDta.setRemark(currentEntity.getFormid());
-                eRecodeDtaslist.add(eDta);
+
             }
         }
         equipmentSpareStockBean.update(list);
         equipmentSpareRecodeDtaBean.update(eRecodeDtaslist);
+
         if (null != getCurrentEntity()) {
             try {
                 currentEntity.setStatus("V");
@@ -285,9 +313,16 @@ public class SpareCheckManagedBean extends FormMultiBean<AssetCheck, AssetCheckD
         //还原时删除对应记录的List
         List<EquipmentSpareRecodeDta> eRecodeDtaslist = equipmentSpareRecodeDtaBean.findByRemark(currentEntity.getFormid());
         for (AssetCheckDetail deList : detailList) {
-            if (deList.getDiffqty().compareTo(BigDecimal.ZERO) != 0) {
+            if (deList.getDiffqty().compareTo(BigDecimal.ZERO) != 0) {//只有实盘修改过的数据需要更新
                 EquipmentSpareStock eStock = equipmentSpareStockBean.findBySparenumAndLocation(deList.getAssetno(), deList.getBrand()).get(0);//查出需要更新的库存数据
-                eStock.setQty(eStock.getQty().subtract(deList.getDiffqty()));//修改数量
+                if (deList.getDiffqty().compareTo(BigDecimal.ZERO) > 0) {
+                    eStock.setQty(eStock.getQty().subtract(deList.getDiffqty().abs()));
+                } else {
+                    eStock.setQty(eStock.getQty().add(deList.getDiffqty().abs()));
+                }
+
+                eStock.setCfmdate(getDate());
+                eStock.setCfmuser(userManagedBean.getUserid());
                 list.add(eStock);//添加到库存List一起更新
             }
         }

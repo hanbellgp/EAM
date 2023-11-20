@@ -72,7 +72,9 @@
 
                     <p:commandButton id="btnPrint2" value="导出设备异常信息表" actionListener="#{equipmentTotalEfficiencyManagedBean.printlen()}" icon="ui-icon-print"
                                      />
-                    <p:commandButton id="btnPrint3" value="导出OEE报表" actionListener="#{equipmentTotalEfficiencyManagedBean.printOEE()}" icon="ui-icon-print"
+                    <p:commandButton id="btnPrint3" value="导出OEE月报表" actionListener="#{equipmentTotalEfficiencyManagedBean.printOEE()}" icon="ui-icon-print"
+                                     />
+                         <p:commandButton id="btnPrint4" value="导出OEE年报表" actionListener="#{equipmentTotalEfficiencyManagedBean.printYearOEE()}" icon="ui-icon-print"
                                      />
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentTotalEfficiencyManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
