@@ -36,7 +36,7 @@ public class EquipmentSpareStockBean extends SuperEJBForEAM<EquipmentSpareStock>
     public List<EquipmentSpareStock> getEquipmentSpareStockList(String sparenum, String sparedesc, String sparemodel, String company) {
         StringBuilder sb = new StringBuilder();
         sb.append(" Select T.sparenum,S.sparedesc,S.sparemodel, C.sname,M.mname,sum(T.qty) FROM  equipmentsparestock T  LEFT JOIN equipmentspare S on T.sparenum=S.sparenum AND S.company='" + company + "'");
-        sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory  AND C.company='" + company + "' LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.id Where 1=1  AND T.company='" + company + "'");
+        sb.append(" LEFT JOIN equipmentspareclass C ON S.scategory=C.scategory  AND C.company='" + company + "' LEFT JOIN  equipmentsparemid M ON S.scategory=M.scategory AND S.mcategory=M.mcategory Where 1=1  AND T.company='" + company + "'");
         if (!"".equals(sparenum) && sparenum != null) {
             sb.append(" AND S.sparedesc LIKE ").append("'%").append(sparenum).append("%'");
         }
