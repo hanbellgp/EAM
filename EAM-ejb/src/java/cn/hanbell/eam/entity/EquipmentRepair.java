@@ -104,7 +104,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 45)
     @Column(name = "troublefrom")
     private String troublefrom;
-    @Size(max = 2)  
+    @Size(max = 2)
     @Column(name = "repairmethodtype")
     private String repairmethodtype;
     @Size(max = 20)
@@ -199,6 +199,15 @@ public class EquipmentRepair extends FormEntity {
     @Column(name = "completetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date completetime;
+    @Column(name = "autotransfertime")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date autotransfertime;
+    @Column(name = "repairtransfertime")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date repairtransfertime;
+    @Column(name = "downinitiatetime")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date downinitiatetime;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "sparecost")
     private BigDecimal sparecost;
@@ -437,6 +446,30 @@ public class EquipmentRepair extends FormEntity {
 
     public String getHitchtype() {
         return hitchtype;
+    }
+
+    public Date getAutotransfertime() {
+        return autotransfertime;
+    }
+
+    public void setAutotransfertime(Date autotransfertime) {
+        this.autotransfertime = autotransfertime;
+    }
+
+    public Date getRepairtransfertime() {
+        return repairtransfertime;
+    }
+
+    public void setRepairtransfertime(Date repairtransfertime) {
+        this.repairtransfertime = repairtransfertime;
+    }
+
+    public Date getDowninitiatetime() {
+        return downinitiatetime;
+    }
+
+    public void setDowninitiatetime(Date downinitiatetime) {
+        this.downinitiatetime = downinitiatetime;
     }
 
     public void setHitchtype(String hitchtype) {
