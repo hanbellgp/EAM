@@ -369,6 +369,17 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         return results;
     }
 
+    public String getAssetno(String formid) {
+        //流水码不按年份重新编号
+        String maxid;
+        Query query = getEntityManager().createNativeQuery("Select assetno from equipmentrepair where formid='" + formid + "'");
+
+        maxid = query.getSingleResult().toString();
+
+        return maxid;
+
+    }
+
     //获取维修费用统计表的List
     public List<EquipmentRepair> getRepairCostStatisticsList(String staDate, String endDate, String deptname, String abrasehitch, String companySql) {
         StringBuilder sb = new StringBuilder();
@@ -869,7 +880,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 //        }
         deptno = deptno.substring(0, 3);
         sb60Count.append(" SELECT month(hitchtime),count(CASE WHEN TIMESTAMPDIFF(MINUTE,hitchtime, completetime) > 60 THEN E.assetno END) as count60,count(*) count10,SUM(TIMESTAMPDIFF(MINUTE, hitchtime, completetime)) FROM equipmentrepair E LEFT JOIN assetcard A ON E.assetno=A.formid ");
-        sb60Count.append(" WHERE TIMESTAMPDIFF(MINUTE, hitchtime,completetime)>10 AND A.deptno like'%").append(deptno).append("%' AND hitchtime LIKE '%").append(year).append("%'");
+        sb60Count.append(" WHERE A.deptno like'%").append(deptno).append("%' AND hitchtime LIKE '%").append(year).append("%'");
         sb60Count.append(" AND hitchtime<now() AND A.company='" + companyType + "' ");
         if (type.equals("加工机")) {
             sb60Count.append(" AND A.remark IS NOT NULL ");
@@ -1819,12 +1830,12 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List<Object[]> resultsLEN = query.getResultList();
 
         //      报工数量及产出标准工时
-        StringBuilder sbMESQTY = new StringBuilder();
-        sbMESQTY.append(" SELECT day,COUNT(A.EQPID) AS QTY, round(SUM(STD_TIME) / 60, 1) AS MINUTE FROM(SELECT A.EQPID, B.STD_TIME,day(PROCESSCOMPLETETIME) AS day FROM MEQP C");
-        sbMESQTY.append(" LEFT JOIN PROCESS_STEP A ON A.EQPID = C.EQPID LEFT JOIN PROCESS_STEP_TIME B ON A.PRODUCTCOMPID = B.PRODUCTCOMPID AND A.EQPID = B.EQPID AND A.PRODUCTORDERID = B.PRODUCTORDERID AND A.SYSID = B.SYSID AND A.STEPID = B.STEPID");
-        sbMESQTY.append(" WHERE  A.PROCESSCOMPLETETIME LIKE '").append(year).append("%' AND A.EQPID='").append(EPQID).append("' AND A.PROCESSCOMPLETETIME IS NOT NULL) A GROUP BY  day");
-        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQTY.toString());
-        List<Object[]> resultsQTY = query.getResultList();
+//        StringBuilder sbMESQTY = new StringBuilder();
+////        sbMESQTY.append(" SELECT day,COUNT(A.EQPID) AS QTY, round(SUM(STD_TIME) / 60, 1) AS MINUTE FROM(SELECT A.EQPID, B.STD_TIME,day(PROCESSCOMPLETETIME) AS day FROM MEQP C");
+////        sbMESQTY.append(" LEFT JOIN PROCESS_STEP A ON A.EQPID = C.EQPID LEFT JOIN PROCESS_STEP_TIME B ON A.PRODUCTCOMPID = B.PRODUCTCOMPID AND A.EQPID = B.EQPID AND A.PRODUCTORDERID = B.PRODUCTORDERID AND A.SYSID = B.SYSID AND A.STEPID = B.STEPID");
+////        sbMESQTY.append(" WHERE  A.PROCESSCOMPLETETIME LIKE '").append(year).append("%' AND A.EQPID='").append(EPQID).append("' AND A.PROCESSCOMPLETETIME IS NOT NULL) A GROUP BY  day");
+//        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQTY.toString());
+//        List<Object[]> resultsQTY = query.getResultList();
         String tName = "";//获取查询计划件数的表名
         String avaTime = "";//周计划工时
         //      计划产出件数
@@ -1910,12 +1921,12 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             }
             obj[1] = 1440;
 //          实际产出件数及标准工时
-            for (Object[] object : resultsQTY) {
-                if (object[0].equals(i)) {
-                    obj[3] = object[1];
-                    obj[4] = object[2];
-                }
-            }
+//            for (Object[] object : resultsQTY) {
+//                if (object[0].equals(i)) {
+//                    obj[3] = object[1];
+//                    obj[4] = object[2];
+//                }
+//            }
             String[] y = year.split("/");//获取对应年月份
 //            计划产出件数
             for (Object[] object : resultsPlan) {
@@ -2085,17 +2096,16 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         rList = query.getResultList();
 
         //       获取除外工时合计
-        String speId = "B0008";
-        String LDSql="";
+        String speId = "B0001";
+        String LDSql = "";
         if (dept.equals("半成品方型件")) {
-            speId = "A0008";
-            LDSql ="and   A.SPECIALALARMID!='A0014'";
+            speId = "A0001";
+            LDSql = "and   A.SPECIALALARMID!='A0014'";
         }
         StringBuilder sbMESLEN = new StringBuilder();
-        sbMESLEN.append(" SELECT A.EQPID,month(DATE),sum(convert(int, ALARMTIME_LEN)) / 60 FROM");
-        sbMESLEN.append(" (SELECT EQPID,A.SPECIALALARMID,convert(VARCHAR(10), cast(dateadd(HOUR, -8, A.ALARMSTARTTIME) AS DATE), 111) AS DATE,ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A");
-        sbMESLEN.append(" WHERE A.ALARMSTARTTIME LIKE '" + year + "%' ) A");
-        sbMESLEN.append(" WHERE A.DATE LIKE '" + year + "%'   and A.SPECIALALARMID!='" + speId + "' "+LDSql+"    GROUP BY A.EQPID, month(DATE)");
+        sbMESLEN.append(" SELECT EQPID,month(convert(VARCHAR(10), cast(dateadd(HOUR, -8, A.ALARMSTARTTIME) AS DATE), 111)) AS DATE,sum(convert(INT, ALARMTIME_LEN)) / 60,");
+        sbMESLEN.append("   sum(CASE A.SPECIALALARMID  WHEN '" + speId + "' THEN convert(INT, ALARMTIME_LEN) / 60  ELSE 0 END) FROM EQP_RESULT_ALARM_D A WHERE A.ALARMSTARTTIME LIKE '" + year + "%' " + LDSql + "");
+        sbMESLEN.append(" GROUP BY A.EQPID, month(convert(VARCHAR(10), cast(dateadd(HOUR, -8, A.ALARMSTARTTIME) AS DATE), 111))");
 
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESLEN.toString());
         List<Object[]> resultsLEN = query.getResultList();
@@ -2115,7 +2125,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         }
 //        生管停机计划时间获取
         StringBuilder sbMESDowntime = new StringBuilder();
-        sbMESDowntime.append("SELECT A.EQPID,A.month,A.planda-(CASE halt WHEN   NULL then 0  ELSE halt END )    FROM ");
+        sbMESDowntime.append("SELECT A.EQPID,A.month,A.planda    FROM ");
         sbMESDowntime.append("( SELECT DISTINCT EQPID,month(PLANDATE) month,day(DATEADD(DD, -DAY(DATEADD(MM, 1, PLANDATE )), DATEADD(MM, 1, PLANDATE )))*1440 planda   FROM  ").append(tName).append(" WHERE  PLANDATE LIKE '").append(year).append("%' GROUP BY EQPID,month(PLANDATE)) A  LEFT JOIN");
         sbMESDowntime.append(" (SELECT DISTINCT EQPID,month(PLANDATE) month, SUM(convert(DECIMAL, WORKHOUR)) halt    FROM  ").append(tName).append(" WHERE  PLANDATE LIKE '").append(year).append("%' AND PRODUCTID='计划停机' GROUP BY EQPID,month(PLANDATE)) B ON A.EQPID=B.EQPID AND A.month=B.month");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDowntime.toString());
@@ -2123,6 +2133,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         //      不合格单数量
         StringBuilder sbMESQCQTY = new StringBuilder();
         sbMESQCQTY.append(" SELECT S.EQPID,month(PROJECTCREATETIME) month,SUM(convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003'  and S.EQPID IS NOT NULL  GROUP BY S.EQPID,month(PROJECTCREATETIME)");
+
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQCQTY.toString());
         List<Object[]> resultsQCQTY = query.getResultList();
         Map<String, List<Object>> moMap = new LinkedHashMap<>();
@@ -2150,9 +2161,14 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             Object[] entity = new Object[160];
             entity[0] = entry.getKey();
             for (int i = 1; i <= 12; i++) {
+                int downTime = 0;
                 for (Object[] obj : itemList1) {
                     if (Integer.parseInt(obj[1].toString()) == i) {
                         entity[2 + (i - 1) * 9] = obj[2];
+                        if (obj[2] != null) {
+                            downTime = Integer.parseInt(obj[2].toString());
+                        }
+
                     }
                 }
                 for (Object[] obj : rList) {
@@ -2164,7 +2180,10 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
                 for (Object[] obj : resultsLEN) {
                     if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
-                        entity[3 + (i - 1) * 9] = obj[2];
+                        if (obj[2] != null && obj[3] != null) {
+                            entity[3 + (i - 1) * 9] = Integer.parseInt(obj[2].toString()) - Integer.parseInt(obj[3].toString());
+                            entity[2 + (i - 1) * 9] = downTime - Integer.parseInt(obj[3].toString());
+                        }
 
                     }
                 }
