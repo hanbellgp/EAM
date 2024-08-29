@@ -524,7 +524,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     public List<Object[]> getMTBFAndMTTR(String staDate, String endDate, String deptname, String abrasehitch, String sql, String companySql) {
         StringBuilder sbMES = new StringBuilder();
         sbMES.append(" SELECT A.EQPID,A.counts,A.ALARMTIME_LEN,1440,cast((1440*1.0-A.ALARMTIME_LEN*1.0)/A.counts*1.0 AS DECIMAL(10, 2))  MTBF,cast(A.ALARMTIME_LEN*1.0/A.counts*1.0 AS DECIMAL(10, 2)) MTTB  FROM (");
-        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN FROM EQP_RESULT_ALARM");
+        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN FROM EQP_RESULT_ALARM_D");
         sbMES.append(" WHERE ALARMSTARTTIME >= '").append(staDate).append("'AND ALARMSTARTTIME <= '").append(endDate).append("'");
         sbMES.append(" AND (SPECIALALARMID='B0001' OR SPECIALALARMID='A0001') AND datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)>10");
         sbMES.append(" GROUP BY EQPID)A LEFT JOIN (");
@@ -578,7 +578,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         Date d2 = sdf.parse(endDate);
         long daysBetween = (d2.getTime() - d1.getTime() + 1000000) / (60 * 60 * 24 * 1000) + 1;
         sbMES.append(" SELECT A.EQPID,A.ALARMTIME_LEN,  (CASE  B.estimateNUM WHEN NULL THEN 1440*30  ELSE  B.estimateNUM END),cast(A.ALARMTIME_LEN * 1.0 / CASE WHEN   (CASE  B.estimateNUM WHEN NULL THEN 1440*30  ELSE  B.estimateNUM END)=0 then null ELSE  (  (CASE  B.estimateNUM WHEN NULL THEN 1440*30  ELSE  B.estimateNUM END)) END * 1.0 * 100.0 AS DECIMAL(10, 2)) AS Failure FROM (");
-        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN FROM EQP_RESULT_ALARM");
+        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN FROM EQP_RESULT_ALARM_D");
         sbMES.append(" WHERE ALARMSTARTTIME >= '").append(staDate).append("'AND ALARMSTARTTIME <= '").append(endDate).append("'");
         sbMES.append(" AND (SPECIALALARMID='B0001' OR SPECIALALARMID='A0001') AND datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)>10");
         sbMES.append(" GROUP BY EQPID)A LEFT JOIN (");
@@ -626,7 +626,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     public List<Object[]> getYearMTBFAndMTTR(String year) {
         StringBuilder sbMES = new StringBuilder();
         sbMES.append(" SELECT B.EQPID,A.counts,A.ALARMTIME_LEN,B.AVAILABLEMINS,cast(A.ALARMTIME_LEN * 1.0 / CASE WHEN B.AVAILABLEMINS=0 then null ELSE  (B.AVAILABLEMINS ) END * 1.0 * 100.0 AS DECIMAL(10, 2)) AS Failure,cast((B.AVAILABLEMINS*1.0-A.ALARMTIME_LEN*1.0)/A.counts*1.0 AS DECIMAL(10, 2))  MTBF,cast(A.ALARMTIME_LEN*1.0/A.counts*1.0 AS DECIMAL(10, 2)) MTTB,B.MONTH FROM (");
-        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,month(ALARMSTARTTIME) MONTH FROM EQP_RESULT_ALARM WHERE ALARMSTARTTIME LIKE '").append(year).append("%' ");
+        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,month(ALARMSTARTTIME) MONTH FROM EQP_RESULT_ALARM_D WHERE ALARMSTARTTIME LIKE '").append(year).append("%' ");
         sbMES.append(" AND (SPECIALALARMID='B0001' OR SPECIALALARMID='A0001') AND datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)>10 GROUP BY month(ALARMSTARTTIME),EQPID)A RIGHT JOIN (");
 
         sbMES.append("  SELECT DISTINCT EQPID,day( DATEADD(DD, -DAY(DATEADD(MM, 1,PLANDATE )), DATEADD(MM, 1,PLANDATE)))*1440  -  SUM((CASE PRODUCTID WHEN '计划停机' THEN  convert(DECIMAL, WORKHOUREXTRA)  ELSE  0 END)) AVAILABLEMINS,month(PLANDATE) MONTH");
@@ -726,7 +726,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     public List<Object[]> getEveryYearMTBFAndMTTR(String staYear, String endYear) {
         StringBuilder sbMES = new StringBuilder();
         sbMES.append(" SELECT A.EQPID,A.counts,A.ALARMTIME_LEN,B.AVAILABLEMINS,cast(A.ALARMTIME_LEN * 1.0 / CASE WHEN B.AVAILABLEMINS=0 then null ELSE  (B.AVAILABLEMINS ) END * 1.0 * 100.0 AS DECIMAL(10, 2)) AS Failure,cast((B.AVAILABLEMINS*1.0-A.ALARMTIME_LEN*1.0)/A.counts*1.0 AS DECIMAL(10, 2))  MTBF,cast(A.ALARMTIME_LEN*1.0/A.counts*1.0 AS DECIMAL(10, 2)) MTTB,A.MONTH FROM (");
-        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,year(ALARMSTARTTIME) MONTH FROM EQP_RESULT_ALARM WHERE ALARMSTARTTIME >= '").append(staYear).append("' AND ALARMSTARTTIME<'").append(endYear).append("'");
+        sbMES.append(" SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,year(ALARMSTARTTIME) MONTH FROM EQP_RESULT_ALARM_D WHERE ALARMSTARTTIME >= '").append(staYear).append("' AND ALARMSTARTTIME<'").append(endYear).append("'");
         sbMES.append(" AND (SPECIALALARMID='B0001' OR SPECIALALARMID='A0001') AND datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)>10 GROUP BY year(ALARMSTARTTIME),EQPID)A LEFT JOIN (");
         sbMES.append(" SELECT EQPID,SUM(AVAILABLEMINS) AVAILABLEMINS,year(PLANDATE) MONTH FROM EQP_AVAILABLETIME_SCHEDULE A");
         sbMES.append(" WHERE PLANDATE >= '").append(staYear).append("' AND PLANDATE<='").append(endYear).append("'").append(" GROUP BY year(PLANDATE),EQPID) B ON A.EQPID=B.EQPID AND A.MONTH=B.MONTH ORDER BY EQPID,A.MONTH");
@@ -1142,7 +1142,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         StringBuilder sbMTBF = new StringBuilder();
         sbMTBF.append(" SELECT A.DAY,SUM(A.MTBF) FROM ( SELECT CASE WHEN   (cast((B.AVAILABLEMINS * 1.0 - A.ALARMTIME_LEN * 1.0) / A.counts * 1.0 AS DECIMAL(10, 2))) IS NULL THEN B.AVAILABLEMINS ELSE cast((B.AVAILABLEMINS * 1.0 - A.ALARMTIME_LEN * 1.0) / A.counts * 1.0 AS DECIMAL(10, 2)) END   MTBF,");
         sbMTBF.append(" B.DAY  FROM (SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,DAY(ALARMSTARTTIME) DAY");
-        sbMTBF.append(" FROM EQP_RESULT_ALARM WHERE ALARMSTARTTIME LIKE '").append(year).append("%' AND (SPECIALALARMID = 'B0001' OR SPECIALALARMID = 'A0001') AND");
+        sbMTBF.append(" FROM EQP_RESULT_ALARM_D WHERE ALARMSTARTTIME LIKE '").append(year).append("%' AND (SPECIALALARMID = 'B0001' OR SPECIALALARMID = 'A0001') AND");
         sbMTBF.append(" datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME) > 10 GROUP BY DAY(ALARMSTARTTIME), EQPID) A RIGHT JOIN (SELECT A.EQPID,SUM(AVAILABLEMINS) AVAILABLEMINS,DAY(PLANDATE) DAY");
         sbMTBF.append(" FROM EQP_AVAILABLETIME_SCHEDULE A LEFT JOIN MEQP M ON A.EQPID = M.EQPID");
         sbMTBF.append(" WHERE PLANDATE LIKE '").append(year).append("%' AND PLANDATE< getdate()  and AVAILABLEMINS!=0  AND  M.PRODUCTTYPE = '").append(type).append("'");
@@ -1155,7 +1155,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sbCount.append(" SELECT  A.DAY, SUM(A.counts) counts10,sum(A.counts60) counts60,(CASE WHEN SUM(A.ALARMTIME_LEN) IS NULL THEN 0 ELSE SUM(A.ALARMTIME_LEN) END) ALARMTIME_LEN,SUM(A.abnormal) abnormal");
         sbCount.append(" FROM ( SELECT E.EQPID, COUNT(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 60 AND M.ALARMNAME = '设备故障' THEN E.EQPID END ) counts60, COUNT(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 AND M.ALARMNAME = '设备故障'  THEN E.EQPID END ) counts,");
         sbCount.append(" sum(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 AND M.ALARMNAME = '设备故障'  THEN  datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME )END) AS ALARMTIME_LEN,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS abnormal,");
-        sbCount.append(" DAY(E.ALARMSTARTTIME) DAY FROM EQP_RESULT_ALARM E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%'  AND M.ALARMTYPE = '").append(type).append("' GROUP BY DAY(E.ALARMSTARTTIME), E.EQPID ) A GROUP BY A.DAY");
+        sbCount.append(" DAY(E.ALARMSTARTTIME) DAY FROM EQP_RESULT_ALARM_D E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%'  AND M.ALARMTYPE = '").append(type).append("' GROUP BY DAY(E.ALARMSTARTTIME), E.EQPID ) A GROUP BY A.DAY");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbCount.toString());
         List<Object[]> countList = query.getResultList();
 
@@ -1419,7 +1419,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         StringBuilder sbMES = new StringBuilder();//mes对应年月故障件数统计表SQL
         sbMES.append(" SELECT B.EQPID,B.AVAILABLEMINS,A.counts,A.ALARMTIME_LEN,B.DAY FROM (SELECT A.EQPID,SUM(A.counts) counts,SUM(A.ALARMTIME_LEN) ALARMTIME_LEN,A.day FROM (");
         sbMES.append(" SELECT E.EQPID, COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN,");
-        sbMES.append(" day(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
+        sbMES.append(" day(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM_D E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
         sbMES.append(" WHERE E.ALARMSTARTTIME LIKE '").append(time).append("%' AND M.ALARMNAME = '设备故障' AND M.ALARMTYPE = '").append(type).append("' AND datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 GROUP BY day(E.ALARMSTARTTIME), E.EQPID");
         sbMES.append(" ) A GROUP BY  A.EQPID, A.day ) A RIGHT JOIN  (");
         SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
@@ -1620,7 +1620,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         StringBuilder sbMES = new StringBuilder();//mes对应年月故障件数统计表SQL
         sbMES.append(" SELECT B.EQPID,B.AVAILABLEMINS,A.counts,A.ALARMTIME_LEN,B.DAY FROM (SELECT A.EQPID,SUM(A.counts) counts,SUM(A.ALARMTIME_LEN) ALARMTIME_LEN,A.day FROM (");
         sbMES.append(" SELECT E.EQPID, COUNT(E.EQPID) counts,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS ALARMTIME_LEN,");
-        sbMES.append(" month(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
+        sbMES.append(" month(E.ALARMSTARTTIME) day FROM EQP_RESULT_ALARM_D E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID");
         sbMES.append(" WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%' AND M.ALARMNAME = '设备故障' AND M.ALARMTYPE = '").append(type).append("' AND datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 GROUP BY month(E.ALARMSTARTTIME), E.EQPID");
         sbMES.append(" ) A GROUP BY  A.EQPID, A.day ) A RIGHT JOIN  (");
         SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
@@ -2085,16 +2085,27 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
         String remarkSql = "";
         String str = "";
+        String loadStr = "";      //负荷时间计算SQL
+        String loadStrNoQty = "";      //负荷时间计算SQL
         if (dept.equals("半成品方型件")) {
             str = " SELECT  EQPID,  month(PRODUCTTIME),sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)),SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, month(PRODUCTTIME)";
             remarkSql = " SELECT EQPID,REMARK FROM PLAN_CAPACITY_FX_REMARK   WHERE  PRODUCTTIME like'%" + year + "%'  and PRODUCTTYPE='半成品方型件' GROUP BY EQPID, month(PRODUCTTIME)";
+            loadStr = " SELECT  EQPID,  PRODUCTTIME,sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)) QTY,SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, PRODUCTTIME";
+            loadStrNoQty="SELECT DISTINCT EQPID, PLANDATE, SUM(convert(DECIMAL, WORKHOUR)) halt FROM PLAN_SEMI_SQUARE WHERE PLANDATE LIKE '"+year+"%' AND PRODUCTID = '计划停机' GROUP BY EQPID, PLANDATE";
         } else {
             str = " SELECT  EQPID,  month(PRODUCTTIME),  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, month(PRODUCTTIME)";
             remarkSql = " SELECT EQPID,REMARK FROM PLAN_CAPACITY_YX_REMARK   WHERE  PRODUCTTIME like'%" + year + "%'  and PRODUCTTYPE='半成品圆型件' GROUP BY EQPID, month(PRODUCTTIME)";
+            loadStr = " SELECT  EQPID,  PRODUCTTIME,  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)) QTY,SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, PRODUCTTIME";
+            loadStrNoQty="SELECT DISTINCT EQPID, PLANDATE, SUM(convert(DECIMAL, WORKHOUR)) halt FROM PLAN_SEMI_CIRCLE WHERE PLANDATE LIKE '"+year+"%' AND PRODUCTID = '计划停机' GROUP BY EQPID, PLANDATE";
         }
+        String loadSql=" SELECT A.EQPID,A.month,A.halt,B.halt FROM (select A.EQPID, month(A.PRODUCTTIME) month, sum(B.halt) halt from (";
+        loadSql+=loadStr +") A  left join ("+loadStrNoQty +" ) B ON A.EQPID = B.EQPID and A.PRODUCTTIME = B.PLANDATE where A.QTY = 0  and B.halt is not null  group by A.EQPID, month(A.PRODUCTTIME)) A  LEFT join  (SELECT A.EQPID, month(A.PRODUCTTIME) month,sum(B.halt) halt FROM (";
+        loadSql+=loadStr+" ) A Left join (SELECT EQPID, cast(dateadd(hour,-8,ALARMSTARTTIME) as date) as  WORKDATE ,ROUND(SUM(convert(DECIMAL(13, 1),ALARMTIME_LEN))/60,0) halt FROM EQP_RESULT_ALARM_D  where (SPECIALALARMID='B0001'  OR SPECIALALARMID='A0001'  OR SPECIALALARMID='A0014')  and ALARMSTARTTIME LIKE '"+year+"%'  GROUP BY  EQPID,cast(dateadd(hour,-8,ALARMSTARTTIME) as date)) B ON  A.EQPID=B.EQPID  AND A.PRODUCTTIME=B.WORKDATE  where A.QTY !=0  and B.halt is not null group by  A.EQPID, month(A.PRODUCTTIME))  B ON A.EQPID=B.EQPID AND A.month=B.month";
         Query query = superEJBForMES.getEntityManager().createNativeQuery(str);
         rList = query.getResultList();
-
+        //负荷时间
+        query = superEJBForMES.getEntityManager().createNativeQuery(loadSql.toString());
+        List<Object[]> resultsLoad = query.getResultList();
         //       获取除外工时合计
         String speId = "B0001";
         String LDSql = "";
@@ -2171,6 +2182,19 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
                     }
                 }
+                   for (Object[] obj : resultsLoad) {
+                    if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
+                        Object objDow =downTime;
+                        if (obj[2]!=null) {
+                             downTime =downTime-( (int) (Integer.parseInt(obj[2].toString()))); 
+                             objDow =downTime;
+                        }
+                        if (obj[3]!=null) {
+                             objDow =downTime-( Double.parseDouble(obj[3].toString())); 
+                        }
+                        entity[2 + (i - 1) * 9] =objDow; 
+                    }
+                }
                 for (Object[] obj : rList) {
                     if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
                         entity[1 + (i - 1) * 9] = obj[4];
@@ -2182,7 +2206,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
                         if (obj[2] != null && obj[3] != null) {
                             entity[3 + (i - 1) * 9] = Integer.parseInt(obj[2].toString()) - Integer.parseInt(obj[3].toString());
-                            entity[2 + (i - 1) * 9] = downTime - Integer.parseInt(obj[3].toString());
+//                            entity[2 + (i - 1) * 9] = downTime - Integer.parseInt(obj[3].toString());
                         }
 
                     }
@@ -2258,7 +2282,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '上下料干涉等待' THEN A.ALARMTIME_LEN  ELSE 0 END)    上下料干涉等待, MAX(CASE A.ALARMNAME WHEN '带教新人讲解' THEN A.ALARMTIME_LEN  ELSE 0 END)  带教新人不足, ");
         sbMESLEN.append(" MAX(CASE A.ALARMNAME WHEN '其他' THEN A.ALARMTIME_LEN ELSE 0 END)      其他, MAX(CASE A.ALARMNAME WHEN NULL THEN A.ALARMTIME_LEN ELSE 0 END)      未填,");
         sbMESLEN.append(" SUM(A.ALARMTIME_LEN) SUMLEN FROM (SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN)) /60 ALARMTIME_LEN, EQPID FROM (SELECT EQPID,B.ALARMNAME,convert(VARCHAR(10), ALARMSTARTTIME,111) AS DATE,");
-        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE A.ALARMSTARTTIME>='" + year + " 08:00:00' and A.ALARMSTARTTIME<='" + nextDate + " 08:00:00'").append("and A .EQPID !='') A GROUP BY A.EQPID, A.ALARMNAME) A GROUP BY EQPID");
+        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE A.ALARMSTARTTIME>='" + year + " 08:00:00' and A.ALARMSTARTTIME<='" + nextDate + " 08:00:00'").append("and A .EQPID !='') A GROUP BY A.EQPID, A.ALARMNAME) A GROUP BY EQPID");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESLEN.toString());
         List<Object[]> resultsLEN = query.getResultList();
 

@@ -16,13 +16,22 @@ import cn.hanbell.eam.entity.AssetManufacturer;
 import cn.hanbell.eam.entity.AssetParameterDta;
 import cn.hanbell.eam.lazy.AssetCardModel;
 import cn.hanbell.eam.web.FormMulti3Bean;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -65,6 +74,7 @@ public class AssetParametersManagedBean extends FormMulti3Bean<AssetCard, AssetM
 
     @Override
     public void init() {
+
         superEJB = assetCardBean;
         detailEJB = assetManufacturerBean;
         detailEJB2 = assetParameterDtaBean;
@@ -231,7 +241,7 @@ public class AssetParametersManagedBean extends FormMulti3Bean<AssetCard, AssetM
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            request.setCharacterEncoding("UTF-8");
+//            request.setCharacterEncoding("UTF-8");
 
             SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHHmmss");
             imageName = f.format(getDate());
@@ -262,39 +272,40 @@ public class AssetParametersManagedBean extends FormMulti3Bean<AssetCard, AssetM
 
     @Override
     public void query() {
-        if (this.model != null) {
-            this.model.getFilterFields().clear();
-            if (this.queryFormId != null && !"".equals(this.queryFormId)) {
-                this.model.getFilterFields().put("formid", this.queryFormId);
-            }
-            if (this.queryName != null && !"".equals(this.queryName)) {
-                this.model.getFilterFields().put("assetDesc", this.queryName);
-            }
-            if (this.queryItemno != null && !"".equals(this.queryItemno)) {
-                this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
-            }
-            if (this.queryItemdesc != null && !"".equals(this.queryItemdesc)) {
-                this.model.getFilterFields().put("assetItem.itemdesc", this.queryItemdesc);
-            }
-            if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
-                this.model.getFilterFields().put("deptno", this.queryDeptno);
-            }
-            if (this.queryDeptname != null && !"".equals(this.queryDeptname)) {
-                this.model.getFilterFields().put("deptname", this.queryDeptname);
-            }
-            if (this.queryUserno != null && !"".equals(this.queryUserno)) {
-                this.model.getFilterFields().put("userno", this.queryUserno);
-            }
-            if (this.queryUsername != null && !"".equals(this.queryUsername)) {
-                this.model.getFilterFields().put("username", this.queryUsername);
-            }
-            if (this.queryWarehouseno != null && !"".equals(this.queryWarehouseno)) {
-                this.model.getFilterFields().put("warehouse.warehouseno", this.queryWarehouseno);
-            }
-            this.model.getFilterFields().put("assetItem.category.id =", 3);
-            model.getSortFields().put("assetItem.itemno", "ASC");
-            model.getSortFields().put("formid", "ASC");
-        }
+                if (this.model != null) {
+                    this.model.getFilterFields().clear();
+                    if (this.queryFormId != null && !"".equals(this.queryFormId)) {
+                        this.model.getFilterFields().put("formid", this.queryFormId);
+                    }
+                    if (this.queryName != null && !"".equals(this.queryName)) {
+                        this.model.getFilterFields().put("assetDesc", this.queryName);
+                    }
+                    if (this.queryItemno != null && !"".equals(this.queryItemno)) {
+                        this.model.getFilterFields().put("assetItem.itemno", this.queryItemno);
+                    }
+                    if (this.queryItemdesc != null && !"".equals(this.queryItemdesc)) {
+                        this.model.getFilterFields().put("assetItem.itemdesc", this.queryItemdesc);
+                    }
+                    if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
+                        this.model.getFilterFields().put("deptno", this.queryDeptno);
+                    }
+                    if (this.queryDeptname != null && !"".equals(this.queryDeptname)) {
+                        this.model.getFilterFields().put("deptname", this.queryDeptname);
+                    }
+                    if (this.queryUserno != null && !"".equals(this.queryUserno)) {
+                        this.model.getFilterFields().put("userno", this.queryUserno);
+                    }
+                    if (this.queryUsername != null && !"".equals(this.queryUsername)) {
+                        this.model.getFilterFields().put("username", this.queryUsername);
+                    }
+                    if (this.queryWarehouseno != null && !"".equals(this.queryWarehouseno)) {
+                        this.model.getFilterFields().put("warehouse.warehouseno", this.queryWarehouseno);
+                    }
+                    this.model.getFilterFields().put("assetItem.category.id =", 3);
+                    model.getSortFields().put("assetItem.itemno", "ASC");
+                    model.getSortFields().put("formid", "ASC");
+                }
+         
     }
 
     /**

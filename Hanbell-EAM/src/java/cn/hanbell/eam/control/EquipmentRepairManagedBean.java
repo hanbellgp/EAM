@@ -5,6 +5,7 @@
  */
 package cn.hanbell.eam.control;
 
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
@@ -82,6 +83,8 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private EquipmentTroubleBean equipmentTroubleBean;
     @EJB
     private SysCodeBean sysCodeBean;
+       @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
     @EJB
@@ -122,7 +125,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
@@ -142,7 +145,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         super.create();
         newEntity.setCompany(userManagedBean.getCompany());
         newEntity.setFormdate(getDate());
-        newEntity.setHitchtime(getDate()); 
+        newEntity.setHitchtime(getDate());
         newEntity.setRepairuser(userManagedBean.getUserid());
         newEntity.setRepairusername(this.getUserName(userManagedBean.getUserid()).getUsername());
         newEntity.setRepairdeptno(this.getDepartment(userManagedBean.getUserid()).getDeptno());
@@ -433,7 +436,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         //获取维修课长
-        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairleaders").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairleaders").getCvalue();
         maintenanceSupervisor = systemUserBean.findByUserId(deptno).getUsername();
         //获取联络时间
         if (currentEntity.getServicearrivetime() != null) {
@@ -448,7 +451,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
+       eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
         calculateTotalCost();
         return super.edit(path);
     }
@@ -520,7 +523,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         if (day > 0) {
             hour += 24 * day;
         }
-        return hour *60 + min + "分";
+        return hour * 60 + min + "分";
     }
 
     private String getMin(String str) {
@@ -542,7 +545,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            request.setCharacterEncoding("UTF-8");
+//            request.setCharacterEncoding("UTF-8");
             Date date = new Date();
             SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
             imageName = String.valueOf(date.getTime());
@@ -551,8 +554,10 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             if (!dir.exists()) {
                 dir.mkdirs();
             }
+            String glassFishHome = System.getProperty("com.sun.aas.installRoot");
             imageName = imageName + this.getFileName();
-            final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
+           final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
+//            final OutputStream out = new FileOutputStream(new File(glassFishHome + "//domains//domain1//docroot//" + imageName));
             int read = 0;
             final byte[] bytes = new byte[1024];
             while (true) {
@@ -579,7 +584,8 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-            equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
+         equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
+//            equipmentrepairfile.setFilepath("../" + imageName);
             equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("报修图片");
             equipmentrepairfile.setStatus("N");
@@ -775,7 +781,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             Cell cell14 = row.createCell(14);
             cell14.setCellStyle(style.get("cell"));
             String hitchtype = "";
-            hitchtype=sysCodeBean.getTroubleName(userManagedBean.getCompany(),"RD","hitchurgency",equipmentrepair.getHitchurgency()).getCdesc();
+            hitchtype = sysCodeBean.getTroubleName(userManagedBean.getCompany(), "RD", "hitchurgency", equipmentrepair.getHitchurgency()).getCdesc();
             cell14.setCellValue(hitchtype);
             Cell cell15 = row.createCell(15);
             cell15.setCellStyle(style.get("cell"));

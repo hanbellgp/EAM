@@ -408,7 +408,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 31));
             Cell cellTitle = row.getCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue("2023年车间设备OEE年报--------"+deptName.get(0));
+            cellTitle.setCellValue(stayear+"年车间设备OEE年报--------"+deptName.get(0));
             List<?> itemList = oeeList;
             int j = 3;
             List<Object[]> list = (List<Object[]>) itemList;

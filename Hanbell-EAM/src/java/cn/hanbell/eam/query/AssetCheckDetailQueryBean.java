@@ -78,6 +78,10 @@ public class AssetCheckDetailQueryBean extends SuperQueryBean<AssetCheckDetailFo
             if (queryState != null && !"ALL".equals(queryState)) {
                 model.getFilterFields().put("status", queryState);
             }
+             if (queryName != null && !"ALL".equals(queryName)) {
+                    model.getFilterFields().put("assetCheck.creator", queryName);
+             }
+        
             model.getSortFields().clear();
             model.getSortFields().put("assetCheck.formid", "ASC");
             model.getSortFields().put("seq", "ASC");

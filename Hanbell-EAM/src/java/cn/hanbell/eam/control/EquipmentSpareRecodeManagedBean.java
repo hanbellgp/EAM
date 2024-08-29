@@ -5,6 +5,7 @@
  */
 package cn.hanbell.eam.control;
 
+import cn.hanbell.eam.ejb.EquipmentSpareBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentSpareStockBean;
@@ -14,6 +15,7 @@ import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentSpareStock;
 import cn.hanbell.eam.lazy.EquipmentSpareRecodeModel;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.SystemUserBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -30,11 +32,15 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
 
     @EJB
     private EquipmentSpareRecodeBean equipmentSpareRecodeBean;
-
+ @EJB
+    private EquipmentSpareBean equipmentSpareBean;
     @EJB
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
     @EJB
     private EquipmentSpareStockBean equipmentSpareStockBean;
+    
+    @EJB
+    private  SystemUserBean  systemUserBean;
     private String queryUserno;
 
     public EquipmentSpareRecodeManagedBean() {
@@ -61,7 +67,7 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
         });
         return super.doBeforePersist(); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public void update() {
         currentEntity.setOptdate(getDate());
@@ -112,6 +118,35 @@ public class EquipmentSpareRecodeManagedBean extends FormMultiBean<EquipmentSpar
         super.init();
     }
 
+    @Override
+    public String view(String path) {
+        for (EquipmentSpareRecodeDta edDta : detailList) {
+            EquipmentSpare eSpare =new EquipmentSpare();
+            eSpare=equipmentSpareBean.findBySparenum(edDta.getSparenum().getSparenum(), userManagedBean.getCompany()).get(0);
+            edDta.setSparenum(eSpare);
+        }
+        return super.view(path); 
+    }
+      @Override
+    public String edit(String path) {
+        for (EquipmentSpareRecodeDta edDta : detailList) {
+            EquipmentSpare eSpare =new EquipmentSpare();
+            eSpare=equipmentSpareBean.findBySparenum(edDta.getSparenum().getSparenum(), userManagedBean.getCompany()).get(0);
+            edDta.setSparenum(eSpare);
+        }
+        return super.edit(path); 
+    }
+    
+    private  String getUserName(String userId){
+        if (systemUserBean.findByUserId(userId).getUsername()!=null) {
+                return  systemUserBean.findByUserId(userId).getUsername();
+        }
+        return  "";
+    }
+            
+    
+    
+    
     @Override
     public void createDetail() {
         super.createDetail(); //To change body of generated methods, choose Tools | Templates.

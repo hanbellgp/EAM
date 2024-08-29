@@ -32,4 +32,13 @@ public class EquipmentWorkTimeBean extends SuperEJBForEAM<EquipmentWorkTime> {
         return resultsMES;
     }
 
+        public List getDistinctWorking(String company) {
+        StringBuilder sbMES = new StringBuilder();
+        sbMES.append("SELECT DISTINCT   dept,deptname,workingsystem,worktime FROM equipmentworktime  where company='C'");
+      
+        Query query =getEntityManager().createNativeQuery(sbMES.toString());
+        List<Object[]> resultsMES = query.getResultList();
+        return resultsMES;
+    }
+     
 }

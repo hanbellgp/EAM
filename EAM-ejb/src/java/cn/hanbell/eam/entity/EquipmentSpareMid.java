@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "EquipmentSpareMid.findAll", query = "SELECT e FROM EquipmentSpareMid e"),
     @NamedQuery(name = "EquipmentSpareMid.findById", query = "SELECT e FROM EquipmentSpareMid e WHERE e.id = :id"),
     @NamedQuery(name = "EquipmentSpareMid.findByCompany", query = "SELECT e FROM SysCode e WHERE e.company = :company"),
-    @NamedQuery(name = "EquipmentSpareMid.findByScategory", query = "SELECT e FROM EquipmentSpareMid e WHERE e.scategory.scategory = :scategory AND e.company=:company"),
+    @NamedQuery(name = "EquipmentSpareMid.findByScategory", query = "SELECT e FROM EquipmentSpareMid e WHERE e.scategory = :scategory and e.company = :company"),
     @NamedQuery(name = "EquipmentSpareMid.findByMcategory", query = "SELECT e FROM EquipmentSpareMid e WHERE e.mcategory = :mcategory"),
     @NamedQuery(name = "EquipmentSpareMid.findByMname", query = "SELECT e FROM EquipmentSpareMid e WHERE e.mname = :mname"),
     @NamedQuery(name = "EquipmentSpareMid.findByRemark", query = "SELECT e FROM EquipmentSpareMid e WHERE e.remark = :remark"),
@@ -64,9 +64,12 @@ public class EquipmentSpareMid extends SuperEntity {
     @Size(min = 1, max = 2)
     @Column(name = "company")
     private String company;
-    @JoinColumn(name = "scategory", referencedColumnName = "scategory")
-    @ManyToOne
-    private EquipmentSpareClass scategory;
+    @Size(max = 4)
+    @Column(name = "scategory")
+    private String scategory;
+      @Size(max = 45)
+    @Column(name = "sname")
+    private String sname;
     @Size(max = 4)
     @Column(name = "mcategory")
     private String mcategory;
@@ -84,19 +87,29 @@ public class EquipmentSpareMid extends SuperEntity {
         this.id = id;
     }
 
-    public EquipmentSpareMid(Integer id, EquipmentSpareClass scategory, String status) {
+    public EquipmentSpareMid(Integer id,  String status) {
         this.id = id;
-        this.scategory = scategory;
+  
         this.status = status;
     }
 
-    public EquipmentSpareClass getScategory() {
+    public String getScategory() {
         return scategory;
     }
 
-    public void setScategory(EquipmentSpareClass scategory) {
+    public void setScategory(String scategory) {
         this.scategory = scategory;
     }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+  
 
     public String getMcategory() {
         return mcategory;
