@@ -28,13 +28,13 @@ public class EquipmentSpareRecodeDtaBean extends SuperEJBForEAM<EquipmentSpareRe
         super(EquipmentSpareRecodeDta.class);
     }
 
-    public List<EquipmentSpareRecodeDta> getEquipmentSpareRecodeDtaList(String formid) {
+    public List<EquipmentSpareRecodeDta> getEquipmentSpareRecodeDtaList(String formid,String company) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT CK.sparenum,CK.sparedesc,CK.sparemodel, CASE WHEN TK.cqty IS NULL  THEN CK.cqty ELSE CK.cqty-TK.cqty END , CK.uprice,convert( CASE WHEN TK.cqty IS NULL  THEN CK.uprice*CK.cqty ELSE (CK.uprice*CK.cqty) - (TK.uprice*TK.cqty) END,DECIMAL(10,2)),CK.slocation FROM (");
         sb.append(" SELECT A.pid,A.sparenum,C.sparedesc,C.sparemodel,sum(A.cqty) cqty,sum(A.uprice) uprice,A.slocation FROM equipmentsparerecodedta A LEFT JOIN equipmentspare C ON A.sparenum=C.sparenum");
         sb.append(" LEFT JOIN equipmentsparerecode B ON A .pid=B.formid  WHERE  (B.relano='").append(formid).append("' OR B.remark='").append(formid).append("') AND B.status='V'");
-        sb.append(" AND A.pid LIKE 'CK%' GROUP BY sparenum,A.slocation) CK LEFT JOIN ( SELECT A.pid,A.sparenum,sum(A.cqty) cqty,SUM(A.uprice) uprice,A.slocation FROM equipmentsparerecodedta A LEFT JOIN equipmentsparerecode B ");
-        sb.append(" ON A .pid=B.formid  WHERE  (B.relano='").append(formid).append("' OR B.remark='").append(formid).append("') AND B.status='V' AND A.pid LIKE 'TK%' GROUP BY sparenum,A.slocation) TK ON  CK.sparenum=TK.sparenum AND CK.slocation=TK.slocation WHERE  CASE WHEN TK.cqty IS NULL  THEN CK.cqty ELSE CK.cqty-TK.cqty END >0");
+        sb.append(" AND A.pid LIKE 'CK%' AND C.company='"+company+"' GROUP BY sparenum,A.slocation) CK LEFT JOIN ( SELECT A.pid,A.sparenum,sum(A.cqty) cqty,SUM(A.uprice) uprice,A.slocation FROM equipmentsparerecodedta A LEFT JOIN equipmentsparerecode B ");
+        sb.append(" ON A .pid=B.formid  WHERE  (B.relano='").append(formid).append("' OR B.remark='").append(formid).append("') AND B.status='V' AND A.pid LIKE 'TK%' and B.company='"+company+"' GROUP BY sparenum,A.slocation) TK ON  CK.sparenum=TK.sparenum AND CK.slocation=TK.slocation WHERE  CASE WHEN TK.cqty IS NULL  THEN CK.cqty ELSE CK.cqty-TK.cqty END >0");
         //生成SQL
         Query query = getEntityManager().createNativeQuery(sb.toString());
         List results = query.getResultList();

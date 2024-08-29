@@ -5,6 +5,7 @@ package cn.hanbell.eam.control;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
@@ -60,7 +61,8 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
     private List<SysCode> abrasehitchList;
     private List<Company> companyList;
     private String[] company;
-
+  @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     public RepairCostStatisticsManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
     }
@@ -69,7 +71,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
     @Override
     public void init() {
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         companyList = companyBean.findBySystemName("EAM");

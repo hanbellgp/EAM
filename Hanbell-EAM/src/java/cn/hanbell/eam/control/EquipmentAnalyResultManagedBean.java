@@ -122,7 +122,7 @@ public class EquipmentAnalyResultManagedBean extends FormMultiBean<EquipmentAnal
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            request.setCharacterEncoding("UTF-8");
+//            request.setCharacterEncoding("UTF-8");
             Date date = new Date();
             SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
             imageName = String.valueOf(date.getTime());

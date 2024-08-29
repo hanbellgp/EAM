@@ -5,6 +5,7 @@
  */
 package cn.hanbell.eam.control;
 
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairFileBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
@@ -71,6 +72,8 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     @EJB
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
+         @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     private String queryEquipmentName;
     private String imageName;
     private String maintenanceSupervisor;
@@ -97,7 +100,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
@@ -228,7 +231,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
         hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
         calculateTotalCost();
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
@@ -309,7 +312,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
         getPartsCost();
         calculateTotalCost();
         return super.edit(path);
@@ -346,7 +349,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
                 this.setCurrentEntity((EquipmentRepair) this.model.getDataList().get(idx));
                 detailList2 = equipmentRepairSpareBean.findByPId(currentEntity.getFormid());
                 detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
-                eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid());
+                eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
                 getPartsCost();
                 calculateTotalCost();
             }
@@ -487,7 +490,7 @@ public class EquipmentAcceptanceManagedBean extends FormMulti3Bean<EquipmentRepa
     protected void upload() throws IOException {
         try {
             final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            request.setCharacterEncoding("UTF-8");
+//            request.setCharacterEncoding("UTF-8");
             Date date = new Date();
             SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
             imageName = String.valueOf(date.getTime());

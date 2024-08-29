@@ -6,6 +6,8 @@
 package cn.hanbell.eam.lazy;
 
 import cn.hanbell.eam.control.UserManagedBean;
+import cn.hanbell.eam.ejb.EquipmentSpareBean;
+import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentSpareStock;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -23,6 +26,8 @@ import org.primefaces.model.SortOrder;
 public class EquipmentSpareStockModel extends BaseLazyModel<EquipmentSpareStock> {
 
     private final UserManagedBean userManagedBean;
+    @EJB
+    private EquipmentSpareBean equipmentSpareBean;
 
     public EquipmentSpareStockModel(SuperEJB superEJB, UserManagedBean userManagedBean) {
         this.superEJB = superEJB;
@@ -32,11 +37,13 @@ public class EquipmentSpareStockModel extends BaseLazyModel<EquipmentSpareStock>
     @Override
     public List<EquipmentSpareStock> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         filterFields.put("company =", userManagedBean.getCompany());
+        filterFields.put("sparenum.company =", userManagedBean.getCompany());
         setDataList(superEJB.findByFilters(filterFields, first, pageSize, sortFields));
         setRowCount(superEJB.getRowCount(filterFields));
         List<EquipmentSpareStock> list = new ArrayList<>();
         Map<String, List<EquipmentSpareStock>> map = new HashMap<>();
         for (EquipmentSpareStock eStock : dataList) {
+         
             if (map.containsKey(eStock.getSparenum().getSparenum())) {//map中存在此备件编号，将数据存放当前key的map中
                 map.get(eStock.getSparenum().getSparenum()).add(eStock);
             } else {//map中不存在，新建key，用来存放数据

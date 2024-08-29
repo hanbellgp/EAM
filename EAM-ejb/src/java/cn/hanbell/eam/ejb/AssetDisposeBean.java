@@ -25,7 +25,6 @@ import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.Query;
 
-
 /**
  *
  * @author C0160

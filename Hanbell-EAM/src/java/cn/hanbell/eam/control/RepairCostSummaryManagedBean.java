@@ -5,6 +5,7 @@ package cn.hanbell.eam.control;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
@@ -57,7 +58,8 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
     private List<EquipmentRepair> equipmentRepairList;
     private List<Company> companyList;
     private String[] company;
-
+       @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     public RepairCostSummaryManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
     }
@@ -66,7 +68,7 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
     @Override
     public void init() {
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
         companyList = companyBean.findBySystemName("EAM");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         queryDateBegin = equipmentRepairBean.getMonthDay(1);//获取当前月第一天

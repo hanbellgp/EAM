@@ -6,15 +6,18 @@
 package cn.hanbell.eam.control;
 
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
+import cn.hanbell.eam.ejb.EquipmentSpareBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentSpareStockBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
+import cn.hanbell.eam.entity.EquipmentSpare;
 import cn.hanbell.eam.entity.EquipmentSpareRecode;
 import cn.hanbell.eam.entity.EquipmentSpareRecodeDta;
 import cn.hanbell.eam.entity.EquipmentSpareStock;
 import cn.hanbell.eam.lazy.EquipmentSpareRecodeModel;
 import cn.hanbell.eam.web.FormMultiBean;
+import cn.hanbell.eap.ejb.SystemUserBean;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +43,12 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
     private EquipmentSpareStockBean equipmentSpareStockBean;
     @EJB
     protected EquipmentRepairBean equipmentRepairBean;
+    
+      @EJB
+    protected SystemUserBean systemUserBean;
+    @EJB
+    private EquipmentSpareBean equipmentSpareBean;
+
     protected List<String> paramPosition = null;
     private BigDecimal stockQty;//选择的库存数量
     private String queryUserno;
@@ -94,11 +103,29 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
         return false;
     }
 
+        @Override
+    public String view(String path) {
+        for (EquipmentSpareRecodeDta edDta : detailList) {
+            EquipmentSpare eSpare =new EquipmentSpare();
+            eSpare=equipmentSpareBean.findBySparenum(edDta.getSparenum().getSparenum(), userManagedBean.getCompany()).get(0);
+            edDta.setSparenum(eSpare);
+        }
+        return super.view(path); 
+    }
+    
+    
     @Override
     public void update() {
         currentEntity.setOptdate(getDate());
         currentEntity.setOptuser(userManagedBean.getUserid());
         super.update(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public  String getUserName(String userId){
+        if (systemUserBean.findByUserId(userId)!=null) {
+            return systemUserBean.findByUserId(userId).getUsername();
+        }
+        return "";
     }
 
     @Override
@@ -182,7 +209,7 @@ public class EquipmentSpareDeliveryManagedBean extends FormMultiBean<EquipmentSp
         } else {
             paramPosition.add(currentEntity.getSarea());
         }
-
+//        paramPosition.add(userManagedBean.getCompany());
         openParams.put("sarea", paramPosition);
         super.openDialog(view, openParams);
     }

@@ -219,7 +219,7 @@ public class UserManagedBean implements Serializable {
                     status = false;
                     return "";
                 }
-            } else if (cn.hanbell.util.BaseLib.ADAuth("172.16.10.6:389", userid + "@hanbell.com.cn", pwd)) {
+            } else if (cn.hanbell.util.BaseLib.ADAuth("172.16.10.190:389", userid + "@hanbell.com.cn", pwd)) {
                 u = systemUserBean.findByUserId(getUserid());
             }
             if (u != null) {
