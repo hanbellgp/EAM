@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetDistribute.findByCompany", query = "SELECT a FROM AssetDistribute a WHERE a.company = :company"),
     @NamedQuery(name = "AssetDistribute.findByFormid", query = "SELECT a FROM AssetDistribute a WHERE a.formid = :formid"),
     @NamedQuery(name = "AssetDistribute.findByStatus", query = "SELECT a FROM AssetDistribute a WHERE a.status = :status"),
+        @NamedQuery(name = "AssetDistribute.findByOaformid", query = "SELECT a FROM AssetDistribute a WHERE a.oaformid = :oafromid"),
     @NamedQuery(name = "AssetDistribute.findNeedThrow", query = "SELECT a FROM AssetDistribute a WHERE a.status = 'V' and ((a.relformid is null) or (a.relformid = '')) ")})
 public class AssetDistribute extends FormEntity {
 
@@ -53,8 +54,18 @@ public class AssetDistribute extends FormEntity {
     @Size(max = 20)
     @Column(name = "relformid")
     private String relformid;
-
+    @Size(max = 20)
+    @Column(name = "oaformid")
+    private String oaformid;
     public AssetDistribute() {
+    }
+
+    public String getOaformid() {
+        return oaformid;
+    }
+
+    public void setOaformid(String oaformid) {
+        this.oaformid = oaformid;
     }
 
     public String getCompany() {

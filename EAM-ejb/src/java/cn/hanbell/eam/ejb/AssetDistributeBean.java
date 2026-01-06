@@ -79,6 +79,17 @@ public class AssetDistributeBean extends SuperEJBForEAM<AssetDistribute> {
         detailList = assetDistributeDetailBean.findByPId(value);
     }
 
+    public AssetDistribute findByOaformid(String oafromid) {
+        Query query = getEntityManager().createNamedQuery("AssetDistribute.findByOaformid");
+        query.setParameter("oafromid", oafromid);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetDistribute) o;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     @Override
     public AssetDistribute unverify(AssetDistribute entity) {
         if (inventoryList == null) {
