@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -63,6 +64,17 @@ public class AssetAdjustBean extends SuperEJBForEAM<AssetAdjust> {
     @Override
     public void setDetail(Object value) {
         detailList = assetAdjustDetailBean.findByPId(value);
+    }
+
+    public AssetAdjust findByOaformid(String oafromid) {
+        Query query = getEntityManager().createNamedQuery("AssetAdjust.findByOaformid");
+        query.setParameter("oafromid", oafromid);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetAdjust) o;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override

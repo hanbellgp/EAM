@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -53,6 +54,17 @@ public class AssetTransferBean extends SuperEJBForEAM<AssetTransfer> {
 
     public AssetTransferBean() {
         super(AssetTransfer.class);
+    }
+
+    public AssetTransfer findByOaformid(String oafromid) {
+        Query query = getEntityManager().createNamedQuery("AssetTransfer.findByOaformid");
+        query.setParameter("oafromid", oafromid);
+        try {
+            Object o = query.getSingleResult();
+            return (AssetTransfer) o;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override

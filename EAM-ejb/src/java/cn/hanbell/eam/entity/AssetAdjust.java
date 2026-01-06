@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AssetAdjust.findByFormid", query = "SELECT a FROM AssetAdjust a WHERE a.formid = :formid"),
     @NamedQuery(name = "AssetAdjust.findByFormdate", query = "SELECT a FROM AssetAdjust a WHERE a.formdate = :formdate"),
     @NamedQuery(name = "AssetAdjust.findByDeptno", query = "SELECT a FROM AssetAdjust a WHERE a.deptno = :deptno"),
+    @NamedQuery(name = "AssetAdjust.findByOaformid", query = "SELECT a FROM AssetAdjust a WHERE a.oaformid = :oafromid"),
     @NamedQuery(name = "AssetAdjust.findByDeptname", query = "SELECT a FROM AssetAdjust a WHERE a.deptname = :deptname")})
 public class AssetAdjust extends FormEntity {
 
@@ -72,8 +73,19 @@ public class AssetAdjust extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+    @Size(max = 20)
+    @Column(name = "oaformid")
+    private String oaformid;
 
     public AssetAdjust() {
+    }
+
+    public String getOaformid() {
+        return oaformid;
+    }
+
+    public void setOaformid(String oaformid) {
+        this.oaformid = oaformid;
     }
 
     public String getCompany() {
