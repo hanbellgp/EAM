@@ -55,41 +55,41 @@ public class EquipmentWorkTimeManagedBean extends SuperSingleBean<EquipmentWorkT
     public void query() {
         try {
        
-//            List<Object[]> list2 = equipmentWorkTimeBean.getDistinctWorking("C");
-//            List<EquipmentWorkTime> list = new ArrayList<>();
-//            for (Object[] obj : list2) {
-//                     Calendar dayc1 = new GregorianCalendar();
-//            Calendar dayc2 = new GregorianCalendar();
-//            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            Date daystart = df.parse("2024-1-1"); //按照yyyy-MM-dd格式转换为日期
-//            Date dayend = null;
-//            try {
-//                dayend = df.parse("2024-12-31");
-//            } catch (ParseException ex) {
-//                Logger.getLogger(EquipmentWorkTimeManagedBean.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            dayc1.setTime(daystart); //设置calendar的日期
-//            dayc2.setTime(dayend);
-//                for (; dayc1.compareTo(dayc2) <= 0;) {   //dayc1在dayc2之前就循环
-//                    Date dt = dayc1.getTime();
-//                    String str = sdf.format(dt);
-//                    dayc1.add(Calendar.DAY_OF_YEAR, 1);  //加1天
-//                    EquipmentWorkTime es = new EquipmentWorkTime();
-//                    es.setCompany("C");
-//                    es.setCredate(dt);
-//                    es.setCreator("Admin");
-//                    es.setFormdate(dt);
-//                    es.setOvertime(0);
-//                    es.setStatus("V");
-//                    es.setDept(obj[0].toString());
-//                    es.setDeptname(obj[1].toString());
-//                    es.setWorkingsystem(obj[2].toString());
-//                    es.setWorktime(Integer.parseInt(obj[3].toString()) );
-//                    list.add(es);
-//                }
-//            }
-//            equipmentWorkTimeBean.update(list);
+            List<Object[]> list2 = equipmentWorkTimeBean.getDistinctWorking("C");
+            List<EquipmentWorkTime> list = new ArrayList<>();
+            for (Object[] obj : list2) {
+                     Calendar dayc1 = new GregorianCalendar();
+            Calendar dayc2 = new GregorianCalendar();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date daystart = df.parse("2025-1-1"); //按照yyyy-MM-dd格式转换为日期
+            Date dayend = null;
+            try {
+                dayend = df.parse("2025-12-31");
+            } catch (ParseException ex) {
+                Logger.getLogger(EquipmentWorkTimeManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            dayc1.setTime(daystart); //设置calendar的日期
+            dayc2.setTime(dayend);
+                for (; dayc1.compareTo(dayc2) <= 0;) {   //dayc1在dayc2之前就循环
+                    Date dt = dayc1.getTime();
+                    String str = sdf.format(dt);
+                    dayc1.add(Calendar.DAY_OF_YEAR, 1);  //加1天
+                    EquipmentWorkTime es = new EquipmentWorkTime();
+                    es.setCompany("C");
+                    es.setCredate(dt);
+                    es.setCreator("Admin");
+                    es.setFormdate(dt);
+                    es.setOvertime(0);
+                    es.setStatus("V");
+                    es.setDept(obj[0].toString());
+                    es.setDeptname(obj[1].toString());
+                    es.setWorkingsystem(obj[2].toString());
+                    es.setWorktime(Integer.parseInt(obj[3].toString()) );
+                    list.add(es);
+                }
+            }
+            equipmentWorkTimeBean.update(list);
             if (model != null) {
                 this.model.getFilterFields().clear();
                 if (queryDateBegin != null) {

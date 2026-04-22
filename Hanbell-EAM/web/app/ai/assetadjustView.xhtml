@@ -23,8 +23,12 @@
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetAdjustManagedBean.print()}" icon="ui-icon-print"
                                      process="@this" rendered="#{assetAdjustManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" action="#{assetAdjustManagedBean.verify()}" icon="ui-icon-check"
-                                     process="@this" rendered="#{assetAdjustManagedBean.doCfm}" update="toolbar">
+                                     process="@this" rendered="#{false}" update="toolbar">
                         <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                         <p:commandButton id="btnOa" value="抛转OA" action="#{assetAdjustManagedBean.doThrowOa()}"  icon="ui-icon-check"
+                                     process="@this" rendered="#{assetAdjustManagedBean.doCfm}" update="toolbar">
+                        <p:confirm header="系统提示" message="抛转吗?" icon="ui-icon-alert" />
                     </p:commandButton>
                     <p:commandButton id="btnUnverify" value="还原" actionListener="#{assetAdjustManagedBean.unverify()}" icon="ui-icon-lock-open"
                                      process="@this" rendered="#{assetAdjustManagedBean.doUnCfm}"  update="toolbar">
@@ -240,7 +244,7 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:blockUI id="blockUI" block="formOne" trigger="btnPrint,btnVerify,btnUnverify">
+            <p:blockUI id="blockUI" block="formOne" trigger="btnPrint,btnUnverify,btnVerify">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>

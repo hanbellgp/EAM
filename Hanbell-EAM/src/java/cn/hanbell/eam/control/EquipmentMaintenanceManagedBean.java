@@ -14,6 +14,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
+import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
@@ -49,6 +50,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -92,7 +94,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
 
     @EJB
     private EquipmentSpareRecodeDtaBean equipmentSpareRecodeDtaBean;
-        @EJB
+    @EJB
     private AssetCardSpecialBean assetCardSpecialBean;
     private String queryEquipmentName;
     private String imageName;
@@ -152,12 +154,14 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         super.destory();
     }
 
+   
+    
     //初始化数据筛选
     @Override
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean, assetCardSpecialBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
@@ -251,6 +255,8 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         super.update();//To change body of generated methods, choose Tools | Templates.
     }
 
+    
+    
     //记录维修时间
     public void recordTime() {
         createDetail3();
@@ -521,7 +527,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             detailList4.add(equipmentRepairHelpers);
         }
         //获取使用的备件及价格
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(), userManagedBean.getCompany());
         currentEntity.setSparecost(BigDecimal.valueOf(getPartsCost()));
         getTotalLaborcost();
         calculateTotalCost();
@@ -567,7 +573,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
         hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(), userManagedBean.getCompany());
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -802,6 +808,13 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             cell.setCellValue(title1[i]);
         }
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
+        for (EquipmentRepair eRepair : equipmentrepairList) {
+            if (eRepair.getItemno().equals("AS000")) {//非固定资产时重新给改资产赋值
+                String assetno = equipmentRepairBean.getAssetno(eRepair.getFormid());
+                AssetCard assetCardTemp = assetCardSpecialBean.transitionAssetCardSpecial(assetCardSpecialBean.findByAssetno(assetno));
+                eRepair.setAssetno(assetCardTemp);
+            }
+        }
         int j = 1;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (EquipmentRepair equipmentrepair : equipmentrepairList) {
@@ -1059,7 +1072,7 @@ public class EquipmentMaintenanceManagedBean extends FormMulti3Bean<EquipmentRep
             currentEntity.setHitchdutydeptname(this.getDepartment(u.getUserid()).getDept());
         }
     }
- 
+
     public void handleDialogUserWhenDetailEdit(SelectEvent event) {
         if (event.getObject() != null && currentEntity != null) {
             SystemUser u = (SystemUser) event.getObject();

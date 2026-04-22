@@ -220,7 +220,7 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
             ad.setRemark(entity.getRequireDeptname() + "_" + entity.getRequireUsername());
         }
         ad.setStatusToNew();
-        ad.setCreator(user.getUsername());
+        ad.setCreator(user.getUserid());
         ad.setCredateToNow();
 
         AssetDistributeDetail add = new AssetDistributeDetail();
@@ -286,7 +286,7 @@ public class AssetApplyThrowBean extends SuperEJBForEAM<AssetApplyThrow> {
         ad.setDeptname(e.getAssetApply().getRequireDeptname());
         ad.setRemark(e.getRemark());
         ad.setStatusToNew();
-        ad.setCreator(user.getUsername());
+        ad.setCreator(user.getUserid());
         ad.setCredateToNow();
 
         int seq = 0;

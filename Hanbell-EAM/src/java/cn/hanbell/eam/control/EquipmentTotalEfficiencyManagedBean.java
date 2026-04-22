@@ -7,8 +7,10 @@ package cn.hanbell.eam.control;
  */
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
+import cn.hanbell.eam.ejb.SysCodeBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHis;
+import cn.hanbell.eam.entity.SysCode;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import cn.hanbell.eam.web.FormMultiBean;
@@ -56,6 +58,9 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
     protected EquipmentRepairBean equipmentRepairBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
+
+    @EJB
+    protected SysCodeBean sysCodeBean;
     List<Number> yearsList;
     List<Number> monthList;
     private String stayear;
@@ -87,8 +92,15 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
         }
         List<String> list = equipmentRepairBean.getEPQID();
         EPQIDList = new ArrayList<>();
+        String cancellation = "";
+        List< SysCode> sCodeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "HaveBeenVoided");
+        if (sCodeList.size() > 0) {
+            cancellation = sCodeList.get(0).getCvalue();
+        }
         for (int i = 0; i < list.size(); i++) {
-            EPQIDList.add(list.get(i));
+            if (!cancellation.contains(list.get(i))) {
+                EPQIDList.add(list.get(i));
+            }
         }
         type = "G";
 //        month = "1";
@@ -108,9 +120,9 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             String title = "工程设备总合效率管理表(汉钟设备管理版)";
             List<String> deptName = equipmentRepairBean.getEPQIDDeptname(EPQID);//获取设备部门信息
             if (deptName.get(0).equals("半成品方型件")) {
-                str = "rpt/设备总合效率管理表方型模板.xls";
+                str = "rpt/设备总合效率管理表方型模板.xlsx";
             } else {
-                str = "rpt/设备总合效率管理表圆型模板.xls";
+                str = "rpt/设备总合效率管理表圆型模板.xlsx";
 
             }
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
@@ -135,15 +147,17 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             for (Object[] eq : list) {
                 row = sheet.getRow(j);
                 j++;
+                int item = 0;
                 for (int i = 0; i <= 31; i++) {
-                    Cell cell0 = row.getCell(i);
-                    cell0 = row.getCell(i);
+                    if (i == 26) {
+                        item++;
+                    }
+                    Cell cell0 = row.getCell(i + item);//后面增加一列合计，合计栏位跳过
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
                 }
-                Cell cell0 = row.getCell(46);
-                cell0 = row.getCell(46);
+                Cell cell0 = row.getCell(47);
                 if (eq[40] != null) {
                     cell0.setCellValue(eq[40].toString());
                 }
@@ -316,7 +330,12 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
                 showErrorMsg("Error", "请在开始时间选择导出的日期！！！");
                 return;
             }
-            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID, type);
+            String cancellation = "";
+            List< SysCode> sCodeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "HaveBeenVoided");
+            if (sCodeList.size() > 0) {
+                cancellation = sCodeList.get(0).getCvalue();
+            }
+            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE(zdf.format(queryDateBegin), EPQID, type, cancellation);
 
             // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
             if (oeeList == null || oeeList.isEmpty()) {
@@ -392,13 +411,19 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             Workbook workbook = WorkbookFactory.create(is);
             //获得表格样式
             Map<String, CellStyle> style = createStyles(workbook);
+            Sheet sheet2 = workbook.getSheetAt(1);
             Sheet sheet;
             sheet = workbook.getSheetAt(0);
             Row row;
             row = sheet.getRow(0);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat zdf = new SimpleDateFormat("yyyy/MM/dd");
-            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyYearOEE(stayear, EPQID, type);
+            String cancellation = "";
+            List< SysCode> sCodeList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "HaveBeenVoided");
+            if (sCodeList.size() > 0) {
+                cancellation = sCodeList.get(0).getCvalue();
+            }
+            List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyYearOEE(stayear, EPQID, type, cancellation);
 
             // List<Object[]> oeeList = equipmentRepairBean.getEquipmentTotalEfficiencyDayOEE("2022/01", EPQID);
             if (oeeList == null || oeeList.isEmpty()) {
@@ -408,7 +433,7 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
             sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 31));
             Cell cellTitle = row.getCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(stayear+"年车间设备OEE年报--------"+deptName.get(0));
+            cellTitle.setCellValue(stayear + "年车间设备OEE年报--------" + deptName.get(0));
             List<?> itemList = oeeList;
             int j = 3;
             List<Object[]> list = (List<Object[]>) itemList;
@@ -444,11 +469,238 @@ public class EquipmentTotalEfficiencyManagedBean extends FormMultiBean<Equipment
 
             }
             sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            sheet2.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
             OutputStream os = null;
             if (EPQID.contains("/")) {
                 EPQID = EPQID.replace("/", "-");//部分机型带有/文件名中不可带有/进行转换为-
             }
-            fileName =  "车间设备OEE年报表---" +deptName.get(0) + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xlsx";
+            fileName = "车间设备OEE年报表---" + deptName.get(0) + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xlsx";
+            String fileFullName = reportOutputPath + fileName;
+            try {
+                os = new FileOutputStream(fileFullName);
+                workbook.write(os);
+                this.reportViewPath = reportViewContext + fileName;
+                this.preview();
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            } finally {
+                try {
+                    if (null != os) {
+                        os.flush();
+                        os.close();
+                    }
+                } catch (IOException ex) {
+                    showErrorMsg("Error", ex.getMessage());
+                }
+            }
+        } catch (IOException | InvalidFormatException e) {
+            showErrorMsg("Error", e.toString());
+        }
+    }
+
+    //导出年故障率统计表数据
+    public void printYearFailure() throws ParseException {
+        String finalFilePath = "";
+        try {
+            List<Object[]> list = equipmentRepairBean.getYearFailure(stayear);
+            finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+            int index = finalFilePath.indexOf("WEB-INF");
+            String str = "rpt/年设备故障停线率统计模版.xlsx";
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
+            Workbook workbook = WorkbookFactory.create(is);
+            //获得表格样式
+            Map<String, CellStyle> style = createStyles(workbook);
+            Sheet sheet;
+            sheet = workbook.getSheetAt(0);
+            Row row;
+            row = sheet.getRow(0);
+            if (list == null || list.isEmpty()) {
+                showErrorMsg("Error", "当前日前无生产数据！请知悉");
+                return;
+            }
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 25));
+            Cell cellTitle = row.getCell(0);
+            cellTitle.setCellStyle(style.get("title"));
+            cellTitle.setCellValue(stayear + "年设备故障停线率统计");
+            List<?> itemList = list;
+            int j = 2;
+            int item = 0;
+            for (Object[] eq : list) {
+                row = sheet.getRow(j);
+                j++;
+                if (j == 4) {
+                    j++;
+                }
+                for (int i = 0; i <= 12; i++) {
+                    Cell cell0 = row.getCell(i + item);
+                    if (i >= 4 && i < 7) {
+                        cell0 = row.getCell(i + 1);
+                    }
+                    if (i >= 7 && i < 10) {
+                        cell0 = row.getCell(i + 3);
+                    }
+                    if (i >= 10) {
+                        cell0 = row.getCell(i + 4);
+                    }
+                    if (eq[i] != null && !eq[i].equals("0")) {
+                        cell0.setCellValue(Double.parseDouble(eq[i].toString()));
+                    }
+
+                }
+
+            }
+            sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            OutputStream os = null;
+            fileName = stayear + "年设备故障停线率统计" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xlsx";
+            String fileFullName = reportOutputPath + fileName;
+            try {
+                os = new FileOutputStream(fileFullName);
+                workbook.write(os);
+                this.reportViewPath = reportViewContext + fileName;
+                this.preview();
+            } catch (Exception ex) {
+                showErrorMsg("Error", ex.getMessage());
+            } finally {
+                try {
+                    if (null != os) {
+                        os.flush();
+                        os.close();
+                    }
+                } catch (IOException ex) {
+                    showErrorMsg("Error", ex.getMessage());
+                }
+            }
+        } catch (IOException | InvalidFormatException e) {
+            showErrorMsg("Error", e.toString());
+        }
+    }
+
+    //导出佐证故障率统计表数据
+    public void printEvidenceYearFailure() throws ParseException {
+        String finalFilePath = "";
+        try {
+            List<List<Object[]>> list = equipmentRepairBean.getEvidenceYearFailure(stayear);
+            List<Object[]> eam = list.get(0);
+            List<Object[]> MESYXList = list.get(1);
+            List<Object[]> MESFXList = list.get(2);
+            List<Object[]> MESDownYXList = list.get(3);
+            List<Object[]> MESDownFXList = list.get(4);
+            finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+            int index = finalFilePath.indexOf("WEB-INF");
+            String str = "rpt/设备故障停线率佐证数据模版.xls";
+            InputStream is = new FileInputStream(finalFilePath.substring(1, index) + str);
+            Workbook workbook = WorkbookFactory.create(is);
+            //获得表格样式
+            Map<String, CellStyle> style = createStyles(workbook);
+            Sheet sheet;
+            sheet = workbook.getSheetAt(0);
+            Row row;
+            row = sheet.getRow(0);
+
+            Sheet sheet1;
+            sheet1 = workbook.getSheetAt(1);
+            Row row1;
+
+            Sheet sheet2;
+            sheet2 = workbook.getSheetAt(2);
+            Row row2;
+
+            Sheet sheet3;
+            sheet3 = workbook.getSheetAt(3);
+            Row row3;
+
+            Sheet sheet4;
+            sheet4 = workbook.getSheetAt(4);
+            Row row4;
+
+            if (list == null || list.isEmpty()) {
+                showErrorMsg("Error", "当前日前无生产数据！请知悉");
+                return;
+            }
+
+            Cell cellTitle = row.getCell(0);
+            cellTitle.setCellStyle(style.get("title"));
+            cellTitle.setCellValue(stayear + "年设备故障停线率佐证数据");
+            int j = 3;
+            for (Object[] eq : eam) {
+                row = sheet.getRow(j);
+                j++;
+                for (int i = 3; i <= 17; i++) {
+                    Cell cell0 = row.getCell(i - 3);
+                    if (eq[i] != null) {
+                        cell0.setCellValue(eq[i].toString());
+                    }
+
+                }
+
+            }
+            j = 1;
+            for (Object[] downYx : MESDownYXList) {
+                row1 = sheet1.getRow(j);
+                j++;
+                for (int i = 0; i < 3; i++) {
+                    Cell cell0 = row1.getCell(i);
+                    if (downYx[i] != null && i != 2) {
+                        cell0.setCellValue(downYx[i].toString());
+                    }
+                    if (downYx[i] != null && i == 2) {
+                        cell0.setCellValue(Integer.parseInt(downYx[i].toString()));
+                    }
+
+                }
+            }
+            j = 2;
+            for (Object[] downYx : MESYXList) {
+                row2 = sheet2.getRow(j);
+                j++;
+                for (int i = 0; i < 13; i++) {
+                    Cell cell0 = row2.getCell(i);
+                    if (downYx[i] != null && i == 0) {
+                        cell0.setCellValue(downYx[i].toString());
+                    }
+                    if (downYx[i] != null && i != 0) {
+                        cell0.setCellValue(Double.parseDouble(downYx[i].toString()));
+                    }
+
+                }
+            }
+
+            j = 1;
+            for (Object[] downYx : MESDownFXList) {
+                row3 = sheet3.getRow(j);
+                j++;
+                for (int i = 0; i < 3; i++) {
+                    Cell cell0 = row3.getCell(i);
+                    if (downYx[i] != null && i != 2) {
+                        cell0.setCellValue(downYx[i].toString());
+                    }
+                    if (downYx[i] != null && i == 2) {
+                        cell0.setCellValue(Integer.parseInt(downYx[i].toString()));
+                    }
+
+                }
+            }
+            j = 2;
+            for (Object[] downYx : MESFXList) {
+                row4 = sheet4.getRow(j);
+                j++;
+                for (int i = 0; i < 13; i++) {
+                    Cell cell0 = row4.getCell(i);
+                    if (downYx[i] != null && i == 0) {
+                        cell0.setCellValue(downYx[i].toString());
+                    }
+                    if (downYx[i] != null && i != 0) {
+                        cell0.setCellValue(Double.parseDouble(downYx[i].toString()));
+                    }
+                }
+            }
+            sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            sheet1.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            sheet2.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            sheet3.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            sheet4.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
+            OutputStream os = null;
+            fileName = stayear + "年设备故障停线率统计" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
             try {
                 os = new FileOutputStream(fileFullName);

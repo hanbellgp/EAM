@@ -53,6 +53,18 @@ public class AssetCardBean extends SuperEJBForEAM<AssetCard> {
         }
     }
 
+    @Override
+    public AssetCard findById(int value) {
+        return super.findById(value); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+
+    @Override
+    public AssetCard getPrevById(int value) {
+        return super.getPrevById(value); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+    
+    
+
     public AssetCard findByFilters(String company, String assetno, String itemno, String deptno, String userno) {
         Query query = getEntityManager().createNamedQuery("AssetCard.findByFilters");
         query.setParameter("company", company);

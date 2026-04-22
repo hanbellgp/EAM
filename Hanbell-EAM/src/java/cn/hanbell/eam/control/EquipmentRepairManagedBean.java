@@ -83,7 +83,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     private EquipmentTroubleBean equipmentTroubleBean;
     @EJB
     private SysCodeBean sysCodeBean;
-       @EJB
+    @EJB
     private AssetCardSpecialBean assetCardSpecialBean;
     @EJB
     protected EquipmentRepairHisBean equipmentRepairHisBean;
@@ -125,7 +125,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean, assetCardSpecialBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
@@ -418,6 +418,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
         update();
     }
 
+    @Override
+    protected boolean doAfterUpdate() throws Exception {
+        EquipmentRepair er=currentEntity;
+        return super.doAfterUpdate(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+
+    
     //责任回复
     public String responsibilitySet(String path) {
         if (currentEntity == null) {
@@ -451,7 +458,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             currentEntity.setDowntime(this.getTimeDifference(currentEntity.getCompletetime(), currentEntity.getHitchtime(), currentEntity.getExcepttime()));
         }
         detailList4 = equipmentRepairHelpersBean.findByPId(currentEntity.getFormid());
-       eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(), userManagedBean.getCompany());
         calculateTotalCost();
         return super.edit(path);
     }
@@ -556,7 +563,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             }
             String glassFishHome = System.getProperty("com.sun.aas.installRoot");
             imageName = imageName + this.getFileName();
-           final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
+            final OutputStream out = new FileOutputStream(new File(dir.getAbsolutePath() + "//" + imageName));
 //            final OutputStream out = new FileOutputStream(new File(glassFishHome + "//domains//domain1//docroot//" + imageName));
             int read = 0;
             final byte[] bytes = new byte[1024];
@@ -584,7 +591,7 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             int seq = detailList.size() + 1;
             EquipmentRepairFile equipmentrepairfile = new EquipmentRepairFile();
             equipmentrepairfile.setCompany(userManagedBean.getCompany());
-         equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
+            equipmentrepairfile.setFilepath("../../resources/app/res/" + imageName);
 //            equipmentrepairfile.setFilepath("../" + imageName);
             equipmentrepairfile.setFilename(fileName);
             equipmentrepairfile.setFilefrom("报修图片");
@@ -695,6 +702,13 @@ public class EquipmentRepairManagedBean extends FormMulti3Bean<EquipmentRepair, 
             cell.setCellValue(title1[i]);
         }
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
+        for (EquipmentRepair eRepair : equipmentrepairList) {
+            if (eRepair.getItemno().equals("AS000")) {//非固定资产时重新给改资产赋值
+                String assetno = equipmentRepairBean.getAssetno(eRepair.getFormid());
+                AssetCard assetCardTemp = assetCardSpecialBean.transitionAssetCardSpecial(assetCardSpecialBean.findByAssetno(assetno));
+                eRepair.setAssetno(assetCardTemp);
+            }
+        }
         int j = 1;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (EquipmentRepair equipmentrepair : equipmentrepairList) {

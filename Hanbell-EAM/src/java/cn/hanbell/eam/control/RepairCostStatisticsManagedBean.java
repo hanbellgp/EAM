@@ -61,8 +61,9 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
     private List<SysCode> abrasehitchList;
     private List<Company> companyList;
     private String[] company;
-  @EJB
+    @EJB
     private AssetCardSpecialBean assetCardSpecialBean;
+
     public RepairCostStatisticsManagedBean() {
         super(EquipmentRepair.class, EquipmentRepairHis.class);
     }
@@ -71,7 +72,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
     @Override
     public void init() {
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean, assetCardSpecialBean);
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
         companyList = companyBean.findBySystemName("EAM");
@@ -84,6 +85,15 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
         queryName = "";
         queryFormId = null;
         equipmentRepairList = equipmentRepairBean.getRepairCostStatisticsList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryFormId, queryName, comSql);
+        List<?> itemList = equipmentRepairList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[2] == null) {
+                obj[2] = assetCardSpecialBean.findByAssetno(obj[1].toString()).getAssetDesc();;
+            }
+        }
+        itemList = list;
+        equipmentRepairList = (List<EquipmentRepair>) itemList;
         super.init();
     }
 
@@ -233,7 +243,7 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
     /**
      * 设置导出EXCEL表格样式
      */
-     private Map<String, CellStyle> createStyles(Workbook wb) {
+    private Map<String, CellStyle> createStyles(Workbook wb) {
         Map<String, CellStyle> styles = new LinkedHashMap<>();
         // 文件头样式
         CellStyle headStyle = wb.createCellStyle();
@@ -337,6 +347,15 @@ public class RepairCostStatisticsManagedBean extends FormMultiBean<EquipmentRepa
         }
 
         equipmentRepairList = equipmentRepairBean.getRepairCostStatisticsList(strdate, enddate, queryFormId, queryName, companySql);
+        List<?> itemList = equipmentRepairList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[2] == null) {
+                obj[2] = assetCardSpecialBean.findByAssetno(obj[1].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairList = (List<EquipmentRepair>) itemList;
     }
 
     public String getAbrasehitchName(String str) {

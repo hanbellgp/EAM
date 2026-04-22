@@ -23,7 +23,8 @@
                     <p:column styleClass="Wid20"><h:outputLabel value="盘点日期" for="queryFormDate" /></p:column>
                     <p:column styleClass="Wid30">
                         <p:calendar id="queryFormDate" value="#{assetCheckInitManagedBean.queryFormDate}" title="盘点日期" pattern="yyyy/MM/dd"
-                                    required="true" requiredMessage="请输入盘点日期" />
+                                    required="true" requiredMessage="请输入盘点日期" >
+                        </p:calendar>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -33,6 +34,7 @@
                                          required="true" requiredMessage="请选择盘点方式">
                             <f:selectItem itemLabel="按卡片" itemValue="AC"/>
                             <f:selectItem itemLabel="按库存" itemValue="WH"/>
+
                         </p:selectOneMenu>
                     </p:column>
                     <p:column><h:outputLabel value="位置分组" for="queryFormKind" /></p:column>
@@ -81,10 +83,12 @@
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetCheckInitManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
                 </f:facet>
                 <f:facet name="right">
-                    <p:commandButton id="btnInit" value="盘点" actionListener="#{assetCheckInitManagedBean.initAssetCheck()}" icon="ui-icon-save"
-                                     update=":formList">
-                        <p:confirm header="系统提示" message="产生盘点单吗?" icon="ui-icon-alert" />
+                    <p:commandButton id="btnInit" value="盘点"    onmouseover="mouseOverFunction()" onmouseout="mouseOutFunction()"    actionListener="#{assetCheckInitManagedBean.initAssetCheck()}" icon="ui-icon-save" update=":formList" >
+                        <p:remoteCommand name="doAjax" actionListener="#{assetCheckInitManagedBean.getMessageCheckTop()}"  update=":formList"/>
+                        <p:confirm id="conFirmBtn" header="系统提示" message="#{assetCheckInitManagedBean.messageCheck}"   icon="ui-icon-alert" >
+                        </p:confirm>
                     </p:commandButton>
+
                     <p:commandButton id="btnReset" value="重置" actionListener="#{assetCheckInitManagedBean.reset()}" icon="ui-icon-refresh" 
                                      process="@this" update="formList"/>
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{assetCheckInitManagedBean.query()}" icon="ui-icon-search"
@@ -175,6 +179,26 @@
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
             </p:blockUI>
         </h:form>
+
+        <script type="text/javascript">
+            var mouseOverFlag = false;
+            function mouseOverFunction() {
+                if (!mouseOverFlag) {
+                    // 执行你想要的操作
+                    console.log('按钮被鼠标悬停');
+                    doAjax(); // 调用你在remoteCommand中定义的ajax方法
+                    // 更新标志，表示事件已经执行过
+                    mouseOverFlag = true;
+                }
+            }
+            function mouseOutFunction() {
+                console.log('按钮移开鼠标');
+                // 鼠标离开按钮时重置标志
+                mouseOverFlag = false;
+            }
+
+
+        </script>
     </ui:define>
 
 </ui:composition>

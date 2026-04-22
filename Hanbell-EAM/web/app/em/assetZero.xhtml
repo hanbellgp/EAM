@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="6"> 查询条件</p:column>
+                    </p:row>
+                </f:facet>
+                <p:column><h:outputLabel value="开始日期" for="queryDateBegin" /></p:column>
+                <p:column>
+                    <p:calendar id="queryDateBegin" value="#{assetZeroManagedBean.queryDateBegin}" mindate="2023-01-01"   title="开始日期" pattern="yyyy-MM-dd"/>
+                </p:column>
+                <p:column><h:outputLabel value="结束日期" for="queryDateEnd" /></p:column>
+                <p:column>
+                    <p:calendar id="queryDateEnd" value="#{assetZeroManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy-MM-dd"/>
+                </p:column>
+
+       <p:row>
+                <p:column><h:outputLabel value="数据分类" for="type" /></p:column>
+                <p:column >
+                    <p:selectOneMenu id="type" value="#{assetZeroManagedBean.type}" title="type" >
+                        <f:selectItem itemLabel="加工机" itemValue="加工机"/>
+                        <f:selectItem itemLabel="非加工机" itemValue="非加工机"/>
+                        <f:selectItem itemLabel="所有设备" itemValue="所有设备"/>
+                    </p:selectOneMenu>
+                </p:column>
+                
+                
+                  <p:column><h:outputLabel value="部门信息" for="dept" /></p:column>
+                <p:column >
+                    <p:selectOneMenu id="dept" value="#{assetZeroManagedBean.dept}" title="type" >
+                        <f:selectItem itemLabel="全部" itemValue="Null"/>
+                        <f:selectItem itemLabel="半成品方型件" itemValue="半成品方型件"/>
+                        <f:selectItem itemLabel="半成品圆型件" itemValue="半成品圆型件"/>
+                        <f:selectItem itemLabel="生产涡旋加工" itemValue="生产涡旋加工"/>
+                    </p:selectOneMenu>
+                </p:column>
+       </p:row>
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetZeroManagedBean.init()}" icon="ui-icon-sync"
+                                     update=":formList"/>
+                </f:facet>
+
+                <f:facet name="right">
+                    <p:commandButton id="btnPrint" value="导出零故障统计表" actionListener="#{assetZeroManagedBean.print()}" icon="ui-icon-print"
+                                     />
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{assetZeroManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable var="car" value="#{assetZeroManagedBean.equipmentTotalEfficiencyList}"  scrollable="true" scrollHeight="450" >
+                <p:column headerText="资产编号" style="text-align: center"  groupRow="true">
+                    <h:outputText value="#{car[0]}" style="text-align: center" />
+                </p:column>
+                <p:column headerText="设备名称" style="text-align: center">
+                    <h:outputText value="#{car[1]}" />
+                </p:column>
+                <p:column headerText="设备编号" style="text-align: center">
+                    <h:outputText value="#{car[2]}" />
+                </p:column>
+                <p:column headerText="规格" style="text-align: center">
+                    <h:outputText value="#{car[3]}" />
+                </p:column>
+                <p:column headerText="部门名称" style="text-align: center">
+                    <h:outputText value="#{car[4]}" />
+                </p:column>
+                <p:column headerText="设备分级" style="text-align: center">
+                    <h:outputText value="#{car[5]}" />
+                </p:column>
+
+                <p:column headerText="件号" style="text-align: center">
+                    <h:outputText value="#{car[6]}" />
+                </p:column>
+                <p:column headerText="累计报修次数" style="text-align: center">
+                    <h:outputText value="#{car[7]}" />
+                </p:column>
+                <p:column headerText="最近一次的故障报修日期" style="text-align: center">
+                    <h:outputText value="#{car[8]}" />
+                </p:column>
+                <p:column headerText="最近一次的维修完成时间点" style="text-align: center">
+                    <h:outputText value="#{car[9]}" />
+                </p:column>
+                <p:column headerText="零故障周期≤90天" style="text-align: center">
+                    <h:outputText value="#{car[10]}" />
+                </p:column>
+                <p:column headerText="90天＜零故障周期≤180天" style="text-align: center">
+                    <h:outputText value="#{car[11]}" />
+                </p:column>
+                <p:column headerText="180天＜零故障周期≤365天" style="text-align: center">
+                    <h:outputText value="#{car[12]}" />
+                </p:column>
+                <p:column headerText="365天＜零故障周期" style="text-align: center">
+                    <h:outputText value="#{car[13]}" />
+                </p:column>
+
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnPrint">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

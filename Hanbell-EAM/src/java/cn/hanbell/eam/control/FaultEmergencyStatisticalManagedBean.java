@@ -5,8 +5,10 @@ package cn.hanbell.eam.control;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
+import cn.hanbell.eam.entity.AssetCardSpecial;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
 import java.io.FileOutputStream;
@@ -50,6 +52,8 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     @EJB
     private CompanyBean companyBean;
+    @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     private List<EquipmentRepair> equipmentRepairsList;
     private List<Company> companyList;
     private String[] company;
@@ -77,6 +81,17 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         queryName = null;
         queryFormId = null;
         equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryName, queryFormId, comSql);
+        List<?> itemList = equipmentRepairsList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                AssetCardSpecial sp = assetCardSpecialBean.findByAssetno(obj[0].toString());
+                obj[1] = sp.getAssetDesc();
+                obj[2] = sp.getDeptname();
+            }
+        }
+        itemList = list;
+        equipmentRepairsList = (List<EquipmentRepair>) itemList;
     }
 
 //导出界面的EXCEL数据处理
@@ -301,7 +316,17 @@ public class FaultEmergencyStatisticalManagedBean extends FormMultiBean<Equipmen
         }
 
         equipmentRepairsList = equipmentRepairBean.getRepairEmergencyStatisticsList(strdate, enddate, queryName, queryFormId, companySql);
-
+        List<?> itemList = equipmentRepairsList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                AssetCardSpecial sp = assetCardSpecialBean.findByAssetno(obj[0].toString());
+                obj[1] = sp.getAssetDesc();
+                obj[2] = sp.getDeptname();
+            }
+        }
+        itemList = list;
+        equipmentRepairsList = (List<EquipmentRepair>) itemList;
     }
 
     public List<EquipmentRepair> getEquipmentRepairsList() {

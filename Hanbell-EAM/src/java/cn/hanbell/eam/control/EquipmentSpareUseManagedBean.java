@@ -79,10 +79,10 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
                 this.model.getFilterFields().put("pid", queryState);
             }
             if (queryDateBegin != null) {
-                this.model.getFilterFields().put("credate", simpleDateFormat.format(queryDateBegin));
+                this.model.getFilterFields().put("credateBegin", queryDateBegin);
             }
             if (queryDateEnd != null) {
-                this.model.getFilterFields().put("credateend", simpleDateFormat.format(queryDateEnd));
+                this.model.getFilterFields().put("credateEnd", queryDateEnd);
             }
             this.model.getFilterFields().put("status", "V");
             this.model.getFilterFields().put("creator", userManagedBean.getCompany());
@@ -120,6 +120,8 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title1[i]);
         }
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+       
         List<EquipmentSpareRecodeDta> eSpateDta = equipmentSpareRecodeDtaBean.findByFilters(model.getFilterFields());
         if (eSpateDta == null || eSpateDta.isEmpty()) {
             showErrorMsg("Error", "当前无数据！请先查询");
@@ -131,7 +133,7 @@ public class EquipmentSpareUseManagedBean extends SuperQueryBean<EquipmentSpareR
         cellTitle.setCellStyle(style.get("title"));
         cellTitle.setCellValue("备件出入库表");
         int j = 2;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+      
         List<Object[]> list = null;
         for (EquipmentSpareRecodeDta eq : eSpateDta) {
             row = sheet1.createRow(j);
