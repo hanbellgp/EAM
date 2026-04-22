@@ -10,6 +10,7 @@ import cn.hanbell.eam.entity.AssetCategory;
 import cn.hanbell.eam.entity.AssetCheckDetailForQuery;
 import cn.hanbell.eam.lazy.AssetCheckDetailForQueryModel;
 import cn.hanbell.eam.web.SuperQueryBean;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -78,10 +79,9 @@ public class AssetCheckDetailQueryBean extends SuperQueryBean<AssetCheckDetailFo
             if (queryState != null && !"ALL".equals(queryState)) {
                 model.getFilterFields().put("status", queryState);
             }
-             if (queryName != null && !"ALL".equals(queryName)) {
+             if (queryName != null && !"".equals(queryName)) {
                     model.getFilterFields().put("assetCheck.creator", queryName);
              }
-        
             model.getSortFields().clear();
             model.getSortFields().put("assetCheck.formid", "ASC");
             model.getSortFields().put("seq", "ASC");

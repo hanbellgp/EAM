@@ -56,15 +56,15 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
     protected EquipmentRepairHisBean equipmentRepairHisBean;
     @EJB
     protected EquipmentWorkTimeBean equipmentWorkTimeBean;
-        @EJB
+    @EJB
     protected DepartmentBean departmentBean;
-    
 
     List<Number> yearsList;
     private String stayear;
     private String type;
     private List<Object[]> workshopEquipmentList;
     private String deptno;
+    private String isOutsourcing;
     private List<Object> deptList;
 
     public WorkshopEquipmentManagedBean() {
@@ -115,60 +115,53 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
                 showErrorMsg("Error", "当前无数据！请先查询");
                 return;
             }
-            String deptName =departmentBean.findByDeptno(deptno).getDept();
+            String deptName = departmentBean.findByDeptno(deptno).getDept();
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 12));
             Cell cellTitle = row.createCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(stayear + "课设备管理月报-----" + type+"------"+deptName);
+            cellTitle.setCellValue(stayear + "课设备管理月报-----" + type + "------" + deptName);
             Cell cellTime = row1.createCell(13);
             cellTime.setCellStyle(style.get("right"));
             String version = deptno.equals("G") ? "" : "";
             cellTime.setCellValue(version);
             List<?> itemList = workshopEquipmentList;
             int j = 2;
+
             List<Object[]> list = (List<Object[]>) itemList;
             for (Object[] eq : list) {
                 row = sheet.getRow(j);
+
                 j++;
                 row.setHeight((short) 400);
+                int item = 1;
                 for (int i = 1; i < 13; i++) {
-                    Cell cell0 = row.getCell(i+1);
+                    if (i == 4 || i == 10) {
+                        item++;
+                    }
+                    if (i == 7) {
+                        item = item + 2;
+                    }
+                    Cell cell0 = row.getCell(i + item);
                     if (eq[i] != null) {
                         cell0.setCellValue(Double.parseDouble(eq[i].toString()));
                     }
                 }
+
             }
+            int item =5;
+            for (int i = 1; i <= 4; i++) {
+                row = sheet.getRow(3);
+                if (i==2||i==4) {
+                    item+=4;
+                }
+                if (i==3) {
+                    item+=5;
+                }
+                Cell cell0 = row.getCell(item);
+                cell0.setCellValue(Integer.parseInt(list.get(0)[i+13].toString()));
+            }
+
             sheet.setForceFormulaRecalculation(true);  //强制执行该sheet中所有公式
-            //获取超过60分钟的故障明细
-//            List<?> itemList2 = equipmentRepairBean.getFaultDetail(type);
-//            List<Object[]> faultList = (List<Object[]>) itemList2;
-//            int faultCount = 87;
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//            for (Object[] faDet : faultList) {
-//                row3 = sheet1.createRow(faultCount);
-//                row3.setHeight((short) 400);
-//                faultCount++;
-//                Cell cell;
-//                for (int i = 0; i < 8; i++) {
-//                    cell = row3.createCell(i);
-//                    if (faDet[i] != null) {
-//                        switch (i) {
-//                            case 0:
-//                                cell.setCellValue(sdf.format(faDet[i]));
-//                                break;
-//                            case 4:
-//                                cell.setCellValue(Integer.parseInt(faDet[i].toString()));
-//                                break;
-//                            default:
-//                                cell.setCellValue(faDet[i].toString());
-//                                break;
-//                        }
-//                    } else {
-//                        cell.setCellValue("");
-//                    }
-//                    cell.setCellStyle(style.get("cell"));
-//                }
-//            }
             OutputStream os = null;
             fileName = stayear + "课设备管理月报-" + type + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
@@ -280,7 +273,7 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
      */
     @Override
     public void query() {
-        workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, deptno, userManagedBean.getCompany(), type);
+        workshopEquipmentList = equipmentRepairBean.getMonthlyReport(stayear, deptno, userManagedBean.getCompany(), type,isOutsourcing);
     }
 
     public List<Number> getYearsList() {
@@ -325,6 +318,14 @@ public class WorkshopEquipmentManagedBean extends FormMultiBean<EquipmentRepair,
 
     public List<Object> getDeptList() {
         return deptList;
+    }
+
+    public String getIsOutsourcing() {
+        return isOutsourcing;
+    }
+
+    public void setIsOutsourcing(String isOutsourcing) {
+        this.isOutsourcing = isOutsourcing;
     }
 
 }

@@ -21,9 +21,13 @@ import cn.hanbell.eam.lazy.AssetAdjustModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
+import cn.hanbell.oa.entity.HKCW026;
+import cn.hanbell.oa.entity.HKCW026Detail;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -50,7 +54,11 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
 
     @EJB
     private TransactionTypeBean transactoinTypeBean;
+    @EJB
+    protected cn.hanbell.oa.ejb.WorkFlowBean workFlowBean;
 
+    @EJB
+    protected cn.hanbell.oa.ejb.HKCW026Bean hKCW026Bean;
     private TransactionType trtype;
 
     private List<String> paramPosition = null;
@@ -105,6 +113,117 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
             return true;
         }
         return false;
+    }
+
+    //将调拨单抛转OA
+    public boolean doThrowOa() {
+        HKCW026 m = new HKCW026();
+        HKCW026Detail d;
+         List<HKCW026> hkcw026 = hKCW026Bean.getOaFormid(currentEntity.getFormid());
+        if (hkcw026.size() > 0) {
+            showErrorMsg("Error", "抛转失败,OA已存在该调拨单流程在进行.");
+            return false;
+        }
+        List<HKCW026Detail> detailList = new ArrayList<>();
+        LinkedHashMap<String, List<?>> details = new LinkedHashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        details.put("Detail", detailList);
+        m.setFormid(currentEntity.getFormid());
+        m.setFormdate(sdf.format(currentEntity.getFormdate()));
+        m.setFacno(currentEntity.getCompany());
+        m.setTitleDeptno(currentEntity.getDeptno());
+        m.setTitleDeptname(currentEntity.getDeptname());
+        m.setRemark(currentEntity.getRemark());
+        m.setCreator(currentEntity.getCreator());
+        m.setStatus(currentEntity.getStatus());
+        List<AssetAdjustDetail> dta = assetAdjustDetailBean.findByPId(currentEntity.getFormid());
+        try {
+            if (!doBeforeVerify()) {
+                //抛转前查询是否库存充足
+                return false;
+            }
+            workFlowBean.initUserInfo(userManagedBean.getUserid());
+            for (AssetAdjustDetail aDetail : dta) {
+                d = new HKCW026Detail();
+                d.setPid(aDetail.getPid());
+                d.setSeq(aDetail.getSeq() + "");
+                if (aDetail.getAssetCard() != null) {
+                    d.setAssetid(aDetail.getAssetCard().getId() + "");
+                }
+                d.setAssetno(aDetail.getAssetno());
+                d.setItdsc(aDetail.getAssetItem().getItemdesc());
+                d.setItemno(aDetail.getAssetItem().getItemno());
+                d.setQty(aDetail.getQty() + "");
+                d.setUnit(aDetail.getUnit());
+                d.setDeptno(aDetail.getDeptno());
+                d.setDeptname(aDetail.getDeptname());
+                d.setDeptno2(aDetail.getDeptno2());
+                d.setDeptname2(aDetail.getDeptname2());
+                d.setWarehouseno(aDetail.getWarehouse().getWarehouseno());
+                d.setWarehousena(aDetail.getWarehouse().getName());
+                d.setWarehouseno2(aDetail.getWarehouse2().getWarehouseno());
+                d.setWarehousena2(aDetail.getWarehouse2().getName());
+                if (aDetail.getPosition1() != null) {
+                    d.setPosition1(aDetail.getPosition1().getId() + "");
+                    d.setPosition1Name(aDetail.getPosition1().getName());
+                }
+                if (aDetail.getPosition2() != null) {
+                    d.setPosition2(aDetail.getPosition2().getId() + "");
+                    d.setPosition2Name(aDetail.getPosition2().getName());
+                }
+                if (aDetail.getPosition3() != null) {
+                    d.setPosition3(aDetail.getPosition3().getId() + "");
+                    d.setPosition3Name(aDetail.getPosition3().getName());
+                }
+                if (aDetail.getPosition4() != null) {
+                    d.setPosition4(aDetail.getPosition4().getId() + "");
+                    d.setPosition4Name(aDetail.getPosition4().getName());
+                }
+                if (aDetail.getPosition5() != null) {
+                    d.setPosition5(aDetail.getPosition5().getId() + "");
+                    d.setPosition5Name(aDetail.getPosition5().getName());
+                }
+                if (aDetail.getPosition6() != null) {
+                    d.setPosition6(aDetail.getPosition6().getId() + "");
+                    d.setPosition6Name(aDetail.getPosition6().getName());
+                }
+                if (aDetail.getAssetCard() != null) {
+                    d.setAssetname(aDetail.getAssetCard().getAssetDesc());
+                }
+                d.setSerialNo(aDetail.getSeq()+"");
+                d.setUserno(aDetail.getUserno());
+                d.setUsername(aDetail.getUsername());
+                d.setUserno2(aDetail.getUserno2());
+                d.setUsername2(aDetail.getUsername2());
+                m.setTransferUser(aDetail.getUserno());
+                m.setCfmuser(aDetail.getUserno2());
+                detailList.add(d);
+            }
+            String formInstance = workFlowBean.buildXmlForEFGP("HK_CW026", m, details);
+            String subject = currentEntity.getFormid() + "调拨单";
+            String msg = workFlowBean.invokeProcess(workFlowBean.HOST_ADD, workFlowBean.HOST_PORT, "PKG_HK_CW026", formInstance, subject);
+            String[] rm = msg.split("\\$");
+            if (rm.length == 2) {
+                if (rm[0].equals("200")) {
+                    showInfoMsg("Info", "抛转成功" + rm[1]);
+                    currentEntity.setOaformid(rm[1]);
+                    currentEntity.setCfmdate(getDate());
+                    currentEntity.setCfmuser(userManagedBean.getUserid());
+                    assetAdjustBean.update(currentEntity);
+                    return true;
+                } else {
+                    showErrorMsg("Error", "抛转失败");
+                    return false;
+                }
+
+            } else {
+                showErrorMsg("Error", "抛转失败");
+                return false;
+            }
+        } catch (Exception ex) {
+            showErrorMsg("Error", "抛转失败:" + ex.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -184,6 +303,13 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (currentDetail == null) {
             return;
         }
+        List<Object> list = hKCW026Bean.isThereOA(currentDetail.getAssetno());//获取是否有OA单子
+        if (list.size() > 0) {//大于0代表有流程没走完不让添加并返回错误信息
+            Object firstElement = list.get(0);
+            Object[] array = (Object[]) firstElement;
+            showErrorMsg("Error", "该资产编号已有OA流程在进行OA单号:" + array[1] + ",对应EAM单号:" + array[0]);
+            return;
+        }
         if (currentDetail.getDeptno2() == null || "".equals(currentDetail.getDeptno2())) {
             showErrorMsg("Error", "请输入领用部门");
             return;
@@ -211,6 +337,13 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (currentDetail.getQty().compareTo(BigDecimal.ZERO) != 1) {
             showErrorMsg("Error", "请输入数量");
             return;
+        }
+
+        for (AssetAdjustDetail aDetail : detailList) {
+            if (!currentDetail.getUserno2().equals(aDetail.getUserno2())) {
+                showErrorMsg("Error", "请确认明细中领用人相同!");
+                return;
+            }
         }
         super.doConfirmDetail();
     }
@@ -594,7 +727,7 @@ public class AssetAdjustManagedBean extends FormMultiBean<AssetAdjust, AssetAdju
         if (this.model != null && this.model.getFilterFields() != null) {
             this.model.getFilterFields().clear();
             if (queryAssetno != null && !"".equals(queryAssetno)) {
-                String assetno =assetAdjustDetailBean.getAdjustForimd(queryAssetno);
+                String assetno = assetAdjustDetailBean.getAdjustForimd(queryAssetno);
                 this.model.getFilterFields().put("formid", assetno);
             }
             if (queryFormId != null && !"".equals(queryFormId)) {

@@ -25,13 +25,28 @@
                 <p:calendar id="queryDateBegin" value="#{assetCheckPrintManagedBean.queryDateBegin}" title="开始日期" pattern="yyyy/MM/dd"/>
                 <h:outputLabel value="截止日期" for="queryDateEnd" />
                 <p:calendar id="queryDateEnd" value="#{assetCheckPrintManagedBean.queryDateEnd}" title="结束日期" pattern="yyyy/MM/dd"/>
+
+                <p:column><h:outputLabel value="资产类别" for="queryCategory" /></p:column>
+                <p:column>
+                    <p:inputText id="queryCategory" value="#{assetCheckPrintManagedBean.queryCategory.name}" title="资产类别" styleClass="inputWithButton" readonly="true"/>
+                    <p:commandButton id="btnAssetCategorySelect" actionListener="#{assetCheckPrintManagedBean.openDialog('assetcategorySelect')}" icon="ui-icon-extlink"
+                                     process="@this" >
+                        <p:ajax event="dialogReturn" listener="#{assetCheckPrintManagedBean.handleDialogReturnCategoryWhenNew}"
+                                update="queryCategory" />
+                    </p:commandButton>
+                </p:column>
+
+
             </p:panelGrid>
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
                     <p:commandButton id="btnLoad" value="刷新" actionListener="#{assetCheckPrintManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
                 </f:facet>
                 <f:facet name="right">
+
                     <p:commandButton id="btnPrint" value="打印" actionListener="#{assetCheckPrintManagedBean.print()}" icon="ui-icon-print"
+                                     rendered="#{assetCheckPrintManagedBean.doPrt}"/>
+                    <p:commandButton id="btnBatchPrint" value="批量打印" actionListener="#{assetCheckPrintManagedBean.batchPrint()}" icon="ui-icon-print"
                                      rendered="#{assetCheckPrintManagedBean.doPrt}"/>
                     <p:commandButton id="btnVerify" value="审核" actionListener="#{assetCheckPrintManagedBean.verify()}" icon="ui-icon-check"
                                      rendered="#{assetCheckPrintManagedBean.doCfm}" update="formList">

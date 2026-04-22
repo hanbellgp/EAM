@@ -12,8 +12,16 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,6 +31,7 @@ import javax.ejb.Stateless;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 
 import javax.persistence.Query;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
@@ -181,6 +190,12 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             this.setQueryParam(query, filters);
         }
         return Integer.parseInt(query.getSingleResult().toString());
+    }
+
+    @Override
+    public EquipmentRepair findById(int value) {
+        EquipmentRepair e = super.findById(value);
+        return e; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 
     public List<EquipmentRepair> getEquipmentRepairListByNativeQuery(Map<String, Object> filters, Map<String, String> orderBy) {
@@ -824,7 +839,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
      * @param companyType 公司别
      * @return
      */
-    public List<Object[]> getMonthlyReport(String year, String deptno, String companyType, String type) {
+    public List<Object[]> getMonthlyReport(String year, String deptno, String companyType, String type, String isOutsourcing) {
 //        String str = type.substring(3, type.length());//获取不良数的类型
         //月度总计划工时及平均计划工时,当月设备数量
         StringBuilder sbAVA = new StringBuilder();
@@ -881,16 +896,47 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         deptno = deptno.substring(0, 3);
         sb60Count.append(" SELECT month(hitchtime),count(CASE WHEN TIMESTAMPDIFF(MINUTE,hitchtime, completetime) > 60 THEN E.assetno END) as count60,count(*) count10,SUM(TIMESTAMPDIFF(MINUTE, hitchtime, completetime)) FROM equipmentrepair E LEFT JOIN assetcard A ON E.assetno=A.formid ");
         sb60Count.append(" WHERE A.deptno like'%").append(deptno).append("%' AND hitchtime LIKE '%").append(year).append("%'");
-        sb60Count.append(" AND hitchtime<now() AND A.company='" + companyType + "' ");
+        sb60Count.append(" AND hitchtime<now() AND rstatus<98 AND A.company='" + companyType + "' ");
         if (type.equals("加工机")) {
             sb60Count.append(" AND A.remark IS NOT NULL ");
         } else if (type.equals("非加工机")) {
             sb60Count.append(" AND A.remark IS  NULL ");
         }
+        if (isOutsourcing.equals("N")) {//不包含委外维修
+            sb60Count.append(" and repairmethodtype!=3 ");
+        }
         sb60Count.append(" GROUP BY month(hitchtime)");
         query = getEntityManager().createNativeQuery(sb60Count.toString());
         List<Object[]> sb60CountList = query.getResultList();
-        //将所有的数据按所需要的模板整合到一个List中
+        //获取跨月维修报修数据
+        StringBuilder sbDiffDate = new StringBuilder();
+        sbDiffDate.append("SELECT (YEAR(completetime) - YEAR(hitchtime)) * 12 +(MONTH(completetime) - MONTH(hitchtime)) AS months_difference,MONTH(hitchtime) Month,TIMESTAMPDIFF(MINUTE, hitchtime, DATE_FORMAT(hitchtime + INTERVAL 1 MONTH, '%Y-%m-01')) endDate,TIMESTAMPDIFF(MINUTE, hitchtime, completetime) sumDate");
+        sbDiffDate.append(" FROM equipmentrepair B  LEFT JOIN  assetcard A  ON B.assetno=A.formid where hitchtime like '" + year + "%' and B.company='C'  and repairdeptno like '%" + deptno + "%' and rstatus<98  and (YEAR(completetime) - YEAR(hitchtime)) * 12 +(MONTH(completetime) - MONTH(hitchtime))  >0  ");
+        if (type.equals("加工机")) {
+            sbDiffDate.append(" AND A.remark IS NOT NULL ");
+        } else if (type.equals("非加工机")) {
+            sbDiffDate.append(" AND A.remark IS  NULL ");
+        }
+        if (isOutsourcing.equals("N")) {//不包含委外维修
+            sbDiffDate.append(" and B.repairmethodtype!=3 ");
+        }
+        query = getEntityManager().createNativeQuery(sbDiffDate.toString());
+        List<Object[]> sbDiffDateList = query.getResultList();
+
+        StringBuilder sbNoDiffDate = new StringBuilder();
+        sbNoDiffDate.append("SELECT (YEAR(NOW()) - YEAR(hitchtime)) * 12 +(MONTH(NOW()) - MONTH(hitchtime)) AS months_difference,MONTH(hitchtime) Month,TIMESTAMPDIFF(MINUTE, hitchtime, DATE_FORMAT(hitchtime + INTERVAL 1 MONTH, '%Y-%m-01')) endDate,TIMESTAMPDIFF(MINUTE, hitchtime, NOW()) sumDate");
+        sbNoDiffDate.append(" FROM equipmentrepair B  LEFT JOIN  assetcard A  ON B.assetno=A.formid where hitchtime like '" + year + "%' and B.company='C'  and repairdeptno like '%" + deptno + "%' and rstatus<98  and completetime is null   and (YEAR(NOW()) - YEAR(hitchtime)) * 12 + (MONTH(NOW()) - MONTH(hitchtime))>0");
+        if (type.equals("加工机")) {
+            sbNoDiffDate.append(" AND A.remark IS NOT NULL ");
+        } else if (type.equals("非加工机")) {
+            sbNoDiffDate.append(" AND A.remark IS  NULL ");
+        }
+        if (isOutsourcing.equals("N")) {//不包含委外维修
+            sbNoDiffDate.append(" and B.repairmethodtype!=3 ");
+        }
+        query = getEntityManager().createNativeQuery(sbNoDiffDate.toString());
+        List<Object[]> sbNoDiffDateList = query.getResultList();
+//将所有的数据按所需要的模板整合到一个List中
         List<Object[]> listMES = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
             Object[] obj = new Object[12];
@@ -986,7 +1032,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         }
 
         List<Object[]> list = new ArrayList();
-        Object[] obj1 = new Object[14];
+        Object[] obj1 = new Object[18];
         Object[] obj2 = new Object[14];
         Object[] obj3 = new Object[14];
         Object[] obj4 = new Object[14];
@@ -998,6 +1044,10 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         Object[] obj10 = new Object[14];
         Object[] obj11 = new Object[14];
         Object[] obj12 = new Object[14];
+        int Q1Qty = 0;
+        int Q2Qty = 0;
+        int Q3Qty = 0;
+        int Q4Qty = 0;
         obj1[0] = "计划生产总工时(分)A";
         obj2[0] = "Σ故障件数(件)B";
         obj3[0] = "Σ故障停机工时(分)C";
@@ -1038,6 +1088,24 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     obj1[i] = mes[0];
 
                     obj2[i] = mes[1];
+                    if (i <= 3) {
+                        if (mes[1] != null) {
+                            Q1Qty += Integer.parseInt(mes[1].toString());
+                        }
+
+                    } else if (i > 3 && i <= 6) {
+                        if (mes[1] != null) {
+                            Q2Qty += Integer.parseInt(mes[1].toString());
+                        }
+                    } else if (i > 6 && i <= 9) {
+                        if (mes[1] != null) {
+                            Q3Qty += Integer.parseInt(mes[1].toString());
+                        }
+                    } else if (i > 9 && i <= 12) {
+                        if (mes[1] != null) {
+                            Q4Qty += Integer.parseInt(mes[1].toString());
+                        }
+                    }
 
                     obj3[i] = mes[2];
 
@@ -1106,18 +1174,91 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         list.add(obj1);
         list.add(obj2);
         list.add(obj3);
-//        list.add(obj4);
-////        if (reportType.equals("H")) {
-////            list.add(obj12);
-////        }
-//        list.add(obj5);
-//        list.add(obj6);
-//        list.add(obj7);
-//        list.add(obj8);
-//        list.add(obj9);
-//        list.add(obj10);
-//        list.add(obj11);
+
+        for (Object[] diff : sbDiffDateList) {
+            int monthSum = Integer.parseInt(diff[0].toString());//总共跨多少个月 
+            int month = Integer.parseInt(diff[1].toString());//当前月份
+            int endDate = Integer.parseInt(diff[2].toString());//当前月份时间
+            int sumDate = Integer.parseInt(diff[3].toString());//总差异时间
+            int daySumDate = 0;//总共跨满了多少个月的时间
+            for (int i = month; i <= month + monthSum; i++) {
+                if (i == month) {//第一个月减去跨度的时间
+                    list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) - (sumDate - endDate);
+                } else {
+                    if (monthSum > 1) {//跨度大于一个月的时间
+                        if (i == (month + monthSum)) {//最后一个月
+                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate - daySumDate);//跨满一个月加上全部时间
+
+                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+
+                        } else {
+                            // 获取当前月份的最后一天
+                            LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), i, 1);
+                            // 获取当前月份的天数
+                            int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
+                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + 1440 * daysInMonth;//跨满一个月加上全部时间
+                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                            daySumDate += 1440 * daysInMonth;
+
+                        }
+                    } else {
+                        if (month != 12) {
+                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate);//只夸度一个月就加上差异部分
+                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+        //未维修完成的时间也加上去
+        for (Object[] diff : sbNoDiffDateList) {
+            int monthSum = Integer.parseInt(diff[0].toString());//总共跨多少个月 
+            int month = Integer.parseInt(diff[1].toString());//当前月份
+            int endDate = Integer.parseInt(diff[2].toString());//当前月份时间
+            int sumDate = Integer.parseInt(diff[3].toString());//总差异时间
+            int daySumDate = 0;//总共跨满了多少个月的时间
+            for (int i = month; i <= month + monthSum; i++) {
+                if (i == month) {//第一个月减去跨度的时间
+                    list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + endDate;
+                } else {
+                    if (monthSum > 1) {//跨度大于一个月的时间
+                        if (i == (month + monthSum)) {//最后一个月
+                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate - daySumDate);//跨满一个月加上全部时间
+                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+
+                        } else {
+                            // 获取当前月份的最后一天
+                            LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), i, 1);
+                            // 获取当前月份的天数
+                            int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
+                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + 1440 * daysInMonth;//跨满一个月加上全部时间
+                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                            daySumDate += 1440 * daysInMonth;
+                        }
+                    } else {
+                        if (month != 12) {
+                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate);//只夸度一个月就加上差异部分
+                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+        list.get(0)[14] = Q1Qty;
+        list.get(0)[15] = Q2Qty;
+        list.get(0)[16] = Q3Qty;
+        list.get(0)[17] = Q4Qty;
+
         return list;
+
     }
 
     /**
@@ -1825,7 +1966,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         StringBuilder sbMESLEN = new StringBuilder();
         sbMESLEN.append(" SELECT A.DAY,MAX(CASE A.ALARMNAME WHEN '设备故障' THEN A.ALARMTIME_LEN ELSE 0 END) 设备故障,MAX(CASE A.ALARMNAME WHEN '计划停机' THEN A.ALARMTIME_LEN ELSE 0 END) 计划停机,MAX(CASE A.ALARMNAME WHEN '绿灯暖机' THEN A.ALARMTIME_LEN ELSE 0 END)  绿灯暖机,MAX(CASE A.ALARMNAME WHEN '设备保养' THEN A.ALARMTIME_LEN ELSE 0 END) 设备保养,MAX(CASE A.ALARMNAME WHEN '欠料等待' THEN A.ALARMTIME_LEN ELSE 0 END) 欠料等待, MAX(CASE A.ALARMNAME WHEN '物料返修' THEN A.ALARMTIME_LEN  ELSE 0 END) 物料返修,MAX(CASE A.ALARMNAME WHEN '生技试模' THEN A.ALARMTIME_LEN ELSE 0 END) 生技试模,   MAX(CASE A.ALARMNAME WHEN '共用刀具模具等待' THEN A.ALARMTIME_LEN ELSE 0 END)   共用刀具模具等待, MAX(CASE A.ALARMNAME WHEN '刀具调试更换' THEN A.ALARMTIME_LEN  ELSE 0 END) 刀具调试更换, MAX(CASE A.ALARMNAME WHEN '停机换模' THEN A.ALARMTIME_LEN ELSE 0 END) 停机换模, MAX(CASE A.ALARMNAME WHEN '单模拆装' THEN A.ALARMTIME_LEN ELSE 0 END) 单模拆装, MAX(CASE A.ALARMNAME WHEN '换砂轮/夹头' THEN A.ALARMTIME_LEN ELSE 0 END) 换砂轮夹头,MAX(CASE A.ALARMNAME WHEN '停机待测' THEN A.ALARMTIME_LEN ELSE 0 END) 停机待测,MAX(CASE A.ALARMNAME WHEN '首件调整' THEN A.ALARMTIME_LEN ELSE 0 END) 首件调整,  MAX(CASE A.ALARMNAME WHEN '上下料干涉等待' THEN A.ALARMTIME_LEN  ELSE 0 END)    上下料干涉等待, MAX(CASE A.ALARMNAME WHEN '带教新人讲解' THEN A.ALARMTIME_LEN  ELSE 0 END)  带教新人不足,  MAX(CASE A.ALARMNAME WHEN '其他' THEN A.ALARMTIME_LEN ELSE 0 END)      其他, MAX(CASE A.ALARMNAME WHEN NULL THEN A.ALARMTIME_LEN ELSE 0 END)      未填, ");
         sbMESLEN.append(" SUM(A.ALARMTIME_LEN) SUMLEN FROM (SELECT A.ALARMNAME,SUM(convert(INT, ALARMTIME_LEN)) /60 ALARMTIME_LEN, DAY(A.DATE) DAY FROM (SELECT EQPID,B.ALARMNAME,convert(VARCHAR(10), cast(dateadd(hour,-8,A.ALARMSTARTTIME) as date), 111) AS DATE,");
-        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE EQPID = '").append(EPQID).append("' AND A.ALARMSTARTTIME LIKE '").append(year).append("%') A  WHERE A.DATE LIKE '" + year + "%' GROUP BY A.ALARMNAME, DAY(A.DATE)) A  GROUP BY A.DAY");
+        sbMESLEN.append(" ALARMTIME_LEN FROM EQP_RESULT_ALARM_D A LEFT JOIN MALARM B ON A.SPECIALALARMID = B.ALARMID WHERE EQPID = '").append(EPQID).append("' AND convert(VARCHAR(10), cast(dateadd(hour, -8, A.ALARMSTARTTIME) as date), 111) LIKE '").append(year).append("%') A  WHERE A.DATE LIKE '" + year + "%' GROUP BY A.ALARMNAME, DAY(A.DATE)) A  GROUP BY A.DAY");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESLEN.toString());
         List<Object[]> resultsLEN = query.getResultList();
 
@@ -1857,7 +1998,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List<Object[]> resultsDowntime = query.getResultList();
         //      不合格单数量
         StringBuilder sbMESQCQTY = new StringBuilder();
-        sbMESQCQTY.append(" SELECT SUM ( convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM,day(B.PROJECTCREATETIME) day FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003' AND S.EQPID ='").append(EPQID).append("' GROUP BY day(B.PROJECTCREATETIME)");
+        sbMESQCQTY.append(" SELECT SUM ( convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM,day(C.NODESTARTTIME) day FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID          left join (select  * from FLOW_PROJECT_HISTORY where PROCESSNODEID='UQFN0002' AND EFFECTIVEFLAG='Y' AND ADDFLAG='N'  ) C on B.PROJECTID =C.PROJECTID  WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND C.NODESTARTTIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003' AND A.EQPID ='").append(EPQID).append("' GROUP BY day(C.NODESTARTTIME)");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQCQTY.toString());
         List<Object[]> resultsQCQTY = query.getResultList();
         //      特采数量
@@ -1894,6 +2035,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List<Object[]> list = new ArrayList<>();
         int strMin = 0;
         int endMin = 0;
+        int downTime = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
         Calendar cal = Calendar.getInstance();
         cal.setTime(sdf.parse(year));
@@ -1966,10 +2108,13 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 }
             }
             if (strMin != 0) {
-                obj[27] = strMin;
-                obj[30] = endMin;
-                strMin = 0;
-                endMin = 0;
+                if (strMin >= 1440) {
+                    obj[27] = 1440;
+                    obj[30] = 1440;
+                } else {
+                    obj[27] = strMin;
+                    obj[30] = endMin;
+                }
             } else {
                 obj[27] = 0;
                 obj[30] = 0;
@@ -1981,14 +2126,13 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     obj[29] = objects[1];
                     obj[30] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(obj[28].toString());
                     obj[31] = objects[1];
+                    int day = Integer.parseInt(objects[0].toString());//获取是哪天
+
                     if (Integer.parseInt(objects[2].toString()) > 1440) {//当维修时间超出当天时间，将超出部分归类到第二天
                         obj[27] = Integer.parseInt(objects[4].toString());
                         strMin = Integer.parseInt(objects[2].toString()) - Integer.parseInt(objects[4].toString());
                         endMin = Integer.parseInt(objects[3].toString()) - Integer.parseInt(objects[4].toString());
                         obj[30] = Integer.parseInt(objects[4].toString()) - (Integer.parseInt(objects[2].toString()) - Integer.parseInt(objects[3].toString()));
-                    } else {
-                        strMin = 0;
-                        endMin = 0;
                     }
                 }
             }
@@ -2041,6 +2185,516 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         return list;
     }
 
+    /**
+     * 检查日期是否在范围内
+     */
+    public static boolean isDateBetween(String targetDateStr,
+            String startDateStr,
+            String endDateStr
+    ) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        Date targetDate = formatter.parse(targetDateStr.trim());
+        Date startDate = formatter.parse(startDateStr.trim());
+        Date endDate = formatter.parse(endDateStr.trim());
+        return !targetDate.before(startDate) && !targetDate.after(endDate);
+    }
+//根据年份获取故障停线率
+
+    public List<Object[]> getYearFailure(String Year) throws ParseException {
+
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        StringBuilder sbEAM = new StringBuilder();
+        //获取停线的加工设备和停线时间
+        sbEAM.append("SELECT B.remark,B.deptno,MONTH(hitchtime),DATE_FORMAT(A.hitchtime, '%Y/%m/%d') hitchtime ,DATE_FORMAT(A.completetime, '%Y/%m/%d') completetime ,TIMESTAMPDIFF(MINUTE, A.hitchtime,CASE WHEN A.completetime IS NULL THEN NOW() ELSE A.completetime END) diffTime ,downinitiatetime,completetime"
+                + " FROM equipmentrepair A LEFT JOIN assetcard B  ON A.assetno=B.formid   where  A.hitchtime like '" + Year + "%'  and A.company='C'"
+                + " and B.remark is not null  and B.remark!=''  and (A.hitchurgency = '03'   or downinitiatetime is not null)  and A.rstatus<=95");
+        sbEAM.append(" AND (B.remark LIKE 'M/C%'  OR  B.remark LIKE 'KAPP%' OR  B.remark LIKE 'FMS%' OR  B.remark LIKE '%立式加工机%' OR  B.remark LIKE 'NSM%' OR  B.remark LIKE 'CG%' )  and B.remark!='KAPP-09' AND qty>0");
+        Query query = getEntityManager().createNativeQuery(sbEAM.toString());
+        List<Object[]> resultsEAM = query.getResultList();
+
+        // 按件号分组
+        Map<String, List<Object[]>> groupMap = new LinkedHashMap<>();
+        for (Object[] row : resultsEAM) {
+            String assetno = (String) row[0];
+            if (assetno == null) {
+                assetno = ""; // 处理空件号
+            }
+            groupMap.computeIfAbsent(assetno, k -> new ArrayList<>()).add(row);
+        }
+        List<Object[]> resultEAMList = new ArrayList<>();
+
+        for (List<Object[]> list : groupMap.values()) {
+            // 按开始时间升序排序
+            list.sort(Comparator.comparing(row -> parseDateTime(row[6])));
+
+            LocalDateTime lastEnd = null; // 已覆盖的最大结束时间
+
+            for (Object[] row : list) {
+                LocalDateTime start = parseDateTime(row[6]);
+                LocalDateTime end = parseDateTime(row[7]);
+
+                // 未完成的记录，结束时间取当前时间
+                if (end == null) {
+                    end = LocalDateTime.now();
+                }
+
+                long effectiveMinutes = 0;
+
+                if (lastEnd == null || start.isAfter(lastEnd)) {
+                    // 无重叠，全部有效
+                    effectiveMinutes = ChronoUnit.MINUTES.between(start, end);
+                } else {
+                    // 有重叠，只计算超出 lastEnd 的部分
+                    if (end.isAfter(lastEnd)) {
+                        effectiveMinutes = ChronoUnit.MINUTES.between(lastEnd, end);
+                    }
+                    // 完全重叠时 effectiveMinutes 保持 0
+                }
+
+             // 直接更新 diffTime 列的值
+                row[5] = effectiveMinutes;
+                // 更新已覆盖的最大结束时间
+                if (lastEnd == null || end.isAfter(lastEnd)) {
+                    lastEnd = end;
+                }
+                resultEAMList.add(row);
+            }
+        }
+        resultsEAM = resultEAMList;
+        List list = new ArrayList();
+        //圆型负荷时间
+        StringBuilder sbMESYX = new StringBuilder();
+        sbMESYX.append(" SELECT  month(PRODUCTTIME),sum(DOWN) FROM (");
+        sbMESYX.append(" SELECT A.EQPID,A.PRODUCTTIME ,1440- sum(convert(DECIMAL(13, 2), DOWNTIME)) DOWN FROM  PLAN_CAPACITY_YX_DETAIL A left join MEQP  ON "
+                + "A.EQPID=MEQP.EQPID");
+        sbMESYX.append(" where  PRODUCTTIME LIKE '" + Year + "%'  and  EQPTYPEID ='实体设备'    AND A.EQPID!='KAPP-09' group by  A.EQPID,PRODUCTTIME)  loadTime group by month(PRODUCTTIME)");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESYX.toString());
+        //方型负荷时间
+        List<Object[]> MESYXList = query.getResultList();
+        StringBuilder sbMESFX = new StringBuilder();
+        sbMESFX.append(" SELECT  month(PRODUCTTIME),sum(DOWN) FROM (");
+        sbMESFX.append(" SELECT A.EQPID,A.PRODUCTTIME ,1440- sum(convert(DECIMAL(13, 2), DOWNTIME)) DOWN FROM  PLAN_CAPACITY_FX_DETAIL A left join MEQP "
+                + " ON A.EQPID=MEQP.EQPID");
+        sbMESFX.append("   where  PRODUCTTIME LIKE '" + Year + "%'  and  EQPTYPEID ='实体设备'  and A.EQPID !='M/C-09' group by  A.EQPID,PRODUCTTIME)  loadTime group by month(PRODUCTTIME)");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESFX.toString());
+        List<Object[]> MESFXList = query.getResultList();
+        //获取圆型生管停机时间
+        StringBuilder sbMESDownYX = new StringBuilder();
+        sbMESDownYX.append(" SELECT EQPID,PLANDATE,sum( convert(DECIMAL, WORKHOUR))  FROM PLAN_SEMI_CIRCLE    WHERE   PRODUCTID = '计划停机'  and PRODUCTNAME!='故障停机'");
+        sbMESDownYX.append(" AND PLANDATE LIKE '" + Year + "%' GROUP BY EQPID,PLANDATE");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDownYX.toString());
+        List<Object[]> MESDownYXList = query.getResultList();
+        //圆型每个月合计停机时间
+        StringBuilder MonthDownYXSj = new StringBuilder();
+        MonthDownYXSj.append(" SELECT month(WORKDATE),sum(convert(int, ALARMTIME_LEN))/60  FROM EQP_RESULT_ALARM_D  where (EQPID like 'CG%'  OR EQPID LIKE 'NSM%')  AND  SPECIALALARMID='B0001'  AND ALARMSTARTTIME LIKE '%" + Year + "%'");
+        MonthDownYXSj.append(" group by  month(WORKDATE)  ");
+        query = superEJBForMES.getEntityManager().createNativeQuery(MonthDownYXSj.toString());
+        List<Object[]> MonthDownYXSjList = query.getResultList();
+        //获取方型生管停机时间
+        StringBuilder sbMESDownFX = new StringBuilder();
+        sbMESDownFX.append(" SELECT EQPID,PLANDATE,sum( convert(DECIMAL, WORKHOUR))  FROM PLAN_SEMI_SQUARE    WHERE   PRODUCTID = '计划停机'  and PRODUCTNAME!='故障停机'");
+        sbMESDownFX.append(" AND PLANDATE LIKE '" + Year + "%' GROUP BY EQPID,PLANDATE");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDownFX.toString());
+        List<Object[]> MESDownFXList = query.getResultList();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        Object[] FxLoad = new Object[13];
+        Object[] YxLoad = new Object[13];
+        int[] FxTime = new int[13];
+        int[] YxTime = new int[13];
+        Object[] FxTimeObject = new Object[13];
+        Object[] YxTimeObject = new Object[13];
+        for (Object[] eam : resultsEAM) {
+            for (int i = 1; i <= 12; i++) {
+                //如果发生时间等于结束时间，则直接将故障时间算入总故障
+                if (eam[3].equals(eam[4])) {
+                    if (Integer.parseInt(eam[2].toString()) == i) {
+                        if (eam[1].equals("1P100")) {
+                            FxTime[i] += Integer.parseInt(eam[5].toString());
+                        } else if (eam[1].equals("1P500")) {
+                            YxTime[i] += Integer.parseInt(eam[5].toString());
+                        }
+                    }
+                } else {//代表有跨天的故障在判断故障内是否有生管计划停机的，故障开始时间不等于生管时间
+                    if (Integer.parseInt(eam[2].toString()) == i) {
+                        int downTime = Integer.parseInt(eam[5].toString());
+                        if (eam[1].equals("1P100")) {
+                            for (Object[] downFx : MESDownFXList) {
+                                if (eam[0].equals(downFx[0]) && !eam[3].equals(downFx[1])) {
+                                    if (eam[4] == null) {
+                                        eam[4] = LocalDateTime.now().format(formatter);
+                                    }
+                                    boolean isTime = isDateBetween(downFx[1].toString(), eam[3].toString(), eam[4].toString());
+                                    if (isTime) {
+                                        downTime -= Integer.parseInt(downFx[2].toString());
+                                    }
+                                }
+                            }
+                            FxTime[i] += downTime;
+                        } else if (eam[1].equals("1P500")) {
+                            for (Object[] downYx : MESDownYXList) {
+                                if (eam[0].equals(downYx[0]) && !eam[3].equals(downYx[1])) {
+                                    if (eam[4] == null) {
+                                        eam[4] = LocalDateTime.now().format(formatter);
+                                    }
+                                    boolean isTime = isDateBetween(downYx[1].toString(), eam[3].toString(), eam[4].toString());
+                                    if (isTime) {
+                                        downTime -= Integer.parseInt(downYx[2].toString());
+                                    }
+                                }
+                            }
+                            YxTime[i] += downTime;
+                        }
+                    }
+
+                }
+            }
+        }
+        for (Object[] yxLoad : MESYXList) {
+            for (int i = 1; i <= 12; i++) {
+                if (Integer.parseInt(yxLoad[0].toString()) == i) {
+                    int loadC = 19 * 1440 * getDays(Integer.parseInt(Year), i);
+                    for (Object[] monthYx : MonthDownYXSjList) {
+                        if (Integer.parseInt(monthYx[0].toString()) == i) {
+                            loadC = loadC - Integer.parseInt(monthYx[1].toString());
+                        }
+                    }
+                    if (yxLoad[1] != null) {
+                        YxLoad[i] = Double.parseDouble(yxLoad[1].toString()) + loadC;
+                    }
+
+                }
+            }
+        }
+        for (Object[] fxLoad : MESFXList) {
+            for (int i = 1; i <= 12; i++) {
+                if (Integer.parseInt(fxLoad[0].toString()) == i) {
+                    FxLoad[i] = fxLoad[1];
+                }
+            }
+        }
+        list.add(FxLoad);
+        list.add(YxLoad);
+        for (int i = 1; i < FxTime.length; i++) {
+            FxTimeObject[i] = FxTime[i];
+        }
+        list.add(FxTimeObject);
+        for (int i = 1; i < YxTime.length; i++) {
+            YxTimeObject[i] = YxTime[i];
+        }
+        list.add(YxTimeObject);
+        return list;
+    }
+
+    private static LocalDateTime parseDateTime(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof java.sql.Timestamp) {
+            return ((java.sql.Timestamp) obj).toLocalDateTime();
+        }
+        if (obj instanceof LocalDateTime) {
+            return (LocalDateTime) obj;
+        }
+        if (obj instanceof java.util.Date) {
+            return ((java.util.Date) obj).toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+        }
+        String str = obj.toString().trim();
+        // 去除末尾的毫秒部分（如 .0）
+        if (str.contains(".")) {
+            str = str.substring(0, str.lastIndexOf('.'));
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            return LocalDateTime.parse(str, formatter);
+        } catch (Exception e) {
+            // 尝试其他格式
+            formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            return LocalDateTime.parse(str, formatter);
+        }
+    }
+
+    //获取根据佐证年份获取故障停线率
+    public List<List<Object[]>> getEvidenceYearFailure(String Year) throws ParseException {
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        StringBuilder sbEAM = new StringBuilder();
+        //获取停线的加工设备和停线时间
+        sbEAM.append("SELECT B.remark,DATE_FORMAT(A.hitchtime, '%Y/%m/%d')   hitchtime,DATE_FORMAT(A.completetime, '%Y/%m/%d')   completetime,A.formid,A.assetno,A.itemno,B.assetDesc,A.repairusername,B.deptno,A.rstatus,A.serviceusername,hitchtime,servicearrivetime,autotransfertime ,    repairtransfertime,downinitiatetime, completetime,TIMESTAMPDIFF(MINUTE, A.downinitiatetime,CASE WHEN A.completetime IS NULL THEN NOW() ELSE A.completetime END) diffTime,B.remark"
+                + " FROM equipmentrepair A LEFT JOIN assetcard B  ON A.assetno=B.formid   where  A.hitchtime like '" + Year + "%'  and A.company='C'"
+                + " and B.remark is not null  and B.remark!=''  and (A.hitchurgency = '03'   or downinitiatetime is not null)  and A.rstatus<=95");
+        sbEAM.append(" AND (B.remark LIKE 'M/C%'  OR  B.remark LIKE 'KAPP%' OR  B.remark LIKE 'FMS%' OR  B.remark LIKE '%立式加工机%' OR  B.remark LIKE 'NSM%' OR  B.remark LIKE 'CG%' )  and B.remark!='KAPP-09' AND qty>0");
+        Query query = getEntityManager().createNativeQuery(sbEAM.toString());
+        List<Object[]> resultsEAM = query.getResultList();
+        // 按件号分组
+        Map<String, List<Object[]>> groupMap = new LinkedHashMap<>();
+        for (Object[] row : resultsEAM) {
+            String assetno = (String) row[0];
+            if (assetno == null) {
+                assetno = ""; // 处理空件号
+            }
+            groupMap.computeIfAbsent(assetno, k -> new ArrayList<>()).add(row);
+        }
+        List<Object[]> resultEAMList = new ArrayList<>();
+
+        for (List<Object[]> list : groupMap.values()) {
+            // 按开始时间升序排序
+            list.sort(Comparator.comparing(row -> parseDateTime(row[15])));
+
+            LocalDateTime lastEnd = null; // 已覆盖的最大结束时间
+
+            for (Object[] row : list) {
+                LocalDateTime start = parseDateTime(row[15]);
+                LocalDateTime end = parseDateTime(row[16]);
+
+                // 未完成的记录，结束时间取当前时间
+                if (end == null) {
+                    end = LocalDateTime.now();
+                }
+
+                long effectiveMinutes = 0;
+
+                if (lastEnd == null || start.isAfter(lastEnd)) {
+                    // 无重叠，全部有效
+                    effectiveMinutes = ChronoUnit.MINUTES.between(start, end);
+                } else {
+                    // 有重叠，只计算超出 lastEnd 的部分
+                    if (end.isAfter(lastEnd)) {
+                        effectiveMinutes = ChronoUnit.MINUTES.between(lastEnd, end);
+                    }
+                    // 完全重叠时 effectiveMinutes 保持 0
+                }
+
+                // 追加有效分钟数列
+                Object[] newRow = Arrays.copyOf(row, row.length + 1);
+                newRow[row.length] = effectiveMinutes;  // Long 类型
+                resultEAMList.add(newRow);
+                // 更新已覆盖的最大结束时间
+                if (lastEnd == null || end.isAfter(lastEnd)) {
+                    lastEnd = end;
+                }
+            }
+        }
+        resultsEAM = resultEAMList;
+
+        List<Object[]> result = new ArrayList<>();
+        DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+        for (Object[] row : resultsEAM) {
+            // 提取开始和结束时间
+            String startStr = row[15].toString();
+            String endStr = row[16].toString();
+            LocalDateTime start = LocalDateTime.parse(startStr, formatterData);
+            LocalDateTime end = LocalDateTime.parse(endStr, formatterData);
+
+            // 同月处理
+            if (YearMonth.from(start).equals(YearMonth.from(end))) {
+                Object[] newRow = new Object[row.length + 1];
+                System.arraycopy(row, 0, newRow, 0, row.length);
+                newRow[15] = startStr; // 保持不变
+                newRow[16] = endStr;
+                newRow[17] = (int) ChronoUnit.MINUTES.between(start, end);
+                result.add(newRow);
+                continue;
+            }
+            // 切割处理
+            LocalDateTime currentStart = start;
+            while (true) {
+                LocalDateTime monthEnd = YearMonth.from(currentStart).atEndOfMonth().atTime(23, 59, 59);
+                boolean isLast = !end.isAfter(monthEnd); // 如果结束时间不晚于本月最后一天，则最后一段
+                LocalDateTime currentEnd = isLast ? end : monthEnd;
+
+                Object[] newRow = new Object[row.length + 1];
+                System.arraycopy(row, 0, newRow, 0, row.length);
+                newRow[15] = currentStart.format(formatterData);
+                newRow[16] = currentEnd.format(formatterData);
+                newRow[17] = (int) ChronoUnit.MINUTES.between(currentStart, isLast ? end : currentEnd);
+                result.add(newRow);
+
+                if (isLast) {
+                    break;
+                }
+                // 下一段开始为下月第一天 00:00:00
+                currentStart = monthEnd.plusSeconds(1).withHour(0).withMinute(0).withSecond(0);
+            }
+        }
+        resultsEAM = result;
+        //圆型负荷时间
+        StringBuilder sbMESYX = new StringBuilder();
+        sbMESYX.append(" SELECT EQPID,SUM(CASE WHEN MonthNum = 1 THEN DOWN ELSE 0 END) AS [1月],SUM(CASE WHEN MonthNum = 2 THEN DOWN ELSE 0 END) AS [2月],SUM(CASE WHEN MonthNum = 3 THEN DOWN ELSE 0 END) AS [3月],"
+                + "SUM(CASE WHEN MonthNum = 4 THEN DOWN ELSE 0 END) AS [4月],SUM(CASE WHEN MonthNum = 5 THEN DOWN ELSE 0 END) AS [5月],");
+        sbMESYX.append(" SUM(CASE WHEN MonthNum = 6 THEN DOWN ELSE 0 END) AS [6月],SUM(CASE WHEN MonthNum = 7 THEN DOWN ELSE 0 END) AS [7月],");
+        sbMESYX.append(" SUM(CASE WHEN MonthNum = 8 THEN DOWN ELSE 0 END) AS [8月],SUM(CASE WHEN MonthNum = 9 THEN DOWN ELSE 0 END) AS [9月],");
+        sbMESYX.append(" SUM(CASE WHEN MonthNum = 10 THEN DOWN ELSE 0 END) AS [10月],SUM(CASE WHEN MonthNum = 11 THEN DOWN ELSE 0 END) AS [11月],");
+        sbMESYX.append(" SUM(CASE WHEN MonthNum = 12 THEN DOWN ELSE 0 END) AS [12月] FROM (SELECT A.EQPID,MONTH(A.PRODUCTTIME) AS MonthNum,SUM(DOWN) AS DOWN");
+        sbMESYX.append(" FROM (SELECT A.EQPID,PRODUCTTIME,1440 - SUM(CONVERT(DECIMAL(13, 2), DOWNTIME)) AS DOWN FROM PLAN_CAPACITY_YX_DETAIL A LEFT JOIN MEQP ON A.EQPID = MEQP.EQPID WHERE PRODUCTTIME LIKE '" + Year + "%'AND EQPTYPEID = '实体设备'");
+        sbMESYX.append(" AND A.EQPID != 'KAPP-09' GROUP BY A.EQPID, PRODUCTTIME) A GROUP BY A.EQPID, MONTH(A.PRODUCTTIME)) AS MonthlyData GROUP BY EQPID ORDER BY EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESYX.toString());
+        List<Object[]> MESYXList = query.getResultList();
+        //方型负荷时间
+        StringBuilder sbMESFX = new StringBuilder();
+        sbMESFX.append(" SELECT EQPID,SUM(CASE WHEN MonthNum = 1 THEN DOWN ELSE 0 END) AS [1月],SUM(CASE WHEN MonthNum = 2 THEN DOWN ELSE 0 END) AS [2月],SUM(CASE WHEN MonthNum = 3 THEN DOWN ELSE 0 END) AS [3月],"
+                + "SUM(CASE WHEN MonthNum = 4 THEN DOWN ELSE 0 END) AS [4月],SUM(CASE WHEN MonthNum = 5 THEN DOWN ELSE 0 END) AS [5月],");
+        sbMESFX.append(" SUM(CASE WHEN MonthNum = 6 THEN DOWN ELSE 0 END) AS [6月],SUM(CASE WHEN MonthNum = 7 THEN DOWN ELSE 0 END) AS [7月],");
+        sbMESFX.append(" SUM(CASE WHEN MonthNum = 8 THEN DOWN ELSE 0 END) AS [8月],SUM(CASE WHEN MonthNum = 9 THEN DOWN ELSE 0 END) AS [9月],");
+        sbMESFX.append(" SUM(CASE WHEN MonthNum = 10 THEN DOWN ELSE 0 END) AS [10月],SUM(CASE WHEN MonthNum = 11 THEN DOWN ELSE 0 END) AS [11月],");
+        sbMESFX.append(" SUM(CASE WHEN MonthNum = 12 THEN DOWN ELSE 0 END) AS [12月] FROM (SELECT A.EQPID,MONTH(A.PRODUCTTIME) AS MonthNum,SUM(DOWN) AS DOWN");
+        sbMESFX.append(" FROM (SELECT A.EQPID,PRODUCTTIME,1440 - SUM(CONVERT(DECIMAL(13, 2), DOWNTIME)) AS DOWN FROM PLAN_CAPACITY_FX_DETAIL A LEFT JOIN MEQP ON A.EQPID = MEQP.EQPID WHERE PRODUCTTIME LIKE '" + Year + "%'AND EQPTYPEID = '实体设备'");
+        sbMESFX.append(" AND A.EQPID !='M/C-09' GROUP BY A.EQPID, PRODUCTTIME) A GROUP BY A.EQPID, MONTH(A.PRODUCTTIME)) AS MonthlyData GROUP BY EQPID ORDER BY EQPID");
+
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESFX.toString());
+        List<Object[]> MESFXList = query.getResultList();
+        //获取圆型生管停机时间
+        StringBuilder sbMESDownYX = new StringBuilder();
+        sbMESDownYX.append(" SELECT EQPID,PLANDATE,sum( convert(DECIMAL, WORKHOUR))  FROM PLAN_SEMI_CIRCLE    WHERE   PRODUCTID = '计划停机'  and PRODUCTNAME!='故障停机'");
+        sbMESDownYX.append(" AND PLANDATE LIKE '" + Year + "%' GROUP BY EQPID,PLANDATE order by  PLANDATE");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDownYX.toString());
+        List<Object[]> MESDownYXList = query.getResultList();
+        //圆型连线停机数据
+        StringBuilder sbMESDownYXSj = new StringBuilder();
+        sbMESDownYXSj.append(" SELECT EQPID,WORKDATE,sum(convert(int, ALARMTIME_LEN))/60  FROM EQP_RESULT_ALARM_D  where (EQPID like 'CG%'  OR EQPID LIKE 'NSM%')  AND  SPECIALALARMID='B0001'  AND ALARMSTARTTIME LIKE '%" + Year + "%'");
+        sbMESDownYXSj.append(" group by  EQPID,WORKDATE  order by  WORKDATE");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDownYXSj.toString());
+        List<Object[]> MESDownYXSjList = query.getResultList();
+        MESDownYXList.addAll(MESDownYXSjList);//NSM  CG实际停机当计划停机计算
+        //圆型每个月合计停机时间
+        StringBuilder MonthDownYXSj = new StringBuilder();
+        MonthDownYXSj.append(" SELECT EQPID,month(WORKDATE),sum(convert(int, ALARMTIME_LEN))/60  FROM EQP_RESULT_ALARM_D  where (EQPID like 'CG%'  OR EQPID LIKE 'NSM%')  AND  SPECIALALARMID='B0001'  AND ALARMSTARTTIME LIKE '%" + Year + "%'");
+        MonthDownYXSj.append(" group by  EQPID,month(WORKDATE)  order by  EQPID");
+        query = superEJBForMES.getEntityManager().createNativeQuery(MonthDownYXSj.toString());
+        List<Object[]> MonthDownYXSjList = query.getResultList();
+
+        //获取方型生管停机时间
+        StringBuilder sbMESDownFX = new StringBuilder();
+        sbMESDownFX.append(" SELECT EQPID,PLANDATE,sum( convert(DECIMAL, WORKHOUR))  FROM PLAN_SEMI_SQUARE    WHERE   PRODUCTID = '计划停机'  and PRODUCTNAME!='故障停机'");
+        sbMESDownFX.append(" AND PLANDATE LIKE '" + Year + "%' GROUP BY EQPID,PLANDATE");
+        query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDownFX.toString());
+        List<Object[]> MESDownFXList = query.getResultList();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String[] MESYXAdd = new String[21];
+        MESYXAdd[0] = "NSM-01";
+        MESYXAdd[1] = "NSM-02";
+        MESYXAdd[2] = "NSM-03";
+        MESYXAdd[3] = "NSM-04";
+        MESYXAdd[4] = "NSM-06";
+        MESYXAdd[5] = "NSM-07";
+        MESYXAdd[6] = "NSM-08";
+        MESYXAdd[7] = "NSM-09";
+        MESYXAdd[8] = "CG-05";
+        MESYXAdd[9] = "CG-06";
+        MESYXAdd[10] = "CG-07";
+        MESYXAdd[11] = "CG-08";
+        MESYXAdd[12] = "CG-09";
+        MESYXAdd[13] = "CG-10";
+        MESYXAdd[14] = "CG-11";
+        MESYXAdd[15] = "CG-12";
+        MESYXAdd[16] = "CG-13";
+        MESYXAdd[17] = "CG-14";
+        MESYXAdd[18] = "CG-15";
+        MESYXAdd[19] = "CG-18";
+        MESYXAdd[20] = "CG-19";
+        for (String eqpid : MESYXAdd) {
+            Object[] obj = new Object[13];
+            obj[0] = eqpid;
+            for (int i = 1; i <= 12; i++) {
+                int downTime = 0;
+                // 获取当前月份的最后一天
+                LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(Year), i, 1);
+                // 获取当前月份的天数
+                int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
+                for (Object[] objects : MonthDownYXSjList) {
+                    if (eqpid.equals(objects[0]) && i == Integer.parseInt(objects[1].toString())) {
+                        downTime = Integer.parseInt(objects[2].toString());
+                    }
+                }
+                obj[i] = daysInMonth * 1440 - downTime;
+            }
+            MESYXList.add(obj);//将
+
+        }
+        for (Object[] eam : resultsEAM) {
+            eam[17] = eam[19];
+            int downTime = Integer.parseInt(eam[17].toString());
+            DateTimeFormatter formatterEa = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+            LocalDateTime dt1 = LocalDateTime.parse(eam[15].toString(), formatterEa);
+            LocalDateTime dt2 = LocalDateTime.parse(eam[16].toString(), formatterEa);
+            //如果发生时间等于结束时间，则直接将故障时间算入总故障
+            if (dt1.toLocalDate().equals(dt2.toLocalDate())) {
+                continue;//跳出本次循环
+            } else {//代表有跨天的故障在判断故障内是否有生管计划停机的，故障开始时间不等于生管时间
+
+                if (eam[8].equals("1P100")) {
+                    for (Object[] downFx : MESDownFXList) {
+                        if (eam[0].equals(downFx[0]) && !eam[1].equals(downFx[1])) {
+                            if (eam[2] == null) {
+                                eam[2] = LocalDateTime.now().format(formatter);
+                            }
+                            boolean isTime = isDateBetween(downFx[1].toString(), dt1.toLocalDate().toString().split(" ")[0].replace('-', '/'), dt2.toLocalDate().toString().split(" ")[0].replace('-', '/'));
+                            if (isTime) {
+                                downTime -= Integer.parseInt(downFx[2].toString());
+                            }
+                        }
+                    }
+
+                } else if (eam[8].equals("1P500")) {
+                    for (Object[] downYx : MESDownYXList) {
+                        if (eam[0].equals(downYx[0]) && !eam[1].equals(downYx[1])) {
+                            if (eam[2] == null) {
+                                eam[2] = LocalDateTime.now().format(formatter);
+                            }
+                            boolean isTime = isDateBetween(downYx[1].toString(), dt1.toLocalDate().toString().split(" ")[0].replace('-', '/'), dt2.toLocalDate().toString().split(" ")[0].replace('-', '/'));
+                            if (isTime) {
+                                downTime -= Integer.parseInt(downYx[2].toString());
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            if (downTime < 0) {
+                eam[17] = 0;
+            } else {
+                eam[17] = downTime;//将减完后的停机时间为此数据
+            }
+
+        }
+        List<List<Object[]>> list2 = new ArrayList<>();
+        list2.add(resultsEAM);
+        list2.add(MESYXList);
+        list2.add(MESFXList);
+        list2.add(MESDownYXList);
+        list2.add(MESDownFXList);
+
+        return list2;
+    }
+
+    public int getDays(int year, int month) {
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            case 2:
+                // 判断是否为闰年
+                if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                    return 29;
+                } else {
+                    return 28;
+                }
+            default:
+                return 0;
+        }
+    }
+
     public List<Object[]> getLEN(String type, String strDate, String endDate) {
         List<String> deptName = this.getEPQIDDeptname(type);
         if (!deptName.isEmpty()) {
@@ -2071,7 +2725,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     }
 //获取OEE年报
 
-    public List getEquipmentTotalEfficiencyYearOEE(String year, String EPQID, String type) throws ParseException {
+    public List getEquipmentTotalEfficiencyYearOEE(String year, String EPQID, String type, String cancellation) throws ParseException {
 
 //       生管计划工时，连线故障次数及故障工时
         List<String> deptName = this.getEPQIDDeptname(EPQID);
@@ -2088,24 +2742,28 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         String loadStr = "";      //负荷时间计算SQL
         String loadStrNoQty = "";      //负荷时间计算SQL
         if (dept.equals("半成品方型件")) {
-            str = " SELECT  EQPID,  month(PRODUCTTIME),sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)),SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, month(PRODUCTTIME)";
+            str = " SELECT  EQPID,  month(PRODUCTTIME),sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)),SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' and PRODUCTTIME<=(SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE))) GROUP BY EQPID, month(PRODUCTTIME)";
             remarkSql = " SELECT EQPID,REMARK FROM PLAN_CAPACITY_FX_REMARK   WHERE  PRODUCTTIME like'%" + year + "%'  and PRODUCTTYPE='半成品方型件' GROUP BY EQPID, month(PRODUCTTIME)";
-            loadStr = " SELECT  EQPID,  PRODUCTTIME,sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)) QTY,SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, PRODUCTTIME";
-            loadStrNoQty="SELECT DISTINCT EQPID, PLANDATE, SUM(convert(DECIMAL, WORKHOUR)) halt FROM PLAN_SEMI_SQUARE WHERE PLANDATE LIKE '"+year+"%' AND PRODUCTID = '计划停机' GROUP BY EQPID, PLANDATE";
+            loadStr = " SELECT  EQPID,  PRODUCTTIME,sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A)) + SUM(convert(DECIMAL(13,2), SHIFT_B)) + SUM(convert(DECIMAL(13,2), SHIFT_C)) QTY,SUM(convert(DECIMAL(13,2), SHIFT_A)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_B)*convert(DECIMAL(13,2), WORKHOUR)+convert(DECIMAL(13,2), SHIFT_C)*convert(DECIMAL(13,2), WORKHOUR)) FROM dbo.PLAN_CAPACITY_FX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' and PRODUCTTIME<=(SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE))) GROUP BY EQPID, PRODUCTTIME";
+            loadStrNoQty = "SELECT DISTINCT EQPID, PLANDATE, SUM(convert(DECIMAL, WORKHOUR)) halt FROM PLAN_SEMI_SQUARE WHERE PLANDATE LIKE '" + year + "%' AND PRODUCTID = '计划停机' GROUP BY EQPID, PLANDATE";
         } else {
-            str = " SELECT  EQPID,  month(PRODUCTTIME),  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, month(PRODUCTTIME)";
+            str = " SELECT  EQPID,  month(PRODUCTTIME),  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' and PRODUCTTIME<=(SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE))) GROUP BY EQPID, month(PRODUCTTIME)";
             remarkSql = " SELECT EQPID,REMARK FROM PLAN_CAPACITY_YX_REMARK   WHERE  PRODUCTTIME like'%" + year + "%'  and PRODUCTTYPE='半成品圆型件' GROUP BY EQPID, month(PRODUCTTIME)";
-            loadStr = " SELECT  EQPID,  PRODUCTTIME,  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)) QTY,SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME like '%" + year + "%' GROUP BY EQPID, PRODUCTTIME";
-            loadStrNoQty="SELECT DISTINCT EQPID, PLANDATE, SUM(convert(DECIMAL, WORKHOUR)) halt FROM PLAN_SEMI_CIRCLE WHERE PLANDATE LIKE '"+year+"%' AND PRODUCTID = '计划停机' GROUP BY EQPID, PLANDATE";
+            loadStr = " SELECT  EQPID,  PRODUCTTIME,  sum(convert(DECIMAL(13,2), PRODUCTQTY)),SUM(convert(DECIMAL(13,2), SHIFT_A_A)+convert(DECIMAL(13,2), SHIFT_A_B)+convert(DECIMAL(13,2), SHIFT_B_A)+convert(DECIMAL(13,2), SHIFT_B_B)+convert(DECIMAL(13,2), SHIFT_C_A)+convert(DECIMAL(13,2), SHIFT_C_B)) QTY,SUM(convert(DECIMAL(13,2), SHIFT_A_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_B_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_C_A)*convert(DECIMAL(13,2), WORKHOUR_A)+convert(DECIMAL(13,2), SHIFT_A_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_B_B)*convert(DECIMAL(13,2), WORKHOUR_B)+convert(DECIMAL(13,2), SHIFT_C_B)*convert(DECIMAL(13,2), WORKHOUR_B)) FROM PLAN_CAPACITY_YX_DETAIL WHERE PRODUCTTIME like '%" + year + "%'  and PRODUCTTIME<=(SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE))) GROUP BY EQPID, PRODUCTTIME";
+            loadStrNoQty = "SELECT DISTINCT EQPID, PLANDATE, SUM(convert(DECIMAL, WORKHOUR)) halt FROM PLAN_SEMI_CIRCLE WHERE PLANDATE LIKE '" + year + "%' AND PRODUCTID = '计划停机' GROUP BY EQPID, PLANDATE";
         }
-        String loadSql=" SELECT A.EQPID,A.month,A.halt,B.halt FROM (select A.EQPID, month(A.PRODUCTTIME) month, sum(B.halt) halt from (";
-        loadSql+=loadStr +") A  left join ("+loadStrNoQty +" ) B ON A.EQPID = B.EQPID and A.PRODUCTTIME = B.PLANDATE where A.QTY = 0  and B.halt is not null  group by A.EQPID, month(A.PRODUCTTIME)) A  LEFT join  (SELECT A.EQPID, month(A.PRODUCTTIME) month,sum(B.halt) halt FROM (";
-        loadSql+=loadStr+" ) A Left join (SELECT EQPID, cast(dateadd(hour,-8,ALARMSTARTTIME) as date) as  WORKDATE ,ROUND(SUM(convert(DECIMAL(13, 1),ALARMTIME_LEN))/60,0) halt FROM EQP_RESULT_ALARM_D  where (SPECIALALARMID='B0001'  OR SPECIALALARMID='A0001'  OR SPECIALALARMID='A0014')  and ALARMSTARTTIME LIKE '"+year+"%'  GROUP BY  EQPID,cast(dateadd(hour,-8,ALARMSTARTTIME) as date)) B ON  A.EQPID=B.EQPID  AND A.PRODUCTTIME=B.WORKDATE  where A.QTY !=0  and B.halt is not null group by  A.EQPID, month(A.PRODUCTTIME))  B ON A.EQPID=B.EQPID AND A.month=B.month";
+        String loadSql = " select A.EQPID, month(A.PRODUCTTIME) month, count(A.EQPID)*1440 halt from (";
+        loadSql += loadStr + ") A   where A.QTY = 0   group by A.EQPID, month(A.PRODUCTTIME) ";
         Query query = superEJBForMES.getEntityManager().createNativeQuery(str);
         rList = query.getResultList();
-        //负荷时间
-        query = superEJBForMES.getEntityManager().createNativeQuery(loadSql.toString());
+        //计划停机时间
+        query = superEJBForMES.getEntityManager().createNativeQuery(loadSql);
         List<Object[]> resultsLoad = query.getResultList();
+
+        String loadActualSql = " select A.EQPID, month(A.PRODUCTTIME) month, sum(halt) halt from ( " + loadStr + ") A  left join (SELECT EQPID,  cast(dateadd(hour, -8, ALARMSTARTTIME) as date) as   WORKDATE ,ROUND(SUM(convert(DECIMAL(13, 1),ALARMTIME_LEN))/60,0) halt FROM EQP_RESULT_ALARM_D  where (SPECIALALARMID='B0001'  OR SPECIALALARMID='A0001'  OR SPECIALALARMID='A0014')  and ALARMSTARTTIME LIKE '" + year + "%' and ALARMSTARTTIME <= (SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE)))  GROUP BY  EQPID, cast(dateadd(hour, -8, ALARMSTARTTIME) as date)) B ON A.EQPID = B.EQPID AND A.PRODUCTTIME = B.WORKDATE where A.QTY != 0 and B.halt is not null group by A.EQPID, month(A.PRODUCTTIME) ";
+        //实际停机时间
+        query = superEJBForMES.getEntityManager().createNativeQuery(loadActualSql);
+        List<Object[]> resultsActualLoad = query.getResultList();
         //       获取除外工时合计
         String speId = "B0001";
         String LDSql = "";
@@ -2114,8 +2772,8 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             LDSql = "and   A.SPECIALALARMID!='A0014'";
         }
         StringBuilder sbMESLEN = new StringBuilder();
-        sbMESLEN.append(" SELECT EQPID,month(convert(VARCHAR(10), cast(dateadd(HOUR, -8, A.ALARMSTARTTIME) AS DATE), 111)) AS DATE,sum(convert(INT, ALARMTIME_LEN)) / 60,");
-        sbMESLEN.append("   sum(CASE A.SPECIALALARMID  WHEN '" + speId + "' THEN convert(INT, ALARMTIME_LEN) / 60  ELSE 0 END) FROM EQP_RESULT_ALARM_D A WHERE A.ALARMSTARTTIME LIKE '" + year + "%' " + LDSql + "");
+        sbMESLEN.append(" SELECT A.EQPID,month(convert(VARCHAR(10), cast(dateadd(HOUR, -8, A.ALARMSTARTTIME) AS DATE), 111)) AS DATE,sum(convert(INT, ALARMTIME_LEN)) / 60,");
+        sbMESLEN.append("   sum(CASE A.SPECIALALARMID  WHEN '" + speId + "' THEN convert(INT, ALARMTIME_LEN) / 60  ELSE 0 END) FROM EQP_RESULT_ALARM_D  A   LEFT JOIN  (" + loadStr + ") B  ON A.EQPID=B.EQPID AND A.WORKDATE=B.PRODUCTTIME WHERE A.ALARMSTARTTIME LIKE '" + year + "%' " + LDSql + " and B.QTY>0  and ALARMSTARTTIME<=(SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE)))  and A.SPECIALALARMID != '" + speId + "'");
         sbMESLEN.append(" GROUP BY A.EQPID, month(convert(VARCHAR(10), cast(dateadd(HOUR, -8, A.ALARMSTARTTIME) AS DATE), 111))");
 
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESLEN.toString());
@@ -2137,13 +2795,13 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 //        生管停机计划时间获取
         StringBuilder sbMESDowntime = new StringBuilder();
         sbMESDowntime.append("SELECT A.EQPID,A.month,A.planda    FROM ");
-        sbMESDowntime.append("( SELECT DISTINCT EQPID,month(PLANDATE) month,day(DATEADD(DD, -DAY(DATEADD(MM, 1, PLANDATE )), DATEADD(MM, 1, PLANDATE )))*1440 planda   FROM  ").append(tName).append(" WHERE  PLANDATE LIKE '").append(year).append("%' GROUP BY EQPID,month(PLANDATE)) A  LEFT JOIN");
-        sbMESDowntime.append(" (SELECT DISTINCT EQPID,month(PLANDATE) month, SUM(convert(DECIMAL, WORKHOUR)) halt    FROM  ").append(tName).append(" WHERE  PLANDATE LIKE '").append(year).append("%' AND PRODUCTID='计划停机' GROUP BY EQPID,month(PLANDATE)) B ON A.EQPID=B.EQPID AND A.month=B.month");
+        sbMESDowntime.append("( SELECT DISTINCT EQPID,month(PLANDATE) month,MAX(CASE WHEN YEAR(PLANDATE) = YEAR(GETDATE()) AND MONTH(PLANDATE) = MONTH(GETDATE())  THEN DAY(DATEADD(DD, -1, GETDATE())) ELSE DAY(DATEADD(DD, -DAY(DATEADD(MM, 1, PLANDATE)), DATEADD(MM, 1, PLANDATE))) END)*1440 AS planda  FROM  ").append(tName).append(" WHERE  PLANDATE LIKE '").append(year).append("%' GROUP BY EQPID,month(PLANDATE)) A  LEFT JOIN");
+        sbMESDowntime.append(" (SELECT DISTINCT EQPID,month(PLANDATE) month, SUM(convert(DECIMAL, WORKHOUR)) halt    FROM  ").append(tName).append(" WHERE  PLANDATE LIKE '").append(year).append("%' AND PRODUCTID='计划停机' and PLANDATE<=(SELECT DATEADD(day, -1, CAST(GETDATE() AS DATE)))  GROUP BY EQPID,month(PLANDATE)) B ON A.EQPID=B.EQPID AND A.month=B.month");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESDowntime.toString());
         List<Object[]> resultsDowntime = query.getResultList();
         //      不合格单数量
         StringBuilder sbMESQCQTY = new StringBuilder();
-        sbMESQCQTY.append(" SELECT S.EQPID,month(PROJECTCREATETIME) month,SUM(convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003'  and S.EQPID IS NOT NULL  GROUP BY S.EQPID,month(PROJECTCREATETIME)");
+        sbMESQCQTY.append(" SELECT A.EQPID,month(C.NODESTARTTIME) month,SUM(convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID          left join (select  * from FLOW_PROJECT_HISTORY where PROCESSNODEID='UQFN0002' AND EFFECTIVEFLAG='Y' AND ADDFLAG='N'  ) C on B.PROJECTID =C.PROJECTID WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND C.NODESTARTTIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003'  and A.EQPID IS NOT NULL  GROUP BY A.EQPID,month(C.NODESTARTTIME)");
 
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQCQTY.toString());
         List<Object[]> resultsQCQTY = query.getResultList();
@@ -2152,18 +2810,22 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         resultsDowntime.forEach(objects -> {
             List<Object> EQPID = new ArrayList<>();
             String anKey = objects[0].toString();
-            if (moMap.containsKey(anKey)) {
-                for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
-                    if (entry.getKey().equals(anKey)) {
-                        EQPID = entry.getValue();
-                        EQPID.add(objects);
-                        moMap.put(anKey, EQPID);
+
+            if (!cancellation.contains(anKey)) {
+                if (moMap.containsKey(anKey)) {
+                    for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
+                        if (entry.getKey().equals(anKey)) {
+                            EQPID = entry.getValue();
+                            EQPID.add(objects);
+                            moMap.put(anKey, EQPID);
+                        }
                     }
+                } else {
+                    EQPID.add(objects);
+                    moMap.put(anKey, EQPID);
                 }
-            } else {
-                EQPID.add(objects);
-                moMap.put(anKey, EQPID);
             }
+
         });
         List<Object[]> list = new ArrayList<>();
         for (Map.Entry<String, List<Object>> entry : moMap.entrySet()) {
@@ -2171,10 +2833,13 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             List<Object[]> itemList1 = (List<Object[]>) itemList;
             Object[] entity = new Object[160];
             entity[0] = entry.getKey();
+            if (entity[0].toString().equals("KAPP-02")) {
+                entity[0] = entry.getKey();
+            }
             for (int i = 1; i <= 12; i++) {
                 int downTime = 0;
                 for (Object[] obj : itemList1) {
-                    if (Integer.parseInt(obj[1].toString()) == i) {
+                    if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
                         entity[2 + (i - 1) * 9] = obj[2];
                         if (obj[2] != null) {
                             downTime = Integer.parseInt(obj[2].toString());
@@ -2182,17 +2847,23 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
                     }
                 }
-                   for (Object[] obj : resultsLoad) {
+                for (Object[] obj : resultsLoad) {
                     if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
-                        Object objDow =downTime;
-                        if (obj[2]!=null) {
-                             downTime =downTime-( (int) (Integer.parseInt(obj[2].toString()))); 
-                             objDow =downTime;
+
+                        if (obj[2] != null) {
+                            downTime = downTime - ((int) (Integer.parseInt(obj[2].toString())));
+                            entity[2 + (i - 1) * 9] = downTime;
                         }
-                        if (obj[3]!=null) {
-                             objDow =downTime-( Double.parseDouble(obj[3].toString())); 
+
+                    }
+                }
+                for (Object[] obj : resultsActualLoad) {
+                    if (obj[0].toString().equals(entry.getKey()) && Integer.parseInt(obj[1].toString()) == i) {
+                        if (obj[2] != null) {
+                            downTime = downTime - ((int) (Double.parseDouble(obj[2].toString())));
+                            entity[2 + (i - 1) * 9] = downTime;
                         }
-                        entity[2 + (i - 1) * 9] =objDow; 
+
                     }
                 }
                 for (Object[] obj : rList) {
@@ -2225,7 +2896,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         return list;
     }
 
-    public List getEquipmentTotalEfficiencyDayOEE(String year, String EPQID, String type) throws ParseException {
+    public List getEquipmentTotalEfficiencyDayOEE(String year, String EPQID, String type, String cancellation) throws ParseException {
 
 //       生管计划工时，连线故障次数及故障工时
         List<String> deptName = this.getEPQIDDeptname(EPQID);
@@ -2318,7 +2989,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         List<Object[]> resultsDowntime = query.getResultList();
         //      不合格单数量
         StringBuilder sbMESQCQTY = new StringBuilder();
-        sbMESQCQTY.append(" SELECT SUM ( convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM,S.EQPID FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID left join PROCESS_STEP S ON A.PRODUCTORDERID =S.PRODUCTORDERID AND A.COMPIDSEQ =S.PRODUCTSERIALNUMBER AND B.SOURCESTEPIP=S.STEPID WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003'  GROUP BY S.EQPID");
+        sbMESQCQTY.append(" SELECT SUM ( convert(DECIMAL, DEFECTNUM)) AS DEFECTSUM,A.EQPID FROM  FLOW_FORM_UQF_S_NOW B LEFT JOIN ANALYSISRESULT_QCD  A  ON  A.PROJECTID=B.PROJECTID          left join (select  * from FLOW_PROJECT_HISTORY where PROCESSNODEID='UQFN0002' AND EFFECTIVEFLAG='Y' AND ADDFLAG='N'  ) C on B.PROJECTID =C.PROJECTID WHERE  B.PROJECTID LIKE 'QC%' and B.ANALYSISJUDGEMENTRESULT != '良品' and B.ANALYSISJUDGEMENTRESULT != '告知' AND B.ISPROCESSED='Y' AND C.NODESTARTTIME LIKE '").append(year).append("%' AND B.UQFTYPE ='UQFG0003'  GROUP BY A.EQPID");
         query = superEJBForMES.getEntityManager().createNativeQuery(sbMESQCQTY.toString());
         List<Object[]> resultsQCQTY = query.getResultList();
         //      特采数量
@@ -2344,116 +3015,118 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         int strMin = 0;
         int endMin = 0;
         for (Object[] i : resultsEAMEPQID) {
-            Object[] obj = new Object[43];
-            for (Object[] objects : resultsAVA) {
-                if (objects[0].equals(i[0].toString())) {
+            if (!cancellation.contains(i[0].toString())) {
 
-                    //      将有生管计划的所有值赋0
-                    for (int j = 0; j < 40; j++) {
-                        obj[j] = 0;
-                    }
-                    obj[1] = 1440;
-                    obj[7] = 1440 - Integer.parseInt(objects[1].toString());
+                Object[] obj = new Object[43];
+                for (Object[] objects : resultsAVA) {
+                    if (objects[0].equals(i[0].toString())) {
+
+                        //      将有生管计划的所有值赋0
+                        for (int j = 0; j < 40; j++) {
+                            obj[j] = 0;
+                        }
+                        obj[1] = 1440;
+                        obj[7] = 1440 - Integer.parseInt(objects[1].toString());
 //                    故障次数为0时将数值赋0
-                    if (objects[3] != null) {
-                        obj[25] = objects[3];
-                        obj[27] = objects[2];
+                        if (objects[3] != null) {
+                            obj[25] = objects[3];
+                            obj[27] = objects[2];
+                        }
                     }
                 }
-            }
 
 //          实际产出件数及标准工时
-            for (Object[] object : resultsQTY) {
-                if (object[0].equals(i[0].toString())) {
-                    obj[3] = object[1];
-                    obj[4] = object[2];
+                for (Object[] object : resultsQTY) {
+                    if (object[0].equals(i[0].toString())) {
+                        obj[3] = object[1];
+                        obj[4] = object[2];
+                    }
                 }
-            }
-            String[] y = year.split("/");//获取对应年月份
+                String[] y = year.split("/");//获取对应年月份
 //            计划产出件数
-            for (Object[] object : resultsPlan) {
-                if (object[0].equals(i[0].toString())) {
-                    obj[2] = object[1];
-                    obj[1] = 1440;
-                    if ((Integer.parseInt(y[0].toString()) == 2022 && Integer.parseInt(y[1].toString()) <= 7) || Integer.parseInt(y[0].toString()) < 2022) {//从22年8月前开始维护的数据
-                        if (dept.equals("半成品方型件")) {
-                            if (Integer.parseInt(object[2].toString()) == 0) {
-                                obj[7] = 1440;
-                            } else if (Integer.parseInt(object[2].toString()) > 720) {
-                                obj[7] = 0;
-                            } else {
-                                obj[7] = 720;
+                for (Object[] object : resultsPlan) {
+                    if (object[0].equals(i[0].toString())) {
+                        obj[2] = object[1];
+                        obj[1] = 1440;
+                        if ((Integer.parseInt(y[0].toString()) == 2022 && Integer.parseInt(y[1].toString()) <= 7) || Integer.parseInt(y[0].toString()) < 2022) {//从22年8月前开始维护的数据
+                            if (dept.equals("半成品方型件")) {
+                                if (Integer.parseInt(object[2].toString()) == 0) {
+                                    obj[7] = 1440;
+                                } else if (Integer.parseInt(object[2].toString()) > 720) {
+                                    obj[7] = 0;
+                                } else {
+                                    obj[7] = 720;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            //            生管计划停机时间
-            for (Object[] object : resultsDowntime) {
-                if (object[0].equals(i[0].toString())) {
-                    if ((Integer.parseInt(y[0].toString()) == 2022 && Integer.parseInt(y[1].toString()) >= 8) || Integer.parseInt(y[0].toString()) > 2022) {//从22年8月开始维护的数据
-                        obj[7] = object[1];
-                    }
-                }
-            }
-//            不合格单数量
-            for (Object[] object : resultsQCQTY) {
-                if (object[1] != null) {
-                    if (object[1].equals(i[0].toString())) {
-                        obj[5] = object[0];
-                    }
-                }
-
-            }
-//            特采数量
-            for (Object[] object : resultsQCQTYSpecial) {
-                if (object[0] != null) {
+                //            生管计划停机时间
+                for (Object[] object : resultsDowntime) {
                     if (object[0].equals(i[0].toString())) {
-                        obj[6] = object[1];
+                        if ((Integer.parseInt(y[0].toString()) == 2022 && Integer.parseInt(y[1].toString()) >= 8) || Integer.parseInt(y[0].toString()) > 2022) {//从22年8月开始维护的数据
+                            obj[7] = object[1];
+                        }
                     }
                 }
+//            不合格单数量
+                for (Object[] object : resultsQCQTY) {
+                    if (object[1] != null) {
+                        if (object[1].equals(i[0].toString())) {
+                            obj[5] = object[0];
+                        }
+                    }
 
-            }
-            if (strMin != 0) {
-                obj[27] = strMin;
-                obj[30] = endMin;
-                strMin = 0;
-                endMin = 0;
-            } else {
-                obj[27] = 0;
-                obj[30] = 0;
-            }
+                }
+//            特采数量
+                for (Object[] object : resultsQCQTYSpecial) {
+                    if (object[0] != null) {
+                        if (object[0].equals(i[0].toString())) {
+                            obj[6] = object[1];
+                        }
+                    }
+
+                }
+                if (strMin != 0) {
+                    obj[27] = strMin;
+                    obj[30] = endMin;
+                    strMin = 0;
+                    endMin = 0;
+                } else {
+                    obj[27] = 0;
+                    obj[30] = 0;
+                }
 //            EAM故障时间及故障次数
-            for (Object[] objects : resultsEAM) {
-                if (objects[0].equals(i[0].toString()) && obj[26] != null) {
-                    obj[27] = Integer.parseInt(objects[2].toString()) + Integer.parseInt(obj[26].toString());
-                    obj[29] = objects[1];
-                    obj[30] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(obj[29].toString());
-                    obj[31] = objects[1];
-                    if (Integer.parseInt(objects[2].toString()) > 1440) {//当维修时间超出当天时间，将超出部分归类到第二天
-                        strMin = Integer.parseInt(objects[2].toString()) - Integer.parseInt(objects[4].toString());
-                        endMin = Integer.parseInt(objects[3].toString()) - Integer.parseInt(objects[4].toString());
-                    } else {
-                        strMin = 0;
-                        endMin = 0;
+                for (Object[] objects : resultsEAM) {
+                    if (objects[0].equals(i[0].toString()) && obj[26] != null) {
+                        obj[27] = Integer.parseInt(objects[2].toString()) + Integer.parseInt(obj[26].toString());
+                        obj[29] = objects[1];
+                        obj[30] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(obj[29].toString());
+                        obj[31] = objects[1];
+                        if (Integer.parseInt(objects[2].toString()) > 1440) {//当维修时间超出当天时间，将超出部分归类到第二天
+                            strMin = Integer.parseInt(objects[2].toString()) - Integer.parseInt(objects[4].toString());
+                            endMin = Integer.parseInt(objects[3].toString()) - Integer.parseInt(objects[4].toString());
+                        } else {
+                            strMin = 0;
+                            endMin = 0;
+                        }
                     }
                 }
-            }
-            for (Object[] objects : resultsLEN) {
-                if (objects[0].equals(i[0].toString())) {
-                    for (int j = 2; j <= 18; j++) {
-                        obj[7 + j] = objects[j];
-                    }
-                    if (dept.equals("半成品方型件")) {
-                        obj[8] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(objects[18].toString());
-                    } else {
-                        obj[8] = objects[2].toString();
-                    }
-                    obj[26] = objects[1];
-                    if (!obj[26].equals(0)) {
-                        obj[28] = 1;
-                    }
+                for (Object[] objects : resultsLEN) {
+                    if (objects[0].equals(i[0].toString())) {
+                        for (int j = 2; j <= 18; j++) {
+                            obj[7 + j] = objects[j];
+                        }
+                        if (dept.equals("半成品方型件")) {
+                            obj[8] = Integer.parseInt(objects[3].toString()) + Integer.parseInt(objects[18].toString());
+                        } else {
+                            obj[8] = objects[2].toString();
+                        }
+                        obj[26] = objects[1];
+                        if (!obj[26].equals(0)) {
+                            obj[28] = 1;
+                        }
 //                    obj[21]=objects[15];
 ////                  获取计划停机时间-实际停机时间的差异
 //                    if (obj[7] != null && Integer.parseInt(obj[7].toString()) != 0) {
@@ -2462,34 +3135,34 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 //                    } else {
 //                        obj[21] = 0;
 //                    }
-                }
-            }
-            for (Object[] object : remarkList) {
-                if (object[0].equals(i[0].toString())) {
-                    if (obj[40] == null) {
-                        obj[40] = object[1].toString();
-                    } else {
-                        obj[40] += " ," + object[1].toString();
                     }
+                }
+                for (Object[] object : remarkList) {
+                    if (object[0].equals(i[0].toString())) {
+                        if (obj[40] == null) {
+                            obj[40] = object[1].toString();
+                        } else {
+                            obj[40] += " ," + object[1].toString();
+                        }
 
+                    }
                 }
-            }
 //            if (type.equals("G")) {
-            for (Object[] objects : rList) {
-                if (objects[0].equals(i[0].toString())) {
-                    obj[2] = objects[1];
-                    obj[3] = objects[2];
-                    obj[4] = objects[3];
+                for (Object[] objects : rList) {
+                    if (objects[0].equals(i[0].toString())) {
+                        obj[2] = objects[1];
+                        obj[3] = objects[2];
+                        obj[4] = objects[3];
+                    }
                 }
-            }
 //            }
 
-            obj[0] = i[0].toString();
-            if (obj[1] != null) {
-                list.add(obj);
+                obj[0] = i[0].toString();
+                if (obj[1] != null) {
+                    list.add(obj);
+                }
             }
         }
-
         return list;
     }
 
@@ -2522,6 +3195,23 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
     }
 
     /**
+     * 获取加工机所在的部门
+     *
+     * @return
+     */
+    public List getEPQID(String Dept) {
+        StringBuilder sbMES = new StringBuilder();
+        sbMES.append("SELECT EQPID FROM MEQP WHERE EQPTYPEID ='实体设备' ");
+        if (!Dept.equals("Null")) {
+            sbMES.append(" AND PRODUCTTYPE='").append(Dept).append("'");
+        }
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        Query query = superEJBForMES.getEntityManager().createNativeQuery(sbMES.toString());
+        List<Object[]> resultsMES = query.getResultList();
+        return resultsMES;
+    }
+
+    /**
      * 根据输入的str获取本月的第一天和最后一条 str=1 end=0为第一天 str=0 end=1为最好一天
      *
      * @param str
@@ -2536,6 +3226,87 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         }
         calendar.set(Calendar.DAY_OF_MONTH, str);
         return calendar.getTime();
+    }
+
+    public List getAssetZeroList(String strDate, String endDate, String type, String dept, String Company) throws ParseException {
+        List EQPIDList = getEPQID(dept);
+        String itemString = "";
+        String deptno = "1P1";
+
+        if (dept.equals("半成品圆型件")) {
+            deptno = "1P5";
+        } else if (dept.equals("半成品方型件")) {
+            deptno = "1P1";
+        } else if (dept.equals("生产涡旋加工")) {
+            EQPIDList = getEPQID("Null");
+            deptno = "1P9";
+        }
+
+        String deptText = "";
+        if (!dept.equals("Null")) {
+            deptText += " and   A.deptno  like '" + deptno + "%'   And A.Company='" + Company + "'";
+        }
+        for (Object object : EQPIDList) {
+            if (!object.equals("M/C-09") && !object.toString().contains("NL") && !object.toString().contains("NM")) {
+                itemString += "'" + object + "',";
+            }
+        }
+        itemString = itemString.substring(0, itemString.length() - 1);
+        StringBuilder sbZero = new StringBuilder();
+        sbZero.append(" select A.formid,A.assetDesc,A.remark,A.assetSpec,A.deptname,A.paramvalue,A.itemno,A.count, DATE_FORMAT(A.hitchtime, '%Y-%m-%d %h:%m'),DATE_FORMAT(A.completetime, '%Y-%m-%d %h:%m'),DATEDIFF('" + endDate + "',A.completetime)   from  (");
+        sbZero.append(" SELECT A.formid,A.assetDesc,A.remark,A.assetSpec,A.deptname,B.paramvalue,A.itemno,count(C.formid) count ,max(hitchtime) hitchtime,max(completetime) completetime FROM assetcard  A  left join  assetitem D ON A.itemno=D.itemno  LEFT JOIN  assetcategory F ON D.categoryid=F.id left join  assetparameterdta B ON A.formid=B.pid and   paramname='设备等级' ");
+        sbZero.append(" left  JOIN equipmentrepair C on C.assetno=A.formid AND hitchtime>'" + strDate + "' AND hitchtime <='" + endDate + "'");
+        sbZero.append(" WHERE     qty>0   and C.rstatus<=95");
+        if (type.equals("加工机")) {
+            sbZero.append("  and      A.remark in (" + itemString + ")");
+        } else if (type.equals("非加工机")) {
+            sbZero.append("  and     (  A.remark IS NULL)");
+        }
+        sbZero.append(deptText);
+        sbZero.append("   group by  A.formid) A");
+        Query query = getEntityManager().createNativeQuery(sbZero.toString());
+        List<Object[]> resZeroList = query.getResultList();
+        List<Object[]> list = new ArrayList<>();
+
+        for (Object[] obj : resZeroList) {
+            Object[] zeroObj = new Object[15];
+            for (int i = 0; i <= 10; i++) {
+
+                if (i == 10) {
+                    if (obj[10] != null) {
+                        if (Integer.parseInt(obj[10].toString()) <= 90) {
+                            if (Integer.parseInt(obj[10].toString()) <= 0) {
+                                zeroObj[10] = 0;
+                            } else {
+                                zeroObj[10] = obj[10];
+                            }
+
+                        } else if (Integer.parseInt(obj[10].toString()) <= 180) {
+                            zeroObj[11] = obj[10];
+                        } else if (Integer.parseInt(obj[10].toString()) <= 365) {
+                            zeroObj[12] = obj[10];
+                        } else if (Integer.parseInt(obj[10].toString()) > 365) {
+                            zeroObj[13] = obj[10];
+                        }
+                    } else {
+                        // 将字符串转换为LocalDate对象
+                        LocalDate date1 = LocalDate.parse(strDate);
+                        LocalDate date2 = LocalDate.parse(endDate);
+                        // 计算两个日期之间的天数差异
+                        long daysBetween = ChronoUnit.DAYS.between(date1, date2);
+
+                        zeroObj[13] = daysBetween;
+                    }
+
+                } else {
+                    zeroObj[i] = obj[i];
+                }
+            }
+
+            list.add(zeroObj);
+
+        }
+        return list;
     }
 
 }

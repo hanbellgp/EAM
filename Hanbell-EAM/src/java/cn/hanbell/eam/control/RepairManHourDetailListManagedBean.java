@@ -5,6 +5,7 @@
  */
 package cn.hanbell.eam.control;
 
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHisBean;
@@ -62,7 +63,8 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
 
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
-
+    @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     private List<String> usernameList;
     private List<SystemUser> systemUser;
     private String[] selectedUserName;
@@ -79,7 +81,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         superEJB = equipmentRepairBean;
         detailEJB = equipmentRepairHelpersBean;
         queryState = "ALL";
-        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(),"RD", "repairDeptno").getCvalue();
+        String deptno = sysCodeBean.findBySyskindAndCode(userManagedBean.getCompany(), "RD", "repairDeptno").getCvalue();
         systemUser = systemUserBean.findByLikeDeptno("%" + deptno + "%");
         usernameList = new ArrayList<>();
         for (int i = 0; i < systemUser.size(); i++) {
@@ -94,6 +96,15 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         company = str;//初始化公司别
         String comSql = " R.company= '" + company[0] + "'";//根据公司别查询数据的SQL条件
         detailList = equipmentRepairHelpersBean.getEquipmentRepairHelpersList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), "", comSql);
+        List<?> itemList = detailList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[4] == null) {
+                obj[4] = assetCardSpecialBean.findByAssetno(obj[3].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        detailList = (List<EquipmentRepairHelpers>) itemList;
     }
 
 //导出界面的EXCEL数据处理
@@ -119,7 +130,7 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         //表格一
         String[] title1 = getInventoryTitle();
         row = sheet1.createRow(0);
-        row.setHeight((short) 900); 
+        row.setHeight((short) 900);
         row1 = sheet1.createRow(1);
         row1.setHeight((short) 800);
         row2 = sheet1.createRow(2);
@@ -165,7 +176,10 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
             }
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(eq[4].toString());
+            if (eq[4] != null) {
+                cell3.setCellValue(eq[4].toString());
+            }
+
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
 
@@ -361,7 +375,15 @@ public class RepairManHourDetailListManagedBean extends FormMultiBean<EquipmentR
         }
 
         detailList = equipmentRepairHelpersBean.getEquipmentRepairHelpersList(strdate, enddate, sql, companySql);
-
+        List<?> itemList = detailList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[4] == null) {
+                obj[4] = assetCardSpecialBean.findByAssetno(obj[3].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        detailList = (List<EquipmentRepairHelpers>) itemList;
     }
 
     public List<String> getUsernameList() {

@@ -14,6 +14,7 @@ import cn.hanbell.eam.ejb.EquipmentRepairSpareBean;
 import cn.hanbell.eam.ejb.EquipmentSpareRecodeDtaBean;
 import cn.hanbell.eam.ejb.EquipmentTroubleBean;
 import cn.hanbell.eam.ejb.SysCodeBean;
+import cn.hanbell.eam.entity.AssetCard;
 import cn.hanbell.eam.entity.EquipmentRepair;
 import cn.hanbell.eam.entity.EquipmentRepairFile;
 import cn.hanbell.eam.entity.EquipmentRepairHelpers;
@@ -85,7 +86,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     private EquipmentTroubleBean equipmentTroubleBean;
     @EJB
     private SysCodeBean sysCodeBean;
-        @EJB
+    @EJB
     private AssetCardSpecialBean assetCardSpecialBean;
     @EJB
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
@@ -123,7 +124,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
     public void init() {
         openParams = new HashMap<>();
         superEJB = equipmentRepairBean;
-        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean,assetCardSpecialBean);
+        model = new EquipmentRepairModel(equipmentRepairBean, userManagedBean, assetCardSpecialBean);
         detailEJB = equipmentRepairFileBean;
         detailEJB2 = equipmentRepairSpareBean;
         detailEJB3 = equipmentRepairHisBean;
@@ -156,7 +157,7 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         hitchurgencyList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "hitchurgency");
         //获取故障责任原因
         abrasehitchList = sysCodeBean.getTroubleNameList(userManagedBean.getCompany(), "RD", "dutycause");
-        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(),userManagedBean.getCompany());
+        eDtaList = equipmentSpareRecodeDtaBean.getEquipmentSpareRecodeDtaList(currentEntity.getFormid(), userManagedBean.getCompany());
         calculateTotalCost();
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
@@ -187,11 +188,11 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             this.model.getFilterFields().clear();
 
             if (queryDateBegin != null) {
-                model.getFilterFields().put("formdateBegin", queryDateBegin);
+                model.getFilterFields().put("hitchtimeBegin", queryDateBegin);
             }
 
             if (queryDateEnd != null) {
-                model.getFilterFields().put("formdateEnd", queryDateEnd);
+                model.getFilterFields().put("hitchtimeEnd", queryDateEnd);
             }
             if (queryFormId != null && !"".equals(queryFormId)) {
                 model.getFilterFields().put("formid", queryFormId);
@@ -300,6 +301,8 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
                 return "经理审核";
             case "95":
                 return "报修结案";
+            case "97":
+                return "报修暂结案";
             case "98":
                 return "已作废";
             default:
@@ -432,6 +435,14 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
         //设置第二行行高
         row2.setHeight((short) (18 * 50));
         List<EquipmentRepair> equipmentrepairList = equipmentRepairBean.getEquipmentRepairList(model.getFilterFields(), model.getSortFields());
+
+        for (EquipmentRepair eRepair : equipmentrepairList) {
+            if (eRepair.getItemno().equals("AS000")) {//非固定资产时重新给改资产赋值
+                String assetno = equipmentRepairBean.getAssetno(eRepair.getFormid());
+                AssetCard assetCardTemp = assetCardSpecialBean.transitionAssetCardSpecial(assetCardSpecialBean.findByAssetno(assetno));
+                eRepair.setAssetno(assetCardTemp);
+            }
+        }
         int j = 3;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         for (EquipmentRepair equipmentrepair : equipmentrepairList) {
@@ -812,17 +823,26 @@ public class EquipmentHistoryManagedBean extends FormMulti3Bean<EquipmentRepair,
             cellTitle.setCellValue(currentEntity.getServiceusername());
             deletedDetailList3 = equipmentRepairHisBean.findByPId(currentEntity.getFormid());
             for (EquipmentRepairHis equipmentRepairHis : deletedDetailList3) {
-                if (equipmentRepairHis.getCurnode().equals("课长审核")) {
+                if (equipmentRepairHis.getCurnode().equals("组长审核")) {
                     cellTitle = sheet.getRow(23).getCell(1);
                     cellTitle.setCellValue(equipmentRepairHis.getNote());
                     cellTitle = sheet.getRow(23).getCell(12);
                     cellTitle.setCellValue(getUserName(equipmentRepairHis.getUserno()));
                 }
-                if (equipmentRepairHis.getCurnode().equals("经理审核")) {
-                    if (totalCost > 5000) {
+                if (equipmentRepairHis.getCurnode().equals("课长审核")) {
+                    if (totalCost > 1000) {
                         cellTitle = sheet.getRow(27).getCell(1);
                         cellTitle.setCellValue(equipmentRepairHis.getNote());
                         cellTitle = sheet.getRow(27).getCell(12);
+                        cellTitle.setCellValue(getUserName(equipmentRepairHis.getUserno()));
+                    }
+                }
+
+                if (equipmentRepairHis.getCurnode().equals("经理审核")) {
+                    if (totalCost > 5000) {
+                        cellTitle = sheet.getRow(31).getCell(1);
+                        cellTitle.setCellValue(equipmentRepairHis.getNote());
+                        cellTitle = sheet.getRow(31).getCell(12);
                         cellTitle.setCellValue(getUserName(equipmentRepairHis.getUserno()));
                     }
                 }

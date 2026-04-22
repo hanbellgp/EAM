@@ -5,6 +5,7 @@ package cn.hanbell.eam.control;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
@@ -52,6 +53,8 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     @EJB
     private CompanyBean companyBean;
+    @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     private List<EquipmentRepair> equipmentRepairsList;
     private PieChartModel pieModel;
     private List<Company> companyList;
@@ -79,6 +82,15 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         queryFormId = null;
         queryName = null;
         equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryFormId, queryName, comSql);
+        List<?> itemList = equipmentRepairsList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                obj[1] = assetCardSpecialBean.findByAssetno(obj[0].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairsList = (List<EquipmentRepair>) itemList;
         createPieModel();
 
     }
@@ -185,7 +197,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
     /**
      * 设置导出EXCEL表格样式
      */
-     private Map<String, CellStyle> createStyles(Workbook wb) {
+    private Map<String, CellStyle> createStyles(Workbook wb) {
         Map<String, CellStyle> styles = new LinkedHashMap<>();
         // 文件头样式
         CellStyle headStyle = wb.createCellStyle();
@@ -242,7 +254,7 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         rightStyle.setBorderRight(CellStyle.BORDER_THIN);
         rightStyle.setBorderBottom(CellStyle.BORDER_THIN);
         styles.put("right", rightStyle);
-        
+
         CellStyle titleStyle = wb.createCellStyle();
         titleStyle.setWrapText(true);//设置自动换行
         titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -290,6 +302,15 @@ public class FaultDutyStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         }
 
         equipmentRepairsList = equipmentRepairBean.getFaultDutyStatisticalList(strdate, enddate, queryFormId, queryName, companySql);
+        List<?> itemList = equipmentRepairsList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                obj[1] = assetCardSpecialBean.findByAssetno(obj[0].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairsList = (List<EquipmentRepair>) itemList;
         createPieModel();
     }
 

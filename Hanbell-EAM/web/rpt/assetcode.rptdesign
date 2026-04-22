@@ -84,7 +84,7 @@ currentRow = 0;]]></method>
     dataSetRow["formid"] = detail.get(currentRow).getFormid();
     dataSetRow["assetdesc"] = detail.get(currentRow).getAssetDesc();
     dataSetRow["itemno"] ="";
-    dataSetRow["code"] = "http://eam.hanbell.com.cn:8480/Hanbell-EAM/resources/app/res/QR" + detail.get(currentRow).getFormid() + ".png";
+    dataSetRow["code"] = "http://172.16.10.51/Hanbell-EAM/resources/app/res/QR" + detail.get(currentRow).getFormid() + ".png";
     currentRow++;
     return true;
 }
@@ -175,7 +175,7 @@ return false;
                     </row>
                 </grid>
                 <data id="33">
-                    <property name="fontSize">10pt</property>
+                    <property name="fontSize">9pt</property>
                     <property name="fontWeight">bold</property>
                     <property name="textAlign">center</property>
                     <property name="letterSpacing">4pt</property>

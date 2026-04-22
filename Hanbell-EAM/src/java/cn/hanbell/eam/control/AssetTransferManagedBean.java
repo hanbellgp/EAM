@@ -21,11 +21,14 @@ import cn.hanbell.eam.lazy.AssetTransferModel;
 import cn.hanbell.eam.web.FormMultiBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
+import cn.hanbell.oa.entity.HKCW027;
+import cn.hanbell.oa.entity.HKCW027Detail;
 import com.lightshell.comm.BaseLib;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -65,7 +68,12 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
     protected AssetCardBean assetCardBean;
     @EJB
     protected WarehouseBean warehouseBean;
-
+    @EJB
+    protected cn.hanbell.oa.ejb.WorkFlowBean workFlowBean;
+    @EJB
+    protected cn.hanbell.oa.ejb.HKCW026Bean hKCW026Bean;
+    @EJB
+    protected cn.hanbell.oa.ejb.HKCW027Bean hKCW027Bean;
     protected List<String> paramItemno = null;
     protected List<String> paramPosition = null;
     protected List<String> paramUsed = null;
@@ -236,6 +244,117 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
         }
     }
 
+    //将转移单抛转OA
+    public boolean doThrowOa() {
+        HKCW027 m = new HKCW027();
+        HKCW027Detail d;
+        List<HKCW027> hkcw027 = hKCW027Bean.getOaFormid(currentEntity.getFormid());
+        if (hkcw027.size() > 0) {
+            showErrorMsg("Error", "抛转失败,OA已存在该转移单流程在进行.");
+            return false;
+        }
+        List<HKCW027Detail> detailList = new ArrayList<>();
+        LinkedHashMap<String, List<?>> details = new LinkedHashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        details.put("Detail", detailList);
+        m.setFormid(currentEntity.getFormid());
+        m.setFormdate(sdf.format(currentEntity.getFormdate()));
+        m.setFacno(currentEntity.getCompany());
+        m.setDeptno(currentEntity.getDeptno());
+        m.setDeptname(currentEntity.getDeptname());
+        m.setRemark(currentEntity.getRemark());
+        m.setCreator(currentEntity.getCreator());
+        m.setStatus(currentEntity.getStatus());
+        try {
+
+            workFlowBean.initUserInfo(userManagedBean.getUserid());
+            for (AssetTransferDetail aDetail : this.detailList) {
+                d = new HKCW027Detail();
+                d.setPid(aDetail.getPid());
+                d.setSeq(aDetail.getSeq() + "");
+                if (aDetail.getAssetCard() != null) {
+                    d.setAssetid(aDetail.getAssetCard().getId() + "");
+                }
+                d.setAssetno(aDetail.getAssetno());
+                d.setItdsc(aDetail.getAssetItem().getItemdesc());
+                d.setItemno(aDetail.getAssetItem().getItemno());
+                d.setQty(aDetail.getQty() + "");
+                d.setUnit(aDetail.getUnit());
+                d.setDeptno1(aDetail.getAssetCard().getDeptno());
+                d.setDeptname1(aDetail.getAssetCard().getDeptname());
+                d.setDeptno2(aDetail.getDeptno());
+                d.setDeptname2(aDetail.getDeptname());
+                d.setWarehouseno(aDetail.getWarehouse().getWarehouseno());
+                d.setWarehousena(aDetail.getWarehouse().getName());
+
+                if (aDetail.getPosition1() != null) {
+                    d.setPosition1(aDetail.getPosition1().getId() + "");
+                    d.setPosition1Name(aDetail.getPosition1().getName());
+                }
+                if (aDetail.getPosition2() != null) {
+                    d.setPosition2(aDetail.getPosition2().getId() + "");
+                    d.setPosition2Name(aDetail.getPosition2().getName());
+                }
+                if (aDetail.getPosition3() != null) {
+                    d.setPosition3(aDetail.getPosition3().getId() + "");
+                    d.setPosition3Name(aDetail.getPosition3().getName());
+                }
+                if (aDetail.getPosition4() != null) {
+                    d.setPosition4(aDetail.getPosition4().getId() + "");
+                    d.setPosition4Name(aDetail.getPosition4().getName());
+                }
+                if (aDetail.getPosition5() != null) {
+                    d.setPosition5(aDetail.getPosition5().getId() + "");
+                    d.setPosition5Name(aDetail.getPosition5().getName());
+                }
+                if (aDetail.getPosition6() != null) {
+                    d.setPosition6(aDetail.getPosition6().getId() + "");
+                    d.setPosition6Name(aDetail.getPosition6().getName());
+                }
+                if (aDetail.getAssetCard() != null) {
+                    d.setAssetname(aDetail.getAssetCard().getAssetDesc());
+                }
+                d.setSerialNo(aDetail.getSeq() + "");
+                d.setUserno1(aDetail.getAssetCard().getUserno());
+                d.setUsername1(aDetail.getAssetCard().getUsername());
+                m.setTransferUser(aDetail.getAssetCard().getUserno());
+                m.setCfmuser(aDetail.getUserno());
+                d.setUserno2(aDetail.getUserno());
+                d.setUsername2(aDetail.getUsername());
+
+                detailList.add(d);
+            }
+            if (!doBeforeVerify()) {
+                //抛转前查询是否库存充足
+                return false;
+            }
+            String formInstance = workFlowBean.buildXmlForEFGP("HK_CW027", m, details);
+            String subject = currentEntity.getFormid() + "转移单";
+            String msg = workFlowBean.invokeProcess(workFlowBean.HOST_ADD, workFlowBean.HOST_PORT, "PKG_HK_CW027", formInstance, subject);
+            String[] rm = msg.split("\\$");
+            if (rm.length == 2) {
+                if (rm[0].equals("200")) {
+                    showInfoMsg("Info", "抛转成功" + rm[1]);
+                    currentEntity.setOaformid(rm[1]);
+                    currentEntity.setCfmdate(getDate());
+                    currentEntity.setCfmuser(userManagedBean.getUserid());
+                    assetDistributeBean.update(currentEntity);
+                    return true;
+                } else {
+                    showErrorMsg("Error", "抛转失败");
+                    return false;
+                }
+
+            } else {
+                showErrorMsg("Error", "抛转失败");
+                return false;
+            }
+        } catch (Exception ex) {
+            showErrorMsg("Error", "抛转失败:" + ex.getMessage());
+            return false;
+        }
+    }
+
     public boolean isExist(AssetCard e) {
         boolean aa = false;
         for (AssetTransferDetail ad : detailList) {
@@ -270,6 +389,13 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
         if (currentDetail == null) {
             return;
         }
+        List<Object> list = hKCW026Bean.isThereOA(currentDetail.getAssetno());//获取是否有OA单子
+        if (list.size() > 0) {//大于0代表有流程没走完不让添加并返回错误信息
+            Object firstElement = list.get(0);
+            Object[] array = (Object[]) firstElement;
+            showErrorMsg("Error", "该资产编号已有OA流程在进行OA单号:" + array[1] + ",对应EAM单号:" + array[0]);
+            return;
+        }
         if (currentDetail.getDeptno() == null || "".equals(currentDetail.getDeptno())) {
             showErrorMsg("Error", "请输入使用部门");
             return;
@@ -297,6 +423,12 @@ public class AssetTransferManagedBean extends FormMultiBean<AssetTransfer, Asset
         if (currentDetail.getCompany().equals(currentDetail.getAssetCard().getCompany())) {
             showErrorMsg("Error", "转入转出公司不能相同");
             return;
+        }
+        for (AssetTransferDetail aDetail : detailList) {
+            if (!currentDetail.getUserno().equals(aDetail.getUserno())) {
+                showErrorMsg("Error", "请确认明细中领用人相同!");
+                return;
+            }
         }
         super.doConfirmDetail();
     }

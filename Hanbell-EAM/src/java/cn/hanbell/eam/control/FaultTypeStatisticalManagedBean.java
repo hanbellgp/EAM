@@ -5,6 +5,7 @@ package cn.hanbell.eam.control;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import cn.hanbell.eam.ejb.AssetCardSpecialBean;
 import cn.hanbell.eam.ejb.EquipmentRepairBean;
 import cn.hanbell.eam.ejb.EquipmentRepairHelpersBean;
 import cn.hanbell.eam.entity.EquipmentRepair;
@@ -50,6 +51,8 @@ public class FaultTypeStatisticalManagedBean extends FormMultiBean<EquipmentRepa
     private EquipmentRepairHelpersBean equipmentRepairHelpersBean;
     @EJB
     private CompanyBean companyBean;
+      @EJB
+    private AssetCardSpecialBean assetCardSpecialBean;
     private List<EquipmentRepair> equipmentRepairsList;
     private List<Company> companyList;
     private String[] company;
@@ -76,6 +79,15 @@ public class FaultTypeStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         queryFormId = null;
         queryName = null;
         equipmentRepairsList = equipmentRepairBean.getFaultTypeStatisticalList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryFormId, queryName, comSql);
+        List<?> itemList = equipmentRepairsList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                obj[1] = assetCardSpecialBean.findByAssetno(obj[0].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairsList = (List<EquipmentRepair>) itemList;
     }
 
 //导出界面的EXCEL数据处理
@@ -299,6 +311,15 @@ public class FaultTypeStatisticalManagedBean extends FormMultiBean<EquipmentRepa
         }
 
         equipmentRepairsList = equipmentRepairBean.getFaultTypeStatisticalList(strdate, enddate, queryFormId, queryName, companySql);
+        List<?> itemList = equipmentRepairsList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                obj[1] = assetCardSpecialBean.findByAssetno(obj[0].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairsList = (List<EquipmentRepair>) itemList;
     }
 
     public List<EquipmentRepair> getEquipmentRepairsList() {

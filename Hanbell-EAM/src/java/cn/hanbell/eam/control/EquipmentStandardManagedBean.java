@@ -132,22 +132,22 @@ public class EquipmentStandardManagedBean extends SuperSingleBean<EquipmentStand
         currentEntity.setOptdate(getDate());
         currentEntity.setOptuser(userManagedBean.getUserid());
          Calendar cal = Calendar.getInstance();
-        cal.setTime(newEntity.getLasttime());//设置起时间
-        if (newEntity.getFrequencyunit().equals("天")) {
-            cal.add(Calendar.DATE, newEntity.getFrequency());
-            newEntity.setNexttime(cal.getTime());
-        } else if (newEntity.getFrequencyunit().equals("周")) {
-            cal.add(Calendar.DATE, newEntity.getFrequency() * 7);
-            newEntity.setNexttime(cal.getTime());
-        } else if (newEntity.getFrequencyunit().equals("月")) {
-            cal.add(Calendar.MONTH, newEntity.getFrequency());
-            newEntity.setNexttime(cal.getTime());
-        } else if (newEntity.getFrequencyunit().equals("季")) {
-            cal.add(Calendar.MONTH, newEntity.getFrequency() * 3);
-            newEntity.setNexttime(cal.getTime());
-        } else if (newEntity.getFrequencyunit().equals("年")) {
+        cal.setTime(currentEntity.getLasttime());//设置起时间
+        if (currentEntity.getFrequencyunit().equals("天")) {
+            cal.add(Calendar.DATE, currentEntity.getFrequency());
+            currentEntity.setNexttime(cal.getTime());
+        } else if (currentEntity.getFrequencyunit().equals("周")) {
+            cal.add(Calendar.DATE, currentEntity.getFrequency() * 7);
+            currentEntity.setNexttime(cal.getTime());
+        } else if (currentEntity.getFrequencyunit().equals("月")) {
+            cal.add(Calendar.MONTH, currentEntity.getFrequency());
+            currentEntity.setNexttime(cal.getTime());
+        } else if (currentEntity.getFrequencyunit().equals("季")) {
+            cal.add(Calendar.MONTH, currentEntity.getFrequency() * 3);
+            currentEntity.setNexttime(cal.getTime());
+        } else if (currentEntity.getFrequencyunit().equals("年")) {
             cal.add(Calendar.YEAR, 1);
-            newEntity.setNexttime(cal.getTime());
+            currentEntity.setNexttime(cal.getTime());
         }
         super.update(); //To change body of generated methods, choose Tools | Templates.
     }

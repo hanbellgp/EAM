@@ -90,6 +90,12 @@ public class EquipmentRepairHis extends FormDetailEntity {
     @Column(name = "cfmdate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
+    
+       @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "pause")
+    private String pause;
 
     public EquipmentRepairHis() {
     }
@@ -208,6 +214,14 @@ public class EquipmentRepairHis extends FormDetailEntity {
 
     public void setCfmuser(String cfmuser) {
         this.cfmuser = cfmuser;
+    }
+
+    public String getPause() {
+        return pause;
+    }
+
+    public void setPause(String pause) {
+        this.pause = pause;
     }
 
     @Override

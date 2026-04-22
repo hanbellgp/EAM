@@ -180,7 +180,7 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-    @JoinColumn(name = "assetno", referencedColumnName = "formid")
+    @JoinColumn(name = "assetno", referencedColumnName = "formid",updatable = false)
     @ManyToOne(optional = true)
     private AssetCard assetno;
     @Size(max = 20)

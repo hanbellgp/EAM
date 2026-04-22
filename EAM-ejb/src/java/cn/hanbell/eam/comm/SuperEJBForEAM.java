@@ -43,7 +43,8 @@ import org.krysalis.barcode4j.tools.UnitConv;
  */
 public abstract class SuperEJBForEAM<T> extends SuperEJB<T> {
 
-    protected final String url = "http://127.0.0.1:8480/WebService/SHBERPWebService";
+  
+    protected final String url = "http://jws.hanbell.com.cn/WebService/SHBERPWebService";
     protected final String nameSpace = "http://jws.hanbell.cn/";
 
     protected final Logger log4j = LogManager.getLogger("cn.hanbell.eam");

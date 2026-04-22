@@ -41,6 +41,8 @@
                 <f:facet name="right">
                     <p:commandButton id="btnQuery" value="查询" actionListener="#{equipmentSpareUseManagedBean.query()}" icon="ui-icon-search"
                                      update=":formList"/>
+                       <p:commandButton id="btnPrint" value="导出EXCEL" actionListener="#{equipmentSpareUseManagedBean.print()}" icon="ui-icon-print"
+                                     />
                 </f:facet>
 
             </p:toolbar>

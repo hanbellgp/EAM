@@ -78,6 +78,15 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
         String comSql = " R.company= '" + company[0] + "'";
         queryFormId = null;
         equipmentRepairList = equipmentRepairBean.getRepairCostSummaryList(simpleDateFormat.format(queryDateBegin), simpleDateFormat.format(queryDateEnd), queryFormId, queryName, comSql);
+        List<?> itemList = equipmentRepairList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                obj[1] = assetCardSpecialBean.findByAssetno(obj[0].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairList = (List<EquipmentRepair>) itemList;
         super.init();
     }
 
@@ -314,6 +323,15 @@ public class RepairCostSummaryManagedBean extends FormMultiBean<EquipmentRepair,
         }
 
         equipmentRepairList = equipmentRepairBean.getRepairCostSummaryList(strdate, enddate, queryFormId, queryName, companySql);
+         List<?> itemList = equipmentRepairList;
+        List<Object[]> list = (List<Object[]>) itemList;
+        for (Object[] obj : list) {
+            if (obj[1] == null) {
+                obj[1] = assetCardSpecialBean.findByAssetno(obj[0].toString()).getAssetDesc();
+            }
+        }
+        itemList = list;
+        equipmentRepairList = (List<EquipmentRepair>) itemList;
     }
 
     public List<EquipmentRepair> getEquipmentRepairList() {

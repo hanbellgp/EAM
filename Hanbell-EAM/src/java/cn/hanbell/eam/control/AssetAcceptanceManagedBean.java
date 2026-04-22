@@ -73,6 +73,7 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
 
     private TransactionType trtype;
     private String queryDeptname;
+    private String queryRemark;
 
     public AssetAcceptanceManagedBean() {
         super(AssetAcceptance.class, AssetAcceptanceDetail.class);
@@ -237,6 +238,9 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
             if (queryDeptname != null && !"".equals(queryDeptname)) {
                 this.model.getFilterFields().put("vendorno", queryDeptname);
             }
+            if (queryRemark != null && !"".equals(queryRemark)) {
+                this.model.getFilterFields().put("remark", queryRemark);
+            }
             if (queryName != null && !"".equals(queryName)) {
                 this.model.getFilterFields().put("creator", queryName);
             }
@@ -260,7 +264,6 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
         }
     }
 
-   
     public void printEXE() {
 
         fileName = "办公用品入库表" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
@@ -299,7 +302,7 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
             row.setHeight((short) 400);
             Cell cell0 = row.createCell(0);
             cell0.setCellStyle(cellStyle);
-            cell0.setCellValue(as.getFormid()+" 汇总");
+            cell0.setCellValue(as.getFormid() + " 汇总");
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(cellStyle);
             cell1.setCellValue(sdf.format(as.getFormdate()));
@@ -497,6 +500,14 @@ public class AssetAcceptanceManagedBean extends FormMultiBean<AssetAcceptance, A
 
     public void setQueryDeptname(String queryDeptname) {
         this.queryDeptname = queryDeptname;
+    }
+
+    public String getQueryRemark() {
+        return queryRemark;
+    }
+
+    public void setQueryRemark(String queryRemark) {
+        this.queryRemark = queryRemark;
     }
 
 }
