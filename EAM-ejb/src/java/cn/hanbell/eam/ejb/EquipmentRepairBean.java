@@ -843,56 +843,15 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 //        String str = type.substring(3, type.length());//获取不良数的类型
         //月度总计划工时及平均计划工时,当月设备数量
         StringBuilder sbAVA = new StringBuilder();
-//        sbAVA.append(" SELECT A.MONTH,SUM(A.AVAILABLEMINS) AVAILABLEMINS,SUM(A.AVAILABLEMINS)/COUNT(A.EQPID) AVA,COUNT(A.EQPID) EQPIDCount   FROM ( SELECT E.EQPID,SUM(E.AVAILABLEMINS) AVAILABLEMINS, month(E.PLANDATE)  MONTH FROM EQP_AVAILABLETIME_SCHEDULE E");
-//        sbAVA.append(" LEFT JOIN MEQP M ON E.EQPID=M.EQPID WHERE E.PLANDATE LIKE '").append(year).append("%' AND E.PLANDATE< getdate()  AND E.AVAILABLEMINS!=0 AND M.PRODUCTTYPE='").append(type).append("'");
-//        sbAVA.append(" GROUP BY month(E.PLANDATE), E.EQPID) A GROUP BY A.MONTH");
-        //获取该部门的上班时间
+
         sbAVA.append(" SELECT month(formdate),sum(worktime+overtime*60) FROM equipmentworktime where dept = '" + deptno + "' AND formdate < now() AND company='" + companyType + "'  AND formdate LIKE '%" + year + "%'  GROUP BY month(formdate)     ");
         SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
         Query query = getEntityManager().createNativeQuery(sbAVA.toString());
         List<Object[]> avaList = query.getResultList();
-        //获取MTBF总合
-//        StringBuilder sbMTBF = new StringBuilder();
-////        sbMTBF.append(" SELECT A.MONTH,SUM(A.MTBF) FROM ( SELECT CASE WHEN   (cast((B.AVAILABLEMINS * 1.0 - A.ALARMTIME_LEN * 1.0) / A.counts * 1.0 AS DECIMAL(10, 2))) IS NULL THEN B.AVAILABLEMINS ELSE cast((B.AVAILABLEMINS * 1.0 - A.ALARMTIME_LEN * 1.0) / A.counts * 1.0 AS DECIMAL(10, 2)) END   MTBF,");
-////        sbMTBF.append(" B.MONTH  FROM (SELECT EQPID,COUNT(EQPID) counts,sum(datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME)) AS ALARMTIME_LEN,month(ALARMSTARTTIME) MONTH");
-////        sbMTBF.append(" FROM EQP_RESULT_ALARM WHERE ALARMSTARTTIME LIKE '").append(year).append("%' AND (SPECIALALARMID = 'B0001' OR SPECIALALARMID = 'A0001') AND");
-////        sbMTBF.append(" datediff(MINUTE, ALARMSTARTTIME, ALARMENDTIME) > 10 GROUP BY month(ALARMSTARTTIME), EQPID) A RIGHT JOIN (SELECT A.EQPID,SUM(AVAILABLEMINS) AVAILABLEMINS,month(PLANDATE) MONTH");
-////        sbMTBF.append(" FROM EQP_AVAILABLETIME_SCHEDULE A LEFT JOIN MEQP M ON A.EQPID = M.EQPID");
-////        sbMTBF.append(" WHERE PLANDATE LIKE '").append(year).append("%' AND PLANDATE< getdate()  and AVAILABLEMINS!=0  AND  M.PRODUCTTYPE = '").append(type).append("'");
-////        sbMTBF.append(" GROUP BY month(PLANDATE), A.EQPID) B ON A.EQPID = B.EQPID AND A.MONTH = B.MONTH )A  GROUP BY  A.MONTH");
-//        query = superEJBForMES.getEntityManager().createNativeQuery(sbMTBF.toString());
-//        List<Object[]> mtbfList = query.getResultList();
 
-        //-- 大于10分钟的故障次数和60分钟以上的故障次数及故障停机时间和其他总的异常时间
-//        StringBuilder sbCount = new StringBuilder();
-////        sbCount.append(" SELECT  A.MONTH, SUM(A.counts) counts10,sum(A.counts60) counts60,(CASE WHEN SUM(A.ALARMTIME_LEN) IS NULL THEN 0 ELSE SUM(A.ALARMTIME_LEN) END) ALARMTIME_LEN,SUM(A.abnormal) abnormal");
-////        sbCount.append(" FROM ( SELECT E.EQPID, COUNT(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 60 AND M.ALARMNAME = '设备故障' THEN E.EQPID END ) counts60, COUNT(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 AND M.ALARMNAME = '设备故障'  THEN E.EQPID END ) counts,");
-////        sbCount.append(" sum(CASE WHEN datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME) > 10 AND M.ALARMNAME = '设备故障'  THEN  datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME )END) AS ALARMTIME_LEN,sum(datediff(MINUTE, E.ALARMSTARTTIME, E.ALARMENDTIME)) AS abnormal,");
-////        sbCount.append(" month(E.ALARMSTARTTIME)MONTH FROM EQP_RESULT_ALARM E LEFT JOIN MALARM M ON E.SPECIALALARMID = M.ALARMID WHERE E.ALARMSTARTTIME LIKE '").append(year).append("%'  AND M.ALARMTYPE = '").append(type).append("' GROUP BY month(E.ALARMSTARTTIME), E.EQPID ) A GROUP BY A.MONTH");
-////        query = superEJBForMES.getEntityManager().createNativeQuery(sbCount.toString());
-//        List<Object[]> countList = query.getResultList();
-//
-//        //每月报工数及标准工时
-//        StringBuilder sbQty = new StringBuilder();
-////        sbQty.append(" SELECT month(PROCESSCOMPLETETIME) MONTH ,count(CASE WHEN A.STEPID LIKE '%").append(str).append("清洗%' THEN A.EQPID END )  QTY,sum(round(B.STD_TIME / 60, 1)) MINUTE ");
-////        sbQty.append(" FROM PROCESS_STEP  A   LEFT JOIN PROCESS_STEP_TIME B ON A.SYSID = B.SYSID  AND A.EQPID = B.EQPID");
-////        sbQty.append(" LEFT JOIN  MEQP C ON C.EQPID = A.EQPID WHERE C.PRODUCTTYPE = '").append(type).append("'  AND A.PROCESSCOMPLETETIME LIKE'%").append(year).append("%' GROUP BY  month(PROCESSCOMPLETETIME)");
-////        query = superEJBForMES.getEntityManager().createNativeQuery(sbQty.toString());
-//        List<Object[]> qtyList = query.getResultList();
-//        //不良数
-//        StringBuilder sbQG = new StringBuilder();
-////        sbQG.append(" SELECT month(B.PROJECTCREATETIME) MONTH, SUM(DEFECTNUM) AS QGSUM FROM ANALYSISRESULT_QCD A LEFT JOIN  FLOW_FORM_UQF_S_NOW B ON  A.PROJECTID=B.PROJECTID");
-////        sbQG.append(" WHERE  B.ISPROCESSED='Y' AND B.PROJECTCREATETIME LIKE '").append(year).append("%' AND SOURCESTEPIP LIKE '").append(str).append("%' AND B.UQFTYPE ='UQFG0003' GROUP BY month(B.PROJECTCREATETIME)");
-////        query = superEJBForMES.getEntityManager().createNativeQuery(sbQG.toString());
-//        List<Object[]> qgList = query.getResultList();
-        //在报修系统中获取故障时间为60分钟以上的次数
         StringBuilder sb60Count = new StringBuilder();
         String strTypeString = "";
-//        if (type.equals("半成品方型件")) {
-//            strTypeString = "方型加工课";
-//        } else {
-//            strTypeString = "圆型加工课";
-//        }
+
         deptno = deptno.substring(0, 3);
         sb60Count.append(" SELECT month(hitchtime),count(CASE WHEN TIMESTAMPDIFF(MINUTE,hitchtime, completetime) > 60 THEN E.assetno END) as count60,count(*) count10,SUM(TIMESTAMPDIFF(MINUTE, hitchtime, completetime)) FROM equipmentrepair E LEFT JOIN assetcard A ON E.assetno=A.formid ");
         sb60Count.append(" WHERE A.deptno like'%").append(deptno).append("%' AND hitchtime LIKE '%").append(year).append("%'");
@@ -945,29 +904,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     obj[1] = ava[1];
                 }
             }
-//            for (Object[] count : countList) {
-//                if (i == Integer.parseInt(count[0].toString())) {
-//
-//                    obj[4] = count[3];
-//                    obj[5] = count[4];
-//                }
-//            }
-//            for (Object[] qty : qtyList) {
-//                if (i == Integer.parseInt(qty[0].toString())) {
-//                    obj[6] = qty[1];
-//                    obj[7] = qty[2];
-//                }
-//            }
-//            for (Object[] qg : qgList) {
-//                if (i == Integer.parseInt(qg[0].toString())) {
-//                    obj[8] = qg[1];
-//                }
-//            }
-//            for (Object[] mtbf : mtbfList) {
-//                if (i == Integer.parseInt(mtbf[0].toString())) {
-//                    obj[10] = mtbf[1];
-//                }
-//            }
+
             for (Object[] count60 : sb60CountList) {
                 if (i == Integer.parseInt(count60[0].toString())) {
                     obj[2] = count60[2];
@@ -987,46 +924,6 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 obj[2] = oMes[3];
                 obj[18] = oMes[9];//月份
                 resultsMES.add(obj);
-//                obj[3] = oMes[3];
-//                obj[4] = oMes[4];
-//                BigDecimal HAVA = BigDecimal.valueOf(Double.valueOf(oMes[0].toString()));//月度总生产工时
-//                BigDecimal GAVA = BigDecimal.valueOf(Double.valueOf(oMes[1].toString()));//月度平均生产工时
-//                BigDecimal ALA = BigDecimal.valueOf(Double.valueOf(oMes[4].toString()));//故障停机时间
-//                BigDecimal count10;
-//                if (oMes[2] == null) {
-//                    count10 = BigDecimal.ONE;
-//                } else {
-//                    count10 = BigDecimal.valueOf(Double.valueOf(oMes[2].toString()));//10分钟以上的故障次数
-//                }
-//                BigDecimal abnormal = BigDecimal.valueOf(Double.valueOf(oMes[5].toString()));//总异常时间
-//                BigDecimal MINUTE = BigDecimal.valueOf(Double.valueOf(oMes[7].toString()));//产出标准工时
-//                BigDecimal QTY = BigDecimal.valueOf(Double.valueOf(oMes[6].toString()));//报工数
-//                BigDecimal QGQTY = BigDecimal.valueOf(Double.valueOf(oMes[8].toString()));//不良数
-//                BigDecimal MTBF = BigDecimal.valueOf(Double.valueOf(oMes[10].toString()));//各加工机MTBF总合
-//                BigDecimal avaCount = BigDecimal.valueOf(Double.valueOf(oMes[11].toString()));//所有加工机数量
-//                //汉钟版设备可动率
-//                obj[5] = ((HAVA.subtract(ALA)).divide(HAVA, 4, BigDecimal.ROUND_HALF_UP)).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);//月度生产总工时-故障停机时间/月度生产总工时
-//                //顾问版设备可动率
-//                obj[6] = ((GAVA.subtract(ALA)).divide(GAVA, 4, BigDecimal.ROUND_HALF_UP)).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);//月度平均生产总工时-故障停机时间/月度平均生产总工时
-//                //设备故障率(%)   故障停机工时合计/月度生产总工时
-//                obj[7] = ALA.divide(HAVA, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                //MTTR   故障停机工时合计/故障件数合计
-//                obj[8] = ALA.divide(count10, 4, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                //顾问版MTBF   月度平均生产总工时/故障件数合计
-//                obj[9] = GAVA.divide(count10, 4, BigDecimal.ROUND_HALF_UP).divide(BigDecimal.valueOf(60), 0, BigDecimal.ROUND_HALF_UP);
-//                //汉钟版MTBF   月度生产总工时-故障停机时间/故障件数合计
-//                obj[10] = (HAVA.subtract(ALA)).divide(count10, 0, BigDecimal.ROUND_HALF_UP).divide(BigDecimal.valueOf(60), 0, BigDecimal.ROUND_HALF_UP);
-//
-//                obj[11] = oMes[5];
-//                //时间稼动率   （月度生产总工时-总异常时间）/月度生产总工时
-//                obj[12] = (HAVA.subtract(abnormal)).divide(HAVA, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                obj[13] = (HAVA.subtract(abnormal)).divide(HAVA, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                //性能稼动率   产出标准工时/(月度生产总工时-总异常时间)
-//                obj[14] = MINUTE.divide((HAVA.subtract(abnormal)), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                obj[15] = MINUTE.divide((HAVA.subtract(abnormal)), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                //良率  报工数-不良单据)/报工数(不良不论厂内外责任，只要经过加工就计入)
-//                obj[16] = (QTY.subtract(QGQTY)).divide(QTY, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-//                obj[17] = QTY;
 
             }
         }
@@ -1051,39 +948,10 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         obj1[0] = "计划生产总工时(分)A";
         obj2[0] = "Σ故障件数(件)B";
         obj3[0] = "Σ故障停机工时(分)C";
-//        obj2[13] = "=全设备故障件数总和(停线10分钟以上,报修开始到维修结束)来源MES异常报表";
-//        obj3[0] = "故障停机工时合计(分)";
-//        obj3[13] = "=全设备故障时间总和(停线10分钟以上,报修开始到维修结束) 来源MES异常报表";
-//        obj4[0] = "设备可动率(%)";
-//        obj4[13] = "=(月度生产总工时-故障停机工时合计)/月度生产总工时";
-//        obj5[0] = "MTTR(分/件)";
-//        obj5[13] = "=故障停机工时合计/故障件数合计";
-//        obj6[0] = "MTBF(小时/件)";
-//        obj6[13] = "=全车间单台设备MTBF总和均值(单台的MTBF=(计划工作时间-故障停机时间)/维修次数)\n"
-//                + "仅记录停线10分钟以上数据  ";
-//        obj7[0] = "时间稼动率(%)";
-//        obj7[13] = "=（厂内生管计划工时-异常报表工时合计）/厂内生管计划工时";
-//        obj8[0] = "性能稼动率(%)";
-//        obj8[13] = "=产出标准工时/(厂内生管计划工时-异常报表工时合计)";
-//        obj9[0] = "良率(%)";
-//        obj9[13] = "=(报工数-不良单据)/报工数(不良不论厂内外责任，只要经过加工就计入)";
-//        obj10[0] = "月平均OEE(%)";
-//        obj10[13] = "=时间稼动率*性能稼动率*良率";
-//        obj11[0] = "故障60分以上件数";
-//        obj11[13] = "=全车间单台设备计划工时总和";
-//        obj12[0] = "设备故障率(%)";
-//        obj12[13] = "=全设备故障件数总和(停线60分钟以上,报修开始到维修结束)来源MES异常报表";
 
         for (int i = 1; i <= 12; i++) {
             for (Object[] mes : resultsMES) {
                 if (i == Integer.parseInt(mes[18].toString())) {
-//                    if (mes[1] != null) {
-//                        if (reportType.equals("H")) {
-//                            obj1[i] = mes[0];
-//                        } else {
-//                            obj1[i] = mes[1];
-//                        }
-//                    }
 
                     obj1[i] = mes[0];
 
@@ -1109,65 +977,6 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
 
                     obj3[i] = mes[2];
 
-//                    obj3[i] = mes[4];
-//                    if (mes[5] != null) {
-//                        if (reportType.equals("H")) {
-//                            obj4[i] = mes[5];
-//                        } else {
-//                            obj4[i] = mes[6];
-//                        }
-//                    }
-//
-//                    if (mes[7] != null) {
-//                        obj12[i] = mes[7];
-//                    }
-//
-//                    obj5[i] = mes[8];
-//                    if (mes[10] != null) {
-//                        if (reportType.equals("H")) {
-//                            obj6[i] = mes[10];
-//                        } else {
-//                            obj6[i] = mes[9];
-//                        }
-//                    }
-//
-//                    if (mes[12] != null) {
-//                        if (reportType.equals("H")) {
-//                            obj7[i] = mes[12];
-//                        } else {
-//                            obj7[i] = mes[13];
-//                        }
-//                    } else {
-//                        obj7[i] = 100.00;
-//                    }
-//
-//                    if (mes[14] != null) {
-//                        if (reportType.equals("H")) {
-//                            obj8[i] = mes[14];
-//                        } else {
-//                            obj8[i] = mes[15];
-//                        }
-//                    } else {
-//                        obj8[i] = 100.00;
-//                    }
-//
-//                    if (mes[16] != null) {
-//                        obj9[i] = mes[16];
-//                    } else {
-//                        obj9[i] = 100.00;
-//                    }
-//                    double monthOEE = (Double.parseDouble(obj7[i].toString()) / 100 * Double.parseDouble(obj8[i].toString()) / 100 * Double.parseDouble(obj9[i].toString()) / 100) * 100;
-//                    if (String.valueOf(monthOEE).length() >= 5) {
-//                        obj10[i] = String.valueOf(monthOEE).substring(0, 5);
-//                    } else {
-//                        obj10[i] = monthOEE;
-//                    }
-//
-//                    if (mes[3] == null) {
-//                        obj11[i] = 0;
-//                    } else {
-//                        obj11[i] = mes[3];
-//                    }
                 }
             }
         }
@@ -1182,36 +991,38 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             int sumDate = Integer.parseInt(diff[3].toString());//总差异时间
             int daySumDate = 0;//总共跨满了多少个月的时间
             for (int i = month; i <= month + monthSum; i++) {
-                if (i == month) {//第一个月减去跨度的时间
-                    list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) - (sumDate - endDate);
-                } else {
-                    if (monthSum > 1) {//跨度大于一个月的时间
-                        if (i == (month + monthSum)) {//最后一个月
-                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate - daySumDate);//跨满一个月加上全部时间
+                if (i <= 12) {
 
-                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
-
-                        } else {
-                            // 获取当前月份的最后一天
-                            LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), i, 1);
-                            // 获取当前月份的天数
-                            int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
-                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + 1440 * daysInMonth;//跨满一个月加上全部时间
-                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
-                            daySumDate += 1440 * daysInMonth;
-
-                        }
+                    if (i == month) {//第一个月减去跨度的时间
+                        list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) - (sumDate - endDate);
                     } else {
-                        if (month != 12) {
-                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate);//只夸度一个月就加上差异部分
-                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                        if (monthSum > 1) {//跨度大于一个月的时间
+                            if (i == (month + monthSum)) {//最后一个月
+                                list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate - daySumDate);//跨满一个月加上全部时间
+
+                                list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+
+                            } else {
+                                // 获取当前月份的最后一天
+                                LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), i, 1);
+                                // 获取当前月份的天数
+                                int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
+                                list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + 1440 * daysInMonth;//跨满一个月加上全部时间
+                                list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                                daySumDate += 1440 * daysInMonth;
+
+                            }
+                        } else {
+                            if (month != 12) {
+                                list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate);//只夸度一个月就加上差异部分
+                                list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                            }
                         }
+
                     }
 
                 }
-
             }
-
         }
 
         //未维修完成的时间也加上去
@@ -1222,33 +1033,35 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
             int sumDate = Integer.parseInt(diff[3].toString());//总差异时间
             int daySumDate = 0;//总共跨满了多少个月的时间
             for (int i = month; i <= month + monthSum; i++) {
-                if (i == month) {//第一个月减去跨度的时间
-                    list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + endDate;
-                } else {
-                    if (monthSum > 1) {//跨度大于一个月的时间
-                        if (i == (month + monthSum)) {//最后一个月
-                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate - daySumDate);//跨满一个月加上全部时间
-                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                if (i <= 12) {
 
-                        } else {
-                            // 获取当前月份的最后一天
-                            LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), i, 1);
-                            // 获取当前月份的天数
-                            int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
-                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + 1440 * daysInMonth;//跨满一个月加上全部时间
-                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
-                            daySumDate += 1440 * daysInMonth;
-                        }
+                    if (i == month) {//第一个月减去跨度的时间
+                        list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + endDate;
                     } else {
-                        if (month != 12) {
-                            list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate);//只夸度一个月就加上差异部分
-                            list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                        if (monthSum > 1) {//跨度大于一个月的时间
+                            if (i == (month + monthSum)) {//最后一个月
+                                list.get(2)[i] = list.get(2)[i] != null ? Integer.parseInt(list.get(2)[i].toString()) : 0 + (sumDate - endDate - daySumDate);//跨满一个月加上全部时间
+                                list.get(1)[i] = list.get(1)[i] != null ? Integer.parseInt(list.get(1)[i].toString()) : 0 + 1;//维修数量加1
+
+                            } else {
+                                // 获取当前月份的最后一天
+                                LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), i, 1);
+                                // 获取当前月份的天数
+                                int daysInMonth = (int) lastDayOfMonth.lengthOfMonth();
+                                list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + 1440 * daysInMonth;//跨满一个月加上全部时间
+                                list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                                daySumDate += 1440 * daysInMonth;
+                            }
+                        } else {
+                            if (month != 12) {
+                                list.get(2)[i] = Integer.parseInt(list.get(2)[i].toString()) + (sumDate - endDate);//只夸度一个月就加上差异部分
+                                list.get(1)[i] = Integer.parseInt(list.get(1)[i].toString()) + 1;//维修数量加1
+                            }
+
                         }
 
                     }
-
                 }
-
             }
 
         }
@@ -2251,7 +2064,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                     // 完全重叠时 effectiveMinutes 保持 0
                 }
 
-             // 直接更新 diffTime 列的值
+                // 直接更新 diffTime 列的值
                 row[5] = effectiveMinutes;
                 // 更新已覆盖的最大结束时间
                 if (lastEnd == null || end.isAfter(lastEnd)) {
@@ -2420,7 +2233,7 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
         StringBuilder sbEAM = new StringBuilder();
         //获取停线的加工设备和停线时间
-        sbEAM.append("SELECT B.remark,DATE_FORMAT(A.hitchtime, '%Y/%m/%d')   hitchtime,DATE_FORMAT(A.completetime, '%Y/%m/%d')   completetime,A.formid,A.assetno,A.itemno,B.assetDesc,A.repairusername,B.deptno,A.rstatus,A.serviceusername,hitchtime,servicearrivetime,autotransfertime ,    repairtransfertime,downinitiatetime, completetime,TIMESTAMPDIFF(MINUTE, A.downinitiatetime,CASE WHEN A.completetime IS NULL THEN NOW() ELSE A.completetime END) diffTime,B.remark"
+        sbEAM.append("SELECT B.remark,DATE_FORMAT(A.hitchtime, '%Y/%m/%d')   hitchtime,DATE_FORMAT(A.completetime, '%Y/%m/%d')   completetime,A.formid,A.assetno,A.itemno,B.assetDesc,A.repairusername,B.deptno,A.rstatus,A.serviceusername,hitchtime,servicearrivetime,autotransfertime ,    repairtransfertime,downinitiatetime,  IFNULL(completetime, NOW()) AS complete_time ,TIMESTAMPDIFF(MINUTE, A.downinitiatetime,CASE WHEN A.completetime IS NULL THEN NOW() ELSE A.completetime END) diffTime,B.remark"
                 + " FROM equipmentrepair A LEFT JOIN assetcard B  ON A.assetno=B.formid   where  A.hitchtime like '" + Year + "%'  and A.company='C'"
                 + " and B.remark is not null  and B.remark!=''  and (A.hitchurgency = '03'   or downinitiatetime is not null)  and A.rstatus<=95");
         sbEAM.append(" AND (B.remark LIKE 'M/C%'  OR  B.remark LIKE 'KAPP%' OR  B.remark LIKE 'FMS%' OR  B.remark LIKE '%立式加工机%' OR  B.remark LIKE 'NSM%' OR  B.remark LIKE 'CG%' )  and B.remark!='KAPP-09' AND qty>0");
@@ -2507,7 +2320,8 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
                 System.arraycopy(row, 0, newRow, 0, row.length);
                 newRow[15] = currentStart.format(formatterData);
                 newRow[16] = currentEnd.format(formatterData);
-                newRow[17] = (int) ChronoUnit.MINUTES.between(currentStart, isLast ? end : currentEnd);
+                newRow[17] = (int) ChronoUnit.MINUTES.between(currentStart, currentEnd);
+                newRow[19] = (int) ChronoUnit.MINUTES.between(currentStart, currentEnd);
                 result.add(newRow);
 
                 if (isLast) {
@@ -2666,6 +2480,22 @@ public class EquipmentRepairBean extends SuperEJBForEAM<EquipmentRepair> {
         list2.add(MESDownFXList);
 
         return list2;
+    }
+
+    //获取维修暂停的时间
+    public List<Object[]> getPauseList(String sta, String end, String pause) {
+
+        SuperEJBForMES superEJBForMES = lookupSuperEJBForMES();
+        StringBuilder sbEAM = new StringBuilder();
+        //获取停线的加工设备和停线时间
+        sbEAM.append("  SELECT pid,   FLOOR(SUM(TIMESTAMPDIFF(SECOND, start_time, credate)) / 60) AS total_pause_minutes"
+                + " FROM ( SELECT pid, equipmentrepairhis.credate,contenct,@last_time AS start_time, @last_action AS prev_action,  @last_time := IF(contenct = '暂停维修', equipmentrepairhis.credate, @last_time),"
+                + "  @last_action := contenct   FROM equipmentrepairhis  LEFT JOIN   equipmentrepair  on pid=formid");
+        sbEAM.append("   WHERE contenct IN ('暂停维修', '开始维修')       and pause='" + pause + "'   AND formdate>='" + sta + "'  AND formdate<='" + end + "' ");
+        sbEAM.append("  ORDER BY credate     ) AS t WHERE contenct = '开始维修' AND prev_action = '暂停维修'  group by pid");
+        Query query = getEntityManager().createNativeQuery(sbEAM.toString());
+        List<Object[]> resultsEAM = query.getResultList();
+        return resultsEAM;
     }
 
     public int getDays(int year, int month) {
