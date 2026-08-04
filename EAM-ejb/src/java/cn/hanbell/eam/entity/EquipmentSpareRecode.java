@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -81,6 +83,9 @@ public class EquipmentSpareRecode extends FormEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
+    @JoinColumn(name = "assetno", referencedColumnName = "formid", updatable = false)
+    @ManyToOne(optional = true)
+    private AssetCard assetno;
 
     public EquipmentSpareRecode() {
     }
@@ -94,6 +99,14 @@ public class EquipmentSpareRecode extends FormEntity {
         this.company = company;
         this.formid = formid;
         this.status = status;
+    }
+
+    public AssetCard getAssetno() {
+        return assetno;
+    }
+
+    public void setAssetno(AssetCard assetno) {
+        this.assetno = assetno;
     }
 
     public String getCompany() {

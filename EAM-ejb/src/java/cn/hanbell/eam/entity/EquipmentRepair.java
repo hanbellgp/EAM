@@ -113,16 +113,16 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 20)
     @Column(name = "serviceusername")
     private String serviceusername;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "hitchdesc")
     private String hitchdesc;
     @Size(max = 20)
     @Column(name = "hitchtype")
     private String hitchtype;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "hitchalarm")
     private String hitchalarm;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "repairmethod")
     private String repairmethod;
     @Size(max = 2)
@@ -136,10 +136,14 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 20)
     @Column(name = "hitchsort1")
     private String hitchsort1;
+    
+        @Size(max = 20)
+    @Column(name = "hitchsort1sub")
+    private String hitchsort1sub;
     @Size(max = 20)
     @Column(name = "hitchsort2")
     private String hitchsort2;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "hitchreason")
     private String hitchreason;
     @Size(max = 20)
@@ -154,13 +158,13 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 45)
     @Column(name = "hitchdutyusername")
     private String hitchdutyusername;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "repairprocess")
     private String repairprocess;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "measure")
     private String measure;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "hmeasure")
     private String hmeasure;
     @Size(max = 10)
@@ -177,10 +181,10 @@ public class EquipmentRepair extends FormEntity {
     @Size(max = 2)
     @Column(name = "isneedspare")
     private String isneedspare;
-    @Size(max = 200)
+    @Size(max = 600)
     @Column(name = "remark")
     private String remark;
-    @JoinColumn(name = "assetno", referencedColumnName = "formid",updatable = false)
+    @JoinColumn(name = "assetno", referencedColumnName = "formid", updatable = false)
     @ManyToOne(optional = true)
     private AssetCard assetno;
     @Size(max = 20)
@@ -213,6 +217,14 @@ public class EquipmentRepair extends FormEntity {
     private BigDecimal sparecost;
     @Column(name = "repaircost")
     private BigDecimal repaircost;
+
+    @Size(max = 100)
+    @Column(name = "faultlocation")
+    private String faultlocation;
+
+    @Size(max = 20)
+    @Column(name = "failurerate")
+    private String failurerate;
     @Transient
     private String maintenanceTime;
     @Transient
@@ -634,6 +646,30 @@ public class EquipmentRepair extends FormEntity {
 
     public void setRepairarea(String repairarea) {
         this.repairarea = repairarea;
+    }
+
+    public String getFaultlocation() {
+        return faultlocation;
+    }
+
+    public void setFaultlocation(String faultlocation) {
+        this.faultlocation = faultlocation;
+    }
+
+    public String getFailurerate() {
+        return failurerate;
+    }
+
+    public void setFailurerate(String failurerate) {
+        this.failurerate = failurerate;
+    }
+
+    public String getHitchsort1sub() {
+        return hitchsort1sub;
+    }
+
+    public void setHitchsort1sub(String hitchsort1sub) {
+        this.hitchsort1sub = hitchsort1sub;
     }
 
     @Override
